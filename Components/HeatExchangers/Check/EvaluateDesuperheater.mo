@@ -265,7 +265,7 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(massFlowSource2.steam_a, desuperheater_2.In2) annotation (Line(
-      points={{54,-34},{38.2,-34},{38.2,-52}},
+      points={{54,-34},{38,-34},{38,-52}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));

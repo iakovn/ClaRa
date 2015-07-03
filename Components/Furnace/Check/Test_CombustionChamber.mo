@@ -49,7 +49,7 @@ equation
   connect(coalFlowSource.coal_a, coalGas_join.coal_inlet) annotation (Line(
       points={{-22,-6},{-16,-6},{-16,-20},{-8,-20}},
       color={27,36,42},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(flueGasFlowSource.gas_a, coalGas_join.flueGas_inlet) annotation (Line(

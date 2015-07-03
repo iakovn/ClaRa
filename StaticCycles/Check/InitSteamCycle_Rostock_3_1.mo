@@ -167,7 +167,7 @@ equation
       color={0,131,169},
       smooth=Smooth.None));
   connect(turbine_LP.outlet, split_LP.inlet) annotation (Line(
-      points={{-47,120},{-36,120},{-36,124.667},{-25,124.667}},
+      points={{-47,120},{-36,120},{-36,124.667},{-25.4,124.667}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(split_LP.outlet_1, turbine_LP1.inlet) annotation (Line(
@@ -176,7 +176,7 @@ equation
       smooth=Smooth.None));
 
   connect(turbine_LP1.outlet, split_LP1.inlet) annotation (Line(
-      points={{55,120},{68,120},{68,124.667},{81,124.667}},
+      points={{55,120},{68,120},{68,124.667},{80.6,124.667}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(split_LP1.outlet_1, turbine_LP2.inlet) annotation (Line(

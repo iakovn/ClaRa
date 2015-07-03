@@ -27,4 +27,7 @@ package HardCoalMills
 
   extends ClaRa.Basics.Icons.PackageIcons.Components60;
 
+
+
+
 end HardCoalMills;

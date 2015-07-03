@@ -26,14 +26,14 @@ model HEX_CounterFlow_Icon
           extent={{-100,100},{100,-102}},
           fillColor={255,255,255},
           fillPattern=FillPattern.Solid,
-          pattern=LinePattern.None,
+          pattern=LinePattern.Solid,
           lineColor={0,0,0}),        Polygon(
           points={{-100,-60},{-74,-60},{-40,-34},{-40,-60},{40,-60},{40,-60},{
               40,-86},{100,-40},{40,8},{40,8},{40,-20},{-100,-20},{-100,-60}},
           smooth=Smooth.None,
           fillColor={153,205,221},
           fillPattern=FillPattern.Solid,
-          pattern=LinePattern.None,
+          pattern=LinePattern.Solid,
           origin={0,60},
           rotation=0,
           lineColor={0,0,0}),        Polygon(
@@ -42,7 +42,7 @@ model HEX_CounterFlow_Icon
           smooth=Smooth.None,
           fillColor={51,156,186},
           fillPattern=FillPattern.Solid,
-          pattern=LinePattern.None,
+          pattern=LinePattern.Solid,
           origin={0,-60},
           rotation=0,
           lineColor={0,0,0})}));

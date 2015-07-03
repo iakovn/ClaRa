@@ -131,7 +131,7 @@ equation
   connect(valveVLE_L1_1.outlet, pressureSink_XRG5.steam_a) annotation (Line(
       points={{28,-142},{40,-142}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(ramp.y, valveVLE_L1_1.opening_in) annotation (Line(
@@ -141,7 +141,7 @@ equation
   connect(pump_3.outlet, valveVLE_L1_1.inlet) annotation (Line(
       points={{-22,-142},{8,-142}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(inertia1.flange_b, pump_3.shaft) annotation (Line(

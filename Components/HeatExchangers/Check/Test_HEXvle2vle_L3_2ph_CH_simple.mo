@@ -109,7 +109,7 @@ equation
   connect(hEXvle2vle_L3_2ph_CH_simple.Out2, valve_tubes1.inlet) annotation (Line(
       points={{-6,-60},{-46,-60}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(massFlowSource_h1.h, h_cold4.y) annotation (Line(

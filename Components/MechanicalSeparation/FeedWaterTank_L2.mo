@@ -57,18 +57,18 @@ public
           actualStream(heatingSteam.h_outflow),
           actualStream(heatingSteam.xi_outflow),
           volume.fluidIn.vleFluidPointer),
-      s=TILMedia.VLEFluidObjectFunctions.temperature_phxi(
+      s=TILMedia.VLEFluidObjectFunctions.specificEntropy_phxi(
           heatingSteam.p,
           actualStream(heatingSteam.h_outflow),
           actualStream(heatingSteam.xi_outflow),
           volume.fluidIn.vleFluidPointer),
-      steamQuality=TILMedia.VLEFluidObjectFunctions.temperature_phxi(
+      steamQuality=TILMedia.VLEFluidObjectFunctions.steamMassFraction_phxi(
           heatingSteam.p,
           actualStream(heatingSteam.h_outflow),
           actualStream(heatingSteam.xi_outflow),
           volume.fluidIn.vleFluidPointer),
       H_flow=heatingSteam.m_flow*actualStream(heatingSteam.h_outflow),
-      rho=TILMedia.VLEFluidObjectFunctions.temperature_phxi(
+      rho=TILMedia.VLEFluidObjectFunctions.density_phxi(
           heatingSteam.p,
           actualStream(heatingSteam.h_outflow),
           actualStream(heatingSteam.xi_outflow),
@@ -83,48 +83,48 @@ public
           actualStream(condensate.h_outflow),
           actualStream(condensate.xi_outflow),
           volume.fluidIn.vleFluidPointer),
-      s=TILMedia.VLEFluidObjectFunctions.temperature_phxi(
+      s=TILMedia.VLEFluidObjectFunctions.specificEntropy_phxi(
           condensate.p,
           actualStream(condensate.h_outflow),
           actualStream(condensate.xi_outflow),
           volume.fluidIn.vleFluidPointer),
-      steamQuality=TILMedia.VLEFluidObjectFunctions.temperature_phxi(
+      steamQuality=TILMedia.VLEFluidObjectFunctions.steamMassFraction_phxi(
           condensate.p,
           actualStream(condensate.h_outflow),
           actualStream(condensate.xi_outflow),
           volume.fluidIn.vleFluidPointer),
       H_flow=condensate.m_flow*actualStream(condensate.h_outflow),
-      rho=TILMedia.VLEFluidObjectFunctions.temperature_phxi(
+      rho=TILMedia.VLEFluidObjectFunctions.density_phxi(
           condensate.p,
           actualStream(condensate.h_outflow),
           actualStream(condensate.xi_outflow),
           volume.fluidIn.vleFluidPointer)),
     feedwater(
       showExpertSummary=showExpertSummary,
-      m_flow=outlet.m_flow,
+      m_flow=-outlet.m_flow,
       p=outlet.p,
       h=actualStream(outlet.h_outflow),
       T=TILMedia.VLEFluidObjectFunctions.temperature_phxi(
           outlet.p,
           actualStream(outlet.h_outflow),
           actualStream(outlet.xi_outflow),
-          volume.fluidIn.vleFluidPointer),
-      s=TILMedia.VLEFluidObjectFunctions.temperature_phxi(
+          volume.fluidOut.vleFluidPointer),
+      s=TILMedia.VLEFluidObjectFunctions.specificEntropy_phxi(
           outlet.p,
           actualStream(outlet.h_outflow),
           actualStream(outlet.xi_outflow),
-          volume.fluidIn.vleFluidPointer),
-      steamQuality=TILMedia.VLEFluidObjectFunctions.temperature_phxi(
+          volume.fluidOut.vleFluidPointer),
+      steamQuality=TILMedia.VLEFluidObjectFunctions.steamMassFraction_phxi(
           outlet.p,
           actualStream(outlet.h_outflow),
           actualStream(outlet.xi_outflow),
-          volume.fluidIn.vleFluidPointer),
-      H_flow=outlet.m_flow*actualStream(outlet.h_outflow),
-      rho=TILMedia.VLEFluidObjectFunctions.temperature_phxi(
+          volume.fluidOut.vleFluidPointer),
+      H_flow=-outlet.m_flow*actualStream(outlet.h_outflow),
+      rho=TILMedia.VLEFluidObjectFunctions.density_phxi(
           outlet.p,
           actualStream(outlet.h_outflow),
           actualStream(outlet.xi_outflow),
-          volume.fluidIn.vleFluidPointer))) annotation (Placement(transformation(extent={{-60,-60},{-80,-40}})));
+          volume.fluidOut.vleFluidPointer))) annotation (Placement(transformation(extent={{-60,-60},{-80,-40}})));
 
   ClaRa.Basics.ControlVolumes.FluidVolumes.VolumeVLE_2 volume(
     medium=medium,

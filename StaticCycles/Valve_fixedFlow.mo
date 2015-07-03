@@ -14,8 +14,8 @@ model Valve_fixedFlow "Valve || yellow | blue"
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
-   // Green input: Values of p, m_flow and h are unknown and provided BY neighbor component.
-   // Blue output: Value of p is unknown and provided BY neighbor component, values of m_flow and h are known in component and provided FOR neighbor component.
+   // Yellow input: Values of p and h are unknown and provided BY neighbor component, value of m_flow is known and provided FOR neighbor component.
+   // Blue output:  Value of p is unknown and provided BY neighbor component, values of m_flow and h are known in component and provided FOR neighbor component.
 final parameter ClaRa.Basics.Units.Pressure p_in(fixed=false);
  parameter ClaRa.Basics.Units.MassFlowRate m_flow_nom= 10 "Nominal mass flow rate";
 

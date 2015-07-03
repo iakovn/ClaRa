@@ -28,5 +28,5 @@ annotation ( Icon(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100}
           smooth=Smooth.None,
           fillColor={221,222,223},
           fillPattern=FillPattern.Solid,
-          pattern=LinePattern.None)}));
+          pattern=LinePattern.Solid)}));
 end EyeOut;

@@ -5,7 +5,7 @@ connector FluidPortOut
           extent={{-60,60},{58,-60}},
           fillColor={255,255,255},
           fillPattern=FillPattern.Solid,
-          pattern=LinePattern.None,
+          pattern=LinePattern.Solid,
           lineColor={0,131,169},
           lineThickness=0.5)}));
 end FluidPortOut;

@@ -185,6 +185,7 @@ model HEXvle2vle_L3_2ph_CU_ntu "VLE 2 VLE | L3 | 2 phase at shell side | Cylinde
     constrainedby ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.GeneralMean "|Expert Settings|NTU model|Method for Averaging of heat capacities"
     annotation (choicesAllMatching);
   parameter Real gain_eff=1 "|Expert Settings|NTU model|Avoid effectiveness > 1, high gain_eff leads to stricter observation but may cause numeric errors";
+  parameter Basics.Units.Time Tau_stab=0.1 "|Expert Settings|NTU model|Time constant for numeric stabilisation w.r.t. heat flow rates";
 
   parameter Boolean showExpertSummary=simCenter.showExpertSummary "|Summary and Visualisation||True, if expert summary should be applied";
   parameter Boolean showData=true "|Summary and Visualisation||True, if a data port containing p,T,h,s,m_flow shall be shown, else false";
@@ -296,7 +297,8 @@ model HEXvle2vle_L3_2ph_CU_ntu "VLE 2 VLE | L3 | 2 phase at shell side | Cylinde
     m_flow_o=shell.inlet[1].m_flow,
     showExpertSummary=showExpertSummary,
     redeclare model HeatExchangerType =
-        ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.CrossFlow_L3) "{shell.heattransfer.alpha[2],shell.heattransfer.alpha[2],shell.heattransfer.alpha[1]}"
+        ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.CrossFlow_L3,
+    Tau_stab=Tau_stab) "{shell.heattransfer.alpha[2],shell.heattransfer.alpha[2],shell.heattransfer.alpha[1]}"
                                                                                               annotation (Placement(transformation(extent={{21,28},{41,48}})));
 
 public
@@ -363,17 +365,20 @@ equation
   //Vl = max(0.000001,((1-shell.bulk.q)*shell.M))/noEvent(max(shell.bulk.VLE.d_l,shell.bulk.d));
 
   connect(wall.innerPhase[1], tubes.heat) annotation (Line(
-      points={{31,27.3333},{31,27.3333},{31,10},{38,10}},
+      points={{31,27.3333},{31,10},{38,10}},
       color={191,0,0},
-      smooth=Smooth.None));
+      smooth=Smooth.None,
+      thickness=0.5));
   connect(wall.innerPhase[2], tubes.heat) annotation (Line(
-      points={{31,28},{31,20},{31,10},{38,10}},
+      points={{31,28},{31,10},{38,10}},
       color={191,0,0},
-      smooth=Smooth.None));
+      smooth=Smooth.None,
+      thickness=0.5));
   connect(wall.innerPhase[3], tubes.heat) annotation (Line(
-      points={{31,28.6667},{31,28.6667},{31,10},{38,10}},
+      points={{31,28.6667},{31,10},{38,10}},
       color={191,0,0},
-      smooth=Smooth.None));
+      smooth=Smooth.None,
+      thickness=0.5));
   connect(eye_int1, eye1) annotation (Line(
       points={{28,-58},{28,-98}},
       color={190,190,190},
@@ -404,7 +409,7 @@ eye_int2.m_flow=-tubes.outlet.m_flow;
   connect(shell.outlet[1], Out1) annotation (Line(
       points={{0,50},{0,-100}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(aux1, shell.inlet[2]) annotation (Line(

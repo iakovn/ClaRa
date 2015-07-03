@@ -19,6 +19,8 @@ model DynDisplay "Dynamic Display of one variable"
   input Real x1=1 "Variable value" annotation (Dialog);
   parameter String unit="°C" "Variable unit";
   parameter Integer decimalSpaces=1 "Accuracy to be displayed";
+  parameter Boolean largeFonts= simCenter.largeFonts "True if visualisers shall be displayed as large as posible";
+  outer ClaRa.SimCenter simCenter;
   annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
             -100},{100,100}}), graphics={
         Rectangle(
@@ -34,7 +36,7 @@ model DynDisplay "Dynamic Display of one variable"
           pattern=LinePattern.None,
           lineColor={27,36,42}),
         Text(
-          extent={{-94,2},{106,-98}},
+          extent=if largeFonts then {{-100,0},{100,-100}} else {{-94,2},{106,-98}},
           fillColor={215,215,215},
           fillPattern=FillPattern.Solid,
           lineColor=DynamicSelect({118,124,127}, if x1 > 0 then {0,131,169} else {167,25,48}),

@@ -28,6 +28,16 @@ package HeatExchangerTypes
 extends ClaRa.Basics.Icons.PackageIcons.Basics50;
 
 
+
+
+
+
+
+
+
+
+
+
 annotation (Documentation(info=
                              "<html>
 <p>VDI-Waermeatlas Chapter Ca5, 9th edition, VDI-Verlag, 2006</p>

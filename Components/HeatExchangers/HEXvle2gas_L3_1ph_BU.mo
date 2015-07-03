@@ -84,6 +84,7 @@ model HEXvle2gas_L3_1ph_BU "VLE 2 gas | L3 | 1 phase on each side | Block shape 
     annotation (Dialog(tab="Shell Side", group="Geometry"));
   parameter Basics.Choices.GeometryOrientation mainOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical "Orientation of the component"
     annotation (Dialog(tab="Shell Side", group="Geometry"));
+  parameter Basics.Choices.GeometryOrientation flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.horizontal "Orientation of shell side flow";
   parameter ClaRa.Basics.Units.Mass
                     mass_struc=0 "Mass of inner structure elements, additional to the tubes itself"
     annotation (Dialog(tab="Shell Side", group="Geometry"));
@@ -241,21 +242,19 @@ model HEXvle2gas_L3_1ph_BU "VLE 2 gas | L3 | 1 phase on each side | Block shape 
     T_start=T_start_shell,
     p_start=p_start_shell,
     initType=initTypeShell,
-    redeclare model Geometry =
-        ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlockWithTubes (
+    xi_start=xi_shell_start,
+    redeclare model Geometry = ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlockWithTubes (
         z_out={z_out_shell},
         height=height,
         width=width,
         length=length,
-        diameter_t=
-            diameter_o,
+        diameter_t=diameter_o,
         N_tubes=N_tubes,
         N_passes=N_passes,
-        orientation=mainOrientation,
+        flowOrientation=mainOrientation,
         parallelTubes=parallelTubes,
         verticalTubes=verticalTubes,
-        z_in={z_in_shell}),
-    xi_start=xi_shell_start) annotation (Placement(transformation(
+        z_in={z_in_shell}))  annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=270,
         origin={0,56})));
@@ -289,7 +288,7 @@ initial equation
   //        wall.T=(Tubes.bulk.T+shell.bulk.T)/2;
 
 equation
-  eye_int.m_flow = -Out1.m_flow;
+  eye_int.m_flow = tubes.summary.outlet.m_flow;
   eye_int.T = tubes.summary.outlet.T - 273.15;
   eye_int.s = tubes.fluidOut.s/1e3;
   eye_int.p = tubes.outlet.p/1e5;
@@ -304,14 +303,6 @@ equation
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
-  connect(tubes.heat, wall.innerPhase) annotation (Line(
-      points={{28,1.77636e-015},{30.5,1.77636e-015},{30.5,21},{30,21}},
-      color={127,0,0},
-      smooth=Smooth.None));
-  connect(shell.heat, wall.outerPhase) annotation (Line(
-      points={{10,56},{30,56},{30,39}},
-      color={127,0,0},
-      smooth=Smooth.None));
   connect(shell.inlet, In1) annotation (Line(
       points={{1.83697e-015,66},{0,66},{0,98}},
       color={84,58,36},
@@ -325,12 +316,19 @@ equation
       color={255,204,51},
       thickness=0.5,
       smooth=Smooth.None));
+  connect(shell.heat, wall.outerPhase) annotation (Line(
+      points={{10,56},{30,56},{30,39}},
+      color={167,25,48},
+      thickness=0.5));
+  connect(tubes.heat, wall.innerPhase) annotation (Line(
+      points={{28,0},{30,0},{30,21}},
+      color={167,25,48},
+      thickness=0.5));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
             -100},{100,100}}),
                    graphics={Text(
           extent={{-86,92},{86,52}},
           lineColor={27,36,42},
-          textString="NTU")}),Diagram(coordinateSystem(preserveAspectRatio=
-            false, extent={{-100,-100},{100,100}}),
-                                      graphics));
+          textString="NTU")}),Diagram(coordinateSystem(preserveAspectRatio=false,
+                   extent={{-100,-100},{100,100}})));
 end HEXvle2gas_L3_1ph_BU;

@@ -73,11 +73,11 @@ annotation (    Icon(coordinateSystem(preserveAspectRatio=true, extent={{0,0},{
         Text(
             extent={{2,94},{-18,100}},
             lineColor={27,36,42},
-            textString="%maxY"),
+            textString="%y_max"),
         Text(
           extent={{-16,6},{2,0}},
           lineColor={27,36,42},
-          textString="%minY"),
+          textString="%y_min"),
           Text(
             extent={{66,-4},{36,-12}},
             lineColor={27,36,42},
@@ -89,12 +89,12 @@ annotation (    Icon(coordinateSystem(preserveAspectRatio=true, extent={{0,0},{
           Line(
             points=DynamicSelect({{0,20},{50,57},{70,42},{100,100}}, point_o),
             color=colorh,
-            pattern=LinePattern.None,
+            pattern=LinePattern.Solid,
             thickness=DynamicSelect(0.25,0.5)),
           Line(
             points=DynamicSelect({{0,0},{50,52},{70,40},{100,100}}, point_i),
             color=colorc,
-            pattern=LinePattern.None,
+            pattern=LinePattern.Solid,
             thickness=DynamicSelect(0.25, 0.5)),
         Line(
           points={{50,0},{50,-2}},

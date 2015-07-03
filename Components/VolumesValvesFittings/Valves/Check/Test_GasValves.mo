@@ -213,7 +213,7 @@ equation
   connect(coalFlowSource.coal_a, coalGas_join.coal_inlet) annotation (Line(
       points={{-72,-234},{-66,-234},{-66,-240},{-60,-240}},
       color={0,0,0},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       smooth=Smooth.None));
   connect(gasFlowSource_T3.gas_a, coalGas_join.flueGas_inlet) annotation (Line(
       points={{-72,-256},{-66,-256},{-66,-252},{-60,-252}},
@@ -222,7 +222,7 @@ equation
   connect(coalGas_split.coal_inlet, coalSink.coal_a) annotation (Line(
       points={{136,-240},{142,-240},{142,-234},{150,-234}},
       color={0,0,0},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       smooth=Smooth.None));
   connect(coalGas_split.flueGas_inlet, gasSink_pT3.gas_a) annotation (Line(
       points={{136,-252},{142,-252},{142,-258},{150,-258}},
@@ -231,7 +231,7 @@ equation
   connect(coalFlowSource1.coal_a, coalGas_join1.coal_inlet) annotation (Line(
       points={{-72,-182},{-66,-182},{-66,-188},{-60,-188}},
       color={0,0,0},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       smooth=Smooth.None));
   connect(gasFlowSource_T4.gas_a, coalGas_join1.flueGas_inlet) annotation (Line(
       points={{-72,-204},{-66,-204},{-66,-200},{-60,-200}},
@@ -240,7 +240,7 @@ equation
   connect(coalGas_split1.coal_inlet, coalSink1.coal_a) annotation (Line(
       points={{136,-188},{144,-188},{144,-182},{152,-182}},
       color={0,0,0},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       smooth=Smooth.None));
   connect(coalGas_split1.flueGas_inlet, gasSink_pT4.gas_a) annotation (Line(
       points={{136,-200},{144,-200},{144,-206},{152,-206}},
@@ -254,7 +254,7 @@ equation
   connect(coalFlowSource2.coal_a, coalGas_join2.coal_inlet) annotation (Line(
       points={{-72,-134},{-66,-134},{-66,-140},{-60,-140}},
       color={0,0,0},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       smooth=Smooth.None));
   connect(gasFlowSource_T5.gas_a, coalGas_join2.flueGas_inlet) annotation (Line(
       points={{-72,-156},{-66,-156},{-66,-152},{-60,-152}},
@@ -263,7 +263,7 @@ equation
   connect(coalGas_split2.coal_inlet, coalSink2.coal_a) annotation (Line(
       points={{138,-140},{144,-140},{144,-134},{152,-134}},
       color={0,0,0},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       smooth=Smooth.None));
   connect(coalGas_split2.flueGas_inlet, gasSink_pT5.gas_a) annotation (Line(
       points={{138,-152},{144,-152},{144,-158},{152,-158}},
@@ -393,7 +393,7 @@ equation
                                                           annotation (Line(
       points={{-72,-338},{-66,-338},{-66,-344},{-60,-344}},
       color={0,0,0},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       smooth=Smooth.None));
   connect(gasFlowSource_T9.gas_a, coalGas_join3.flueGas_inlet)
                                                               annotation (Line(
@@ -404,7 +404,7 @@ equation
                                                      annotation (Line(
       points={{134,-344},{140,-344},{140,-338},{148,-338}},
       color={0,0,0},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       smooth=Smooth.None));
   connect(coalGas_split3.flueGas_inlet, gasSink_pT9.gas_a)
                                                           annotation (Line(
@@ -414,7 +414,7 @@ equation
   connect(coalFlowSource4.coal_a,coalGas_join4. coal_inlet) annotation (Line(
       points={{-72,-286},{-66,-286},{-66,-292},{-60,-292}},
       color={0,0,0},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       smooth=Smooth.None));
   connect(gasFlowSource_T10.gas_a, coalGas_join4.flueGas_inlet)
                                                                annotation (Line(
@@ -424,7 +424,7 @@ equation
   connect(coalGas_split4.coal_inlet,coalSink4. coal_a) annotation (Line(
       points={{134,-292},{142,-292},{142,-286},{150,-286}},
       color={0,0,0},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       smooth=Smooth.None));
   connect(coalGas_split4.flueGas_inlet, gasSink_pT10.gas_a)
                                                            annotation (Line(
@@ -468,7 +468,7 @@ equation
                                                           annotation (Line(
       points={{-72,-388},{-66,-388},{-66,-394},{-60,-394}},
       color={0,0,0},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       smooth=Smooth.None));
   connect(gasFlowSource_T11.gas_a, coalGas_join5.flueGas_inlet)
                                                               annotation (Line(
@@ -479,7 +479,7 @@ equation
                                                      annotation (Line(
       points={{134,-394},{140,-394},{140,-388},{148,-388}},
       color={0,0,0},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       smooth=Smooth.None));
   connect(coalGas_split5.flueGas_inlet, gasSink_pT11.gas_a)
                                                           annotation (Line(

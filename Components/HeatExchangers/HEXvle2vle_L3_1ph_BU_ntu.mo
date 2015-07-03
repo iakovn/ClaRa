@@ -295,12 +295,12 @@ equation
   assert(diameter_o > diameter_i,
     "Outer diameter of tubes must be greater than inner diameter");
 
-  eye_int1.m_flow = -Out1.m_flow;
+  eye_int1.m_flow = shell.summary.outlet.m_flow;
   eye_int1.T = shell.summary.outlet.T - 273.15;
   eye_int1.s = shell.fluidOut.s/1e3;
   eye_int1.p = shell.outlet.p/1e5;
   eye_int1.h = shell.summary.outlet.h/1e3;
-  eye_int2.m_flow = -Out2.m_flow;
+  eye_int2.m_flow = tubes.summary.outlet.m_flow;
   eye_int2.T = tubes.summary.outlet.T - 273.15;
   eye_int2.s = tubes.fluidOut.s/1e3;
   eye_int2.p = tubes.outlet.p/1e5;

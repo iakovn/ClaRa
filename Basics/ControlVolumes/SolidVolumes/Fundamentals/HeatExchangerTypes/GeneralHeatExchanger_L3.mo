@@ -38,7 +38,7 @@ equation
           smooth=Smooth.Bezier,
           fillColor={153,205,211},
           fillPattern=FillPattern.Solid,
-          pattern=LinePattern.None,
+          pattern=LinePattern.Solid,
           origin={0,6},
           rotation=180,
           lineColor={0,0,0}),        Polygon(
@@ -48,7 +48,7 @@ equation
           smooth=Smooth.Bezier,
           fillColor={51,156,186},
           fillPattern=FillPattern.Solid,
-          pattern=LinePattern.None,
+          pattern=LinePattern.Solid,
           origin={0,-14},
           rotation=0,
           lineColor={0,0,0})}));

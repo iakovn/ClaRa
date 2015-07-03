@@ -118,14 +118,14 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(hEXvle2vle_L3_1ph_BU_US.In2, Temp_Tubes_in.port) annotation (Line(
-      points={{18,-63.8},{22,-63.8},{22,-34}},
+      points={{18,-64},{22,-64},{22,-34}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
   connect(hEXvle2vle_L3_1ph_BU_US.Out2, valve_tubes1.inlet) annotation (Line(
       points={{18,-76},{44,-76}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(massFlowSource_h1.h, h_cold4.y) annotation (Line(

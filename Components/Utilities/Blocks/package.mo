@@ -27,4 +27,21 @@ package Blocks "Some rucial control elements"
 
     extends ClaRa.Basics.Icons.PackageIcons.Components60;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 end Blocks;

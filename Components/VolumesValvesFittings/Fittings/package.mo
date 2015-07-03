@@ -27,4 +27,15 @@ package Fittings "Bends, T-connectors,..."
 
   extends ClaRa.Basics.Icons.PackageIcons.Components60;
 
+
+
+
+
+
+
+
+
+
+
+
 end Fittings;

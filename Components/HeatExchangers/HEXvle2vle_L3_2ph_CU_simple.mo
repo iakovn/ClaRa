@@ -369,7 +369,7 @@ eye_int2.m_flow=-tubes.outlet.m_flow;
   connect(shell.outlet[1], Out1) annotation (Line(
       points={{0,50},{0,-100}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(aux1, shell.inlet[2]) annotation (Line(

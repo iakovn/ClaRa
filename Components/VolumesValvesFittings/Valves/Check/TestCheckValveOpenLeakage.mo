@@ -107,7 +107,7 @@ equation
   connect(valve4.outlet, pressureSink_XRG7.steam_a) annotation (Line(
       points={{24,-58},{42,-58}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(pulse.y, pressureSink_XRG7.p) annotation (Line(
@@ -122,7 +122,7 @@ equation
   connect(valve1.outlet,pressureSink_XRG2. steam_a) annotation (Line(
       points={{24,-12},{40,-12}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(pulse.y, pressureSink_XRG2.p) annotation (Line(
@@ -153,7 +153,7 @@ equation
   connect(valve2.outlet,pressureSink_XRG4. steam_a) annotation (Line(
       points={{24,-150},{42,-150}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(pressureSink_XRG5.steam_a,valve3. inlet) annotation (Line(
@@ -164,7 +164,7 @@ equation
   connect(valve3.outlet,pressureSink_XRG8. steam_a) annotation (Line(
       points={{24,-104},{40,-104}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(pulse3.y, add1.u1) annotation (Line(

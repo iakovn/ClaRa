@@ -251,7 +251,7 @@ public
             diameter_o,
         N_tubes=N_tubes,
         N_passes=N_passes,
-        orientation=mainOrientation,
+        flowOrientation=mainOrientation,
         parallelTubes=parallelTubes,
         verticalTubes=verticalTubes,
         z_in={z_in_shell}),
@@ -289,7 +289,7 @@ initial equation
   //        wall.T=(Tubes.bulk.T+shell.bulk.T)/2;
 
 equation
-  eye_int.m_flow = -Out1.m_flow;
+  eye_int.m_flow = tubes.summary.outlet.m_flow;
   eye_int.T = tubes.summary.outlet.T - 273.15;
   eye_int.s = tubes.fluidOut.s/1e3;
   eye_int.p = tubes.outlet.p/1e5;

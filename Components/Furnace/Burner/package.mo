@@ -27,4 +27,5 @@ package Burner
 
   extends ClaRa.Basics.Icons.PackageIcons.Components60;
 
+
 end Burner;

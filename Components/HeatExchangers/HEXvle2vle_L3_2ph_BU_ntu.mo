@@ -217,6 +217,7 @@ model HEXvle2vle_L3_2ph_BU_ntu "VLE 2 VLE | L3 | two phase at shell side | Block
   parameter Boolean showExpertSummary=simCenter.showExpertSummary "|Summary and Visualisation||True, if expert summary should be applied";
   parameter Boolean showData=true "|Summary and Visualisation||True, if a data port containing p,T,h,s,m_flow shall be shown, else false";
   parameter Real gain_eff=1 "|Expert Settings|NTU model|Avoid effectiveness > 1, high gain_eff leads to stricter observation but may cause numeric errors";
+  parameter Basics.Units.Time Tau_stab=0.1 "|Expert Settings|NTU model|Time constant for numeric stabilisation w.r.t. heat flow rates";
 
   ClaRa.Basics.Interfaces.FluidPortIn In2(Medium=medium_tubes)
     annotation (Placement(transformation(extent={{88,-50},{108,-30}}),
@@ -254,7 +255,8 @@ model HEXvle2vle_L3_2ph_BU_ntu "VLE 2 VLE | L3 | two phase at shell side | Block
     p_o=shell.outlet[1].p,
     p_i=tubes.outlet.p,
     showExpertSummary=showExpertSummary,
-    gain_eff=gain_eff) annotation (Placement(transformation(extent={{20,24},{40,44}})));
+    gain_eff=gain_eff,
+    Tau_stab=Tau_stab) annotation (Placement(transformation(extent={{20,24},{40,44}})));
 
   Basics.ControlVolumes.FluidVolumes.VolumeVLE_2 tubes(
     medium=medium_tubes,
@@ -293,8 +295,21 @@ model HEXvle2vle_L3_2ph_BU_ntu "VLE 2 VLE | L3 | two phase at shell side | Block
     p_start=p_start_shell,
     initType=initTypeShell,
     showExpertSummary=showExpertSummary,
-    redeclare model Geometry =
-        ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlockWithTubesAndHotwell (
+    Tau_cond=Tau_cond,
+    Tau_evap=Tau_evap,
+    alpha_ph=alpha_ph,
+    A_heat_ph=A_phaseBorder,
+    h_liq_start=h_liq_start,
+    h_vap_start=h_vap_start,
+    level_rel_start=level_rel_start,
+    redeclare model PhaseBorder =
+        ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.RealSeparated (
+        level_rel_start=level_rel_start,
+        radius_flange=radius_flange,
+        absorbInflow=absorbInflow),
+    exp_HT_phases=expHT_phases,
+    heatSurfaceAlloc=2,
+    redeclare model Geometry = ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlockWithTubesAndHotwell (
         height=height,
         width=width,
         length=length,
@@ -309,21 +324,8 @@ model HEXvle2vle_L3_2ph_BU_ntu "VLE 2 VLE | L3 | two phase at shell side | Block
         N_inlet=3,
         z_out={z_out_shell},
         flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical,
-        z_in={z_in_shell,z_in_aux1,z_in_aux2}),
-    Tau_cond=Tau_cond,
-    Tau_evap=Tau_evap,
-    alpha_ph=alpha_ph,
-    A_heat_ph=A_phaseBorder,
-    h_liq_start=h_liq_start,
-    h_vap_start=h_vap_start,
-    level_rel_start=level_rel_start,
-    redeclare model PhaseBorder =
-        ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.RealSeparated (
-        level_rel_start=level_rel_start,
-        radius_flange=radius_flange,
-        absorbInflow=absorbInflow),
-    exp_HT_phases=expHT_phases,
-    heatSurfaceAlloc=2) annotation (Placement(transformation(
+        z_in={z_in_shell,z_in_aux1,z_in_aux2}))
+                        annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=270,
         origin={0,60})));
@@ -366,6 +368,7 @@ public
 
   Adapters.Scalar2VectorHeatPort reallocateHeatFlows(N=2, final equalityMode="Equal Temperatures")
     annotation (Placement(transformation(extent={{18,65},{30,73}})));
+
 initial equation
    //        wall.T=(tubes.bulk.T+shell.bulk.T)/2;
 //
@@ -385,12 +388,12 @@ equation
   assert(diameter_o > diameter_i,
     "Outer diameter of tubes must be greater than inner diameter");
 
-   eye_int1.m_flow = -Out1.m_flow;
+   eye_int1.m_flow = shell.summary.outlet[1].m_flow;
    eye_int1.T = shell.summary.outlet[1].T - 273.15;
    eye_int1.s = shell.fluidOut[1].s/1e3;
    eye_int1.p = shell.outlet[1].p/1e5;
    eye_int1.h = shell.summary.outlet[1].h/1e3;
-   eye_int2.m_flow = -Out2.m_flow;
+   eye_int2.m_flow = tubes.summary.outlet.m_flow;
    eye_int2.T = tubes.summary.outlet.T - 273.15;
    eye_int2.s = tubes.fluidOut.s/1e3;
    eye_int2.p = tubes.outlet.p/1e5;
@@ -426,7 +429,7 @@ equation
   connect(shell.outlet[1], Out1) annotation (Line(
       points={{0,50},{0,-100}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(aux1, shell.inlet[2]) annotation (Line(

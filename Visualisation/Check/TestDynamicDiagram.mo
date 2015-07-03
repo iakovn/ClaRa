@@ -15,14 +15,24 @@ model TestDynamicDiagram
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
   extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb80;
-  Modelica.Blocks.Sources.Sine sine(          amplitude=1, freqHz=0.1)
+  Modelica.Blocks.Sources.Sine sine(          amplitude=1, freqHz=0.1,
+    offset=10)
     annotation (Placement(transformation(extent={{-82,-12},{-62,8}})));
   Scope scope(
-    y_min=-1,
-    t_simulation=10,
-    showInterface=false,
     inputVar=sine.y,
-    t_sample=0.01,
-    Unit="Sine") annotation (Placement(transformation(extent={{10,-26},{56,20}})));
-  annotation (Diagram(graphics));
+    Unit="Sine",
+    t_sample=2,
+    t_end=100,
+    t_start=50,
+    hideInterface=false,
+    y_min=9,
+    y_max=11,
+    Tau_stab=1)  annotation (Placement(transformation(extent={{-36,-66},{56,20}})));
+equation
+  connect(sine.y, scope.u) annotation (Line(
+      points={{-61,-2},{-50,-2},{-50,-3.81538},{-39.9429,-3.81538}},
+      color={0,0,127},
+      smooth=Smooth.None));
+  annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}),
+                      graphics));
 end TestDynamicDiagram;

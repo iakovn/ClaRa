@@ -130,13 +130,13 @@ equation
   connect(pipe1.outlet, pipe2.inlet) annotation (Line(
       points={{-8,-62},{12,-62}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(pipe2.outlet, pressureSink_pT.steam_a) annotation (Line(
       points={{32,-62},{60,-62}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(scalar2VectorHeatPort.heatVector, thinWall_1.outerPhase) annotation (

@@ -19,7 +19,7 @@ model TestSTodolaTurbine_XRG
     m_flow_nom=419,
     rho_nom=84,
     showExpertSummary=true,
-    showData=true) annotation (Placement(transformation(extent={{2,-30},{22,-10}})));
+    showData=true) annotation (Placement(transformation(extent={{0,-26},{10,-6}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi massFlowSource(
     h_const=3279e3,
     variable_p=true,
@@ -73,21 +73,20 @@ equation
       points={{83,-68},{90,-68},{90,-30},{78,-30}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(massFlowSource.steam_a, turbine.inlet) annotation (Line(
-      points={{-36,-10},{2,-10},{2,-14}},
-      color={191,56,33},
-      thickness=0.5,
-      smooth=Smooth.None));
-  connect(turbine.outlet, pressureSink.steam_a) annotation (Line(
-      points={{22,-30},{58,-30}},
-      color={191,56,33},
-      thickness=0.5,
-      smooth=Smooth.None));
   connect(turbine.eye, quadruple.eye) annotation (Line(
-      points={{24,-26},{30,-26},{30,-7},{38,-7}},
+      points={{11,-22},{30,-22},{30,-7},{38,-7}},
       color={190,190,190},
       smooth=Smooth.None));
-  annotation (Diagram(graphics={  Text(
+  connect(massFlowSource.steam_a, turbine.inlet) annotation (Line(
+      points={{-36,-10},{0,-10}},
+      color={0,131,169},
+      thickness=0.5));
+  connect(pressureSink.steam_a, turbine.outlet) annotation (Line(
+      points={{58,-30},{10,-30},{10,-26}},
+      color={0,131,169},
+      thickness=0.5));
+  annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}),
+                      graphics={  Text(
           extent={{-96,98},{102,58}},
           lineColor={0,128,0},
           horizontalAlignment=TextAlignment.Left,

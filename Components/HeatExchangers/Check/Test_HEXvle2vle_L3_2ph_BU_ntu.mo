@@ -17,7 +17,10 @@ model Test_HEXvle2vle_L3_2ph_BU_ntu
     z_in_shell=3,
     z_in_aux1=3,
     z_in_aux2=3,
-    z_out_shell=0.01) annotation (Placement(transformation(extent={{16,-68},{36,-48}})));
+    z_out_shell=0.01,
+    gain_eff=1,
+    redeclare function HeatCapacityAveraging = ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.InputOnly)
+                      annotation (Placement(transformation(extent={{16,-68},{36,-48}})));
 
   Sensors.Temperature                  Temp_Shell_in
     annotation (Placement(transformation(extent={{30,6},{50,26}})));
@@ -83,13 +86,14 @@ model Test_HEXvle2vle_L3_2ph_BU_ntu
     redeclare TILMedia.VLEFluidTypes.TILMedia_SplineWater fluid1,
     showExpertSummary=true) annotation (Placement(transformation(extent={{54,30},{74,50}})));
   Visualisation.Hexdisplay_3 hexdisplay_3_1(
-    T_o={hEXvle2vle_L3_2ph_BU_ntu.shell.summary.inlet[1].T,hEXvle2vle_L3_2ph_BU_ntu.shell.summary.outlet[1].T,hEXvle2vle_L3_2ph_BU_ntu.shell.summary.outlet[1].T,hEXvle2vle_L3_2ph_BU_ntu.shell.summary.outlet[1].T,hEXvle2vle_L3_2ph_BU_ntu.shell.summary.outlet[1].T,hEXvle2vle_L3_2ph_BU_ntu.shell.summary.outlet[1].T},
-    T_i={hEXvle2vle_L3_2ph_BU_ntu.tubes.summary.inlet.T,hEXvle2vle_L3_2ph_BU_ntu.tubes.summary.outlet.T,hEXvle2vle_L3_2ph_BU_ntu.tubes.summary.outlet.T,hEXvle2vle_L3_2ph_BU_ntu.tubes.summary.outlet.T,hEXvle2vle_L3_2ph_BU_ntu.tubes.summary.outlet.T,hEXvle2vle_L3_2ph_BU_ntu.tubes.summary.outlet.T},
-    yps_o={0,1,1,1,1,1},
-    yps_i={0,1,1,1,1,1},
-    Unit="HEX Temperature in K",
-    y_min=500,
-    y_max=800) annotation (Placement(transformation(extent={{-92,-52},{2,36}})));
+    yps_o=hEXvle2vle_L3_2ph_BU_ntu.wall.summary.eCom.z_o,
+    yps_i=hEXvle2vle_L3_2ph_BU_ntu.wall.summary.eCom.z_i,
+    T_o=hEXvle2vle_L3_2ph_BU_ntu.wall.summary.T_o - fill(273.15, 6),
+    T_i=hEXvle2vle_L3_2ph_BU_ntu.wall.summary.T_i - fill(273.15, 6),
+    y_min=226.85,
+    y_max=550,
+    Unit="HEX Temperature in °C")
+               annotation (Placement(transformation(extent={{-92,-52},{2,36}})));
 equation
 
   connect(valve_shell1.inlet,Temp_Shell_out. port) annotation (Line(
@@ -138,7 +142,7 @@ equation
   connect(hEXvle2vle_L3_2ph_BU_ntu.Out2, valve_tubes1.inlet) annotation (Line(
       points={{35.8,-52},{40,-52},{40,-32},{44,-32}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(massFlowSource_h1.h, h_cold4.y) annotation (Line(

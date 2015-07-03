@@ -26,20 +26,20 @@ equation
         initialScale=0.01), graphics={
         Rectangle(
           extent={{-100,100},{100,-100}},
-          pattern=LinePattern.None,
+          pattern=LinePattern.Solid,
           fillColor={0,0,0},
           fillPattern=FillPattern.Solid,
           lineColor={0,0,0},
           radius=20),
         Rectangle(
           extent={{-100,100},{0,0}},
-          pattern=LinePattern.None,
+          pattern=LinePattern.Solid,
           fillColor={255,255,0},
           fillPattern=FillPattern.Solid,
           lineColor={0,0,0}),
         Rectangle(
           extent={{0,0},{100,-100}},
-          pattern=LinePattern.None,
+          pattern=LinePattern.Solid,
           fillColor={255,255,0},
           fillPattern=FillPattern.Solid,
           lineColor={0,0,0})}), Diagram(coordinateSystem(

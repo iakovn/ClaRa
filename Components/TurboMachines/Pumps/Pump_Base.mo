@@ -37,12 +37,12 @@ partial model Pump_Base "Base class for pumps"
     annotation (Placement(transformation(extent={{90,-10},{110,10}})));
 protected
   TILMedia.VLEFluid_ph  fluidIn(vleFluidType =    medium, p=inlet.p,
-    h=actualStream(inlet.h_outflow))
+    h=homotopy(actualStream(inlet.h_outflow), inStream(inlet.h_outflow)))
     annotation (Placement(transformation(extent={{-88,-12},{-68,8}})));
   TILMedia.VLEFluid_ph  fluidOut(
                                 vleFluidType =    medium,
     p=outlet.p,
-    h=actualStream(outlet.h_outflow))
+    h=homotopy(actualStream(outlet.h_outflow), outlet.h_outflow))
     annotation (Placement(transformation(extent={{66,-10},{86,10}})));
 public
   Basics.Interfaces.EyeOut       eye if showData

@@ -27,4 +27,14 @@ package Sensors "Measurement devices"
 
 extends ClaRa.Basics.Icons.PackageIcons.Components80;
 
+
+
+
+
+
+
+
+
+
+
 end Sensors;

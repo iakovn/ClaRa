@@ -69,7 +69,7 @@ final shape=if orientation == ClaRa.Basics.Choices.GeometryOrientation.vertical
   final parameter Real  b = Delta_z_par/diameter_t "|Interior Equipment|Vertical alignment ratio";
   final parameter Real psi = if b >= 1 then 1 - Modelica.Constants.pi/4/a else 1 - Modelica.Constants.pi/4/a/b "|Interior Equipment|Void ratio";
    parameter Boolean staggeredAlignment=true "|Interior Equipment|True, if the tubes are aligned staggeredly, false otherwise";
-     parameter Integer N_rows(min=N_passes, max=N_tubes) = integer(ceil(sqrt(N_tubes))*N_passes) "|Interior Equipment|Number of pipe rows in flow direction"
+     parameter Integer N_rows(min=N_passes, max=N_tubes) = integer(ceil(sqrt(N_tubes))*N_passes) "|Interior Equipment|Number of pipe rows in flow direction (minimum = N_passes)"
                                             annotation (Dialog(group="Geometry"));
 annotation (Icon(graphics={Bitmap(
           extent={{-100,100},{100,-100}},

@@ -27,4 +27,5 @@ package ThermalCapacities
 
 extends ClaRa.Basics.Icons.PackageIcons.Components50;
 
+
 end ThermalCapacities;

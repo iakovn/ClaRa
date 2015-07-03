@@ -197,13 +197,13 @@ equation
   connect(valve.outlet, mixingZone.inlet[2])  annotation (Line(
       points={{-20,-36},{-20,20},{34,20}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(outlet1, mixingZone.outlet[1])  annotation (Line(
       points={{100,20},{54,20}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(scalar2VectorHeatPort.heatVector, mixingZone.heat) annotation (Line(

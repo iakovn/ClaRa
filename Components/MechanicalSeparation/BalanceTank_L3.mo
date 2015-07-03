@@ -116,7 +116,7 @@ equation
   connect(volumeVLEGas_L3_1.outlet[1], outlet) annotation (Line(
       points={{-26,-2},{-26,-58},{-96,-58}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(volumeVLEGas_L3_1.inlet[1], inlet1) annotation (Line(

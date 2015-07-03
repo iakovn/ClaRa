@@ -279,7 +279,7 @@ protected
            Basics.Interfaces.EyeIn eye_int
                                 annotation (Placement(transformation(extent={{-254,84},
             {-266,96}}),      iconTransformation(extent={{240,-64},{232,-56}})));
-
+public
   Summary summary(
     outline(
       volume=geo.volume,

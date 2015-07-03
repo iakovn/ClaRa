@@ -22,6 +22,7 @@ extends ClaRa.Basics.Icons.Drum;
   parameter TILMedia.VLEFluidTypes.BaseVLEFluid
                                       medium=simCenter.fluid1 "Medium in the component"
                               annotation(Dialog(group="Fundamental Definitions"), choicesAllMatching);
+  replaceable model material = TILMedia.SolidTypes.TILMedia_Steel constrainedby TILMedia.SolidTypes.TILMedia_Aluminum "Material of the walls" annotation (Dialog(group="Fundamental Definitions"),choicesAllMatching);
 
   parameter Modelica.SIunits.Length diameter=1 "Diameter of the component"  annotation(Dialog(group="Geometry"));
   parameter Modelica.SIunits.Length length=1 "Length of the component"  annotation(Dialog(group="Geometry"));
@@ -56,7 +57,7 @@ extends ClaRa.Basics.Icons.Drum;
                              annotation(Dialog(tab="Initialisation"));
   replaceable model PressureLoss =
       ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3
-    constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3 "Pressure loss model"
+    constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.PressureLoss_L3 "Pressure loss model"
                           annotation(Dialog(group="Fundamental Definitions"), choicesAllMatching);
   parameter Modelica.SIunits.Pressure p_nom=1e5 "Nominal pressure"  annotation(Dialog(group="Nominal Values"));
 
@@ -118,7 +119,7 @@ extends ClaRa.Basics.Icons.Drum;
           volume.fluidIn[1].vleFluidPointer)),
     down(
       showExpertSummary=showExpertSummary,
-      m_flow=down.m_flow,
+      m_flow=-down.m_flow,
       p=down.p,
       h=actualStream(down.h_outflow),
       T=TILMedia.VLEFluidObjectFunctions.temperature_phxi(
@@ -136,7 +137,7 @@ extends ClaRa.Basics.Icons.Drum;
           actualStream(down.h_outflow),
           actualStream(down.xi_outflow),
           volume.fluidIn[2].vleFluidPointer),
-      H_flow=down.m_flow*actualStream(down.h_outflow),
+      H_flow=-down.m_flow*actualStream(down.h_outflow),
       rho=TILMedia.VLEFluidObjectFunctions.density_phxi(
           down.p,
           actualStream(down.h_outflow),
@@ -170,7 +171,7 @@ extends ClaRa.Basics.Icons.Drum;
           volume.fluidIn[1].vleFluidPointer)),
     sat(
       showExpertSummary=showExpertSummary,
-      m_flow=sat.m_flow,
+      m_flow=-sat.m_flow,
       p=sat.p,
       h=actualStream(sat.h_outflow),
       T=TILMedia.VLEFluidObjectFunctions.temperature_phxi(
@@ -188,7 +189,7 @@ extends ClaRa.Basics.Icons.Drum;
           actualStream(sat.h_outflow),
           actualStream(sat.xi_outflow),
           volume.fluidIn[1].vleFluidPointer),
-      H_flow=sat.m_flow*actualStream(sat.h_outflow),
+      H_flow=-sat.m_flow*actualStream(sat.h_outflow),
       rho=TILMedia.VLEFluidObjectFunctions.density_phxi(
           sat.p,
           actualStream(sat.h_outflow),
@@ -234,14 +235,15 @@ extends ClaRa.Basics.Icons.Drum;
     exp_HT_phases=expHT_phases) annotation (Placement(transformation(extent={{12,-30},{-8,-10}})));
 
   ClaRa.Basics.ControlVolumes.SolidVolumes.ThickWall_L4 wall(
-    redeclare replaceable model Material = TILMedia.SolidTypes.TILMedia_Steel,
     sizefunc=+1,
     N_tubes=1,
     initChoice=ClaRa.Basics.Choices.Init.steadyState,
-    diameter_o=diameter/2*1.01,
-    diameter_i=diameter/2,
     length=length,
-    N_rad=3) annotation (Placement(transformation(extent={{-8,28},{12,48}})));
+    N_rad=3,
+    diameter_o=diameter*1.01,
+    diameter_i=diameter,
+    redeclare replaceable model Material = material)
+             annotation (Placement(transformation(extent={{-8,28},{12,48}})));
 
   Basics.Interfaces.FluidPortOut sat(Medium=medium) "Saturated steam outlet"
     annotation (Placement(transformation(extent={{-190,90},{-170,110}}),
@@ -282,6 +284,7 @@ public
     annotation (Placement(transformation(extent={{-10,-10},{10,10}},
         rotation=270,
         origin={2,10})));
+
 equation
   eye_int.m_flow=-down.m_flow;
   eye_int.T=volume.summary.outlet[2].T-273.15;
@@ -308,13 +311,13 @@ equation
   connect(volume.outlet[1], sat) annotation (Line(
       points={{-8,-20},{-180,-20},{-180,100}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(volume.outlet[2], down) annotation (Line(
       points={{-8,-20},{-8,-98},{0,-98}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(eye_int, eye_down)

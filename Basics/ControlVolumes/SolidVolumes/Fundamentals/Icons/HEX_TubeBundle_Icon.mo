@@ -25,14 +25,14 @@ model HEX_TubeBundle_Icon
           extent={{-100,100},{100,-102}},
           fillColor={255,255,255},
           fillPattern=FillPattern.Solid,
-          pattern=LinePattern.None,
+          pattern=LinePattern.Solid,
           lineColor={0,0,0}),        Polygon(
           points={{-100,-60},{-70,-60},{-40,-60},{-40,-60},{40,-60},{40,-60},{
               40,-80},{100,-40},{40,0},{40,0},{40,-20},{-100,-20},{-100,-60}},
           smooth=Smooth.None,
           fillColor={153,205,221},
           fillPattern=FillPattern.Solid,
-          pattern=LinePattern.None,
+          pattern=LinePattern.Solid,
           origin={0,80},
           rotation=0,
           lineColor={0,0,0}),                   Polygon(
@@ -41,7 +41,7 @@ model HEX_TubeBundle_Icon
           smooth=Smooth.None,
           fillColor={51,156,186},
           fillPattern=FillPattern.Solid,
-          pattern=LinePattern.None,
+          pattern=LinePattern.Solid,
           origin={-30,0},
           rotation=270),             Polygon(
           points={{-100,-60},{-70,-60},{-40,-60},{-40,-60},{40,-60},{40,-60},{
@@ -49,7 +49,7 @@ model HEX_TubeBundle_Icon
           smooth=Smooth.None,
           fillColor={153,205,221},
           fillPattern=FillPattern.Solid,
-          pattern=LinePattern.None,
+          pattern=LinePattern.Solid,
           origin={0,0},
           rotation=0,
           lineColor={0,0,0})}));

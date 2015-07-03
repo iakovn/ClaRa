@@ -150,7 +150,7 @@ equation
   connect(tube.outlet, massFlowSink.steam_a) annotation (Line(
       points={{-6,-7},{-30,-7}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(tube.heat, thinWall.innerPhase) annotation (Line(

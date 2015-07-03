@@ -157,13 +157,13 @@ model RegenerativeAirPreheaterPrimaryAndSecondaryAir_L4_array "Model for a regen
     annotation (Dialog(tab=""));
 
   parameter Basics.Units.MassFraction xi_nom_primaryAir[medium.nc - 1]=
-     zeros(medium.nc - 1) "|Physical Effects||Nominal Values|Nominal composition of primary fresh air";
+     zeros(medium.nc - 1) "|Physical Effects|Nominal values|Nominal composition of primary fresh air";
 
   parameter Basics.Units.MassFraction xi_nom_secondaryAir[medium.nc - 1]=
-     zeros(medium.nc - 1) "|Physical Effects||Nominal Values|Nominal composition of primary fresh air";
+     zeros(medium.nc - 1) "|Physical Effects|Nominal values|Nominal composition of primary fresh air";
 
   parameter Basics.Units.MassFraction xi_nom_flueGas[medium.nc - 1]=
-     zeros(medium.nc - 1) "|Physical Effects||Nominal Values|Nominal composition of flue gas";
+     zeros(medium.nc - 1) "|Physical Effects|Nominal values|Nominal composition of flue gas";
 
 //   parameter Basics.ControlVolumes.Fundamentals.FlowModels.FlowModelStructure FlowModelPrimaryAir=Basics.ControlVolumes.Fundamentals.FlowModels.FlowModelStructure.inlet_dp_innerPipe_dp_outlet "|Physical Effects|Pressure Loss|Structure of flow model"
 //                                                                                                     annotation (choicesAllMatching);

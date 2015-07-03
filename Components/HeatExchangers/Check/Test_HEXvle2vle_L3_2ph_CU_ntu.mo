@@ -70,13 +70,13 @@ model Test_HEXvle2vle_L3_2ph_CU_ntu
     annotation (Placement(transformation(extent={{100,-56},{80,-36}})));
   inner SimCenter simCenter(useHomotopy=true, redeclare TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1) annotation (Placement(transformation(extent={{40,48},{60,68}})));
   Visualisation.Hexdisplay_3 hexdisplay_3_1(
-    T_o={hEXvle2vle_L3_2ph_CU_ntu.shell.summary.inlet[1].T,hEXvle2vle_L3_2ph_CU_ntu.shell.summary.outlet[1].T,hEXvle2vle_L3_2ph_CU_ntu.shell.summary.outlet[1].T,hEXvle2vle_L3_2ph_CU_ntu.shell.summary.outlet[1].T,hEXvle2vle_L3_2ph_CU_ntu.shell.summary.outlet[1].T,hEXvle2vle_L3_2ph_CU_ntu.shell.summary.outlet[1].T},
-    T_i={hEXvle2vle_L3_2ph_CU_ntu.tubes.summary.inlet.T,hEXvle2vle_L3_2ph_CU_ntu.tubes.summary.outlet.T,hEXvle2vle_L3_2ph_CU_ntu.tubes.summary.outlet.T,hEXvle2vle_L3_2ph_CU_ntu.tubes.summary.outlet.T,hEXvle2vle_L3_2ph_CU_ntu.tubes.summary.outlet.T,hEXvle2vle_L3_2ph_CU_ntu.tubes.summary.outlet.T},
-    yps_o={0,1,1,1,1,1},
-    yps_i={0,1,1,1,1,1},
     Unit="HEX Temperature in K",
     y_min=500,
-    y_max=800) annotation (Placement(transformation(extent={{-90,-46},{4,42}})));
+    T_o=hEXvle2vle_L3_2ph_CU_ntu.wall.summary.T_o,
+    T_i=hEXvle2vle_L3_2ph_CU_ntu.wall.summary.T_i,
+    yps_o=hEXvle2vle_L3_2ph_CU_ntu.wall.summary.eCom.z_o,
+    yps_i=hEXvle2vle_L3_2ph_CU_ntu.wall.summary.eCom.z_i,
+    y_max=900) annotation (Placement(transformation(extent={{-90,-46},{4,42}})));
 equation
 
   connect(valve_shell1.inlet,Temp_Shell_out. port) annotation (Line(
@@ -125,7 +125,7 @@ equation
   connect(hEXvle2vle_L3_2ph_CU_ntu.Out2, valve_tubes1.inlet) annotation (Line(
       points={{26,-66},{44,-66}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(massFlowSource_h1.h, h_cold4.y) annotation (Line(
@@ -162,5 +162,7 @@ ________________________________________________________________________________
           lineColor={0,128,0},
           fontSize=31,
           textString="TESTED -- 2014-10-16 //TT")}),
-                                                 Icon(coordinateSystem(extent={{-100,-100},{100,100}})));
+                                                 Icon(coordinateSystem(extent={{-100,-100},{100,100}})),
+    experiment(StopTime=15000),
+    __Dymola_experimentSetupOutput);
 end Test_HEXvle2vle_L3_2ph_CU_ntu;

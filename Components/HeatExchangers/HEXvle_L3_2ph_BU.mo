@@ -199,8 +199,14 @@ model HEXvle_L3_2ph_BU "sinhgle side:VLE | L3 | two phase at shell side | Block 
     h_liq_start=h_liq_start,
     h_vap_start=h_vap_start,
     level_rel_start=level_rel_start,
-    redeclare model Geometry =
-        ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlockWithTubesAndHotwell (
+    redeclare model PhaseBorder =
+        ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.RealSeparated (
+        level_rel_start=level_rel_start,
+        radius_flange=radius_flange,
+        absorbInflow=absorbInflow),
+    exp_HT_phases=expHT_phases,
+    heatSurfaceAlloc=2,
+    redeclare model Geometry = ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlockWithTubesAndHotwell (
         height=height,
         width=width,
         length=length,
@@ -217,14 +223,8 @@ model HEXvle_L3_2ph_BU "sinhgle side:VLE | L3 | two phase at shell side | Block 
         z_in={z_in_shell,z_in_aux1,z_in_aux2},
         N_tubes=N_tubes,
         N_passes=N_passes,
-        parallelTubes=parallelTubes),
-    redeclare model PhaseBorder =
-        ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.RealSeparated (
-        level_rel_start=level_rel_start,
-        radius_flange=radius_flange,
-        absorbInflow=absorbInflow),
-    exp_HT_phases=expHT_phases,
-    heatSurfaceAlloc=2) annotation (Placement(transformation(
+        parallelTubes=parallelTubes))
+                        annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=270,
         origin={0,60})));
@@ -266,7 +266,7 @@ equation
 //   assert(diameter_o > d_i,
 //     "Outer diameter of tubes must be greater than inner diameter");
 
-   eye_int1.m_flow = -outlet.m_flow;
+   eye_int1.m_flow = shell.summary.outlet[1].m_flow;
    eye_int1.T = shell.summary.outlet[1].T - 273.15;
    eye_int1.s = shell.fluidOut[1].s/1e3;
    eye_int1.p = shell.outlet[1].p/1e5;
@@ -292,7 +292,7 @@ equation
                                  annotation (Line(
       points={{0,50},{0,-100}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(aux1, shell.inlet[2]) annotation (Line(

@@ -27,4 +27,13 @@ package Visualisation "Visualisation of State of Process"
 
   extends ClaRa.Basics.Icons.PackageIcons.Visualisation100;
 
+
+
+
+
+
+
+
+
+
 end Visualisation;

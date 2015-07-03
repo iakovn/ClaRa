@@ -27,4 +27,20 @@ package HeatExchangers "Heat Exchangers of various shape"
 
 extends ClaRa.Basics.Icons.PackageIcons.Components80;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 end HeatExchangers;

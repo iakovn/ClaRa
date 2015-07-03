@@ -25,7 +25,7 @@ model HEX_CrossCounterFlow_Icon
           extent={{-100,100},{100,-102}},
           fillColor={255,255,255},
           fillPattern=FillPattern.Solid,
-          pattern=LinePattern.None,
+          pattern=LinePattern.Solid,
           lineColor={0,0,0}),        Polygon(
           points={{-100,-52},{40,-52},{40,-72},{100,-42},{40,-12},{40,-32},{-80,
               -32},{-80,28},{80,28},{80,108},{-100,108},{-100,88},{60,88},{60,
@@ -33,7 +33,7 @@ model HEX_CrossCounterFlow_Icon
           smooth=Smooth.None,
           fillColor={153,205,221},
           fillPattern=FillPattern.Solid,
-          pattern=LinePattern.None,
+          pattern=LinePattern.Solid,
           origin={0,-28},
           rotation=0,
           lineColor={0,0,0}),                   Polygon(
@@ -42,7 +42,7 @@ model HEX_CrossCounterFlow_Icon
           smooth=Smooth.None,
           fillColor={51,156,186},
           fillPattern=FillPattern.Solid,
-          pattern=LinePattern.None,
+          pattern=LinePattern.Solid,
           origin={-20,0},
           rotation=90)}));
 end HEX_CrossCounterFlow_Icon;

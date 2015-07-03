@@ -94,7 +94,7 @@ equation
       Line(
       points={{-28,-7},{-28,-17},{-26,-17}},
       color={0,0,0},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       smooth=Smooth.None));
   connect(fluelGasFlowSource1.gas_a, coalGas_join_burner4.flueGas_inlet)
     annotation (Line(

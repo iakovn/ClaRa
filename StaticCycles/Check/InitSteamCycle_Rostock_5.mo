@@ -192,7 +192,7 @@ equation
       color={0,131,169},
       smooth=Smooth.None));
   connect(turbine_LP.outlet, split_LP.inlet) annotation (Line(
-      points={{-47,118},{-36,118},{-36,120.667},{-25,120.667}},
+      points={{-47,118},{-36,118},{-36,120.667},{-25.4,120.667}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(split_LP.outlet_2, valve_LP.inlet) annotation (Line(
@@ -204,7 +204,7 @@ equation
       color={0,131,169},
       smooth=Smooth.None));
   connect(turbine_LP1.outlet, split.inlet) annotation (Line(
-      points={{51,114},{58,114},{58,109.333},{65,109.333}},
+      points={{51,114},{58,114},{58,109.333},{64.6,109.333}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(split.outlet_2, reboiler.inlet) annotation (Line(
@@ -216,7 +216,7 @@ equation
       color={0,131,169},
       smooth=Smooth.None));
   connect(turbine_LP2.outlet, split_LP1.inlet) annotation (Line(
-      points={{127,120},{134,120},{134,126.667},{141,126.667}},
+      points={{127,120},{134,120},{134,126.667},{140.6,126.667}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(split_LP1.outlet_2, valve_LP1.inlet) annotation (Line(

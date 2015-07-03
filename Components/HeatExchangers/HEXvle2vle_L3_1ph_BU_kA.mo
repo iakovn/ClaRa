@@ -158,8 +158,8 @@ model HEXvle2vle_L3_1ph_BU_kA " VLE 2 VLE | L3 | 1 phase on each side | Block sh
   parameter Boolean showData=true "|Summary and Visualisation||True, if a data port containing p,T,h,s,m_flow shall be shown, else false";
 
   ClaRa.Basics.Interfaces.FluidPortIn In2(Medium=medium_tubes)
-    annotation (Placement(transformation(extent={{90,52},{110,72}}),
-        iconTransformation(extent={{90,52},{110,72}})));
+    annotation (Placement(transformation(extent={{90,50},{110,70}}),
+        iconTransformation(extent={{90,50},{110,70}})));
   ClaRa.Basics.Interfaces.FluidPortOut Out2(Medium=medium_tubes)
     annotation (Placement(transformation(extent={{90,-70},{110,-50}}),
         iconTransformation(extent={{90,-70},{110,-50}})));
@@ -208,8 +208,7 @@ model HEXvle2vle_L3_1ph_BU_kA " VLE 2 VLE | L3 | 1 phase on each side | Block sh
         ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.IdealHeatTransfer_L2,
     showExpertSummary=showExpertSummary,
     heatSurfaceAlloc=1,
-    redeclare model Geometry =
-        ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry (
+    redeclare model Geometry = ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry (
         volume=volume_shell,
         z_in={z_in_shell},
         z_out={z_out_shell}))
@@ -272,19 +271,19 @@ initial equation
   //        wall.T=(tubes.bulk.T+shell.bulk.T)/2;
 
 equation
-eye_int1.m_flow=-shell.outlet.m_flow;
+  eye_int1.m_flow = shell.summary.outlet.m_flow;
   eye_int1.T=shell.summary.outlet.T-273.15;
   eye_int1.s=shell.fluidOut.s/1000;
   eye_int1.h=shell.summary.outlet.h/1000;
   eye_int1.p=shell.summary.outlet.p/100000;
 
-eye_int2.m_flow=-tubes.outlet.m_flow;
+eye_int2.m_flow = tubes.summary.outlet.m_flow;
   eye_int2.T=tubes.summary.outlet.T-273.15;
   eye_int2.s=tubes.fluidOut.s/1000;
   eye_int2.h=tubes.summary.outlet.h/1000;
   eye_int2.p=tubes.summary.outlet.p/100000;
   connect(tubes.inlet, In2) annotation (Line(
-      points={{70,10},{70,62},{100,62}},
+      points={{70,10},{70,60},{100,60}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
@@ -326,5 +325,6 @@ eye_int2.m_flow=-tubes.outlet.m_flow;
                    graphics={Text(
           extent={{-90,94},{82,54}},
           lineColor={27,36,42},
-          textString="NTU")}),Diagram(graphics));
+          textString="NTU")}),Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}),
+                                      graphics));
 end HEXvle2vle_L3_1ph_BU_kA;

@@ -27,4 +27,5 @@ package Internals
 
   extends ClaRa.Basics.Icons.PackageIcons.Components50;
 
+
 end Internals;

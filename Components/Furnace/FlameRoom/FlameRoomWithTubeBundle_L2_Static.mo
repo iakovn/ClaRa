@@ -15,10 +15,11 @@ model FlameRoomWithTubeBundle_L2_Static "Model for a combustion chamber section 
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
 
-extends ClaRa.Components.Furnace.BaseClasses.CombustionChamberBase(redeclare model Geometry =
-        ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlockWithTubes);
+extends ClaRa.Components.Furnace.BaseClasses.CombustionChamberBase(redeclare replaceable model Geometry =
+        ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlockWithTubesAndCarrierTubes,
+        geo(flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical));
 
-extends ClaRa.Components.Furnace.BaseClasses.CombustionChamberBase_additional_HPs(redeclare model HeatTransfer_CarrierTubes =
+extends ClaRa.Components.Furnace.BaseClasses.CombustionChamberBase_additional_HPs(redeclare replaceable model HeatTransfer_CarrierTubes =
         ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Convection.Convection_finnedTubes_L2);
 extends ClaRa.Basics.Icons.FlameRoomTubeBundle;
 
@@ -103,7 +104,7 @@ equation
   if LHV_calculationType == "fixed" then
     LHV = LHV_fixed;
   elseif LHV_calculationType == "Verbandsformel" then
-    LHV =(33907*xi_coal_in[1] + 142324*(xi_coal_in[2] - xi_coal_in[3]/8.) + 10465*xi_coal_in[5] - 2512*((1 - sum(xi_coal_in)) + 9*xi_coal_in[2]))*m_flow_coal_burned;
+    LHV =(33907*xi_coal_in[1] + 142324*(xi_coal_in[2] - xi_coal_in[3]/8.) + 10465*xi_coal_in[5] - 2512*((1 - sum(xi_coal_in)) + 9*xi_coal_in[2]))*1000;
   else
     LHV = LHV_fixed;
   end if;

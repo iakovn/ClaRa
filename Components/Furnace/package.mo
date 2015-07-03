@@ -27,4 +27,11 @@ package Furnace "All kinds of combustion chambers"
 
   extends ClaRa.Basics.Icons.PackageIcons.Components80;
 
+
+
+
+
+
+
+
 end Furnace;

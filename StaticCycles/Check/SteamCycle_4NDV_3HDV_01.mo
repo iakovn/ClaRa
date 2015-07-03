@@ -277,7 +277,7 @@ equation
       color={0,131,169},
       smooth=Smooth.None));
   connect(turbine_IP2.outlet, split_LP.inlet) annotation (Line(
-      points={{285,122},{300,122},{300,126.667},{317,126.667}},
+      points={{285,122},{300,122},{300,126.667},{316.6,126.667}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(split_LP.outlet_2, valve_IP2.inlet) annotation (Line(
@@ -289,11 +289,11 @@ equation
       color={0,131,169},
       smooth=Smooth.None));
   connect(split_LP1.outlet_1,turbine_LP4. inlet) annotation (Line(
-      points={{899.4,126.667},{928,126.667},{928,158},{953,158}},
+      points={{899.4,126.667},{928,126.667},{928,158},{955,158}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(split_LP_turbine2.inlet, turbine_HP.outlet) annotation (Line(
-      points={{13,44.6667},{32,44.6667},{32,96},{29,96}},
+      points={{13.4,44.6667},{32,44.6667},{32,96},{29,96}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(valve_dp_nom.inlet, split_LP_turbine2.outlet_2) annotation (Line(
@@ -329,11 +329,11 @@ equation
       color={0,131,169},
       smooth=Smooth.None));
   connect(turbine_LP3.outlet, split_LP1.inlet) annotation (Line(
-      points={{843,122},{862,122},{862,126.667},{881,126.667}},
+      points={{843,122},{862,122},{862,126.667},{880.6,126.667}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(split_LP2.outlet_1, turbine_LP3.inlet) annotation (Line(
-      points={{787.4,126.667},{800,126.667},{800,158},{815,158}},
+      points={{787.4,126.667},{800,126.667},{800,158},{817,158}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(split_LP2.outlet_2, valve_LP2.inlet) annotation (Line(
@@ -361,15 +361,15 @@ equation
       color={0,131,169},
       smooth=Smooth.None));
   connect(turbine_LP2.outlet, split_LP2.inlet) annotation (Line(
-      points={{739,122},{754,122},{754,126.667},{769,126.667}},
+      points={{739,122},{754,122},{754,126.667},{768.6,126.667}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(split_LP3.outlet_1, turbine_LP2.inlet) annotation (Line(
-      points={{669.4,126.667},{696,126.667},{696,158},{711,158}},
+      points={{669.4,126.667},{696,126.667},{696,158},{713,158}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(split_LP3.inlet, turbine_LP1.outlet) annotation (Line(
-      points={{651,126.667},{636,126.667},{636,122},{625,122}},
+      points={{650.6,126.667},{636,126.667},{636,122},{625,122}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(preheater_LP1.cond_in, mixer1.outlet) annotation (Line(
@@ -401,15 +401,15 @@ equation
       color={0,131,169},
       smooth=Smooth.None));
   connect(split_LP.outlet_1,turbine_IP3. inlet) annotation (Line(
-      points={{335.4,126.667},{364,126.667},{364,156},{375,156}},
+      points={{335.4,126.667},{364,126.667},{364,156},{377,156}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(turbine_IP3.outlet, split_LP4.inlet) annotation (Line(
-      points={{403,120},{432,120},{432,124.667},{463,124.667}},
+      points={{403,120},{432,120},{432,124.667},{462.6,124.667}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(split_LP4.outlet_1, turbine_LP1.inlet) annotation (Line(
-      points={{481.4,124.667},{568,124.667},{568,158},{597,158}},
+      points={{481.4,124.667},{568,124.667},{568,158},{599,158}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(preheater_IP3.cond_in, preheater_LP1.cond_out) annotation (Line(
@@ -437,11 +437,11 @@ equation
       color={0,131,169},
       smooth=Smooth.None));
   connect(split_LP5.outlet_1, turbine_IP2.inlet) annotation (Line(
-      points={{217.4,124.667},{232,124.667},{232,158},{257,158}},
+      points={{217.4,124.667},{232,124.667},{232,158},{259,158}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(split_LP5.inlet, turbine_IP1.outlet) annotation (Line(
-      points={{199,124.667},{184,124.667},{184,120},{173,120}},
+      points={{198.6,124.667},{184,124.667},{184,120},{173,120}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(valve_IP1.inlet, split_LP5.outlet_2) annotation (Line(
@@ -509,7 +509,7 @@ equation
       color={0,131,169},
       smooth=Smooth.None));
   connect(valve_dp_nom2_1.outlet, turbine_HP.inlet) annotation (Line(
-      points={{-19.2,133},{-6,133},{-6,132},{1,132}},
+      points={{-19.2,133},{-6,133},{-6,132},{3,132}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(boiler.reheat_out, valve_IP_control.inlet) annotation (Line(
@@ -517,7 +517,7 @@ equation
       color={0,131,169},
       smooth=Smooth.None));
   connect(valve_IP_control.outlet, turbine_IP1.inlet) annotation (Line(
-      points={{-19.2,157},{-8,157},{-8,156},{145,156}},
+      points={{-19.2,157},{-8,157},{-8,156},{147,156}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(valve_dp_nom3_1.inlet, mixer3.outlet) annotation (Line(

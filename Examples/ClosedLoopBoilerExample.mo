@@ -94,25 +94,31 @@ model ClosedLoopBoilerExample
     LHV_calculationType="fixed",
     LHV_fixed=25.1e6/0.91,
     redeclare model ParticleMigration =
-        ClaRa.Components.Furnace.GeneralTransportPhenomena.ParticleMigration.MeanMigrationSpeed (            w_initial=5),
+        ClaRa.Components.Furnace.GeneralTransportPhenomena.ParticleMigration.MeanMigrationSpeed
+        (                                                                                                    w_initial=5),
     redeclare model HeatTransfer_Top =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Radiation.Radiation_gas2Gas_advanced_L2 (
-                                                                                                suspension_calculationType="Calculated"),
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Radiation.Radiation_gas2Gas_advanced_L2
+        (                                                                                       suspension_calculationType="Calculated"),
     xi_start_flueGas_out={0.01,0,0.25,0,0.7,0,0,0.04,0},
     redeclare model ReactionZone =
         ClaRa.Components.Furnace.ChemicalReactions.CoalReactionZone,
     redeclare model RadiationTimeConstant =
-        ClaRa.Components.Furnace.GeneralTransportPhenomena.ThermalCapacities.ThermalLowPass (
-         Tau=0.1),
-    redeclare model HeatTransfer_Wall = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Radiation.Radiation_gas2Wall_advanced_L2 (suspension_calculationType="Calculated", CF_fouling=0.95),
-    redeclare model Geometry = ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlock (
+        ClaRa.Components.Furnace.GeneralTransportPhenomena.ThermalCapacities.ThermalLowPass
+        (Tau=0.1),
+    redeclare model HeatTransfer_Wall =
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Radiation.Radiation_gas2Wall_advanced_L2
+        (                                                                                                    suspension_calculationType="Calculated", CF_fouling=0.95),
+    redeclare model Geometry =
+        ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlock (
         width=10,
         z_in={3},
         z_out={13},
         length=10,
         flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical,
         height=7.5),
-    redeclare model Burning_time = ClaRa.Components.Furnace.GeneralTransportPhenomena.BurningTime.ConstantBurningTime (Tau_burn_const=1.1),
+    redeclare model Burning_time =
+        ClaRa.Components.Furnace.GeneralTransportPhenomena.BurningTime.ConstantBurningTime
+        (                                                                                                    Tau_burn_const=1.1),
     T_start_flueGas_out=1620)                                                                   annotation (Placement(transformation(extent={{28,-6},{88,14}})));
 
   Components.Furnace.Hopper.Hopper_L2 hopper(
@@ -131,13 +137,16 @@ model ClosedLoopBoilerExample
         flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.horizontal),
     T_start_flueGas_out=780,
     redeclare model HeatTransfer_Top =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Radiation.Radiation_gas2Gas_advanced_L2 (
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Radiation.Radiation_gas2Gas_advanced_L2
+        (
         emissivity_source_calculationType="Calculate",
         emissivity_sink_calculationType="Calculate",
         absorbance_source_calculationType="Calculate",
         suspension_calculationType="Gas calculated, particles fixed"),
     xi_start_flueGas_out={0.0103,0,0.2270,0.001,0.6999,0.0225,0,0.0393,0},
-    redeclare model HeatTransfer_Wall = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Radiation.Radiation_gas2Wall_advanced_L2 (suspension_calculationType="Calculated", CF_fouling=0.95))
+    redeclare model HeatTransfer_Wall =
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Radiation.Radiation_gas2Wall_advanced_L2
+        (                                                                                                    suspension_calculationType="Calculated", CF_fouling=0.95))
     annotation (Placement(transformation(extent={{-30,-10},{30,10}},
         rotation=0,
         origin={58,-30})));
@@ -148,25 +157,31 @@ model ClosedLoopBoilerExample
     LHV_fixed=25.1e6/0.91,
     xi_coal_in(start={0.661,0.0383,0.066,0.016,0.0057,0.135}),
     redeclare model ParticleMigration =
-        ClaRa.Components.Furnace.GeneralTransportPhenomena.ParticleMigration.MeanMigrationSpeed (            w_initial=15),
+        ClaRa.Components.Furnace.GeneralTransportPhenomena.ParticleMigration.MeanMigrationSpeed
+        (                                                                                                    w_initial=15),
     redeclare model HeatTransfer_Top =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Radiation.Radiation_gas2Gas_advanced_L2 (
-                                                                                                suspension_calculationType="Calculated"),
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Radiation.Radiation_gas2Gas_advanced_L2
+        (                                                                                       suspension_calculationType="Calculated"),
     xi_start_flueGas_out={0.01,0,0.25,0,0.7,0,0,0.04,0},
     redeclare model ReactionZone =
         ClaRa.Components.Furnace.ChemicalReactions.CoalReactionZone,
     redeclare model RadiationTimeConstant =
-        ClaRa.Components.Furnace.GeneralTransportPhenomena.ThermalCapacities.ThermalLowPass (
-         Tau=0.1),
-    redeclare model HeatTransfer_Wall = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Radiation.Radiation_gas2Wall_advanced_L2 (suspension_calculationType="Calculated", CF_fouling=0.95),
-    redeclare model Geometry = ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlock (
+        ClaRa.Components.Furnace.GeneralTransportPhenomena.ThermalCapacities.ThermalLowPass
+        (Tau=0.1),
+    redeclare model HeatTransfer_Wall =
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Radiation.Radiation_gas2Wall_advanced_L2
+        (                                                                                                    suspension_calculationType="Calculated", CF_fouling=0.95),
+    redeclare model Geometry =
+        ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlock (
         width=10,
         z_in={13},
         z_out={23},
         length=10,
         flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical,
         height=7.5),
-    redeclare model Burning_time = ClaRa.Components.Furnace.GeneralTransportPhenomena.BurningTime.ConstantBurningTime (Tau_burn_const=1.1),
+    redeclare model Burning_time =
+        ClaRa.Components.Furnace.GeneralTransportPhenomena.BurningTime.ConstantBurningTime
+        (                                                                                                    Tau_burn_const=1.1),
     T_start_flueGas_out=1370)                                                                   annotation (Placement(transformation(extent={{28,24},{88,44}})));
 
   Components.BoundaryConditions.BoundaryCoal_Txim_flow
@@ -185,26 +200,31 @@ model ClosedLoopBoilerExample
                                                             flameRoom_1(
     LHV_fixed=25.1e6/0.91,
     redeclare model ParticleMigration =
-        ClaRa.Components.Furnace.GeneralTransportPhenomena.ParticleMigration.MeanMigrationSpeed (
-         w_initial=16),
+        ClaRa.Components.Furnace.GeneralTransportPhenomena.ParticleMigration.MeanMigrationSpeed
+        (w_initial=16),
     redeclare model HeatTransfer_Top =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Radiation.Radiation_gas2Gas_advanced_L2 (
-         suspension_calculationType="Calculated"),
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Radiation.Radiation_gas2Gas_advanced_L2
+        (suspension_calculationType="Calculated"),
     xi_start_flueGas_out={0.01,0,0.25,0,0.7,0,0,0.04,0},
     redeclare model ReactionZone =
         ClaRa.Components.Furnace.ChemicalReactions.CoalReactionZone,
     redeclare model RadiationTimeConstant =
-        ClaRa.Components.Furnace.GeneralTransportPhenomena.ThermalCapacities.ThermalLowPass (
-         Tau=0.1),
-    redeclare model HeatTransfer_Wall = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Radiation.Radiation_gas2Wall_advanced_L2 (suspension_calculationType="Calculated", CF_fouling=0.95),
-    redeclare model Geometry = ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlock (
+        ClaRa.Components.Furnace.GeneralTransportPhenomena.ThermalCapacities.ThermalLowPass
+        (Tau=0.1),
+    redeclare model HeatTransfer_Wall =
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Radiation.Radiation_gas2Wall_advanced_L2
+        (                                                                                                    suspension_calculationType="Calculated", CF_fouling=0.95),
+    redeclare model Geometry =
+        ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlock (
         width=10,
         z_in={23},
         z_out={33},
         length=10,
         flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical,
         height=5),
-    redeclare model Burning_time = ClaRa.Components.Furnace.GeneralTransportPhenomena.BurningTime.ConstantBurningTime (Tau_burn_const=1.1),
+    redeclare model Burning_time =
+        ClaRa.Components.Furnace.GeneralTransportPhenomena.BurningTime.ConstantBurningTime
+        (                                                                                                    Tau_burn_const=1.1),
     T_start_flueGas_out=1370)
     annotation (Placement(transformation(extent={{28,52},{88,72}})));
 
@@ -212,27 +232,32 @@ model ClosedLoopBoilerExample
                                                flameRoom_2(
     LHV_fixed=25.1e6/0.91,
     redeclare model ParticleMigration =
-        ClaRa.Components.Furnace.GeneralTransportPhenomena.ParticleMigration.MeanMigrationSpeed (
-         w_initial=16),
+        ClaRa.Components.Furnace.GeneralTransportPhenomena.ParticleMigration.MeanMigrationSpeed
+        (w_initial=16),
     redeclare model HeatTransfer_Top =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Radiation.Radiation_gas2Gas_advanced_L2 (
-         suspension_calculationType="Calculated"),
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Radiation.Radiation_gas2Gas_advanced_L2
+        (suspension_calculationType="Calculated"),
     xi_start_flueGas_out={0.01,0,0.25,0,0.7,0,0,0.04,0},
     redeclare model ReactionZone =
         ClaRa.Components.Furnace.ChemicalReactions.CoalReactionZone,
     redeclare model RadiationTimeConstant =
-        ClaRa.Components.Furnace.GeneralTransportPhenomena.ThermalCapacities.ThermalLowPass (
-         Tau=0.1),
+        ClaRa.Components.Furnace.GeneralTransportPhenomena.ThermalCapacities.ThermalLowPass
+        (Tau=0.1),
     m_flow_nom=342,
-    redeclare model Geometry = ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlock (
+    redeclare model Geometry =
+        ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlock (
         width=10,
         z_out={50},
         flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical,
         z_in={33},
         length=10,
         height=18),
-    redeclare model HeatTransfer_Wall = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Radiation.Radiation_gas2Wall_advanced_L2 (suspension_calculationType="Calculated", CF_fouling=0.95),
-    redeclare model Burning_time = ClaRa.Components.Furnace.GeneralTransportPhenomena.BurningTime.ConstantBurningTime (Tau_burn_const=1.1),
+    redeclare model HeatTransfer_Wall =
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Radiation.Radiation_gas2Wall_advanced_L2
+        (                                                                                                    suspension_calculationType="Calculated", CF_fouling=0.95),
+    redeclare model Burning_time =
+        ClaRa.Components.Furnace.GeneralTransportPhenomena.BurningTime.ConstantBurningTime
+        (                                                                                                    Tau_burn_const=1.1),
     T_start_flueGas_out=1320)
     annotation (Placement(transformation(extent={{28,82},{88,102}})));
 
@@ -242,21 +267,27 @@ model ClosedLoopBoilerExample
         ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Adiabat_L2,
     LHV_fixed=25.1e6/0.91,
     redeclare model ParticleMigration =
-        ClaRa.Components.Furnace.GeneralTransportPhenomena.ParticleMigration.MeanMigrationSpeed (
-         w_initial=13),
+        ClaRa.Components.Furnace.GeneralTransportPhenomena.ParticleMigration.MeanMigrationSpeed
+        (w_initial=13),
     redeclare model Burning_time =
-        ClaRa.Components.Furnace.GeneralTransportPhenomena.BurningTime.ConstantBurningTime (
-         Tau_burn_const =      1.3),
+        ClaRa.Components.Furnace.GeneralTransportPhenomena.BurningTime.ConstantBurningTime
+        (Tau_burn_const =      1.3),
     xi_start_flueGas_out={0.01,0,0.25,0,0.7,0,0,0.04,0},
     redeclare model ReactionZone =
         ClaRa.Components.Furnace.ChemicalReactions.CoalReactionZone,
     redeclare model RadiationTimeConstant =
-        ClaRa.Components.Furnace.GeneralTransportPhenomena.ThermalCapacities.ThermalLowPass (
-         Tau=0.1),
+        ClaRa.Components.Furnace.GeneralTransportPhenomena.ThermalCapacities.ThermalLowPass
+        (Tau=0.1),
     m_flow_nom=342,
-    redeclare model HeatTransfer_Wall = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2 (alpha_nom=80),
-    redeclare model HeatTransfer_CarrierTubes = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L2 (alpha_nom=30),
-    redeclare model Geometry = ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlockWithTubesAndCarrierTubes (
+    redeclare model HeatTransfer_Wall =
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2
+        (                                                                                                    alpha_nom=80),
+    redeclare model HeatTransfer_CarrierTubes =
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L2
+        (                                                                                                    alpha_nom=30),
+    redeclare model Geometry =
+        ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlockWithTubesAndCarrierTubes
+        (
         width=10,
         length=10,
         diameter_t=0.04,
@@ -266,7 +297,9 @@ model ClosedLoopBoilerExample
         N_rows=40,
         N_tubes=3000,
         height=6),
-    redeclare model HeatTransfer_TubeBundle = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Convection.ConvectionAndRadiation_tubeBank_L2 (
+    redeclare model HeatTransfer_TubeBundle =
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Convection.ConvectionAndRadiation_tubeBank_L2
+        (
         epsilon_gas_calculationType="Calculated",
         alpha_gas_calculationType="Calculated",
         CF_fouling=0.95),
@@ -279,21 +312,27 @@ model ClosedLoopBoilerExample
         ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Adiabat_L2,
     LHV_fixed=25.1e6/0.91,
     redeclare model ParticleMigration =
-        ClaRa.Components.Furnace.GeneralTransportPhenomena.ParticleMigration.MeanMigrationSpeed (
-         w_initial=9),
+        ClaRa.Components.Furnace.GeneralTransportPhenomena.ParticleMigration.MeanMigrationSpeed
+        (w_initial=9),
     redeclare model Burning_time =
-        ClaRa.Components.Furnace.GeneralTransportPhenomena.BurningTime.ConstantBurningTime (
-         Tau_burn_const =      1.3),
+        ClaRa.Components.Furnace.GeneralTransportPhenomena.BurningTime.ConstantBurningTime
+        (Tau_burn_const =      1.3),
     xi_start_flueGas_out={0.01,0,0.25,0,0.7,0,0,0.04,0},
     redeclare model ReactionZone =
         ClaRa.Components.Furnace.ChemicalReactions.CoalReactionZone,
     redeclare model RadiationTimeConstant =
-        ClaRa.Components.Furnace.GeneralTransportPhenomena.ThermalCapacities.ThermalLowPass (
-         Tau=0.1),
+        ClaRa.Components.Furnace.GeneralTransportPhenomena.ThermalCapacities.ThermalLowPass
+        (Tau=0.1),
     m_flow_nom=342,
-    redeclare model HeatTransfer_Wall = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2 (alpha_nom=20),
-    redeclare model HeatTransfer_CarrierTubes = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L2 (alpha_nom=30),
-    redeclare model Geometry = ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlockWithTubesAndCarrierTubes (
+    redeclare model HeatTransfer_Wall =
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2
+        (                                                                                                    alpha_nom=20),
+    redeclare model HeatTransfer_CarrierTubes =
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L2
+        (                                                                                                    alpha_nom=30),
+    redeclare model Geometry =
+        ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlockWithTubesAndCarrierTubes
+        (
         width=10,
         length=10,
         flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical,
@@ -303,7 +342,9 @@ model ClosedLoopBoilerExample
         N_rows=40,
         N_tubes=4000,
         height=6),
-    redeclare model HeatTransfer_TubeBundle = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Convection.ConvectionAndRadiation_tubeBank_L2 (
+    redeclare model HeatTransfer_TubeBundle =
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Convection.ConvectionAndRadiation_tubeBank_L2
+        (
         epsilon_gas_calculationType="Calculated",
         alpha_gas_calculationType="Calculated",
         CF_fouling=0.95),
@@ -334,12 +375,14 @@ model ClosedLoopBoilerExample
     N_tubes=300,
     N_cv=8,
     redeclare model HeatTransfer =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4 (                      alpha_nom=20000),
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4
+        (                                                                                                    alpha_nom=20000),
     length=80,
     z_out=80,
     frictionAtInlet=true,
     initType=ClaRa.Basics.Choices.Init.noInit,
-    redeclare model PressureLoss = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.VLE_PL.QuadraticNominalPoint_L4,
+    redeclare model PressureLoss =
+        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.VLE_PL.QuadraticNominalPoint_L4,
     frictionAtOutlet=true,
     Delta_p_nom=2e5,
     m_flow_nom=275,
@@ -359,14 +402,16 @@ model ClosedLoopBoilerExample
     N_tubes=300,
     length=30,
     redeclare model HeatTransfer =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4 (                      alpha_nom=10000),
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4
+        (                                                                                                    alpha_nom=10000),
     z_in=80,
     z_out=50,
     N_cv=3,
     frictionAtInlet=true,
     frictionAtOutlet=false,
     initType=ClaRa.Basics.Choices.Init.noInit,
-    redeclare model PressureLoss = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.VLE_PL.QuadraticNominalPoint_L4,
+    redeclare model PressureLoss =
+        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.VLE_PL.QuadraticNominalPoint_L4,
     Delta_p_nom=2e5,
     m_flow_nom=275,
     h_start=linspace(
@@ -413,14 +458,16 @@ model ClosedLoopBoilerExample
     diameter_i=0.03,
     N_cv=4,
     redeclare model HeatTransfer =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4 (                      alpha_nom=10000),
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4
+        (                                                                                                    alpha_nom=10000),
     N_tubes=100,
     z_in=60,
     z_out=50,
     frictionAtInlet=true,
     frictionAtOutlet=false,
     initType=ClaRa.Basics.Choices.Init.noInit,
-    redeclare model PressureLoss = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.VLE_PL.QuadraticNominalPoint_L4,
+    redeclare model PressureLoss =
+        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.VLE_PL.QuadraticNominalPoint_L4,
     length=300,
     Delta_p_nom=2e5,
     m_flow_nom=275,
@@ -439,14 +486,16 @@ model ClosedLoopBoilerExample
     diameter_i=0.03,
     N_cv=4,
     redeclare model HeatTransfer =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4 (                      alpha_nom=10000),
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4
+        (                                                                                                    alpha_nom=10000),
     N_tubes=150,
     z_in=60,
     z_out=70,
     frictionAtInlet=true,
     frictionAtOutlet=false,
     initType=ClaRa.Basics.Choices.Init.noInit,
-    redeclare model PressureLoss = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.VLE_PL.QuadraticNominalPoint_L4,
+    redeclare model PressureLoss =
+        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.VLE_PL.QuadraticNominalPoint_L4,
     length=300,
     Delta_p_nom=2e5,
     m_flow_nom=275,
@@ -512,12 +561,18 @@ model ClosedLoopBoilerExample
     redeclare model ReactionZone =
         ClaRa.Components.Furnace.ChemicalReactions.CoalReactionZone,
     redeclare model RadiationTimeConstant =
-        ClaRa.Components.Furnace.GeneralTransportPhenomena.ThermalCapacities.ThermalLowPass (
-         Tau=0.1),
-    redeclare model HeatTransfer_Wall = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2 (alpha_nom=20),
+        ClaRa.Components.Furnace.GeneralTransportPhenomena.ThermalCapacities.ThermalLowPass
+        (Tau=0.1),
+    redeclare model HeatTransfer_Wall =
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2
+        (                                                                                                    alpha_nom=20),
     m_flow_nom=342,
-    redeclare model HeatTransfer_CarrierTubes = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L2 (alpha_nom=30),
-    redeclare model Geometry = ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlockWithTubesAndCarrierTubes (
+    redeclare model HeatTransfer_CarrierTubes =
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L2
+        (                                                                                                    alpha_nom=30),
+    redeclare model Geometry =
+        ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlockWithTubesAndCarrierTubes
+        (
         width=10,
         length=10,
         diameter_t=0.04,
@@ -526,7 +581,9 @@ model ClosedLoopBoilerExample
         N_rows=40,
         N_tubes=4000,
         height=5),
-    redeclare model HeatTransfer_TubeBundle = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Convection.Convection_tubeBank_L2 (CF_fouling=0.95),
+    redeclare model HeatTransfer_TubeBundle =
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Convection.Convection_tubeBank_L2
+        (                                                                                                    CF_fouling=0.95),
     T_start_flueGas_out=390)
     annotation (Placement(transformation(extent={{28,204},{88,224}})));
 
@@ -534,14 +591,16 @@ model ClosedLoopBoilerExample
     N_cv=7,
     diameter_i=0.03,
     redeclare model HeatTransfer =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4 (                      alpha_nom=20000),
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4
+        (                                                                                                    alpha_nom=20000),
     N_tubes=150,
     z_in=80,
     z_out=70,
     frictionAtInlet=false,
     frictionAtOutlet=false,
     initType=ClaRa.Basics.Choices.Init.noInit,
-    redeclare model PressureLoss = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.VLE_PL.QuadraticNominalPoint_L4,
+    redeclare model PressureLoss =
+        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.VLE_PL.QuadraticNominalPoint_L4,
     length=300,
     Delta_p_nom=2e5,
     m_flow_nom=275,
@@ -650,7 +709,8 @@ model ClosedLoopBoilerExample
     frictionAtFreshAirInlet=false,
     frictionAtFreshAirOutlet=true,
     p_start_freshAir={142169,141311},
-    redeclare model PressureLoss = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4)
+    redeclare model PressureLoss =
+        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4)
                                    annotation (Placement(transformation(extent={{-226,154},{-206,174}})));
 
   Components.VolumesValvesFittings.Fittings.FlueGasJunction_L2
@@ -666,14 +726,14 @@ model ClosedLoopBoilerExample
         origin={-216,130})));
   Components.VolumesValvesFittings.Valves.ValveGas_L1     flueGasValve_L1_1(
       redeclare model PressureLoss =
-        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint (
-         Delta_p_nom=1000, m_flow_nom=200))
+        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint
+        (Delta_p_nom=1000, m_flow_nom=200))
     annotation (Placement(transformation(extent={{-160,124},{-140,138}})));
 
   Components.VolumesValvesFittings.Valves.ValveGas_L1     flueGasValve_L1_2(
       redeclare model PressureLoss =
-        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint (
-         Delta_p_nom=1000, m_flow_nom=200))
+        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint
+        (Delta_p_nom=1000, m_flow_nom=200))
     annotation (Placement(transformation(extent={{-160,94},{-140,108}})));
 
   Components.TurboMachines.Turbines.SteamTurbineVLE_L1 turbine(
@@ -699,11 +759,14 @@ model ClosedLoopBoilerExample
     initTypeShell=ClaRa.Basics.Choices.Init.noInit,
     p_start_shell=0.04e5,
     p_nom_shell=4000,
-    redeclare model PressureLossShell = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3,
+    redeclare model PressureLossShell =
+        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3,
     N_tubes=1500,
     Tau_evap=0.5,
     alpha_ph=5000,
-    redeclare model HeatTransfer_Shell = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3 (alpha_nom={10000,20000}),
+    redeclare model HeatTransfer_Shell =
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3
+        (                                                                                                    alpha_nom={10000,20000}),
     m_flow_nom_shell=375,
     Tau_cond=0.3,
     A_phaseBorder=100,
@@ -1052,21 +1115,21 @@ equation
       Line(
       points={{-120,10},{-66,10}},
       color={27,36,42},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(coalFlowSource1.coal_a, coalGas_join_burner1.coal_inlet) annotation (
       Line(
       points={{-120,40},{-66,40}},
       color={27,36,42},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(coalFlowSource2.coal_a, coalGas_join_burner2.coal_inlet) annotation (
       Line(
       points={{-120,68},{-66,68}},
       color={27,36,42},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(flueGasJunction1.portB, flueGasValve_L1_1.inlet) annotation (Line(
@@ -1096,7 +1159,7 @@ equation
     annotation (Line(
       points={{42,286},{42,256}},
       color={234,171,0},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(coalSink_top.coal_a, coalSlagFlueGas_split_top.coal_inlet)
@@ -1165,13 +1228,13 @@ equation
   connect(pump.outlet, eco.inlet) annotation (Line(
       points={{378,-54},{266,-54},{266,-30}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(turbine.outlet, condenser.inlet) annotation (Line(
       points={{516,110},{516,53}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(vlePressureSensor.port, condenser.inlet) annotation (Line(
@@ -1182,7 +1245,7 @@ equation
   connect(condenser.outlet, pump.inlet) annotation (Line(
       points={{516,30},{516,-54},{402,-54}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(prescribedHeatFlow.Q_flow, PI_CondPressure.y) annotation (Line(
@@ -1192,7 +1255,7 @@ equation
   connect(oh_2.outlet, oh_T.port) annotation (Line(
       points={{398,168},{398,180},{414,180}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(PI_Pump_FW.u_m, oh_T.T) annotation (Line(

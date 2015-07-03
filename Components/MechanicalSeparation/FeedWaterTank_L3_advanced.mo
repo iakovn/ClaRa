@@ -16,7 +16,7 @@ model FeedWaterTank_L3_advanced "Feedwater tank : separated volume approach | le
 //___________________________________________________________________________//
 
 extends ClaRa.Components.MechanicalSeparation.FeedWaterTank_base;
-
+  replaceable model material = TILMedia.SolidTypes.TILMedia_Steel constrainedby TILMedia.SolidTypes.TILMedia_Aluminum "Material of the walls"  annotation (Dialog(group="Fundamental Definitions"),choicesAllMatching);
   extends ClaRa.Basics.Icons.ComplexityLevel(complexity="L3");
   parameter Modelica.SIunits.Length radius_flange=0.05 "||Geometry|Flange radius";
   parameter SI.Length z_tapping = 0 "||Geometry|position of tapping flange";
@@ -41,7 +41,7 @@ extends ClaRa.Components.MechanicalSeparation.FeedWaterTank_base;
 
   replaceable model PressureLoss =
       ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3
-    constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3 "Pressure loss model"
+    constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.PressureLoss_L3 "Pressure loss model"
                           annotation(Dialog(group="Fundamental Definitions"), choicesAllMatching);
 
  record Outline
@@ -64,6 +64,7 @@ extends ClaRa.Components.MechanicalSeparation.FeedWaterTank_base;
    ClaRa.Basics.Records.FlangeVLE condensate;
    ClaRa.Basics.Records.FlangeVLE tapping;
    ClaRa.Basics.Records.FlangeVLE feedwater;
+   ClaRa.Basics.Records.FlangeVLE aux;
  end Summary;
 
   Summary summary(
@@ -121,9 +122,35 @@ extends ClaRa.Components.MechanicalSeparation.FeedWaterTank_base;
           actualStream(condensate.h_outflow),
           actualStream(condensate.xi_outflow),
           volume.fluidIn[2].vleFluidPointer)),
+    aux(
+      showExpertSummary=showExpertSummary,
+      m_flow=aux.m_flow,
+      p=aux.p,
+      h=actualStream(aux.h_outflow),
+      T=TILMedia.VLEFluidObjectFunctions.temperature_phxi(
+          aux.p,
+          actualStream(aux.h_outflow),
+          actualStream(aux.xi_outflow),
+          volume.fluidIn[3].vleFluidPointer),
+      s=TILMedia.VLEFluidObjectFunctions.specificEntropy_phxi(
+          aux.p,
+          actualStream(aux.h_outflow),
+          actualStream(aux.xi_outflow),
+          volume.fluidIn[3].vleFluidPointer),
+      steamQuality=TILMedia.VLEFluidObjectFunctions.steamMassFraction_phxi(
+          aux.p,
+          actualStream(aux.h_outflow),
+          actualStream(aux.xi_outflow),
+          volume.fluidIn[3].vleFluidPointer),
+      H_flow=aux.m_flow*actualStream(aux.h_outflow),
+      rho=TILMedia.VLEFluidObjectFunctions.density_phxi(
+          aux.p,
+          actualStream(aux.h_outflow),
+          actualStream(aux.xi_outflow),
+          volume.fluidIn[3].vleFluidPointer)),
     feedwater(
       showExpertSummary=showExpertSummary,
-      m_flow=outlet.m_flow,
+      m_flow=-outlet.m_flow,
       p=outlet.p,
       h=actualStream(outlet.h_outflow),
       T=TILMedia.VLEFluidObjectFunctions.temperature_phxi(
@@ -141,7 +168,7 @@ extends ClaRa.Components.MechanicalSeparation.FeedWaterTank_base;
           actualStream(outlet.h_outflow),
           actualStream(outlet.xi_outflow),
           volume.fluidIn[1].vleFluidPointer),
-      H_flow=outlet.m_flow*actualStream(outlet.h_outflow),
+      H_flow=-outlet.m_flow*actualStream(outlet.h_outflow),
       rho=TILMedia.VLEFluidObjectFunctions.density_phxi(
           outlet.p,
           actualStream(outlet.h_outflow),
@@ -188,14 +215,15 @@ extends ClaRa.Components.MechanicalSeparation.FeedWaterTank_base;
     exp_HT_phases=expHT_phases) annotation (Placement(transformation(extent={{32,-30},{12,-10}})));
 
   ClaRa.Basics.ControlVolumes.SolidVolumes.ThickWall_L4 wall(
-    redeclare replaceable model Material = TILMedia.SolidTypes.TILMedia_Steel,
     sizefunc=+1,
     N_tubes=1,
     initChoice=ClaRa.Basics.Choices.Init.steadyState,
-    diameter_o=diameter/2*1.01,
-    diameter_i=diameter/2,
     length=length,
-    N_rad=3) annotation (Placement(transformation(extent={{12,24},{32,44}})));
+    N_rad=3,
+    diameter_o=diameter*1.01,
+    diameter_i=diameter,
+    redeclare replaceable model Material = material)
+             annotation (Placement(transformation(extent={{12,24},{32,44}})));
 
   Basics.Interfaces.FluidPortOut vent(Medium=medium)
     annotation (Placement(transformation(extent={{-10,88},{10,108}}),
@@ -244,13 +272,13 @@ equation
   connect(volume.outlet[1], outlet) annotation (Line(
       points={{12,-20},{-98,-20}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(volume.outlet[2], vent) annotation (Line(
       points={{12,-20},{0,-20},{0,98}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(eye_int1,eye_sat)

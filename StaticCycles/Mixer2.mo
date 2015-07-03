@@ -21,8 +21,7 @@ model Mixer2 "Mixer || green | blue | green"
   final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h2(fixed=false) "|Internals|Internally set values - do not edit!|Specific enthalpy of flow 2";
   final parameter ClaRa.Basics.Units.MassFlowRate m_flow_1(fixed=false) "|Internals|Internally set values - do not edit!|Mass flow rate of flow 1";
   final parameter ClaRa.Basics.Units.MassFlowRate m_flow_2(fixed=false) "|Internals|Internally set values - do not edit!|Mass flow rate of flow 2";
-  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h3=(h1*m_flow_1 + h2*
-      m_flow_2)/m_flow_3 "|Internals|Internally set values - do not edit!|Mixer outlet enthalpy";
+  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h3=(h1*m_flow_1 + h2* m_flow_2)/m_flow_3 "|Internals|Internally set values - do not edit!|Mixer outlet enthalpy";
   final parameter ClaRa.Basics.Units.MassFlowRate m_flow_3=m_flow_1 + m_flow_2 "|Internals|Internally set values - do not edit!|Mixer outlet mass flow rate";
   final parameter ClaRa.Basics.Units.Pressure p(fixed=false) "|Internals|Internally set values - do not edit!|Mixer pressure";
 

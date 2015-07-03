@@ -28,5 +28,6 @@ package ChemicalReactions
   extends ClaRa.Basics.Icons.PackageIcons.Components60;
 
 
+
   annotation (Icon(graphics));
 end ChemicalReactions;

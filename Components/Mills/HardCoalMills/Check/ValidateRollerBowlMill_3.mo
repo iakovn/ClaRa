@@ -140,7 +140,7 @@ equation
     annotation (Line(
       points={{-46,-38},{-40,-38},{-40,-44},{-34,-44}},
       color={0,0,0},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       smooth=Smooth.None));
   connect(fluelGasFlowSource_burner1.gas_a,coalGas_join_burner1. flueGas_inlet)
     annotation (Line(

@@ -1,5 +1,6 @@
 within ClaRa.Components.VolumesValvesFittings.Pipes;
-model Tube_FlueGas_L2_Simple "A single 1D tube-shaped control volume considering heat transfer in a straight pipe with static momentum balance and simple energy balance"
+model Tube_FlueGas_L2_Simple
+  "A single 1D tube-shaped control volume considering heat transfer in a straight pipe with static momentum balance and simple energy balance"
 //___________________________________________________________________________//
 // Component of the ClaRa library, version: 1.0.0                        //
 //                                                                           //
@@ -25,8 +26,10 @@ model Tube_FlueGas_L2_Simple "A single 1D tube-shaped control volume considering
     powerIn=noEvent(if sum(heat.Q_flow) > 0 then sum(heat.Q_flow) else 0),
     powerOut=if not heatFlowIsLoss then -sum(heat.Q_flow) else 0,
     powerAux=0) if  contributeToCycleSummary;
-  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary "True if component shall contribute to automatic efficiency calculation" annotation(Dialog(tab="Summary and Visualisation"));
-  parameter Boolean heatFlowIsLoss = true "True if negative heat flow is a loss (not a process product)" annotation(Dialog(tab="Summary and Visualisation"));
+  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary
+    "True if component shall contribute to automatic efficiency calculation"                                                                               annotation(Dialog(tab="Summary and Visualisation"));
+  parameter Boolean heatFlowIsLoss = true
+    "True if negative heat flow is a loss (not a process product)"                                       annotation(Dialog(tab="Summary and Visualisation"));
 
   outer ClaRa.SimCenter simCenter;
 
@@ -49,7 +52,8 @@ model Tube_FlueGas_L2_Simple "A single 1D tube-shaped control volume considering
     input Basics.Units.Length
                     Delta_x[N_cv] if  showExpertSummary "Pipe discretisation" annotation(Dialog(show));
     input Basics.Units.Volume
-                    volume[N_cv] if  showExpertSummary "|Discretisation|Cell volumes"       annotation(Dialog(show));
+                    volume[N_cv] if  showExpertSummary
+      "|Discretisation|Cell volumes"                                                        annotation(Dialog(show));
 
     input Basics.Units.Pressure
                       dp "Pressure difference between outlet and inlet" annotation(Dialog);
@@ -63,12 +67,14 @@ model Tube_FlueGas_L2_Simple "A single 1D tube-shaped control volume considering
     input Basics.Units.Mass
                   mass[N_cv] if showExpertSummary "Fluid mass in cells" annotation(Dialog(show));
     input Basics.Units.Momentum
-                      I[N_cv+1] if  showExpertSummary "Momentum of fluid flow volumes through cell borders"     annotation(Dialog(show));
+                      I[N_cv+1] if  showExpertSummary
+      "Momentum of fluid flow volumes through cell borders"                                                     annotation(Dialog(show));
     input Basics.Units.Force
-                   I_flow[N_cv+2] if showExpertSummary "Momentum flow through cell borders"     annotation(Dialog(show));
+                   I_flow[N_cv+2] if showExpertSummary
+      "Momentum flow through cell borders"                                                      annotation(Dialog(show));
     input Basics.Units.MassFlowRate
-                          m_flow[N_cv+1] if  showExpertSummary "Mass flow through cell borders"
-                                                                          annotation(Dialog(show));
+                          m_flow[N_cv+1] if  showExpertSummary
+      "Mass flow through cell borders"                                    annotation(Dialog(show));
   end Outline;
 
   record Wall_L2
@@ -76,11 +82,11 @@ model Tube_FlueGas_L2_Simple "A single 1D tube-shaped control volume considering
     parameter Boolean showExpertSummary annotation(Dialog(hide));
     parameter Integer N_wall "Number of wall segments"  annotation(Dialog(hide));
     input Basics.Units.Temperature
-                         T[N_wall] if  showExpertSummary "Temperatures of wall segments"
-                                              annotation(Dialog);
+                         T[N_wall] if  showExpertSummary
+      "Temperatures of wall segments"         annotation(Dialog);
     input Basics.Units.HeatFlowRate
-                          Q_flow[N_wall] if  showExpertSummary "Heat flows through wall segments"
-                                              annotation(Dialog);
+                          Q_flow[N_wall] if  showExpertSummary
+      "Heat flows through wall segments"      annotation(Dialog);
   end Wall_L2;
 
   record Summary
@@ -98,7 +104,8 @@ model Tube_FlueGas_L2_Simple "A single 1D tube-shaped control volume considering
   inner parameter Basics.Units.Length
                             length= 1 "|Geometry|Length of the pipe";
   inner parameter Basics.Units.Length
-                            diameter_i= 0.1 "|Geometry|Inner diameter of the pipe";
+                            diameter_i= 0.1
+    "|Geometry|Inner diameter of the pipe";
 
   parameter Integer N_tubes= 1 "|Geometry|Number Of parallel pipes";
 
@@ -107,89 +114,117 @@ protected
                             volume[N_cv]=Modelica.Constants.pi/4*diameter_i^2*Delta_x*N_tubes;
 
   final inner parameter Basics.Units.Area
-                                A_cross[N_cv]=ones(N_cv)*Modelica.Constants.pi/4*diameter_i^2*N_tubes "cross area of volume elements";
+                                A_cross[N_cv]=ones(N_cv)*Modelica.Constants.pi/4*diameter_i^2*N_tubes
+    "cross area of volume elements";
   final inner parameter Basics.Units.Area
                                 A_cross_FM[N_cv+1]=
-   cat(1, {A_cross[1]}, {(A_cross[i]+A_cross[i+1])/2 for i in 1:N_cv-1},  {A_cross[N_cv]}) "cross area of flow model volume elements";
+   cat(1, {A_cross[1]}, {(A_cross[i]+A_cross[i+1])/2 for i in 1:N_cv-1},  {A_cross[N_cv]})
+    "cross area of flow model volume elements";
 
 //____Discretisation_____________________________________________________________________________________
 public
   inner parameter Integer N_cv=2 "|Discretisation|Number of finite volumes";
   final inner parameter Basics.Units.Length
-                                  Delta_x[N_cv]=ones(N_cv)*length/N_cv "|Discretisation|DisWall_L4cretisation scheme";
+                                  Delta_x[N_cv]=ones(N_cv)*length/N_cv
+    "|Discretisation|DisWall_L4cretisation scheme";
   final inner parameter Basics.Units.Length
                                   Delta_x_FM[N_cv+1]=
-  cat(1, {Delta_x[1]/2}, {(Delta_x[i-1]+Delta_x[i])/2 for i in 2:N_cv},  {Delta_x[N_cv]/2}) "length of flow model volume elements";
+  cat(1, {Delta_x[1]/2}, {(Delta_x[i-1]+Delta_x[i])/2 for i in 2:N_cv},  {Delta_x[N_cv]/2})
+    "length of flow model volume elements";
 
 //____Media Data_____________________________________________________________________________________
- inner parameter TILMedia.GasTypes.BaseGas               medium = simCenter.flueGasModel "Medium to be used in tube"
-                                 annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
+ inner parameter TILMedia.GasTypes.BaseGas               medium = simCenter.flueGasModel
+    "Medium to be used in tube"  annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
 
 //____Nominal Values_________________________________________________________________________________
 public
  parameter Basics.Units.Pressure
-                       p_nom[N_cv]= 1e5*ones(N_cv) "|Nominal Values|nominal pressure";
+                       p_nom[N_cv]= 1e5*ones(N_cv)
+    "|Nominal Values|nominal pressure";
  parameter Basics.Units.Temperature T_nom[
-                                         N_cv]= 293.15*ones(N_cv) "|Nominal Values|Nominal specific enthalpy for single tube";
+                                         N_cv]= 293.15*ones(N_cv)
+    "|Nominal Values|Nominal specific enthalpy for single tube";
  parameter Basics.Units.EnthalpyMassSpecific
-                                   h_nom[N_cv]= ones(N_cv)*1e5 "|Nominal Values|Nominal specific enthalpy for single tube";
+                                   h_nom[N_cv]= ones(N_cv)*1e5
+    "|Nominal Values|Nominal specific enthalpy for single tube";
  inner parameter Basics.Units.MassFlowRate
-                                 m_flow_nom=100 "|Nominal Values|Nominal mass flow w.r.t. all parallel tubes";
+                                 m_flow_nom=100
+    "|Nominal Values|Nominal mass flow w.r.t. all parallel tubes";
 
  inner parameter Basics.Units.Pressure
-                                 Delta_p_nom=1e4 "|Nominal Values|Nominal pressure loss w.r.t. all parallel tubes";
+                                 Delta_p_nom=1e4
+    "|Nominal Values|Nominal pressure loss w.r.t. all parallel tubes";
 
   final parameter Basics.Units.DensityMassSpecific
-                                      rho_nom[N_cv]= TILMedia.GasFunctions.density_pTxi(medium, p_nom, T_nom, xi_start) "Nominal density";
+                                      rho_nom[N_cv]= TILMedia.GasFunctions.density_pTxi(medium, p_nom, T_nom, xi_start)
+    "Nominal density";
 
 //____Physical Effects_____________________________________________________________________________________
 
 public
-  inner parameter Boolean frictionAtInlet=false "|Fundamental Definitions|True if pressure loss between first cell and inlet shall be considered"
+  inner parameter Boolean frictionAtInlet=false
+    "|Fundamental Definitions|True if pressure loss between first cell and inlet shall be considered"
                                                                                             annotation (choices(checkBox=true));
-  inner parameter Boolean frictionAtOutlet=false "|Fundamental Definitions|True if pressure loss between last cell and outlet shall be considered"
+  inner parameter Boolean frictionAtOutlet=false
+    "|Fundamental Definitions|True if pressure loss between last cell and outlet shall be considered"
                                                                                             annotation (choices(checkBox=true));
 
   replaceable model PressureLoss =
     ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4
-    constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.PressureLossBaseGas_L4 "|Physical Effects|Pressure Loss|Pressure loss model at the tubes side"
+    constrainedby
+    ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.PressureLossBaseGas_L4
+    "|Physical Effects|Pressure Loss|Pressure loss model at the tubes side"
     annotation(choicesAllMatching);
 
    replaceable model HeatTransfer =
       ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4
-     constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.HeatTransferBaseGas_L4 "|Physical Effects|Heat Transfer|Heat transfer mode at the tubes side"
+     constrainedby
+    ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.HeatTransferBaseGas_L4
+    "|Physical Effects|Heat Transfer|Heat transfer mode at the tubes side"
     annotation(choicesAllMatching);
 
    replaceable model Geometry =
-      Basics.ControlVolumes.Fundamentals.Geometry.PipeGeometry_N_cv                             constrainedby Basics.ControlVolumes.Fundamentals.Geometry.PipeGeometry_N_cv "|Physical Effects|Geometry|Pipe geometry"
+      Basics.ControlVolumes.Fundamentals.Geometry.PipeGeometry_N_cv                             constrainedby
+    Basics.ControlVolumes.Fundamentals.Geometry.PipeGeometry_N_cv
+    "|Physical Effects|Geometry|Pipe geometry"
    annotation(choicesAllMatching);
 
 //____Initialisation_____________________________________________________________________________________
-  parameter ClaRa.Basics.Choices.Init initType=ClaRa.Basics.Choices.Init.steadyState "|Initialisation|Model Settings|type of initialisation "
-                                                              annotation(choicesAllMatching);
-  inner parameter Boolean useHomotopy=simCenter.useHomotopy "|Initialisation|Model Settings|true, if homotopy method is used during initialisation";
+  parameter ClaRa.Basics.Choices.Init initType=ClaRa.Basics.Choices.Init.steadyState
+    "|Initialisation|Model Settings|type of initialisation "  annotation(choicesAllMatching);
+  inner parameter Boolean useHomotopy=simCenter.useHomotopy
+    "|Initialisation|Model Settings|true, if homotopy method is used during initialisation";
 
   parameter Basics.Units.Temperature T_start[
-                                            N_cv]=293.15*ones(N_cv) "|Initialisation||Initial temperature for single tube";
+                                            N_cv]=293.15*ones(N_cv)
+    "|Initialisation||Initial temperature for single tube";
   parameter Basics.Units.Pressure
-                        p_start[:]=1e5*ones(N_cv) "|Initialisation||Initial pressure";
+                        p_start[:]=1e5*ones(N_cv)
+    "|Initialisation||Initial pressure";
 
   parameter Basics.Units.MassFraction xi_start[medium.nc - 1]=
-     {0.01,0,0.1,0,0.74,0.13,0,0.02,0} "|Initialisation||Initial composition for single tube";
+     {0.01,0,0.1,0,0.74,0.13,0,0.02,0}
+    "|Initialisation||Initial composition for single tube";
 protected
   parameter Basics.Units.Pressure
-                        p_start_internal[N_cv]=if size(p_start,1)==2 then linspace(p_start[1],p_start[2],N_cv) else p_start "Internal p_start array which allows the user to either state p_inlet, p_outlet if p_start has length 2, otherwise the user can specify an individual pressure profile for initialisation";
+                        p_start_internal[N_cv]=if size(p_start,1)==2 then linspace(p_start[1],p_start[2],N_cv) else p_start
+    "Internal p_start array which allows the user to either state p_inlet, p_outlet if p_start has length 2, otherwise the user can specify an individual pressure profile for initialisation";
   parameter Basics.Units.Temperature
-                        T_start_internal[N_cv]=if size(T_start,1)==2 then linspace(T_start[1],T_start[2],N_cv) else T_start "Internal T_start array which allows the user to either state T_inlet, T_outlet if T_start has length 2, otherwise the user can specify an individual Temperature profile for initialisation";
+                        T_start_internal[N_cv]=if size(T_start,1)==2 then linspace(T_start[1],T_start[2],N_cv) else T_start
+    "Internal T_start array which allows the user to either state T_inlet, T_outlet if T_start has length 2, otherwise the user can specify an individual Temperature profile for initialisation";
 
-  parameter Basics.Units.EnthalpyMassSpecific h_start[N_cv]=TILMedia.GasFunctions.specificEnthalpy_pTxi(medium, p_start_internal, T_start_internal, xi_start) "|Initialisation||Initial specific enthalpy for single tube";
+  parameter Basics.Units.EnthalpyMassSpecific h_start[N_cv]=TILMedia.GasFunctions.specificEnthalpy_pTxi(medium, p_start_internal, T_start_internal, xi_start)
+    "|Initialisation||Initial specific enthalpy for single tube";
 
-  parameter Basics.Units.DensityMassSpecific d_start[N_cv]=TILMedia.GasFunctions.density_pTxi(medium, p_start_internal, T_start_internal, xi_start) "|Initialisation||Initial density";
+  parameter Basics.Units.DensityMassSpecific d_start[N_cv]=TILMedia.GasFunctions.density_pTxi(medium, p_start_internal, T_start_internal, xi_start)
+    "|Initialisation||Initial density";
 
 //____Summary and Visualisation_____________________________________________________________________________________
 public
-  parameter Boolean showExpertSummary=simCenter.showExpertSummary "|Summary and Visualisation||True, if an extended summary shall be shown, else false";
-  parameter Boolean showData=false "|Summary and Visualisation||True, if a data port containing p,T,h,s,m_flow shall be shown, else false";
+  parameter Boolean showExpertSummary=simCenter.showExpertSummary
+    "|Summary and Visualisation||True, if an extended summary shall be shown, else false";
+  parameter Boolean showData=false
+    "|Summary and Visualisation||True, if a data port containing p,T,h,s,m_flow shall be shown, else false";
 
   Summary summary(
       outline(     showExpertSummary=showExpertSummary,
@@ -239,7 +274,8 @@ public
 //____Energy / Enthalpy_________________________________________________________________________________________
 public
   Basics.Units.EnthalpyMassSpecific
-                          h[N_cv](start=h_start,stateSelect = StateSelect.prefer) "Cell enthalpy";
+                          h[N_cv](start=h_start,stateSelect = StateSelect.prefer)
+    "Cell enthalpy";
 
    Basics.Units.Temperature
                           T[N_cv](start=T_start) "Cell Temperature";
@@ -257,7 +293,8 @@ protected
   Basics.Units.Mass
           mass[N_cv] "Mass of fluid in cells";
   Basics.Units.Mass
-          mass_FM[N_cv+1]=cat(1,{mass[1]/2},{(mass[i]+mass[i-1])/2 for i in 2:N_cv},{mass[N_cv]/2}) "Mass of fluid in flow cells";
+          mass_FM[N_cv+1]=cat(1,{mass[1]/2},{(mass[i]+mass[i-1])/2 for i in 2:N_cv},{mass[N_cv]/2})
+    "Mass of fluid in flow cells";
 
   Real drhodt[N_cv];//(unit="kg/(m3s)")
 
@@ -271,7 +308,8 @@ protected
                   m_flow[N_cv+1](nominal=ones(N_cv+1)*m_flow_nom,start=ones(N_cv+1)*m_flow_nom);
 
   Basics.Units.Velocity
-              w[N_cv] "flow velocities within cells of energy model == flow velocities across cell borders of flow model ";
+              w[N_cv]
+    "flow velocities within cells of energy model == flow velocities across cell borders of flow model ";
   Basics.Units.Velocity
               w_inlet "flow velocity at inlet";
   Basics.Units.Velocity
@@ -302,7 +340,8 @@ public
   PressureLoss pressureLoss "Pressure loss model"
                             annotation(Placement(transformation(extent={{-40,0},
             {-20,20}})));
-  HeatTransfer heatTransfer(final A_heat=N_tubes*Modelica.Constants.pi*diameter_i*Delta_x) "heat transfer model" annotation (Placement(transformation(extent={{-80,0},{-60,20}})));
+  HeatTransfer heatTransfer(final A_heat=N_tubes*Modelica.Constants.pi*diameter_i*Delta_x)
+    "heat transfer model"                                                                                        annotation (Placement(transformation(extent={{-80,0},{-60,20}})));
 
 public
   inner TILMedia.Gas_pT       fluidInlet(
@@ -488,13 +527,15 @@ equation
                  - h[i]*volume[i]*drhodt[i])
                   /mass[i];
 
-     der(xi[i,:]) = 1/mass[i]*(Xi_flow[i,:] - Xi_flow[i+1,:]) "Component mass balance";
+     der(xi[i,:]) = 1/mass[i]*(Xi_flow[i,:] - Xi_flow[i+1,:])
+      "Component mass balance";
 
     drhodt[i]*volume[i]=m_flow[i]-m_flow[i+1] "Mass balance";
 //     fluid[i].drhodp_hxi
 //                    *der(p[i])=(drhodt[i]-der(h[i])*fluid[i].drhodh_pxi)
 //       "Calculate pressure from enthalpy and density derivative";
-            fluid[i].drhodp_hxi*der(p[i])=(drhodt[i]-der(h[i])*fluid[i].drhodh_pxi - sum({fluid[i].drhodxi_ph[j] * der(fluid[i].xi[j]) for j in 1:medium.nc-1})) "Calculate pressure from enthalpy and density derivative";
+            fluid[i].drhodp_hxi*der(p[i])=(drhodt[i]-der(h[i])*fluid[i].drhodh_pxi - sum({fluid[i].drhodxi_ph[j] * der(xi[i,j]) for j in 1:medium.nc-1}))
+      "Calculate pressure from enthalpy and density derivative";
 
     T[i]=fluid[i].T;
   end for;

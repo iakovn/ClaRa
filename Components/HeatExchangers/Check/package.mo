@@ -27,4 +27,14 @@ package Check "Check and test Heat Exchangers"
 
 extends ClaRa.Basics.Icons.PackageIcons.Componentsb60;
 
+
+
+
+
+
+
+
+
+
+
 end Check;

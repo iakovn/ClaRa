@@ -58,7 +58,7 @@ extends ClaRa.Basics.Icons.PackageIcons.Componentsb50;
     connect(tubeBundle_L2_Simple.outlet, massFlowSink.steam_a) annotation (Line(
         points={{32,-32},{32,-44},{-2,-44}},
         color={0,131,169},
-        pattern=LinePattern.None,
+        pattern=LinePattern.Solid,
         thickness=0.5,
         smooth=Smooth.None));
     connect(steamInlet1.steam_a, tubeBundle_L2_Simple.inlet) annotation (Line(

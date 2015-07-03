@@ -89,7 +89,7 @@ public
   parameter Basics.Units.Temperature T_nom[
                                           N_cv]= 293.15*ones(N_cv) "|Nominal Values|Nominal temperature";
   parameter Basics.Units.MassFraction xi_nom[medium.nc - 1]=
-     {0.01,0,0.1,0,0.74,0.13,0,0.02} "|Nominal Values|Nominal composition";
+     {0.01,0,0.1,0,0.74,0.13,0,0.02,0} "|Nominal Values|Nominal composition";
 
  inner parameter Basics.Units.MassFlowRate
                                  m_flow_nom=100 "|Nominal Values|Nominal mass flow";
@@ -126,7 +126,7 @@ public
                          p_start[:]=1e5*ones(N_cv) "|Initialisation||Initial pressure";
 
   parameter Basics.Units.MassFraction xi_start[medium.nc - 1]=
-     {0.01,0,0.1,0,0.74,0.13,0,0.02} "|Initialisation||Initial composition";
+     {0.01,0,0.1,0,0.74,0.13,0,0.02,0} "|Initialisation||Initial composition";
 protected
   parameter Basics.Units.Pressure
                         p_start_internal[N_cv]=if size(p_start,1)==2 then linspace(p_start[1],p_start[2],N_cv) else p_start "Internal p_start array which allows the user to either state p_inlet, p_outlet if p_start has length 2, otherwise the user can specify an individual pressure profile for initialisation";
@@ -379,12 +379,10 @@ equation
 //-------------------------------------------
 // definition of the cells' states:
   for i in 1:N_cv loop
-
     drhodt[i]*volume[i]=m_flow[i]-m_flow[i+1] "Mass balance";
 
-      der(xi[i,:]) = 1/mass[i]*(Xi_flow[i,:] - Xi_flow[i+1,:]) "Component mass balance";
-      fluid[i].drhodp_hxi*der(p[i])=(drhodt[i]-der(h[i])*fluid[i].drhodh_pxi - sum({fluid[i].drhodxi_ph[j] * der(fluid[i].xi[j]) for j in 1:medium.nc-1})) "Calculate pressure from enthalpy and density derivative";
-
+    der(xi[i,:]) = 1/mass[i]*(Xi_flow[i,:] - Xi_flow[i+1,:]) "Component mass balance";
+    fluid[i].drhodp_hxi*der(p[i])=(drhodt[i]-der(h[i])*fluid[i].drhodh_pxi - sum({fluid[i].drhodxi_ph[j] * der(xi[i,j]) for j in 1:medium.nc-1})) "Calculate pressure from enthalpy and density derivative";
            der(h[i])= (H_flow[i]- H_flow[i+1]
                        + heat[i].Q_flow
                        + der(p[i])*volume[i]

@@ -28,6 +28,18 @@ package Components "Containing general description of pumps, heat exchangers,...
   extends ClaRa.Basics.Icons.PackageIcons.Components100;
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 annotation (Documentation(info="<html>
 <p><h2>AP 2.2 Modellierung der Einzelkomponenten f&uuml;r den konventionellen Kraftwerksprozess - Wasser-Dampfkreislauf</h2></p>
 <p>Die verschiedenen Kraftwerkskomponenten f&uuml;r den Wasser-Dampfkreislauf des Kraftwerks sind f&uuml;r die Bearbeitung verschiedener Aufgabenstellungen in unterschiedlichem Detaillie-rungsgrad umzusetzen. Dabei stellen stark vereinfachte Modelle auf der Basis von gemes-senen oder von den Auslegungsdaten abgeleiteten Kennlinien eine robuste und Ressourcen schonende Basis dar. F&uuml;r vertiefende Untersuchungen werden Modelle auf der Grundlage der thermodynamischen Erhaltungsgleichungen erstellt. Durch den modularen Aufbau der Modellbibliothek sind die Modelle untereinander austauschbar.</p>

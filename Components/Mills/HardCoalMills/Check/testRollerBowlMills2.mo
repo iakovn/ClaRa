@@ -98,7 +98,7 @@ equation
     annotation (Line(
       points={{-30,-8},{-24,-8},{-24,-16},{-18,-16}},
       color={0,0,0},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       smooth=Smooth.None));
   connect(fluelGasFlowSource_burner3.gas_a,coalGas_join_burner3. flueGas_inlet)
     annotation (Line(
@@ -117,7 +117,7 @@ equation
     annotation (Line(
       points={{-28,-68},{-22,-68},{-22,-74},{-16,-74}},
       color={0,0,0},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       smooth=Smooth.None));
   connect(fluelGasFlowSource_burner1.gas_a,coalGas_join_burner1. flueGas_inlet)
     annotation (Line(

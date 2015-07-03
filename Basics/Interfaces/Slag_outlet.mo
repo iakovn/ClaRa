@@ -4,7 +4,7 @@ connector Slag_outlet
   annotation (Icon(graphics={
                             Ellipse(
           extent={{-60,60},{60,-60}},
-          pattern=LinePattern.None,
+          pattern=LinePattern.Solid,
           fillColor={255,255,255},
           lineColor={234,171,0},
           lineThickness=0.5,

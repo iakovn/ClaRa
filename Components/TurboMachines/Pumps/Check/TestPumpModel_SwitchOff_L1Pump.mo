@@ -113,7 +113,7 @@ equation
   connect(pump.outlet, sink.steam_a) annotation (Line(
       points={{-8,-142},{40,-142}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-160,

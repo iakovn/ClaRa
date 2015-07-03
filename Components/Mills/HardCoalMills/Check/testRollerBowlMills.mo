@@ -102,28 +102,28 @@ equation
   connect(ramp1.y, rollerBowlMill_01_XRG.rawCoal) annotation (Line(
       points={{-67,72},{-44,72},{-44,91},{29.2,91}},
       color={0,0,127},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       smooth=Smooth.None));
   connect(ramp1.y, coalFlowSource_XRG.m_flow) annotation (Line(
       points={{-67,72},{-60,72},{-60,46},{-44,46}},
       color={0,0,127},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       smooth=Smooth.None));
   connect(ramp1.y, coalFlowSource_XRG2.m_flow) annotation (Line(
       points={{-67,72},{-60,72},{-60,-16},{-44,-16}},
       color={0,0,127},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       smooth=Smooth.None));
   connect(ramp1.y, coalFlowSource_XRG3.m_flow) annotation (Line(
       points={{-67,72},{-60,72},{-60,-64},{-48,-64}},
       color={0,0,127},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       smooth=Smooth.None));
   connect(coalFlowSource_XRG.coal_a, coalGas_join_burner3.coal_inlet)
     annotation (Line(
       points={{-24,40},{-18,40},{-18,32},{-12,32}},
       color={0,0,0},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       smooth=Smooth.None));
   connect(coalGas_join_burner3.coalDust_outlet, Mill.inlet) annotation (Line(
       points={{8,26},{20,26},{20,20},{30,20}},
@@ -147,7 +147,7 @@ equation
     annotation (Line(
       points={{-24,-22},{-8,-22},{-8,-30},{-2,-30}},
       color={0,0,0},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       smooth=Smooth.None));
   connect(fluelGasFlowSource_burner2.gas_a, coalGas_join_burner2.flueGas_inlet)
     annotation (Line(

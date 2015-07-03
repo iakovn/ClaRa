@@ -48,21 +48,17 @@ equation
       points={{-69,22},{-58,22},{-58,-6},{-70,-6},{-70,-10}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(massFlowSource_XRG.steam_a, pressureSink_XRG.steam_a) annotation (
-      Line(
-      points={{-76,-32},{-6,-32}},
-      color={191,56,33},
-      thickness=0.5,
-      smooth=Smooth.None));
-  connect(statePoint_ph.port, pressureSink_XRG.steam_a) annotation (Line(
-      points={{-44,-12},{-44,-32},{-6,-32}},
-      color={191,56,33},
-      thickness=0.5,
-      smooth=Smooth.None));
-  connect(statePoint_phTs.port, pressureSink_XRG.steam_a) annotation (Line(
-      points={{-24,-12},{-24,-32},{-6,-32}},
-      color={191,56,33},
-      thickness=0.5,
-      smooth=Smooth.None));
-  annotation (Diagram(graphics));
+  connect(massFlowSource_XRG.steam_a, pressureSink_XRG.steam_a) annotation (Line(
+      points={{-76,-32},{-6,-32},{-6,-32}},
+      color={0,131,169},
+      thickness=0.5));
+  connect(massFlowSource_XRG.steam_a, statePoint_ph.port) annotation (Line(
+      points={{-76,-32},{-44,-32},{-44,-12}},
+      color={0,131,169},
+      thickness=0.5));
+  connect(massFlowSource_XRG.steam_a, statePoint_phTs.port) annotation (Line(
+      points={{-76,-32},{-50,-32},{-24,-32},{-24,-12}},
+      color={0,131,169},
+      thickness=0.5));
+  annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
 end TestStatePoint;

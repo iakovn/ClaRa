@@ -228,14 +228,14 @@ equation
       Line(
       points={{10,0},{24,0}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(pumpFluidVolume.outlet, outlet)
                                         annotation (Line(
       points={{44,0},{100,0}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(pump.shaft, shaft)                      annotation (Line(

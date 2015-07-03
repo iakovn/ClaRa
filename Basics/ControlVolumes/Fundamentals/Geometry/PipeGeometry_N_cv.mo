@@ -20,7 +20,8 @@ model PipeGeometry_N_cv "Discretized pipe bundle || Tube type "
   volume=Modelica.Constants.pi/4*diameter^2*Delta_x*N_tubes,
   A_heat=[N_tubes*Modelica.Constants.pi*diameter*Delta_x],
   A_cross = ones(N_cv)* Modelica.Constants.pi * diameter^2/4*N_tubes,
-  final N_heat=1);
+  final N_heat=1,
+  diameter_hyd=diameter);
 
   parameter Units.Length diameter=1 "|Essential Geometry Definition|Diameter of the component";
   parameter Integer N_tubes=1 "|Essential Geometry Definition|Number of tubes in parallel";

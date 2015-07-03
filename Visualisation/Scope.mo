@@ -23,37 +23,37 @@ model Scope "Dynamic graphical display of one variable"
                                                       annotation(Dialog(group="Layout"));
   parameter String Unit="[-]" "Unit for plot variable" annotation(Dialog(group="Layout"));
 
-protected
-parameter Real y_start=(y_min+y_max)/2 "Initial display value";
 public
   parameter Modelica.SIunits.Time Tau_stab=0.01 "Stabilizing time constant";
-  parameter Modelica.SIunits.Time t_sample(min=Modelica.Constants.eps)=t_simulation/100 "Output intervall for plot, use carefully since causes events!"
+  parameter Modelica.SIunits.Time t_sample(min=Modelica.Constants.eps)=t_simulation/100 "Output intervall for plot, use carefully since this creates scalars!"
                                                                     annotation(Dialog(group="Simulation Setup"));
   parameter Modelica.SIunits.Time t_simulation(min=Modelica.Constants.eps)=200 "Duration of simulation"
                              annotation(Dialog(group="Simulation Setup"));
   parameter ClaRa.Basics.Types.Color color={0,131,169} "Line color"         annotation (Hide=false, Dialog(group="Layout"));
 
+protected
+  parameter Modelica.SIunits.Time t_start(fixed=false);
+  parameter Real y_start=(y_min+y_max)/2 "Initial display value";
   Real x[scalarToVector.N];
   Real y[ size(x, 1)];
   Real f "Move factor for the cover-rectangle";
   final Real[size(x, 1), 2] points=transpose({x,y})  annotation(Hide=false);
 
-  ClaRa.Visualisation.Fundamentals.ScalarToVector scalarToVector(simulationTime=t_simulation) annotation (Placement(transformation(
+  ClaRa.Visualisation.Fundamentals.ScalarToVector scalarToVector(simulationTime=t_simulation,
+    SampleTime=t_sample,
+    N=integer(t_simulation/t_sample + 1))                                                     annotation (Placement(transformation(
         extent={{10,10},{-10,-10}},
         rotation=180,
         origin={50,50})));
-  Modelica.Blocks.Interfaces.RealInput u(min=y_min, max=y_max) if showInterface "Input signal"
-    annotation (Placement(transformation(extent={{-40,50},{0,90}}),
-        iconTransformation(extent={{-42,78},{-30,90}})));
-
-protected
-  parameter Modelica.SIunits.Time t_start(fixed=false);
-
-public
   Modelica.Blocks.Continuous.FirstOrder firstOrder(
     T=Tau_stab,
     initType=Modelica.Blocks.Types.Init.SteadyState)
     annotation (Placement(transformation(extent={{8,46},{28,66}})));
+public
+  Modelica.Blocks.Interfaces.RealInput u(min=y_min, max=y_max) if showInterface "Input signal"
+    annotation (Placement(transformation(extent={{-40,50},{0,90}}),
+        iconTransformation(extent={{-42,78},{-30,90}})));
+
 initial equation
 
   t_start = time;
@@ -72,12 +72,8 @@ equation
               (1-(y_max -scalarToVector.z[i])/(y_max - y_min))*100;
   end for;
   f=if time  <= t_start then 0 else if time  >= t_simulation+t_start then 100 else  (time-t_sample-t_start)*100/t_simulation;
-  when y_max<=y_min then
-  terminate("Parameter failure: y_max shall be larger then y_min.");
-  end when;
 
-// initial equation
-//      y_start=firstOrder.u;
+  assert(y_max>=y_min, "Parameter failure: y_max shall be larger then y_min.");
 
   connect(firstOrder.y, scalarToVector.u) annotation (Line(
       points={{29,56},{38,56}},
@@ -118,10 +114,10 @@ annotation (    Icon(coordinateSystem(preserveAspectRatio=true, extent={{-30,-10
           Line(
             points=DynamicSelect({{0,0},{50,52},{70,40},{100,100}}, points),
             color=color,
-            pattern=LinePattern.None, thickness=0.5),
+            pattern=LinePattern.Solid, thickness=0.5),
           Rectangle(
             extent=DynamicSelect({{0,100},{100,0}}, {{f,100},{100,0}}),
-            pattern=LinePattern.None,
+            pattern=LinePattern.Solid,
             lineColor={27,36,42},
             fillColor=DynamicSelect({27,36,42}, {27,36,42}),
             fillPattern=FillPattern.Solid)}),

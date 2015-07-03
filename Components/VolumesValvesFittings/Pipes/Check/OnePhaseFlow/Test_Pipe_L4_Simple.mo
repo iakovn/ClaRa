@@ -29,7 +29,8 @@ model Test_Pipe_L4_Simple
     m_flow_nom=0,
     variable_h=true,
     p_nom=1000) annotation (Placement(transformation(extent={{58,-70},{38,-50}})));
-  inner SimCenter simCenter(redeclare replaceable TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1, useHomotopy=false) annotation (Placement(transformation(extent={{-100,-140},{-80,-120}})));
+  inner SimCenter simCenter(redeclare replaceable TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1, useHomotopy=false,
+    showExpertSummary=true)                                                                                                    annotation (Placement(transformation(extent={{-100,-140},{-80,-120}})));
   PipeFlow_L4_Simple tube(
     length=50,
     m_flow_nom=100,
@@ -46,8 +47,7 @@ model Test_Pipe_L4_Simple
     p_start=ones(tube.N_cv)*1e5,
     frictionAtInlet=true,
     frictionAtOutlet=true,
-    z_in=21,
-    z_out=-30)                   annotation (Placement(transformation(extent={{20,-65},{-7,-55}})));
+    z_in=50)                     annotation (Placement(transformation(extent={{18,-65},{-9,-55}})));
 
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi massFlowSink(
     variable_p=true,
@@ -124,12 +124,12 @@ equation
       color={0,0,127},
       smooth=Smooth.None));
   connect(tube.inlet, massFlowSource.steam_a) annotation (Line(
-      points={{20,-60},{38,-60}},
+      points={{18,-60},{38,-60}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
   connect(massFlowSink.steam_a, tube.outlet) annotation (Line(
-      points={{-36,-60},{-7,-60}},
+      points={{-36,-60},{-9,-60}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
@@ -146,7 +146,7 @@ equation
       color={191,0,0},
       smooth=Smooth.None));
   connect(thinWall.innerPhase, tube.heat) annotation (Line(
-      points={{7,-46},{7,-56},{6.5,-56}},
+      points={{7,-46},{7,-56},{4.5,-56}},
       color={191,0,0},
       smooth=Smooth.None));
   connect(massFlowSource.h, inlet_pressure1.y) annotation (Line(

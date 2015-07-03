@@ -162,7 +162,7 @@ FluidDissipation.HeatTransfer.HeatExchanger.kc_tubeBundleFilmCondensation_lam_IN
   connect(prescribedTemperature.port, Volume.heat) annotation (Line(
       points={{41,-44},{41,-60},{42,-60}},
       color={191,0,0},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       smooth=Smooth.None));
   annotation (Diagram(coordinateSystem(extent={{-100,-140},{180,120}},
           preserveAspectRatio=true),

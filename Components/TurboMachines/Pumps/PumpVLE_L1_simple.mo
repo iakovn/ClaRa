@@ -27,11 +27,6 @@ extends ClaRa.Basics.Icons.ComplexityLevel(complexity="L1");
    annotation(Dialog(group="Part Load and Efficiency"));
 parameter ClaRa.Basics.Units.Pressure Delta_p_eps=100 "|Expert Settings| Numerical Robustnes|Small pressure difference for linearisation around zero";
 
-  ClaRa.Basics.Interfaces.FluidPortIn inlet(Medium=medium)
-    annotation (Placement(transformation(extent={{-110,-10},{-90,10}})));
-  ClaRa.Basics.Interfaces.FluidPortOut outlet(Medium=medium)
-    annotation (Placement(transformation(extent={{90,-10},{110,10}})));
-
   Modelica.Blocks.Interfaces.RealInput P_drive "Power input of the pump's motor"
                                       annotation (Placement(transformation(
         extent={{-20,-20},{20,20}},

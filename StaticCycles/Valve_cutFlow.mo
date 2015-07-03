@@ -14,7 +14,7 @@ model Valve_cutFlow "Valve || yellow | red"
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
-   // Green input: Values of p, m_flow and h are unknown and provided BY neighbor component.
+   // Yellow input: Values of p and h are unknown and provided BY neighbor component, value of m_flow is known and provided FOR neighbor component.
    // Red output:   Values of p and m_flow are unknown and provided BY neighbor component, value of h is known and provided FOR neighbor component.
   final parameter ClaRa.Basics.Units.Pressure p_in(fixed=false);
   final parameter ClaRa.Basics.Units.MassFlowRate m_flow(fixed=false) "Mass flow rate";

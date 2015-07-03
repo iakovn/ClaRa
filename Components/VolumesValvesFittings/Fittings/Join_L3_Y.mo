@@ -117,7 +117,7 @@ equation
   connect(mixingZone.outlet[1], outlet)                 annotation (Line(
       points={{10,0},{100,0}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
 

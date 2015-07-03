@@ -67,12 +67,12 @@ end DecimalSpaces;
           lineColor=DynamicSelect({230,230,230},if time>0 then {0,131,169} else {230,230,230})),
         Line(
           points={{0,0},{0,-200}},
-          pattern=LinePattern.None,
+          pattern=LinePattern.Solid,
           smooth=Smooth.None,
           lineColor=DynamicSelect({190,190,190},if time>0 then {0,131,169} else {190,190,190})),
         Line(
           points={{-200,-100},{200,-100}},
-          pattern=LinePattern.None,
+          pattern=LinePattern.Solid,
           smooth=Smooth.None,
           lineColor=DynamicSelect({190,190,190},if time>0 then {0,131,169} else {190,190,190}))}),            Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-200,
             -200},{200,0}},

@@ -188,6 +188,7 @@ model HEXvle2vle_L3_2ph_CH_ntu "VLE 2 VLE | L3 | 2 phase at shell side | Cylinde
   parameter Real absorbInflow=1 "|Expert Settings|Zone Interaction at Shell Side|Absorption of incoming mass flow to the zones 1: perfect in the allocated zone, 0: perfect according to steam quality";
 
   parameter Real gain_eff=1 "|Expert Settings|NTU model|Avoid effectiveness > 1, high gain_eff leads to stricter observation but may cause numeric errors";
+  parameter Basics.Units.Time Tau_stab=0.1 "|Expert Settings|NTU model|Time constant for numeric stabilisation w.r.t. heat flow rates";
 
   parameter Boolean showExpertSummary=simCenter.showExpertSummary "|Summary and Visualisation||True, if expert summary should be applied";
   parameter Boolean showData=true "|Summary and Visualisation||True, if a data port containing p,T,h,s,m_flow shall be shown, else false";
@@ -245,7 +246,7 @@ model HEXvle2vle_L3_2ph_CH_ntu "VLE 2 VLE | L3 | 2 phase at shell side | Cylinde
     h_vap_start=h_vap_start,
     showExpertSummary=showExpertSummary,
     redeclare model Geometry =
-        ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowCylinderWithTubes (
+        ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.CH_Nports (
         z_out={z_out_shell},
         length=length,
         staggeredAlignment=staggeredAlignment,
@@ -322,7 +323,6 @@ public
     h_i_inlet=inStream(tubes.inlet.h_outflow),
     h_o_inlet=inStream(shell.inlet[1].h_outflow),
     m_flow_o=sum(shell.inlet.m_flow),
-    alpha_o={shell.heattransfer.alpha[1],shell.heattransfer.alpha[2],shell.heattransfer.alpha[2]},
     redeclare function HeatCapacityAveraging = HeatCapacityAveraging,
     medium_shell=medium_shell,
     medium_tubes=medium_tubes,
@@ -335,10 +335,12 @@ public
     showExpertSummary=showExpertSummary,
     gain_eff=gain_eff,
     N_t=N_tubes,
-    redeclare model HeatExchangerType =
-        ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.CounterFlow_L3)        annotation (Placement(transformation(extent={{24,24},{44,44}})));
+    redeclare replaceable model HeatExchangerType =
+        ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.CounterFlow_L3,
+    alpha_o={shell.heattransfer.alpha[2],shell.heattransfer.alpha[2],shell.heattransfer.alpha[1]},
+    Tau_stab=Tau_stab)                                                                                  annotation (Placement(transformation(extent={{24,24},{44,44}})));
   Adapters.Scalar2VectorHeatPort reallocateHeatFlows(final equalityMode="Equal Temperatures")
-    annotation (Placement(transformation(extent={{14,49},{26,57}})));
+    annotation (Placement(transformation(extent={{26,47},{40,60}})));
 equation
    assert(diameter_o > diameter_i,
      "Outer diameter of tubes must be greater than inner diameter");
@@ -389,7 +391,7 @@ equation
   connect(shell.outlet[1], Out1) annotation (Line(
       points={{0,50},{0,-100}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(aux1, shell.inlet[2]) annotation (Line(
@@ -419,17 +421,17 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(reallocateHeatFlows.heatVector, wall.outerPhase) annotation (Line(
-      points={{26,53},{34,53},{34,44}},
+      points={{40,53.5},{34,53.5},{34,44}},
       color={167,25,48},
       thickness=0.5,
       smooth=Smooth.None));
   connect(reallocateHeatFlows.heatScalar, shell.heat[1]) annotation (Line(
-      points={{14,53},{12,53},{12,60},{9.5,60}},
+      points={{26,53.5},{20,53.5},{20,54},{14,54},{14,60},{9.5,60}},
       color={167,25,48},
       thickness=0.5,
       smooth=Smooth.None));
   connect(reallocateHeatFlows.heatScalar, shell.heat[2]) annotation (Line(
-      points={{14,53},{12,53},{12,60},{10.5,60}},
+      points={{26,53.5},{20,53.5},{20,60},{10.5,60}},
       color={167,25,48},
       thickness=0.5,
       smooth=Smooth.None));

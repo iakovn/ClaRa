@@ -275,7 +275,7 @@ equation
   connect(combustionChamber.slag_outlet, coalSink.slag_inlet) annotation (Line(
       points={{22,-97.8},{24,-97.8},{24,-120},{26.2,-120}},
       color={234,171,0},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(coalGas_join.coalDust_outlet, combustionChamber.inlet) annotation (
@@ -287,7 +287,7 @@ equation
   connect(coalFlowSource.coal_a, coalGas_join.coal_inlet) annotation (Line(
       points={{-44,-82},{-28,-82}},
       color={27,36,42},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(flueGasFlowSource.gas_a, coalGas_join.flueGas_inlet) annotation (Line(
@@ -321,7 +321,7 @@ equation
   connect(coalFlowSource1.coal_a, coalGas_join1.coal_inlet) annotation (Line(
       points={{-44,-236},{-26,-236}},
       color={27,36,42},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(flueGasFlowSource1.gas_a, coalGas_join1.flueGas_inlet) annotation (
@@ -367,14 +367,14 @@ equation
       Line(
       points={{-46,-292},{22,-292},{22,-282}},
       color={27,36,42},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(coalSlagFlueGas_join.slag_outlet, slagSink.slag_inlet) annotation (
       Line(
       points={{28,-282},{28,-300},{-46,-300},{-46,-300.2}},
       color={234,171,0},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(flueGasFlowSource2.gas_a, coalSlagFlueGas_join.flueGas_inlet)

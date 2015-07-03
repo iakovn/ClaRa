@@ -67,6 +67,7 @@ model Boiler "Boiler || liveSteam: blue |green || RH: blue |green"
 
   final parameter ClaRa.Basics.Units.Pressure p_RS_in=p_RS_out + Delta_p_RS_*
       Delta_p_RS_nom "Inlet pressure";
+  final parameter ClaRa.Basics.Units.MassFlowRate m_flow_HP_in( fixed=false) "HP inlet mass flow";
 
   final parameter ClaRa.Basics.Units.Pressure p_RS_out=P_target_*p_RS_out_nom "Reheated steam pressure at current load";
 
@@ -135,7 +136,7 @@ public
 initial equation
   h_LS_in=feedwater.h;
   h_RS_in=reheat_in.h;
-  feedwater.m_flow=m_flow_nom*P_target_;
+  feedwater.m_flow=m_flow_HP_in;
   reheat_in.m_flow=m_flow_cRH;
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,
             -100},{100,100}}),                                                                     graphics), Icon(

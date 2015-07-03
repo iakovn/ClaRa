@@ -29,8 +29,6 @@ model Test_boiler
     xi_const={0,0,0.0005,0,0.7681,0.2314,0,0,0})
                     annotation (Placement(transformation(extent={{-102,-48},{-82,-28}})));
 
-
-
   BoundaryConditions.BoundaryGas_Txim_flow flueGasFlowSource1(
     variable_m_flow=false,
     variable_xi=false,
@@ -38,15 +36,6 @@ model Test_boiler
     T_const=573.15,
     xi_const={0,0,0.0005,0,0.7681,0.2314,0,0,0})
                     annotation (Placement(transformation(extent={{-102,-18},{-82,2}})));
-
-
-
-
-
-
-
-
-
 
   Adapters.CoalSlagFlueGas_split                                 coalSlagFlueGas_split_top
     annotation (Placement(transformation(extent={{-10,-10},{10,10}},
@@ -118,7 +107,7 @@ model Test_boiler
     T_start_flueGas_out=2200,
     redeclare model HeatTransfer_Top =
         ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Radiation.Radiation_gas2Gas_advanced_L2 (
-                                                                                                suspension_calculationType="Calculated"),
+                                                                                            suspension_calculationType="Calculated"),
     xi_start_flueGas_out={0.01,0,0.25,0,0.7,0,0,0.04,0},
     redeclare model ReactionZone =
         ClaRa.Components.Furnace.ChemicalReactions.CoalReactionZone,
@@ -134,7 +123,7 @@ model Test_boiler
         flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical,
         height=7.5),
     redeclare model Burning_time = ClaRa.Components.Furnace.GeneralTransportPhenomena.BurningTime.ConstantBurningTime (Tau_burn_const=1.1))
-                                                                                                annotation (Placement(transformation(extent={{-6,-42},{54,-22}})));
+                                                                                            annotation (Placement(transformation(extent={{-6,-42},{54,-22}})));
   Hopper.Hopper_L2                    hopper(
     flueGasOutlet(h(start=-22790)),
     SlagTemperature=873,
@@ -171,7 +160,7 @@ model Test_boiler
     T_start_flueGas_out=1700,
     redeclare model HeatTransfer_Top =
         ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Radiation.Radiation_gas2Gas_advanced_L2 (
-                                                                                                suspension_calculationType="Calculated"),
+                                                                                            suspension_calculationType="Calculated"),
     xi_start_flueGas_out={0.01,0,0.25,0,0.7,0,0,0.04,0},
     redeclare model ReactionZone =
         ClaRa.Components.Furnace.ChemicalReactions.CoalReactionZone,
@@ -187,7 +176,7 @@ model Test_boiler
         flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical,
         height=7.5),
     redeclare model Burning_time = ClaRa.Components.Furnace.GeneralTransportPhenomena.BurningTime.ConstantBurningTime (Tau_burn_const=1.1))
-                                                                                                annotation (Placement(transformation(extent={{-6,-12},{54,8}})));
+                                                                                            annotation (Placement(transformation(extent={{-6,-12},{54,8}})));
   BoundaryConditions.BoundaryCoal_Txim_flow    coalFlowSource1(
     xi_const={0.661,0.0383,0.066,0.016,0.0057,0.135},
     m_flow_const=15,
@@ -367,7 +356,7 @@ model Test_boiler
         rotation=90,
         origin={232,18})));
   BoundaryConditions.BoundaryVLE_phxi            pressureSink_ph2(                p_const=29100000, variable_p=false)
-                                                                                                    annotation (Placement(transformation(extent={{398,212},{378,230}})));
+                                                                                            annotation (Placement(transformation(extent={{398,212},{378,230}})));
   VolumesValvesFittings.Pipes.PipeFlow_L4_Simple            ct(
     diameter_i=0.03,
     N_tubes=300,
@@ -869,28 +858,28 @@ equation
       Line(
       points={{-114,-26},{-60,-26}},
       color={27,36,42},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(coalFlowSource1.coal_a,coalGas_join_burner1. coal_inlet) annotation (
       Line(
       points={{-114,4},{-60,4}},
       color={27,36,42},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(coalFlowSource2.coal_a,coalGas_join_burner2. coal_inlet) annotation (
       Line(
       points={{-114,32},{-60,32}},
       color={27,36,42},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(slagFlowSource_top.slag_outlet,coalSlagFlueGas_split_top. slag_outlet)
     annotation (Line(
       points={{8,268},{8,244}},
       color={234,171,0},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(coalSink_top.coal_a,coalSlagFlueGas_split_top. coal_inlet)

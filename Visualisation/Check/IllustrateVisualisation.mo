@@ -62,7 +62,7 @@ equation
   connect(pipe.outlet, pressureSink_ph.steam_a) annotation (Line(
       points={{2,-18},{64,-18}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(pipe.inlet, massFlowSource_h.steam_a) annotation (Line(

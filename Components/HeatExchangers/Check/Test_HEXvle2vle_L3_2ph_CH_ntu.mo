@@ -70,13 +70,13 @@ model Test_HEXvle2vle_L3_2ph_CH_ntu
     annotation (Placement(transformation(extent={{86,-96},{66,-76}})));
   inner SimCenter simCenter(useHomotopy=true, redeclare TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1) annotation (Placement(transformation(extent={{60,40},{80,60}})));
   Visualisation.Hexdisplay_3 hexdisplay_3_1(
-    T_o={hEXvle2vle_L3_2ph_CH_ntu.shell.summary.inlet[1].T,hEXvle2vle_L3_2ph_CH_ntu.shell.summary.outlet[1].T,hEXvle2vle_L3_2ph_CH_ntu.shell.summary.outlet[1].T,hEXvle2vle_L3_2ph_CH_ntu.shell.summary.outlet[1].T,hEXvle2vle_L3_2ph_CH_ntu.shell.summary.outlet[1].T,hEXvle2vle_L3_2ph_CH_ntu.shell.summary.outlet[1].T},
-    T_i={hEXvle2vle_L3_2ph_CH_ntu.tubes.summary.inlet.T,hEXvle2vle_L3_2ph_CH_ntu.tubes.summary.outlet.T,hEXvle2vle_L3_2ph_CH_ntu.tubes.summary.outlet.T,hEXvle2vle_L3_2ph_CH_ntu.tubes.summary.outlet.T,hEXvle2vle_L3_2ph_CH_ntu.tubes.summary.outlet.T,hEXvle2vle_L3_2ph_CH_ntu.tubes.summary.outlet.T},
     Unit="HEX Temperature in K",
-    y_min=500,
     y_max=800,
     yps_o=hEXvle2vle_L3_2ph_CH_ntu.wall.summary.eCom.z_o,
-    yps_i=hEXvle2vle_L3_2ph_CH_ntu.wall.summary.eCom.z_i)
+    yps_i=hEXvle2vle_L3_2ph_CH_ntu.wall.summary.eCom.z_i,
+    T_i=hEXvle2vle_L3_2ph_CH_ntu.wall.summary.T_i,
+    y_min=300,
+    T_o=hEXvle2vle_L3_2ph_CH_ntu.wall.summary.T_o)
                annotation (Placement(transformation(extent={{-94,-34},{0,54}})));
 equation
 
@@ -116,7 +116,7 @@ equation
   connect(hEXvle2vle_L3_2ph_CH_ntu.Out2, valve_tubes1.inlet) annotation (Line(
       points={{-16,-60},{-44,-60}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(massFlowSource_h1.h, h_cold4.y) annotation (Line(
@@ -133,7 +133,7 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(hEXvle2vle_L3_2ph_CH_ntu.In1, massFlowSource_h.steam_a) annotation (Line(
-      points={{-6,-52.2},{-6,-42},{16,-42},{16,-22},{30,-22}},
+      points={{-6,-52.2},{-6,-40},{16,-40},{16,-22},{30,-22}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));

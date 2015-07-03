@@ -129,10 +129,10 @@ model RegenerativeAirPreheater_L4_array "Model for a regenerative air preheater"
     annotation (Dialog(tab=""));
 
   parameter Basics.Units.MassFraction xi_nom_freshAir[medium.nc - 1]=
-     zeros(medium.nc - 1) "|Physical Effects||Nominal Values|Nominal composition";
+     zeros(medium.nc - 1) "|Physical Effects|Nominal values|Nominal composition";
 
   parameter Basics.Units.MassFraction xi_nom_flueGas[medium.nc - 1]=
-     zeros(medium.nc - 1) "|Physical Effects||Nominal Values|Nominal composition";
+     zeros(medium.nc - 1) "|Physical Effects|Nominal values|Nominal composition";
 
 //   parameter Basics.ControlVolumes.Fundamentals.FlowModels.FlowModelStructure FlowModelFreshAir=Basics.ControlVolumes.Fundamentals.FlowModels.FlowModelStructure.inlet_dp_innerPipe_dp_outlet "|Physical Effects|Pressure Loss|Structure of flow model"
 //                                                                                                     annotation (choicesAllMatching);

@@ -3,12 +3,18 @@ package ClaRa "Simulation of Clausius-Rankine Cycles"
   import SI = ClaRa.Basics.Units;
 
 
-annotation (preferedView="info",version="1.0.0",
+
+
+
+
+
+
+
+annotation (preferedView="info",version="1.0.1",
                            uses(
-    TILMedia(version="1.0.0 ClaRa"),
+    TILMedia(version="1.0.1 ClaRa"),
     FluidDissipation(version="1.1.7"),
-      Modelica(version="3.2.1")),
-                                 Icon(coordinateSystem(preserveAspectRatio=
+      Modelica(version="3.2.1")),Icon(coordinateSystem(preserveAspectRatio=
           false, extent={{-100,-100},{100,100}}),
                                       graphics={Bitmap(
         extent={{-100,100},{100,-100}},

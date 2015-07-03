@@ -112,7 +112,7 @@ equation
       Line(
       points={{-118,-20},{-64,-20}},
       color={27,36,42},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(flueGasFlowSource.gas_a, coalGas_join_burner.flueGas_inlet)

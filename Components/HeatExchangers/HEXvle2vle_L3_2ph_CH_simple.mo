@@ -83,6 +83,7 @@ model HEXvle2vle_L3_2ph_CH_simple "VLE 2 VLE | L3 | 2 phase at shell side | Cyli
   parameter Basics.Units.Mass mass_struc=0 "Mass of inner structure elements, additional to the tubes itself"
     annotation (Dialog(tab="Shell Side", group="Geometry"));
   parameter Basics.Choices.GeometryOrientation orientation=ClaRa.Basics.Choices.GeometryOrientation.vertical "|Shell Side|Geometry|Orientation of the component";
+  parameter Basics.Choices.GeometryOrientation flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical "|Shell Side|Geometry|Orientation of the mass flow";
   //________________________________ Shell nominal parameter _____________________________________//
   parameter Basics.Units.MassFlowRate m_flow_nom_shell=10 "Nominal mass flow on shell side"
     annotation (Dialog(tab="Shell Side", group="Nominal Values"));
@@ -132,7 +133,7 @@ model HEXvle2vle_L3_2ph_CH_simple "VLE 2 VLE | L3 | 2 phase at shell side | Cyli
     annotation (Dialog(tab="Tubes", group="Geometry"));
   parameter Basics.Units.Length length_tubes=10 "Length of the tubes (one pass)"
     annotation (Dialog(tab="Tubes", group="Geometry"));
-  parameter Integer N_tubes=1000 "Number of horizontal tubes"
+  parameter Integer N_tubes=1000 "Number of tubes"
     annotation (Dialog(tab="Tubes", group="Geometry"));
   parameter Boolean staggeredAlignment=true "True, if the tubes are aligned staggeredly, false otherwise"
     annotation (Dialog(tab="Tubes", group="Geometry"));
@@ -233,8 +234,15 @@ model HEXvle2vle_L3_2ph_CH_simple "VLE 2 VLE | L3 | 2 phase at shell side | Cyli
     h_liq_start=h_liq_start,
     h_vap_start=h_vap_start,
     showExpertSummary=showExpertSummary,
-    redeclare model Geometry =
-        ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.CH_Nports (
+    redeclare model PhaseBorder =
+        ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.RealSeparated (
+        level_rel_start=level_rel_start,
+        radius_flange=radius_flange,
+        absorbInflow=absorbInflow),
+    exp_HT_phases=expHT_phases,
+    A_heat_ph=A_phaseBorder,
+    heatSurfaceAlloc=2,
+    redeclare model Geometry = ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.CH_Nports (
         z_out={z_out_shell},
         length=length,
         N_tubes=N_tubes,
@@ -247,15 +255,9 @@ model HEXvle2vle_L3_2ph_CH_simple "VLE 2 VLE | L3 | 2 phase at shell side | Cyli
         diameter_t=diameter_o,
         N_inlet=3,
         z_in={z_in_shell,z_in_aux1,z_in_aux2},
-        orientation=orientation),
-    redeclare model PhaseBorder =
-        ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.RealSeparated (
-        level_rel_start=level_rel_start,
-        radius_flange=radius_flange,
-        absorbInflow=absorbInflow),
-    exp_HT_phases=expHT_phases,
-    A_heat_ph=A_phaseBorder,
-    heatSurfaceAlloc=2) annotation (Placement(transformation(
+        orientation=orientation,
+        flowOrientation=flowOrientation))
+                        annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=270,
         origin={0,60})));
@@ -365,7 +367,7 @@ equation
   connect(shell.outlet[1], Out1) annotation (Line(
       points={{-1.77636e-015,50},{-1.77636e-015,-26},{0,-26},{0,-100}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(aux1, shell.inlet[2]) annotation (Line(

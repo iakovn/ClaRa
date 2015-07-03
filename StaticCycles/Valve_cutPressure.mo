@@ -14,11 +14,10 @@ model Valve_cutPressure "Valve || green | blue"
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
- // Red input:    Values of p and m_flow are known in component and provided FOR neighbor component, value of h is unknown and provided BY neighbor component.
+  // Green input: Values of p, m_flow and h are unknown and provided BY neighbor component.
  // Blue output: Value of p is unknown and provided BY neighbor component, values of m_flow and h are known in component and provided FOR neighbor component.
 final parameter ClaRa.Basics.Units.Pressure p_in(fixed=false);
-// parameter ClaRa.Basics.Units.Pressure Delta_p_nom=p_out-p_in
-//     "Nominal pressure drop";
+final parameter ClaRa.Basics.Units.Pressure Delta_p_nom=p_out-p_in "Nominal pressure drop";
 
 final parameter ClaRa.Basics.Units.Pressure p_out(fixed=false);
 final parameter ClaRa.Basics.Units.MassFlowRate m_flow(fixed=false);

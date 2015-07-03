@@ -42,15 +42,11 @@ equation
 // Note that we want distribute zeta linearly over tha pipe length. Hence use zeta[i]=zeta_TOT*Delta_x_FM[i]/(L -Delta_x_FM[1]-Delta_x_FM[N_cv+1] ) <-- notice that the last two terms depend on the flow model
 // for the homotopy equation we use the dp_pressureLossCoefficient_MFLOW function, linearised about the initial pressure difference.
 // Notice that we have to use the rugularised square root in order to allow for negative initial pressure losses!
+// Simplified homotopy eaution based on linear, density independent corellation, passing the m_flow=0 at Delat_p=0
  if not frictionAtInlet and not frictionAtOutlet then
      for i in 2:iCom.N_cv loop
        zeta[i]=zeta_TOT*Delta_x_FM[i]/(sum(Delta_x_FM)-Delta_x_FM[1]-Delta_x_FM[iCom.N_cv+1]);
-       m_flow[i] = if useHomotopy then homotopy(FluidDissipation.PressureLoss.General.dp_pressureLossCoefficient_MFLOW(inCon[i], inVar[i], Delta_p[i]),
-                                           (    (2*rho[i]/zeta[i])^0.5 * geo.A_cross_FM[i]
-                                           *  FluidDissipation.Utilities.Functions.General.SmoothPower(((iCom.p[iCom.N_cv]-iCom.p[1])*Delta_x_FM[i]/(sum(Delta_x_FM))),Delta_p_smooth,0.5)
-                                          +0.5*(2*rho[i]/zeta[i])^0.5 * geo.A_cross_FM[i]
-                                          /  FluidDissipation.Utilities.Functions.General.SmoothPower((iCom.p[iCom.N_cv]-iCom.p[1])*Delta_x_FM[i]/(sum(Delta_x_FM)),Delta_p_smooth,0.5)
-                                          *(Delta_p[i]-(iCom.p[iCom.N_cv]-iCom.p[1])*Delta_x_FM[i]/(sum(Delta_x_FM)))))
+       m_flow[i] = if useHomotopy then homotopy(FluidDissipation.PressureLoss.General.dp_pressureLossCoefficient_MFLOW(inCon[i], inVar[i], Delta_p[i]),(iCom.Delta_p_nom/iCom.m_flow_nom)*Delta_x_FM[i]/(sum(Delta_x_FM)-Delta_x_FM[1]-Delta_x_FM[iCom.N_cv+1]) *Delta_p[i])
                  else FluidDissipation.PressureLoss.General.dp_pressureLossCoefficient_MFLOW(inCon[i], inVar[i], Delta_p[i]);
       end for;
    zeta[1]=0;
@@ -61,13 +57,8 @@ equation
  elseif not frictionAtInlet and frictionAtOutlet then
    for i in 2:iCom.N_cv+1 loop
        zeta[i]=zeta_TOT*Delta_x_FM[i]/(sum(Delta_x_FM)-Delta_x_FM[1]);
-       m_flow[i] = if useHomotopy then homotopy(FluidDissipation.PressureLoss.General.dp_pressureLossCoefficient_MFLOW(inCon[i], inVar[i], Delta_p[i]),
-                                           (    (2*rho[i]/zeta[i])^0.5 * geo.A_cross_FM[i]
-                                           *  FluidDissipation.Utilities.Functions.General.SmoothPower(((iCom.p[iCom.N_cv]-iCom.p[1])*Delta_x_FM[i]/(sum(Delta_x_FM))),Delta_p_smooth,0.5)
-                                          +0.5*(2*rho[i]/zeta[i])^0.5 * geo.A_cross_FM[i]
-                                          /  FluidDissipation.Utilities.Functions.General.SmoothPower((iCom.p[iCom.N_cv]-iCom.p[1])*Delta_x_FM[i]/(sum(Delta_x_FM)),Delta_p_smooth,0.5)
-                                          *(Delta_p[i]-(iCom.p[iCom.N_cv]-iCom.p[1])*Delta_x_FM[i]/(sum(Delta_x_FM)))))
-                 else FluidDissipation.PressureLoss.General.dp_pressureLossCoefficient_MFLOW(inCon[i], inVar[i], Delta_p[i]);
+       m_flow[i] = if useHomotopy then homotopy(FluidDissipation.PressureLoss.General.dp_pressureLossCoefficient_MFLOW(inCon[i], inVar[i], Delta_p[i]),(iCom.Delta_p_nom/iCom.m_flow_nom)*Delta_x_FM[i]/(sum(Delta_x_FM)-Delta_x_FM[1]) *Delta_p[i])
+                  else FluidDissipation.PressureLoss.General.dp_pressureLossCoefficient_MFLOW(inCon[i], inVar[i], Delta_p[i]);
    end for;
    zeta[1]=0;
    Delta_p[1]=0;
@@ -75,26 +66,16 @@ equation
  elseif frictionAtInlet and not frictionAtOutlet then
    for i in 1:iCom.N_cv loop
        zeta[i]=zeta_TOT*Delta_x_FM[i]/(sum(Delta_x_FM)-Delta_x_FM[iCom.N_cv+1]);
-       m_flow[i] = if useHomotopy then homotopy(FluidDissipation.PressureLoss.General.dp_pressureLossCoefficient_MFLOW(inCon[i], inVar[i], Delta_p[i]),
-                                           (    (2*rho[i]/zeta[i])^0.5 * geo.A_cross_FM[i]
-                                           *  FluidDissipation.Utilities.Functions.General.SmoothPower(((iCom.p[iCom.N_cv]-iCom.p[1])*Delta_x_FM[i]/(sum(Delta_x_FM))),Delta_p_smooth,0.5)
-                                          +0.5*(2*rho[i]/zeta[i])^0.5 * geo.A_cross_FM[i]
-                                          /  FluidDissipation.Utilities.Functions.General.SmoothPower((iCom.p[iCom.N_cv]-iCom.p[1])*Delta_x_FM[i]/(sum(Delta_x_FM)),Delta_p_smooth,0.5)
-                                          *(Delta_p[i]-(iCom.p[iCom.N_cv]-iCom.p[1])*Delta_x_FM[i]/(sum(Delta_x_FM)))))
+       m_flow[i] = if useHomotopy then homotopy(FluidDissipation.PressureLoss.General.dp_pressureLossCoefficient_MFLOW(inCon[i], inVar[i], Delta_p[i]),(iCom.Delta_p_nom/iCom.m_flow_nom)*Delta_x_FM[i]/(sum(Delta_x_FM)-Delta_x_FM[iCom.N_cv+1]) *Delta_p[i])
                  else FluidDissipation.PressureLoss.General.dp_pressureLossCoefficient_MFLOW(inCon[i], inVar[i], Delta_p[i]);
    end for;
    zeta[iCom.N_cv+1]=0;
    Delta_p[iCom.N_cv+1]=0;
 
- else //FlowModel=FlowModelStructure.inlet_dp_innerPipe_dp_outlet
+ else //frictionAtInlet and frictionAtOutlet
    for i in 1:iCom.N_cv+1 loop
        zeta[i]=zeta_TOT*Delta_x_FM[i]/(sum(Delta_x_FM));
-       m_flow[i] = if useHomotopy then homotopy(FluidDissipation.PressureLoss.General.dp_pressureLossCoefficient_MFLOW(inCon[i], inVar[i], Delta_p[i]),
-                                           (    (2*rho[i]/zeta[i])^0.5 * geo.A_cross_FM[i]
-                                           *  FluidDissipation.Utilities.Functions.General.SmoothPower(((iCom.p[iCom.N_cv]-iCom.p[1])*Delta_x_FM[i]/(sum(Delta_x_FM))),Delta_p_smooth,0.5)
-                                          +0.5*(2*rho[i]/zeta[i])^0.5 * geo.A_cross_FM[i]
-                                          /  FluidDissipation.Utilities.Functions.General.SmoothPower((iCom.p[iCom.N_cv]-iCom.p[1])*Delta_x_FM[i]/(sum(Delta_x_FM)),Delta_p_smooth,0.5)
-                                          *(Delta_p[i]-(iCom.p[iCom.N_cv]-iCom.p[1])*Delta_x_FM[i]/(sum(Delta_x_FM)))))
+       m_flow[i] = if useHomotopy then homotopy(FluidDissipation.PressureLoss.General.dp_pressureLossCoefficient_MFLOW(inCon[i], inVar[i], Delta_p[i]),(iCom.Delta_p_nom/iCom.m_flow_nom)*Delta_x_FM[i]/(sum(Delta_x_FM)) *Delta_p[i])
                  else FluidDissipation.PressureLoss.General.dp_pressureLossCoefficient_MFLOW(inCon[i], inVar[i], Delta_p[i]);
    end for;
 

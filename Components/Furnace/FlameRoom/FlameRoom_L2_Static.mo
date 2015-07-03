@@ -14,7 +14,8 @@ model FlameRoom_L2_Static "Model for a flame room section inside a combustion ch
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
-extends ClaRa.Components.Furnace.BaseClasses.CombustionChamberBase;
+extends ClaRa.Components.Furnace.BaseClasses.CombustionChamberBase(
+        geo(flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical));
 
 extends ClaRa.Basics.Icons.FlameRoom;
 //## P A R A M E T E R S #######################################################################################
@@ -95,7 +96,7 @@ equation
    if LHV_calculationType == "fixed" then
     LHV = LHV_fixed;
    elseif LHV_calculationType == "Verbandsformel" then
-    LHV =(33907*xi_coal_in[1] + 142324*(xi_coal_in[2] - xi_coal_in[3]/8.) + 10465*xi_coal_in[5] - 2512*((1 - sum(xi_coal_in)) + 9*xi_coal_in[2]))*m_flow_coal_burned;
+    LHV =(33907*xi_coal_in[1] + 142324*(xi_coal_in[2] - xi_coal_in[3]/8.) + 10465*xi_coal_in[5] - 2512*((1 - sum(xi_coal_in)) + 9*xi_coal_in[2]))*1000;
    else
     LHV = LHV_fixed;
    end if;

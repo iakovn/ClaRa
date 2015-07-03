@@ -167,7 +167,7 @@ equation
       color={0,131,169},
       smooth=Smooth.None));
   connect(turbine_IP.outlet, split_LP.inlet) annotation (Line(
-      points={{-57,120},{-50,120},{-50,124.667},{-43,124.667}},
+      points={{-57,120},{-50,120},{-50,124.667},{-43.4,124.667}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(split_LP.outlet_2, valve_LP.inlet) annotation (Line(
@@ -175,7 +175,7 @@ equation
       color={0,131,169},
       smooth=Smooth.None));
   connect(turbine_LP1.outlet, split_LP1.inlet) annotation (Line(
-      points={{41,120},{60,120},{60,124.667},{81,124.667}},
+      points={{41,120},{60,120},{60,124.667},{80.6,124.667}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(split_LP1.outlet_2, valve_LP1.inlet) annotation (Line(
@@ -195,7 +195,7 @@ equation
       color={0,131,169},
       smooth=Smooth.None));
   connect(split_LP_turbine2.inlet, turbine_HP.outlet) annotation (Line(
-      points={{-99,24.6667},{-78,24.6667},{-78,118},{-121,118}},
+      points={{-98.6,24.6667},{-78,24.6667},{-78,118},{-121,118}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(mixer2.outlet, feedwatertank.cond_in) annotation (Line(

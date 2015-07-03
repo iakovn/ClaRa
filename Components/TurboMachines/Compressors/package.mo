@@ -27,4 +27,10 @@ package Compressors
 
     extends ClaRa.Basics.Icons.PackageIcons.Components60;
 
+
+
+
+
+
+
 end Compressors;

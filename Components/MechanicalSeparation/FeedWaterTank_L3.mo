@@ -16,7 +16,7 @@ model FeedWaterTank_L3 "Feedwater tank : separated volume approach | level-depen
 //___________________________________________________________________________//
 
 extends ClaRa.Components.MechanicalSeparation.FeedWaterTank_base;
-
+  replaceable model material = TILMedia.SolidTypes.TILMedia_Steel constrainedby TILMedia.SolidTypes.TILMedia_Aluminum "Material of the walls"  annotation (Dialog(group="Fundamental Definitions"),choicesAllMatching);
   extends ClaRa.Basics.Icons.ComplexityLevel(complexity="L3");
   parameter Modelica.SIunits.Length radius_flange=0.05 "Flange radius" annotation(Dialog(group="Geometry"));
   parameter SI.Time Tau_cond=10 "|Phase Separation|Mass Transfer Between Phases|Time constant of condensation";
@@ -33,7 +33,7 @@ extends ClaRa.Components.MechanicalSeparation.FeedWaterTank_base;
   parameter Modelica.SIunits.SpecificEnthalpy h_vap_start= TILMedia.VLEFluidFunctions.dewSpecificEnthalpy_pxi(medium, p_start) "|Initialisation||Initial vapour specific enthalpy";
   replaceable model PressureLoss =
       ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.NoFriction_L3
-    constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.ShellType_L3 "Pressure loss model"
+    constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.PressureLoss_L3 "Pressure loss model"
                           annotation(Dialog(group="Fundamental Definitions"), choicesAllMatching);
 
  record Outline
@@ -115,7 +115,7 @@ extends ClaRa.Components.MechanicalSeparation.FeedWaterTank_base;
           volume.fluidIn.vleFluidPointer)),
     feedwater(
       showExpertSummary=showExpertSummary,
-      m_flow=outlet.m_flow,
+      m_flow=-outlet.m_flow,
       p=outlet.p,
       h=actualStream(outlet.h_outflow),
       T=TILMedia.VLEFluidObjectFunctions.temperature_phxi(
@@ -133,7 +133,7 @@ extends ClaRa.Components.MechanicalSeparation.FeedWaterTank_base;
           actualStream(outlet.h_outflow),
           actualStream(outlet.xi_outflow),
           volume.fluidIn.vleFluidPointer),
-      H_flow=outlet.m_flow*actualStream(outlet.h_outflow),
+      H_flow=-outlet.m_flow*actualStream(outlet.h_outflow),
       rho=TILMedia.VLEFluidObjectFunctions.density_phxi(
           outlet.p,
           actualStream(outlet.h_outflow),
@@ -153,13 +153,6 @@ extends ClaRa.Components.MechanicalSeparation.FeedWaterTank_base;
     redeclare model HeatTransfer =
         ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3 (             alpha_nom=
                                                                                               {3000,3000}),
-    redeclare model Geometry =
-        ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowCylinder (
-        orientation=orientation,
-        diameter=diameter,
-        length=length,
-        z_in={z_in},
-        z_out={z_out}),
     h_liq_start=h_liq_start,
     h_vap_start=h_vap_start,
     Tau_evap=tau_evap,
@@ -171,17 +164,24 @@ extends ClaRa.Components.MechanicalSeparation.FeedWaterTank_base;
         smoothness=smoothness,
         radius_flange=
                  radius_flange,
-        absorbInflow=absorbInflow)) annotation (Placement(transformation(extent={{12,-30},{-8,-10}})));
+        absorbInflow=absorbInflow),
+    redeclare model Geometry = ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowCylinder (
+        orientation=orientation,
+        diameter=diameter,
+        length=length,
+        z_in={z_in},
+        z_out={z_out}))             annotation (Placement(transformation(extent={{12,-30},{-8,-10}})));
 
   ClaRa.Basics.ControlVolumes.SolidVolumes.ThickWall_L4 wall(
-    redeclare replaceable model Material = TILMedia.SolidTypes.TILMedia_Steel,
     sizefunc=+1,
     N_tubes=1,
     initChoice=ClaRa.Basics.Choices.Init.steadyState,
-    diameter_o=diameter/2*1.01,
-    diameter_i=diameter/2,
     length=length,
-    N_rad=3) annotation (Placement(transformation(extent={{-40,4},{-20,24}})));
+    N_rad=3,
+    diameter_o=diameter*1.01,
+    diameter_i=diameter,
+    redeclare replaceable model Material = material)
+             annotation (Placement(transformation(extent={{-40,4},{-20,24}})));
 
 equation
   eye_int.m_flow=-outlet.m_flow;

@@ -43,7 +43,7 @@ equation
           extent={{-200,0},{200,-200}},
           fillColor={234,234,234},
           fillPattern=FillPattern.Solid,
-          pattern=LinePattern.None),
+          pattern=LinePattern.Solid),
         Text(
           extent={{-198,-2},{198,-198}},
           fillColor={215,215,215},

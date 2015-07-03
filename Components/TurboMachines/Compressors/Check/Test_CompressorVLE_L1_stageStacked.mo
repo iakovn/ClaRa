@@ -118,7 +118,7 @@ equation
   connect(GasFanAdvanced.fluid_outlet, gasSink_pT2.steam_a) annotation (Line(
       points={{-14,-44},{4,-44}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   annotation (

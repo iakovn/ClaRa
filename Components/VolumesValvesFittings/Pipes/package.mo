@@ -27,4 +27,9 @@ package Pipes "Models for tube-like elements"
 
 extends ClaRa.Basics.Icons.PackageIcons.Components60;
 
+
+
+
+
+
 end Pipes;

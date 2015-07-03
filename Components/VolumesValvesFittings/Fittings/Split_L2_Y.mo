@@ -167,5 +167,6 @@ equation
 
   annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
             -100},{100,100}}),
-                   graphics), Diagram(graphics));
+                   graphics), Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}),
+                                      graphics));
 end Split_L2_Y;

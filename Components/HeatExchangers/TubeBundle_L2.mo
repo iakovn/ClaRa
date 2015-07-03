@@ -30,8 +30,8 @@ model TubeBundle_L2 "A flexible 0D tube bundle model"
   ClaRa.Basics.Interfaces.Connected2SimCenter connected2SimCenter(
     powerIn=0,
     powerOut=if not heatFlowIsLoss then -heat.Q_flow else 0,
-    powerAux=0) if                                                                                                     contributeToCycleSummary;
-  outer ClaRa.simCenter   simCenter;
+    powerAux=0) if  contributeToCycleSummary;
+  outer ClaRa.SimCenter   simCenter;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // parameter dialog~~~~~~~~~~~~~~~~~

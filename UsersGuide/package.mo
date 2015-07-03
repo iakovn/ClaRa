@@ -28,6 +28,9 @@ package UsersGuide "User's guide"
 extends ClaRa.Basics.Icons.PackageIcons.Info100;
 
 
+
+
+
 annotation (Documentation(info="<html>
 
 </html>"), Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},

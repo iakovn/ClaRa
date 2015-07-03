@@ -180,7 +180,7 @@ equation
   connect(valve.outlet, outflowZone.inlet) annotation (Line(
       points={{-20,-36},{-20,20},{34,20}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(MainInlet, outflowZone.inlet) annotation (Line(

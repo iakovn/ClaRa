@@ -36,7 +36,7 @@ equation
       Line(
       points={{14,-58},{44,-58}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(pressureSink_ph3.steam_a, threeWayValveVLE_L2_1.outlet2) annotation (

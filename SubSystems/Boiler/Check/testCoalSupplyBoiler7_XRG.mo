@@ -195,7 +195,7 @@ equation
   connect(split_IET3_1.outlet1, LPTurbine.outlet) annotation (Line(
       points={{136,-90},{138,-90},{138,-76}},
       color={0,131,169},
-      pattern=LinePattern.None,
+      pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=false,extent={{-200,-200},{200,200}}),
