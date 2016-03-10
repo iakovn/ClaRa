@@ -1,14 +1,14 @@
 within ClaRa.Components.VolumesValvesFittings.Valves;
 model ThreeWayValveVLE_L1 "Three way valve for vle media, not suitable for back flows!"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -22,7 +22,9 @@ model ThreeWayValveVLE_L1 "Three way valve for vle media, not suitable for back 
 //     ClaRa.Basics.Units.Volume volume_tot "Total volume";
 // end Outline;
 
-  replaceable model PressureLoss =  ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticFrictionFlowAreaSymetric_TWV constrainedby ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.TWV_L1 "Pressure loss model" annotation(choicesAllMatching);
+  replaceable model PressureLoss =
+      ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticFrictionFlowAreaSymetric_TWV  constrainedby ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.TWV_L1 "Pressure loss model"
+                                                                                            annotation(choicesAllMatching);
 
 public
   parameter SI.Area effectiveFlowArea=7.85e-3 "Effective flow area for outlets"

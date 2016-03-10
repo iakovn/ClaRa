@@ -1,14 +1,14 @@
 within ClaRa.Basics.ControlVolumes.SolidVolumes;
 model ThinWall_L2 "A thin wall involving one volume element in heat flow direction"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -31,7 +31,7 @@ parameter ClaRa.Basics.Units.Length thickness_wall "Wall thickness"
 //     "True, if mass is calculated with nominal material density"
 //                                                               annotation (Dialog(group="Geometry"));
 public
-  parameter ClaRa.Basics.Units.Mass mass "Fixed Mass"     annotation(Dialog(group="Geometry"));
+  parameter ClaRa.Basics.Units.Mass mass "Fixed mass"     annotation(Dialog(group="Geometry"));
   parameter ClaRa.Basics.Units.Temperature T_start=293.15 "Start values of wall temperature"  annotation(Dialog(group="Initialisation"));
 
   parameter Integer stateLocation = 2 "Location of states" annotation(Dialog(group="Numerical Efficiency"), choices(choice=1 "Inner location of states",
@@ -49,8 +49,25 @@ public
   ClaRa.Basics.Interfaces.HeatPort_b innerPhase "Inner side of the cylinder"
     annotation (Placement(transformation(extent={{-10,-60},{10,-40}}),
         iconTransformation(extent={{-10,-60},{10,-40}})));
-equation
 
+record Summary
+  extends ClaRa.Basics.Icons.RecordIcon;
+  input Units.Area A_heat "Mean area of heat transfer (single tube)";
+  input ClaRa.Basics.Units.Length thickness_wall "Wall thickness";
+  input ClaRa.Basics.Units.Mass mass "Wall mass";
+  input ClaRa.Basics.Units.InternalEnergy U "Inner energy of wall";
+  input Units.Temperature T_i "Inner phase temperature";
+  input Units.Temperature T_o "Outer phase temperature";
+  input ClaRa.Basics.Units.Temperature T "Wall temperature";
+  input Real lambda "Heat conductivity";
+  input Units.HeatFlowRate Q_flow_i "Heat flow rate to inner phase";
+  input Units.HeatFlowRate Q_flow_o "Heat flow rate to outer phase";
+  input Units.HeatCapacityMassSpecific cp "Specific heat capacity";
+  input Units.DensityMassSpecific d "Material density";
+end Summary;
+
+Summary summary(A_heat=A_heat, thickness_wall=thickness_wall, mass=mass, U=U, T_i=innerPhase.T, T_o=outerPhase.T,T=T, lambda=solid.lambda, Q_flow_i=innerPhase.Q_flow, Q_flow_o=outerPhase.Q_flow, cp=solid.cp, d=solid.d);
+equation
   U=T*mass*solid.cp;
   der(U) = (innerPhase.Q_flow+outerPhase.Q_flow);
 

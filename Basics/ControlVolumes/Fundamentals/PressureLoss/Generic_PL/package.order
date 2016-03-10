@@ -8,5 +8,6 @@ LinearParallelZones_L3
 LinearSerialZones_L3
 QuadraticParallelZones_L3
 PressureLoss_L4
+NoFriction_L4
 LinearPressureLoss_L4
 QuadraticNominalPoint_L4

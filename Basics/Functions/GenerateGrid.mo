@@ -1,14 +1,14 @@
 within ClaRa.Basics.Functions;
 function GenerateGrid "Generate grid discretization from scale functions"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.0.0                        //
+  // Component of the ClaRa library, version: 1.1.0                        //
   //                                                                           //
-  // Licensed by the DYNCAP research team under Modelica License 2.            //
-  // Copyright © 2013-2015, DYNCAP research team.                                   //
+  // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+  // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
-  // DYNCAP is a research project supported by the German Federal Ministry of  //
-  // Economics and Technology (FKZ 03ET2009).                                  //
-  // The DYNCAP research team consists of the following project partners:      //
+  // DYNCAP and DYNSTART are research projects supported by the German Federal //
+  // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+  // The research team consists of the following project partners:             //
   // Institute of Energy Systems (Hamburg University of Technology),           //
   // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
   // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -24,85 +24,85 @@ function GenerateGrid "Generate grid discretization from scale functions"
   output Real dx[N] "resulting grid";
 
 protected
-  Integer NumDis "number of regions into which the grid shall be subdivided";
-  Integer NSub[N]=zeros(N);
+  Integer N_sub "number of regions into which the grid shall be subdivided";
+  Integer N_cv_sub[N]=zeros(N);
   //number of cells in each subdivision
   Integer offset "Offset for discretization interval used in computation of dx[N] by going through the subdivisions";
   //auxiliary variables......
-  Integer NextElem;
-  Real remainder;
-  Real normalConst;
+  //Integer NextElem;
+  Real remainder "Auxilliary variable: normalised remainder";
+  Real normalConst "Auxilliary variable: normalising constant";
 
 algorithm
   assert(L > 0, "Length of discretisation interval must be greater than zero!");
 
-  NumDis := size(SizeFunc, 1);
+  N_sub := size(SizeFunc, 1);
   //get number of subdivisions.
 
   // /*----------get all size functions via a string---------------*/
   // //for now we use  Modelica.Utilities.Examples.expression here as string parser.
   // //Maybe we need to write our own in the mid term perspective?
   //   NumElem:=1;
-  //   while NumElem<=NumDis loop
+  //   while NumElem<=N_sub loop
   //     (SizeFunc[NumElem],NextElem):=Modelica.Utilities.Examples.expression(SizeFuncString,startIndex=NextElem+1);
   //     NumElem:=NumElem+1;
   //   end while;
 
   /*-if too many subdivisions are used the scaling of each sub-interval becomes meaningless!------*/
-  // assert(NumDis <= div(N, 2), "Number of subdivisions of grid exceeds N/2.
+  // assert(N_sub <= div(N, 2), "Number of subdivisions of grid exceeds N/2.
   // This makes any choice of stretching ineffective. Either lower the number of subdivisions of the grid or increase the number of grid cells!");
 
   /*----------compute the number of cells in each subdivision---------------*/
   remainder := 0;
-  if NumDis == 1 then
-    NSub[NumDis] := N;
+  if N_sub == 1 then
+    N_cv_sub[N_sub] := N;
   else
-    for i in 1:NumDis - 1 loop
-      remainder := remainder + rem(N, NumDis)/NumDis;
+    for i in 1:N_sub - 1 loop
+      remainder := remainder + rem(N, N_sub)/N_sub;
       if remainder > 0.5 then
-        NSub[i] := div(N, NumDis) + 1;
+        N_cv_sub[i] := div(N, N_sub) + 1;
         remainder := remainder - 1;
       else
-        NSub[i] := div(N, NumDis);
+        N_cv_sub[i] := div(N, N_sub);
       end if;
     end for;
-    NSub[NumDis] := N;
-    for i in 1:NumDis - 1 loop
-      NSub[NumDis] := NSub[NumDis] - NSub[i];
+    N_cv_sub[N_sub] := N;
+    for i in 1:N_sub - 1 loop
+      N_cv_sub[N_sub] := N_cv_sub[N_sub] - N_cv_sub[i];
     end for;
-    //again the following gives problems during compilation..: -sum({NSub[i] for i in 1:NumDis-1});
+    //again the following gives problems during compilation..: -sum({N_cv_sub[i] for i in 1:N_sub-1});
     //need to check the algorithm further, in principle this could be integrated into one loop statement.
     //For now I leave it in this state, this ensures that no overcounting occurs due to rounding of numbers.
   end if;
 
   /*----------compute the length of the cells in each subdivision and write to dx[N]!---------------*/
   offset := 0;
-  for i in 1:NumDis loop
+  for i in 1:N_sub loop
     //go through every subdivision of the grid
     normalConst := 0;
 
-    for k in 1:NSub[i] loop
-      // somehow the usual normalConst:=sum({k^SizeFunc[i] for k in 1:NSub[i]}); gives an compiler error!
+    for k in 1:N_cv_sub[i] loop
+      // somehow the usual normalConst:=sum({k^SizeFunc[i] for k in 1:N_cv_sub[i]}); gives an compiler error!
       normalConst := normalConst + k^abs(SizeFunc[i]);
     end for;
 
     if SizeFunc[i] >= 0 then
 
-      for j in 1:NSub[i] loop
-        dx[offset + j] := L/NumDis*(j^SizeFunc[i])/normalConst;
+      for j in 1:N_cv_sub[i] loop
+        dx[offset + j] := L/N_sub*(j^SizeFunc[i])/normalConst;
       end for;
     else
-      for j in 1:NSub[i] loop
-        dx[offset + j] := L/NumDis*(NSub[i] + 1 - j)^(-SizeFunc[i])/normalConst;
+      for j in 1:N_cv_sub[i] loop
+        dx[offset + j] := L/N_sub*(N_cv_sub[i] + 1 - j)^(-SizeFunc[i])/normalConst;
       end for;
     end if;
-    offset := offset + NSub[i];
+    offset := offset + N_cv_sub[i];
   end for;
   /*--enable the lines below for debugging purposes!-------------------------------------------------*/
-  //   dx[1]:=NSub[1];
-  //   dx[2]:=NSub[2];
-  //   dx[3]:=NumDis;
-  //   dx:=NSub;
+  //   dx[1]:=N_cv_sub[1];
+  //   dx[2]:=N_cv_sub[2];
+  //   dx[3]:=N_sub;
+  //   dx:=N_cv_sub;
 
   annotation (Documentation(info="<html>
 <p><h4>This function computes the discretization of a given interval I of length L into N cells.  </h4></p>

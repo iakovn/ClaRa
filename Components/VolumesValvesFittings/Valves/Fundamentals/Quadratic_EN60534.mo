@@ -2,8 +2,7 @@ within ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals;
 model Quadratic_EN60534 "Quadratic|Kv definition | supercritical flow | compressible |EN60534"
   extends ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.GenericPressureLoss;
   import SI = ClaRa.Basics.Units;
-  import SM =
-          ClaRa.Basics.Functions.Stepsmoother;
+  import SM = ClaRa.Basics.Functions.Stepsmoother;
   parameter Real Kvs(unit="m3/h") = 1 "|Valve Characteristics|Flow Coefficient at nominal opening (Delta_p_nom = 1e5 Pa, rho_nom=1000 kg/m^3(cold water))";
   Real Kv(unit="m3/h") "|Valve Characteristics|Flow Coefficient (Delta_p_nom = 1e5 Pa, rho_nom=1000 kg/m^3(cold water))";
   parameter Real x_T= 0.75 "|Valve Characteristics|Relative Pressure drop without fittings (see docu for typical values)";

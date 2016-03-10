@@ -16,7 +16,7 @@ annotation ( Icon(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100}
           fillColor={102,181,203},
           fillPattern=FillPattern.Solid)}),
     Diagram(graphics={         Polygon(
-          points={{0,50},{100,0},{0,-50},{0,50}},
+          points={{-100,100},{100,0},{-100,-100},{-100,100}},
           lineColor={153,205,221},
           fillColor={153,205,221},
           fillPattern=FillPattern.Solid), Text(
@@ -24,7 +24,7 @@ annotation ( Icon(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100}
           lineColor={153,205,221},
           textString="%name"),
         Polygon(
-          points={{6,40},{85,0},{6,-40},{6,40}},
+          points={{-92,88},{85,0},{-92,-88},{-92,88}},
           smooth=Smooth.None,
           fillColor={221,222,223},
           fillPattern=FillPattern.Solid,

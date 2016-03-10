@@ -1,14 +1,14 @@
 within ClaRa.Components.Mills.HardCoalMills;
 model VerticalMill_L3 "Vertical roller mill such as ball-and-race mill and roller-bowl mills"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -24,10 +24,8 @@ model VerticalMill_L3 "Vertical roller mill such as ball-and-race mill and rolle
 
   import SI = ClaRa.Basics.Units;
 
-  constant Basics.Units.EnthalpyMassSpecific
-                                   Delta_h_evap=2500e3 "Heat of vaporization";
-  constant Basics.Units.HeatCapacityMassSpecific
-                                       cp_w= 4190 "Specific heat capacity of liquid water in the raw coal";
+  Basics.Units.EnthalpyMassSpecific Delta_h_evap "Heat of vaporization";
+  Basics.Units.HeatCapacityMassSpecific cp_w "Specific heat capacity of liquid water in the raw coal";
 
   parameter ClaRa.Basics.Media.Fuel.PartialFuel coal=simCenter.fuelModel1 "Medium to be used"
                         annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
@@ -42,7 +40,7 @@ model VerticalMill_L3 "Vertical roller mill such as ball-and-race mill and rolle
   parameter Integer N_mills= 1 "Number of equal mills in parallel" annotation(Dialog(group="Mill Definition"));
 
   parameter Basics.Units.Temperature
-                           T_0 = simCenter.T_amb "Initial temperature in mill"
+                           T_0 = simCenter.T_amb_start "Initial temperature in mill"
                                    annotation(Dialog(group="Initialisation"));
   parameter Basics.Units.Mass
                     M_c_0= 1000 "Initial Mass of raw coal on the table" annotation(Dialog(group="Initialisation"));
@@ -53,16 +51,27 @@ model VerticalMill_L3 "Vertical roller mill such as ball-and-race mill and rolle
 
   parameter ClaRa.Basics.Choices.Init initChoice=ClaRa.Basics.Choices.Init.noInit "Initialisation option"
                             annotation(Dialog(group="Initialisation"));
-  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary "True if component shall contribute to automatic efficiency calculation" annotation(Dialog(tab="Summary and Visualisation"));
+  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary "True if component shall contribute to automatic efficiency calculation"
+                                                                                            annotation(Dialog(tab="Summary and Visualisation"));
 
-  parameter Boolean applyGrindingDelay=false "|Expert Settings||True if grinding process introducec a dead time";
+  parameter Boolean applyGrindingDelay=false "|Expert Settings||True if grinding process introduces a dead time";
   parameter SI.Time Tau_grind= 120 "Grinding dead time" annotation(Dialog(enable=applyGrindingDelay, tab="Expert Settings"));
+
+//   parameter String LHV_calculationType="Verbandsformel" "Calculation type" annotation (
+//   Dialog(group="Lower heating value settings"), choices(choice="Verbandsformel" "Calculate the LHV from the Verbandsformel",
+//   choice="Evaporation enthalpy" "LHV increased by enthalpy amount of evaporated water mass",
+//   choice="Not influenced by drying" "LHV not influenced (inlet LHV = outlet LHV)"));
+
   Basics.Units.Mass
           M_c(start=M_c_0) "Mass of ungrinded coal on the table";
   Basics.Units.Mass
           M_pf(start=M_pf_0) "Mass of pulverized coal on the table";
   Basics.Units.Mass
           M_cair(start=M_cair_0) "Mass of pulverized coal carried by primary air";
+
+  Basics.Units.EnthalpyMassSpecific LHV_dry(start=(33907*coal.defaultComposition[1] + 142324*(coal.defaultComposition[2] - coal.defaultComposition[3]/8.) + 10465*coal.defaultComposition[5] - 2512*((1 - sum(coal.defaultComposition)) + 9*coal.defaultComposition[2]))*1000) "Lower heating value after drying inside mill";
+
+  Basics.Units.MassFlowRate m_flow_H2O_evap "Mass flow rate of evaporated coal H2O";
 
 protected
   Basics.Units.MassFlowRate
@@ -83,6 +92,8 @@ protected
               Delta_p_pa(displayUnit="Pa") "Primary air difference pressure";
 
   ClaRa.Basics.Functions.ClaRaDelay.ExternalTable pointer_W_c= ClaRa.Basics.Functions.ClaRaDelay.ExternalTable();
+
+  Basics.Units.MassFlowRate m_flow_H2O_evap_max "Maximum possible mass flow rate of evaporated coal H2O until saturation";
 public
   Basics.Units.Temperature
                  T_out(start=T_0) "Classifier Temperature (outlet temperature)";
@@ -118,19 +129,14 @@ public
     P_grind=P_grind,
     m_flow_air_out=-outlet.flueGas.m_flow,
     mass_coal=N_mills*(M_cair + M_pf + M_c),
-    m_flow_coal_in=inlet.coal.m_flow,
+    m_flow_coal_in=inlet.fuel.m_flow,
     m_flow_air_in=inlet.flueGas.m_flow,
-    m_flow_tot_in=inlet.coal.m_flow + inlet.flueGas.m_flow,
-    m_flow_coal_out=-outlet.coal.m_flow,
-    m_flow_tot_out=-outlet.coal.m_flow - outlet.flueGas.m_flow,
+    m_flow_tot_in=inlet.fuel.m_flow + inlet.flueGas.m_flow,
+    m_flow_coal_out=-outlet.fuel.m_flow,
+    m_flow_tot_out=-outlet.fuel.m_flow - outlet.flueGas.m_flow,
     T_out=T_out) annotation (Placement(transformation(extent={{-40,-100},{-20,-80}})));
-  Basics.Interfaces.CoalDust_inlet      inlet(                                               flueGas(
-        Medium=gas), coalType=coal) "Combined gas-and-coal(raw, wet) inlet"
-    annotation (Placement(transformation(extent={{-110,-8},{-90,12}}),
-        iconTransformation(extent={{-110,-10},{-90,10}})));
-  Basics.Interfaces.CoalDust_outlet      outlet(                                               flueGas(
-        Medium=gas), coalType=coal) "Combined gas-and-coal(pulverised, dry) outlet"
-    annotation (Placement(transformation(extent={{90,-10},{110,10}})));
+  Basics.Interfaces.FuelFlueGas_inlet inlet(flueGas(Medium=gas), fuelType=coal) "Combined gas-and-coal(raw, wet) inlet" annotation (Placement(transformation(extent={{-110,-8},{-90,12}}), iconTransformation(extent={{-110,-10},{-90,10}})));
+  Basics.Interfaces.FuelFlueGas_outlet outlet(flueGas(Medium=gas), fuelType=coal) "Combined gas-and-coal(pulverised, dry) outlet" annotation (Placement(transformation(extent={{90,-10},{110,10}})));
 
   TILMedia.Gas_pT     gasOut(
     p=outlet.flueGas.p,
@@ -141,44 +147,66 @@ public
   Modelica.Blocks.Interfaces.RealOutput P_mills(unit="W") "Mill power of all parallel mills"
                                                     annotation(Placement(transformation(extent={{100,22},
             {140,62}})));
+
+   SI.MassFraction xi_coal_mix[coal.nc-1] "Coal composition inside mill";
+   parameter SI.MassFraction xi_coal_0[coal.nc-1]=coal.defaultComposition "Initial coal composition" annotation(Dialog(group="Initialisation"));
+
+protected
+  TILMedia.VLEFluidObjectFunctions.VLEFluidPointer H2O_props=
+      TILMedia.VLEFluidObjectFunctions.VLEFluidPointer(
+      TILMedia.VLEFluidTypes.TILMedia_SplineWater.concatVLEFluidName,
+      0,
+      TILMedia.VLEFluidTypes.TILMedia_SplineWater.mixingRatio_propertyCalculation[1:end - 1]/sum(TILMedia.VLEFluidTypes.TILMedia_SplineWater.mixingRatio_propertyCalculation),
+      TILMedia.VLEFluidTypes.TILMedia_SplineWater.nc_propertyCalculation,
+      TILMedia.VLEFluidTypes.TILMedia_SplineWater.nc,
+      TILMedia.Internals.redirectModelicaFormatMessage()) "Pointer to external medium memory for evaporation enthalpy and heat capacity";
+
 equation
+  Delta_h_evap = TILMedia.VLEFluidObjectFunctions.dewSpecificEnthalpy_Txi(T_coal_in, {1}, H2O_props) - TILMedia.VLEFluidObjectFunctions.bubbleSpecificEnthalpy_Txi(T_coal_in, {1}, H2O_props);
+  cp_w = TILMedia.VLEFluidObjectFunctions.specificIsobaricHeatCapacity_pTxi(inlet.fuel.p, T_coal_in, {1}, H2O_props);
+
 //____________________________________________
 //__________Boundaries:_______________________
   T_air_in = inStream(inlet.flueGas.T_outflow);
   m_flow_air = inlet.flueGas.m_flow/N_mills;
   xi_air_in = inStream(inlet.flueGas.xi_outflow);
-  T_coal_in = inStream(inlet.coal.T_outflow);
-  W_c_ = inlet.coal.m_flow/N_mills;
-  xi_coal_in = inStream(inlet.coal.xi_outflow);
+  T_coal_in = inStream(inlet.fuel.T_outflow);
+  W_c_ = inlet.fuel.m_flow/N_mills;
+  xi_coal_in = inStream(inlet.fuel.xi_outflow);
 
 //_____________________________________________
-  inlet.coal.p=inlet.flueGas.p;
-  inlet.coal.T_outflow=T_out;
-//  inlet.coal.Xi_outflow[1:coal.nc-1]= inStream(outlet.coal.Xi_outflow[1:coal.nc-1])/sum(inStream(outlet.coal.Xi_outflow[1:coal.nc-1]))  "ideal drying of the coal";
-  inlet.coal.xi_outflow= inStream(outlet.coal.xi_outflow); //DUMMY value - backflow is not supported!
+  inlet.fuel.p=inlet.flueGas.p;
+  inlet.fuel.T_outflow=T_out;
+  inlet.fuel.xi_outflow= inStream(outlet.fuel.xi_outflow); //DUMMY value - backflow is not supported!
 
   inlet.flueGas.p=outlet.flueGas.p+Delta_p_pa;
   inlet.flueGas.T_outflow=T_out;
   inlet.flueGas.xi_outflow=inStream(outlet.flueGas.xi_outflow);//dummy
 
+  m_flow_H2O_evap_max = inlet.flueGas.m_flow*(gasOut.xi_s-gasIn.xi[8]);//Maximum H2O evaporation mass flow until air is saturated
+
+  if inlet.fuel.m_flow*(1-sum(xi_coal_in)) <= m_flow_H2O_evap_max then //Amount of coal H2O evaporation (if < m_flow_H2O_evap_max then ideal drying)
+    m_flow_H2O_evap=m_flow_coal_out*(1-sum(xi_coal_mix))*N_mills;
+  else
+    m_flow_H2O_evap=m_flow_H2O_evap_max;
+  end if;
+
 //____________________________________________
-  outlet.coal.m_flow = -(m_flow_coal_out*(sum(xi_coal_in)))*N_mills;
-  outlet.coal.T_outflow = T_out;
-  outlet.coal.xi_outflow[1:coal.nc - 1] = inStream(inlet.coal.xi_outflow[1:coal.nc
-     - 1])/sum(inStream(inlet.coal.xi_outflow[1:coal.nc - 1])) "ideal drying of the coal";
+  outlet.fuel.m_flow = -m_flow_coal_out*N_mills + m_flow_H2O_evap;
+  outlet.fuel.T_outflow = T_out;
 
-//  outlet.flueGas.p = p;
+  der(xi_coal_mix) = (inlet.fuel.m_flow * inStream(inlet.fuel.xi_outflow) + (outlet.fuel.m_flow - m_flow_H2O_evap) * xi_coal_mix) /(M_c + M_pf + M_cair);//xi_coal_mix is not dry
+  outlet.fuel.m_flow*outlet.fuel.xi_outflow= -m_flow_coal_out*N_mills*xi_coal_mix + m_flow_H2O_evap*{0,0,0,0,0,0};//drying of xi_coal_mix, oulet is dry
+
   outlet.flueGas.T_outflow = T_out;
-  outlet.flueGas.m_flow = -(inlet.flueGas.m_flow + inlet.coal.m_flow*(1-sum(xi_coal_in))); //no air mass storage and instaneous, ideal drying
+  outlet.flueGas.m_flow = -(inlet.flueGas.m_flow + m_flow_H2O_evap); //no air mass storage
 
-//  outlet.flueGas.Xi_outflow[1:end-1] = (inlet.flueGas.m_flow*xi_air_in[1:end-1])./(-outlet.flueGas.m_flow);
-//  outlet.flueGas.Xi_outflow[end] = (inlet.flueGas.m_flow*xi_air_in[end] + inlet.coal.m_flow*(1-sum(xi_coal_in)))/(-outlet.flueGas.m_flow);
-  outlet.flueGas.xi_outflow[1:7] = (inlet.flueGas.m_flow*xi_air_in[1:7]) ./ (-
-    outlet.flueGas.m_flow);
-  outlet.flueGas.xi_outflow[8] = (inlet.flueGas.m_flow*xi_air_in[8] + inlet.coal.m_flow
-    *(1 - sum(xi_coal_in)))/(-outlet.flueGas.m_flow);
-  outlet.flueGas.xi_outflow[9:end] = (inlet.flueGas.m_flow*xi_air_in[9:end]) ./ (
-    -outlet.flueGas.m_flow);
+   outlet.flueGas.xi_outflow[1:7] = (inlet.flueGas.m_flow*xi_air_in[1:7]) ./ (-
+     outlet.flueGas.m_flow);
+   outlet.flueGas.xi_outflow[8] = (inlet.flueGas.m_flow*xi_air_in[8] + m_flow_H2O_evap)/(-outlet.flueGas.m_flow);
+   outlet.flueGas.xi_outflow[9:end] = (inlet.flueGas.m_flow*xi_air_in[9:end]) ./ (
+     -outlet.flueGas.m_flow);
+
 //______________________________________________________________________________
 // Calculation of the connecting mass flows between the mass storage
    Delta_p_mill= millKoeff.K_7 * Delta_p_pa + millKoeff.K_8*M_cair*100;
@@ -212,14 +240,31 @@ equation
 //_____Energy balance for the hole mill:______
 // the energy balance as in equation (7) of [1] but with the derivative of the coal mass coming from the der(U) term
      der(T_out)=1/millKoeff.K_11*((gasIn.T-273.15)*gasIn.cp*m_flow_air
-                                 + (1-sum(xi_coal_in)) * inlet.coal.m_flow/N_mills*cp_w*(inStream(inlet.coal.T_outflow)-273.15)
-                                 + sum(xi_coal_in) * inlet.coal.m_flow/N_mills*coal.cp*(inStream(inlet.coal.T_outflow)-273.15)
+                                 + (1-sum(xi_coal_in)) * inlet.fuel.m_flow/N_mills*cp_w*(inStream(inlet.fuel.T_outflow)-273.15)
+                                 + sum(xi_coal_in) * inlet.fuel.m_flow/N_mills*coal.cp*(inStream(inlet.fuel.T_outflow)-273.15)
                                  + outlet.flueGas.m_flow/N_mills* (gasOut.T-273.15)*gasOut.cp
-                                 - (1-sum(xi_coal_in)) * inlet.coal.m_flow/N_mills * Delta_h_evap
-                                 + sum(outlet.coal.xi_outflow) * outlet.coal.m_flow/N_mills * coal.cp * (T_out-273.15)
+                                 - (1-sum(xi_coal_in)) * inlet.fuel.m_flow/N_mills * Delta_h_evap
+                                 + sum(outlet.fuel.xi_outflow) * outlet.fuel.m_flow/N_mills * coal.cp * (T_out-273.15)
                                  + millKoeff.K_10*P_grind*100 - (der(M_c)+der(M_pf)+der(M_cair))*coal.cp*(T_out-273.15));
 
+  //Drying and impact on lower heating value LHV
+  outlet.fuel.LHV_outflow = LHV_dry;
+  inlet.fuel.LHV_outflow = LHV_dry;
+  outlet.fuel.LHV_calculationType=inlet.fuel.LHV_calculationType;
+
+  if inlet.fuel.LHV_calculationType=="Verbandsformel" then
+   LHV_dry =  (33907*outlet.fuel.xi_outflow[1] + 142324*(outlet.fuel.xi_outflow[2] - outlet.fuel.xi_outflow[3]/8.) + 10465*outlet.fuel.xi_outflow[5] - 2512*((1 - sum(outlet.fuel.xi_outflow)) + 9*outlet.fuel.xi_outflow[2]))*1000;
+  elseif inlet.fuel.LHV_calculationType=="predefined" then
+   LHV_dry = (inStream(inlet.fuel.LHV_outflow) + Delta_h_evap*(1-sum(xi_coal_mix)))/sum(xi_coal_mix); //Reduced LHV by amount of evaporated water during drying process
+  else
+   LHV_dry = inStream(inlet.fuel.LHV_outflow);
+   assert(inlet.fuel.LHV_calculationType == "predefined" or inlet.fuel.LHV_calculationType == "Verbandsformel", "Please check your LHV calculation settings inside boundaries.");
+  end if;
+
 initial equation
+
+  xi_coal_mix = xi_coal_0;
+
   if initChoice == ClaRa.Basics.Choices.Init.noInit then
   //do nothing
   elseif initChoice == ClaRa.Basics.Choices.Init.steadyDensity then

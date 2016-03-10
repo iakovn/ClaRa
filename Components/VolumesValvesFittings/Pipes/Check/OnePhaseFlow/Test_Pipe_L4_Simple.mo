@@ -1,14 +1,14 @@
 within ClaRa.Components.VolumesValvesFittings.Pipes.Check.OnePhaseFlow;
 model Test_Pipe_L4_Simple
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.0.0                        //
+  // Component of the ClaRa library, version: 1.1.0                        //
   //                                                                           //
-  // Licensed by the DYNCAP research team under Modelica License 2.            //
-  // Copyright © 2013-2015, DYNCAP research team.                                   //
+  // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+  // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
-  // DYNCAP is a research project supported by the German Federal Ministry of  //
-  // Economics and Technology (FKZ 03ET2009).                                  //
-  // The DYNCAP research team consists of the following project partners:      //
+  // DYNCAP and DYNSTART are research projects supported by the German Federal //
+  // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+  // The research team consists of the following project partners:             //
   // Institute of Energy Systems (Hamburg University of Technology),           //
   // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
   // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -31,39 +31,43 @@ model Test_Pipe_L4_Simple
     p_nom=1000) annotation (Placement(transformation(extent={{58,-70},{38,-50}})));
   inner SimCenter simCenter(redeclare replaceable TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1, useHomotopy=false,
     showExpertSummary=true)                                                                                                    annotation (Placement(transformation(extent={{-100,-140},{-80,-120}})));
-  PipeFlow_L4_Simple tube(
+  PipeFlowVLE_L4_Simple tube(
     length=50,
     m_flow_nom=100,
     diameter_i=0.5,
     N_cv=50,
-    Delta_x=ones(tube.N_cv)*tube.length/tube.N_cv,
     h_start=ones(tube.N_cv)*200e3,
     redeclare model PressureLoss =
         ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4,
     redeclare model HeatTransfer =
         ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4,
-    showExpertSummary=false,
     showData=false,
-    p_start=ones(tube.N_cv)*1e5,
+    z_in=50,
     frictionAtInlet=true,
+    z_out=0.1,
     frictionAtOutlet=true,
-    z_in=50)                     annotation (Placement(transformation(extent={{18,-65},{-9,-55}})));
+    N_passes=2,
+    initType=ClaRa.Basics.Choices.Init.noInit,
+    p_start=linspace(
+        1e5,
+        6e5,
+        tube.N_cv)) annotation (Placement(transformation(extent={{16,-65},{-11,-55}})));
 
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi massFlowSink(
     variable_p=true,
     h_const=100e3,
     m_flow_nom=100,
-    p_const=1000000,
-    Delta_p=100000) annotation (Placement(transformation(
+    p_const=1000000)
+                    annotation (Placement(transformation(
         extent={{10,-10},{-10,10}},
         rotation=180,
         origin={-46,-60})));
   inner Modelica.Fluid.System system
     annotation (Placement(transformation(extent={{80,-140},{100,-120}})));
   Modelica.Blocks.Sources.Step inlet_pressure(
-    offset=1e5,
     startTime=100,
-    height=1e4)
+    height=1e4,
+    offset=6e5)
     annotation (Placement(transformation(extent={{-100,-77},{-80,-57}})));
   Modelica.Blocks.Sources.Ramp mass_flow_1(
     duration=1,
@@ -96,12 +100,12 @@ model Test_Pipe_L4_Simple
     N_ax=tube.N_cv,
     T_start=320*ones(tube.N_cv),
     initChoice=ClaRa.Basics.Choices.Init.noInit,
-    stateLocation=2) annotation (Placement(transformation(extent={{-6,-46},{20,-36}})));
+    stateLocation=2) annotation (Placement(transformation(extent={{-10,-46},{16,-36}})));
   Modelica.Blocks.Sources.Ramp mass_flow_2(
-    duration=1,
     offset=100,
     height=-50,
-    startTime=1500) annotation (Placement(transformation(
+    startTime=1500,
+    duration=1)     annotation (Placement(transformation(
         extent={{10,-10},{-10,10}},
         rotation=0,
         origin={88,2})));
@@ -124,12 +128,12 @@ equation
       color={0,0,127},
       smooth=Smooth.None));
   connect(tube.inlet, massFlowSource.steam_a) annotation (Line(
-      points={{18,-60},{38,-60}},
+      points={{16,-60},{38,-60}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
   connect(massFlowSink.steam_a, tube.outlet) annotation (Line(
-      points={{-36,-60},{-9,-60}},
+      points={{-36,-60},{-11,-60}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
@@ -142,11 +146,11 @@ equation
       color={0,0,127},
       smooth=Smooth.None));
   connect(prescribedTemperature.port, thinWall.outerPhase) annotation (Line(
-      points={{-4,-23},{7,-23},{7,-36}},
+      points={{-4,-23},{3,-23},{3,-36}},
       color={191,0,0},
       smooth=Smooth.None));
   connect(thinWall.innerPhase, tube.heat) annotation (Line(
-      points={{7,-46},{7,-56},{4.5,-56}},
+      points={{3,-46},{3,-56},{2.5,-56}},
       color={191,0,0},
       smooth=Smooth.None));
   connect(massFlowSource.h, inlet_pressure1.y) annotation (Line(
@@ -198,9 +202,9 @@ ________________________________________________________________________________
     experiment(
       StopTime=3000,
       __Dymola_NumberOfIntervals=10000,
-      Tolerance=1e-006,
+      Tolerance=1e-005,
       __Dymola_Algorithm="Dassl"),
-    __Dymola_experimentSetupOutput(equdistant=false),
+    __Dymola_experimentSetupOutput(equidistant=false),
     Icon(coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=
             true)));
 end Test_Pipe_L4_Simple;

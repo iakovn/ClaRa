@@ -1,14 +1,14 @@
 within ClaRa.Basics.ControlVolumes.FluidVolumes;
 model VolumeVLE_L3_TwoZonesNPort "A volume element balancing liquid and vapour phase with n inlet and outlet ports"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.0.0                        //
+  // Component of the ClaRa library, version: 1.1.0                        //
   //                                                                           //
-  // Licensed by the DYNCAP research team under Modelica License 2.            //
-  // Copyright © 2013-2015, DYNCAP research team.                                   //
+  // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+  // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
-  // DYNCAP is a research project supported by the German Federal Ministry of  //
-  // Economics and Technology (FKZ 03ET2009).                                  //
-  // The DYNCAP research team consists of the following project partners:      //
+  // DYNCAP and DYNSTART are research projects supported by the German Federal //
+  // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+  // The research team consists of the following project partners:             //
   // Institute of Energy Systems (Hamburg University of Technology),           //
   // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
   // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -79,11 +79,11 @@ model VolumeVLE_L3_TwoZonesNPort "A volume element balancing liquid and vapour p
 
   //_____________________________________________________
   //______________________parameters_____________________
-  parameter ClaRa.Basics.Units.Time Tau_cond=0.03 "|Phase Border|Time constant of condensation";
-  parameter ClaRa.Basics.Units.Time Tau_evap=Tau_cond "|Phase Border|Time constant of evaporation";
-  parameter ClaRa.Basics.Units.CoefficientOfHeatTransfer alpha_ph=50000 "|Phase Border|HTC of the phase border";
-  parameter ClaRa.Basics.Units.Area A_heat_ph=geo.A_hor*100 "|Phase Border|Heat transfer area at phase border";
-  parameter Real exp_HT_phases = 0 "|Phase Border|Exponent for volume dependency on inter phase HT";
+  parameter ClaRa.Basics.Units.Time Tau_cond=0.03 "Time constant of condensation" annotation(Dialog(tab="Phase Border"));
+  parameter ClaRa.Basics.Units.Time Tau_evap=Tau_cond "Time constant of evaporation" annotation(Dialog(tab="Phase Border"));
+  parameter ClaRa.Basics.Units.CoefficientOfHeatTransfer alpha_ph=50000 "HTC of the phase border" annotation(Dialog(tab="Phase Border"));
+  parameter ClaRa.Basics.Units.Area A_heat_ph=geo.A_hor*100 "Heat transfer area at phase border" annotation(Dialog(tab="Phase Border"));
+  parameter Real exp_HT_phases = 0 "Exponent for volume dependency on inter phase HT" annotation(Dialog(tab="Phase Border"));
   inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation"
     annotation (Dialog(tab="Initialisation"));
   inner parameter ClaRa.Basics.Units.MassFlowRate m_flow_nom=10 "Nominal mass flow rates at inlet"
@@ -104,8 +104,8 @@ model VolumeVLE_L3_TwoZonesNPort "A volume element balancing liquid and vapour p
       TILMedia.VLEFluidFunctions.dewSpecificEnthalpy_pxi(medium, p_start) "Start value of sytsem specific enthalpy"
     annotation (Dialog(tab="Initialisation"));
 
-  parameter SI.MassFraction xi_liq_start[medium.nc-1] = medium.xi_default "|Initialisation||Initial composition of liquid phase";
-  parameter SI.MassFraction xi_vap_start[medium.nc-1] = medium.xi_default "|Initialisation||Initial composition of vapour phase";
+  parameter SI.MassFraction xi_liq_start[medium.nc-1] = medium.xi_default "Initial composition of liquid phase" annotation(Dialog(tab="Initialisation"));
+  parameter SI.MassFraction xi_vap_start[medium.nc-1] = medium.xi_default "Initial composition of vapour phase" annotation(Dialog(tab="Initialisation"));
 
   parameter ClaRa.Basics.Units.Pressure p_start=1e5 "Start value of sytsem pressure"
                                      annotation (Dialog(tab="Initialisation"));
@@ -116,7 +116,7 @@ model VolumeVLE_L3_TwoZonesNPort "A volume element balancing liquid and vapour p
     annotation (Dialog(tab="Initialisation", choicesAllMatching));
   //  parameter ClaRa.Basics.Units.Length radius_flange=0.05 "Flange radius" annotation(Dialog(group="Geometry"));
 
-  parameter Boolean showExpertSummary=simCenter.showExpertSummary "|Summary and Visualisation||True, if expert summary should be applied";
+  parameter Boolean showExpertSummary=simCenter.showExpertSummary "True, if expert summary should be applied" annotation(Dialog(tab="Summary and Visualisation"));
   parameter Integer heatSurfaceAlloc=1 "Heat transfer area to be considered" annotation(dialog(group="Geometry"),choices(choice=1 "Lateral surface",
                                                                                    choice=2 "Inner heat transfer surface"));
 
@@ -352,12 +352,12 @@ equation
 //________________________________________________________________________________
 //______Coupling of the Phases: Heat Transfer_____________________________________
 //   Q_flow_phases = noEvent(alpha_ph*A_heat_ph*(iCom.T[2] - iCom.T[1]));
-  Q_flow_phases = noEvent(alpha_ph*A_heat_ph*min((1e-6+iCom.volume[1])/(1e-6+iCom.volume[2]), (1e-6+iCom.volume[2])/(1e-6+iCom.volume[1]))^exp_HT_phases*(iCom.T[2] - iCom.T[1]));
+  Q_flow_phases = noEvent(alpha_ph*A_heat_ph*max(1e-3,min((1e-6+iCom.volume[1])/(1e-6+iCom.volume[2]), (1e-6+iCom.volume[2])/(1e-6+iCom.volume[1])))^exp_HT_phases*(iCom.T[2] - iCom.T[1]));
 
 //________________________________________________________________________________
 //______Coupling of the Phases: Mass Transfer_____________________________________
- m_flow_cond = Stepsmoother(1e-1, 1e-3, mass_vap*(1 - vap.q))*Stepsmoother(-10, +10, h_vap - vap.VLE.h_v)*(1 - noEvent(max(0, min(1, vap.q))))*max(0, mass_vap)/Tau_cond;
- m_flow_evap = Stepsmoother(1e-1, 1e-3,mass_liq*liq.q)       *Stepsmoother(-10, +10, liq.VLE.h_l - h_liq)*     noEvent(max(0, min(1, liq.q)))        *mass_liq /Tau_evap;
+  m_flow_cond = Stepsmoother(1e-1, 1e-3, mass_vap*(1 - vap.q))*Stepsmoother(-10, +10, h_vap - vap.VLE.h_v)*(1 - noEvent(max(0, min(1, vap.q))))*max(0, mass_vap)/Tau_cond;
+  m_flow_evap = Stepsmoother(1e-1, 1e-3,mass_liq*liq.q)       *Stepsmoother(-10, +10, liq.VLE.h_l - h_liq)*     noEvent(max(0, min(1, liq.q)))        *mass_liq /Tau_evap;
 
 //    m_flow_cond = Stepsmoother(1e-1,1e-3,mass_vap*(1 - vap.q))*Stepsmoother(vap.VLE.h_l, vap.VLE.h_v+100, h_vap)*mass_vap/Tau_cond;
 //    m_flow_evap = Stepsmoother(1e-1,1e-3,mass_liq*liq.q)      *Stepsmoother(liq.VLE.h_v+100, liq.VLE.h_l, h_liq)*mass_liq/Tau_evap;
@@ -395,12 +395,6 @@ equation
   //    inlet.p  =  p + pressureLoss.Delta_p/2 + phaseBorder.dp_geo_in;
   //    outlet.p = p - pressureLoss.Delta_p/2 + phaseBorder.dp_geo_out;
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-  //____________________________________________________
-  //______Chemistry_____________________________________
-  // No chemical reaction taking place:
-//    inlet.Xi_outflow = inStream(outlet.Xi_outflow);
-//    outlet.Xi_outflow = inStream(inlet.Xi_outflow);
 
   //___________________________________________________
   //______Initial Equations____________________________

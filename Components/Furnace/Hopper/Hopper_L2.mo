@@ -1,14 +1,14 @@
 within ClaRa.Components.Furnace.Hopper;
 model Hopper_L2 "Model for a hopper section of a combustion chamber"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -24,16 +24,15 @@ extends ClaRa.Components.Furnace.BaseClasses.HopperBase(geo(
 inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation"
                                                               annotation(Dialog(tab="Initialisation"));
 
-Real sum_xi;
-Real drhodt;
+  Real sum_xi "Sum of inlet components";
+  Real drhodt "Density derivative";
 
-   ClaRa.Basics.Units.MassFraction xi_flueGas_in_del[flueGas.nc - 1];
-                                                            //Flue gas mixture composition
+  ClaRa.Basics.Units.MassFraction xi_flueGas_in_del[flueGas.nc - 1] "Flue gas mixture composition";
 
-   ClaRa.Basics.Units.MassFlowRate m_flow_in_del;
-   ClaRa.Basics.Units.MassFlowRate m_flow_out_del;
-   ClaRa.Basics.Units.Temperature T_bulk_del;
-   ClaRa.Basics.Units.DensityMassSpecific rho_bulk_del;
+  ClaRa.Basics.Units.MassFlowRate m_flow_in_del "Pseudo state for inlet mass flow";
+  ClaRa.Basics.Units.MassFlowRate m_flow_out_del "Pseudo state for outlet mass flow";
+  ClaRa.Basics.Units.Temperature T_bulk_del "Pseudo state for bulk temperature";
+  ClaRa.Basics.Units.DensityMassSpecific rho_bulk_del "Pseudo state for bulk density";
 
   record Outline
   //  parameter Boolean showExpertSummary annotation(Dialog(hide));
@@ -54,7 +53,7 @@ Real drhodt;
                                               h_out "Flue gas enthalpy at outlet";
   end Outline;
 
-  record Coal
+  record Fuel
     extends ClaRa.Basics.Icons.RecordIcon;
     input ClaRa.Basics.Units.MassFlowRate m_flow "Mass flow rate"
       annotation (Dialog);
@@ -62,7 +61,7 @@ Real drhodt;
     input ClaRa.Basics.Units.Pressure p "Pressure" annotation (Dialog);
     input ClaRa.Basics.Units.HeatCapacityMassSpecific cp "Specific heat capacity"
                                annotation (Dialog);
-  end Coal;
+  end Fuel;
 
   record Slag
     extends ClaRa.Basics.Icons.RecordIcon;
@@ -75,7 +74,7 @@ Real drhodt;
   record Flow
     extends ClaRa.Basics.Icons.RecordIcon;
     ClaRa.Basics.Records.FlangeGas flueGas;
-    Coal coal;
+    Fuel fuel;
     Slag slag;
   end Flow;
 
@@ -102,11 +101,11 @@ Real drhodt;
         p=inlet.flueGas.p,
         h=flueGasInlet.h,
         H_flow=flueGasInlet.h*inlet.flueGas.m_flow),
-      coal(
-        m_flow=inlet.coal.m_flow,
-        T=actualStream(inlet.coal.T_outflow),
-        p=inlet.coal.p,
-        cp=inlet.coalType.cp),
+      fuel(
+        m_flow=inlet.fuel.m_flow,
+        T=actualStream(inlet.fuel.T_outflow),
+        p=inlet.fuel.p,
+        cp=inlet.fuelType.cp),
       slag(
         m_flow=inlet.slag.m_flow,
         T=actualStream(inlet.slag.T_outflow),
@@ -118,11 +117,11 @@ Real drhodt;
         p=outlet.flueGas.p,
         h=h_flueGas_out,
         H_flow=-h_flueGas_out*outlet.flueGas.m_flow),
-      coal(
-        m_flow=-outlet.coal.m_flow,
-        T=actualStream(outlet.coal.T_outflow),
-        p=outlet.coal.p,
-        cp=outlet.coalType.cp),
+      fuel(
+        m_flow=-outlet.fuel.m_flow,
+        T=actualStream(outlet.fuel.T_outflow),
+        p=outlet.fuel.p,
+        cp=outlet.fuelType.cp),
       slag(
         m_flow=outlet.slag.m_flow,
         T=actualStream(outlet.slag.T_outflow),
@@ -166,9 +165,9 @@ equation
 
    mass = geo.volume * bulk.d;
 
-  //_______________/ Composition of coal and gas \_____________________
-  xi_coal_in = inStream(inlet.coal.xi_outflow);
-  xi_coal_out =  xi_coal_in;
+  //_______________/ Composition of fuel and gas \_____________________
+  xi_fuel_in = inStream(inlet.fuel.xi_outflow);
+  xi_fuel_out =  xi_fuel_in;
 
   //________________/ Mass balance - flue gas \______________________________________
   inlet.flueGas.m_flow + outlet.flueGas.m_flow  =  drhodt*geo.volume;
@@ -179,17 +178,17 @@ equation
   //______________ / Mass balance - Slag \____________________________________________________________________________
   0 = inlet.slag.m_flow  + outlet.slag.m_flow;
 
-  //______________/ Mass balance - Coal \____________________________
-  0 = outlet.coal.m_flow + inlet.coal.m_flow;
+  //______________/ Mass balance - Fuel \____________________________
+  0 = outlet.fuel.m_flow + inlet.fuel.m_flow;
 
   //_______________/ Energy Balance for gas \__________________________
   der(h_flueGas_out) = (Q_flow_wall + Q_flow_top + Q_flow_bottom
                 + inlet.flueGas.m_flow * (flueGasInlet.h - h_flueGas_out)
                 + outlet.flueGas.m_flow * (flueGasOutlet.h - h_flueGas_out)
-                + inlet.slag.m_flow * (inlet.slagType.cp * (SlagTemperature - 298.15) - h_flueGas_out)
+                + inlet.slag.m_flow * (inlet.slagType.cp * (T_Slag - 298.15) - h_flueGas_out)
                 + outlet.slag.m_flow * (inlet.slagType.cp * (inStream(outlet.slag.T_outflow)  - 298.15) - h_flueGas_out)
-                + inlet.coal.m_flow *(inlet.coalType.cp * (inStream(inlet.coal.T_outflow)  - 298.15) - h_flueGas_out)
-                + outlet.coal.m_flow * (outlet.coalType.cp * (outlet.coal.T_outflow - 298.15) - h_flueGas_out))/mass;
+                + inlet.fuel.m_flow *(inlet.fuelType.cp * (inStream(inlet.fuel.T_outflow)  - 298.15) - h_flueGas_out)
+                + outlet.fuel.m_flow * (outlet.fuelType.cp * (outlet.fuel.T_outflow - 298.15) - h_flueGas_out))/mass;
 
   V_flow_flueGas_in = 0;
   V_flow_flueGas_out = 0;
@@ -202,20 +201,25 @@ equation
 
   sum_xi = sum(flueGasOutlet.xi);
 
-  xi_coal = 0; // amount of coal per flue gas mass
+  xi_fuel = 0; // amount of fuel per flue gas mass
 
  //___________/ T_outflows \______________
-  outlet.coal.T_outflow = bulk.T;
+  outlet.fuel.T_outflow = bulk.T;
   outlet.flueGas.T_outflow = bulk.T;
 
-  inlet.slag.T_outflow = SlagTemperature;
+  inlet.slag.T_outflow = T_Slag;
   heat_bottom.T = bulk.T;
 
   inlet.flueGas.xi_outflow  = xi_flueGas_del;
   outlet.flueGas.xi_outflow  = xi_flueGas_del;
 
+    //___________/ LHV_outflows \__________________________________________
+  outlet.fuel.LHV_outflow =inStream(inlet.fuel.LHV_outflow);
+  inlet.fuel.LHV_outflow =inStream(outlet.fuel.LHV_outflow);
+  outlet.fuel.LHV_calculationType = inlet.fuel.LHV_calculationType;
+
   //___________/ Dummy T_outflows \__________________________________________
-  inlet.coal.T_outflow = bulk.T;
+  inlet.fuel.T_outflow = bulk.T;
   outlet.slag.T_outflow = inStream(outlet.slag.T_outflow); //outlet.slag is inflowing slag
   inlet.flueGas.T_outflow  = bulk.T;
 

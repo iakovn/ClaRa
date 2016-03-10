@@ -1,14 +1,14 @@
 within ClaRa.Components.VolumesValvesFittings.Pipes.Check.FlowReversal;
 model Test_Pipe_L4_Simple
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.0.0                        //
+  // Component of the ClaRa library, version: 1.1.0                        //
   //                                                                           //
-  // Licensed by the DYNCAP research team under Modelica License 2.            //
-  // Copyright © 2013-2015, DYNCAP research team.                                   //
+  // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+  // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
-  // DYNCAP is a research project supported by the German Federal Ministry of  //
-  // Economics and Technology (FKZ 03ET2009).                                  //
-  // The DYNCAP research team consists of the following project partners:      //
+  // DYNCAP and DYNSTART are research projects supported by the German Federal //
+  // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+  // The research team consists of the following project partners:             //
   // Institute of Energy Systems (Hamburg University of Technology),           //
   // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
   // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -17,7 +17,7 @@ model Test_Pipe_L4_Simple
 
   extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
 
-  Modelica.Blocks.Math.MultiSum multiSum(nu=3) annotation (Placement(
+  Modelica.Blocks.Math.MultiSum multiSum(nu=2) annotation (Placement(
         transformation(
         extent={{-6,-6},{6,6}},
         rotation=180,
@@ -30,7 +30,7 @@ model Test_Pipe_L4_Simple
     variable_h=true,
     p_nom=1000) annotation (Placement(transformation(extent={{58,-53},{38,-33}})));
   inner SimCenter simCenter(redeclare replaceable TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1, useHomotopy=true) annotation (Placement(transformation(extent={{-80,-114},{-60,-94}})));
-  PipeFlow_L4_Simple tube(
+  PipeFlowVLE_L4_Simple tube(
     z_in=0,
     z_out=0,
     showExpertSummary=true,
@@ -51,7 +51,7 @@ model Test_Pipe_L4_Simple
     N_cv=50,
     Delta_x=ones(tube.N_cv)*tube.length/tube.N_cv,
     frictionAtInlet=true,
-    frictionAtOutlet=true)                         annotation (Placement(transformation(extent={{20,-49},{-16,-36}})));
+    frictionAtOutlet=true) annotation (Placement(transformation(extent={{20,-49},{-16,-36}})));
 
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi massFlowSink(
     variable_p=true,
@@ -127,10 +127,6 @@ equation
       points={{-58,-49},{-71,-49}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(multiSum.u[1], mass_flow_1.y) annotation (Line(
-      points={{83,-40.8},{83,-38},{88,-38},{88,22},{59,22}},
-      color={0,0,127},
-      smooth=Smooth.None));
   connect(tube.inlet, massFlowSource.steam_a) annotation (Line(
       points={{20,-42.5},{26,-42.5},{26,-43},{38,-43}},
       color={0,131,169},
@@ -143,10 +139,6 @@ equation
       smooth=Smooth.None));
   connect(T_wall.y, realInputMultiplyer.Signal) annotation (Line(
       points={{-71.95,-0.5},{-60.42,-0.5}},
-      color={0,0,127},
-      smooth=Smooth.None));
-  connect(mass_flow_2.y, multiSum.u[2]) annotation (Line(
-      points={{59,-10},{88,-10},{88,-38},{83,-38}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(massFlowSource.h, inlet_pressure1.y) annotation (Line(
@@ -165,6 +157,8 @@ equation
       points={{2,-23},{2,-37.3}},
       color={191,0,0},
       smooth=Smooth.None));
+  connect(mass_flow_1.y, multiSum.u[1]) annotation (Line(points={{59,22},{94,22},{94,-40.1},{83,-40.1}}, color={0,0,127}));
+  connect(mass_flow_2.y, multiSum.u[2]) annotation (Line(points={{59,-10},{88,-10},{88,-35.9},{83,-35.9}}, color={0,0,127}));
   annotation (
     Diagram(coordinateSystem(preserveAspectRatio=false,extent={{-100,-120},{100,120}}),
                     graphics={Text(

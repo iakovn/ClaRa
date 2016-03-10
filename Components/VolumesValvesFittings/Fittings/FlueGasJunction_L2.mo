@@ -1,14 +1,14 @@
 within ClaRa.Components.VolumesValvesFittings.Fittings;
 model FlueGasJunction_L2 "Adiabatic junction volume"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -92,18 +92,19 @@ public
   parameter ClaRa.Basics.Units.Temperature T_start=298.15 "Initial value for air temperature"
     annotation(Dialog(group="Initial Values"));
 
-  parameter ClaRa.Basics.Units.MassFraction[medium.nc-1] mixingRatio_initial=zeros(medium.nc-1) "Initial value for mixing ratio"
+  parameter ClaRa.Basics.Units.MassFraction[medium.nc - 1]
+                                                         mixingRatio_initial=zeros(medium.nc-1) "Initial value for mixing ratio"
                                      annotation(Dialog(group="Initial Values"));
 
-  final parameter Modelica.SIunits.SpecificEnthalpy h_start = TILMedia.GasFunctions.specificEnthalpy_pTxi(medium, p_start, T_start, mixingRatio_initial);
+  final parameter Modelica.SIunits.SpecificEnthalpy h_start = TILMedia.GasFunctions.specificEnthalpy_pTxi(medium, p_start, T_start, mixingRatio_initial) "Start value for specific Enthalpy inside volume";
 
   ClaRa.Basics.Units.MassFraction xi[medium.nc - 1](start=mixingRatio_initial);
   Modelica.SIunits.SpecificEnthalpy h(start=h_start) "Specific enthalpy";
-  ClaRa.Basics.Units.Pressure p(start=p_start);
+  ClaRa.Basics.Units.Pressure p(start=p_start) "Pressure";
 
   ClaRa.Basics.Units.Mass mass "Gas mass in control volume";
 
-  Real drhodt;
+  Real drhodt "Density derivative";
 
   inner Summary    summary(portA(m_flow=portA.m_flow,  T=flueGasPortA.T, p=portA.p, h=flueGasPortA.h, H_flow=portA.m_flow*flueGasPortA.h),
                            portB(m_flow=portB.m_flow,  T=flueGasPortB.T, p=portB.p, h=flueGasPortB.h, H_flow=portB.m_flow*flueGasPortB.h),

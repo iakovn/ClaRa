@@ -29,7 +29,7 @@ model TestBalanceTank
     width=2000,
     falling=10,
     period=20000,
-    offset=simCenter.p_amb - 0.1e5)
+    offset=simCenter.p_amb_start - 0.1e5)
     annotation (Placement(transformation(extent={{-90,-10},{-70,10}})));
   BoundaryConditions.BoundaryVLE_hxim_flow massFlowSource_h1(variable_m_flow=true) annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},

@@ -1,14 +1,14 @@
 within ClaRa.Components.Control.PowerPlantControl;
 model LiveSteamTemperature "A simple controller for the live steam temperature based on Strauss: \"Kraftwerkstechnik\", 5th edition, 2006."
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -51,13 +51,9 @@ model LiveSteamTemperature "A simple controller for the live steam temperature b
         rotation=180,
         origin={-110,20})));
 public
-  Basics.Interfaces.EmptyBus      MeasurementValues annotation (Placement(
-        transformation(extent={{-20,78},{20,118}}), iconTransformation(extent={{
-            -8,88},{12,110}})));
+  Basics.Interfaces.Bus MeasurementValues annotation (Placement(transformation(extent={{-20,78},{20,118}}), iconTransformation(extent={{-8,88},{12,110}})));
 public
-  Basics.Interfaces.EmptyBus      SetValues annotation (Placement(
-        transformation(extent={{30,78},{70,118}}), iconTransformation(extent={{40,
-            90},{60,110}})));
+  Basics.Interfaces.Bus SetValues annotation (Placement(transformation(extent={{30,78},{70,118}}), iconTransformation(extent={{40,90},{60,110}})));
   Utilities.Blocks.LimPID PID1(
     controllerType=Modelica.Blocks.Types.SimpleController.PI,
     u_ref=Delta_T_2_ref,

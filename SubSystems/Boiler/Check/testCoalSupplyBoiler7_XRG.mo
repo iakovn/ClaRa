@@ -1,14 +1,14 @@
 within ClaRa.SubSystems.Boiler.Check;
 model testCoalSupplyBoiler7_XRG
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -53,7 +53,7 @@ model testCoalSupplyBoiler7_XRG
   ClaRa.Components.TurboMachines.Turbines.SteamTurbineVLE_L1 HPTurbine(
     rho_nom=74.2585,
     Pi=28e5/240e5,
-    p_nom=24000000) annotation (Placement(transformation(extent={{90,-74},{78,-58}})));
+    p_nom=24000000) annotation (Placement(transformation(extent={{80,-80},{90,-60}})));
   inner SimCenter simCenter(redeclare replaceable TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1) annotation (Placement(transformation(extent={{180,180},{200,200}})));
   Components.Control.PredictorModels_3508.TurbinesAndReheat_01_XRG turbinesAndReheat_01_XRG(
     p_nom=2800000,
@@ -77,23 +77,25 @@ protected
     annotation (Placement(transformation(extent={{-134,-61},{-128,-55}})));
 public
   Modelica.Blocks.Math.Gain gain(k=Model_boiler.m_flow_LS_nom) annotation (Placement(transformation(extent={{-122,-62},{-110,-50}})));
-  Visualisation.Scope scope(color={255,255,0}, t_simulation=15000) annotation (Placement(transformation(extent={{144,-44},{188,-4}})));
+  Visualisation.Scope scope(color={255,255,0},
+    t_end=15000,
+    hideInterface=false)                                           annotation (Placement(transformation(extent={{144,-44},{188,-4}})));
   Components.BoundaryConditions.BoundaryVLE_phxi      pressureSink_XRG(p_const=
         5000)
-    annotation (Placement(transformation(extent={{178,-88},{158,-68}})));
+    annotation (Placement(transformation(extent={{188,-94},{168,-74}})));
   ClaRa.Components.TurboMachines.Turbines.SteamTurbineVLE_L1 IPTurbine(
     m_flow_nom=419,
     Pi=4e5/28e5,
-    p_nom=2800000) annotation (Placement(transformation(extent={{116,-76},{100,-56}})));
+    p_nom=2800000) annotation (Placement(transformation(extent={{100,-80},{110,-60}})));
   ClaRa.Components.TurboMachines.Turbines.SteamTurbineVLE_L1 LPTurbine(
     Pi=0.0125,
     rho_nom=1.7,
     m_flow_nom=419 - 150,
     p_nom=400000,
-    CL_eta_mflow=[0.0,0.9; 1,0.9]) annotation (Placement(transformation(extent={{154,-76},{138,-56}})));
+    CL_eta_mflow=[0.0,0.9; 1,0.9]) annotation (Placement(transformation(extent={{140,-80},{150,-60}})));
   Components.VolumesValvesFittings.Fittings.Split_L2_Y split_IET3_1
     annotation (Placement(transformation(extent={{116,-96},{136,-84}})));
-  Components.BoundaryConditions.BoundaryVLE_hxim_flow  massFlowSource_XRG1(variable_m_flow=false, m_flow_const=-150) annotation (Placement(transformation(extent={{124,-138},{144,-118}})));
+  Components.BoundaryConditions.BoundaryVLE_hxim_flow  massFlowSource_XRG1(variable_m_flow=false, m_flow_const=-150) annotation (Placement(transformation(extent={{90,-140},{110,-120}})));
   Modelica.Blocks.Sources.Ramp ramp3(
     offset=1,
     height=-0.5,
@@ -130,17 +132,12 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(HPTurbine.outlet, steamGenerator_1_XRG.reheat_in) annotation (Line(
-      points={{78,-74},{78,-63.55},{26.8,-63.55}},
+      points={{90,-80},{26,-80},{26,-63.55},{26.8,-63.55}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
-  connect(steamGenerator_1_XRG.feedwater, massFlowSource_XRG.steam_a)
-    annotation (Line(
-      points={{19,-63.55},{-40,-63.55},{-40,-58},{-74,-58}},
-      color={0,70,135},
-      smooth=Smooth.None));
   connect(HPTurbine.inlet, steamGenerator_1_XRG.livesteam) annotation (Line(
-      points={{90,-61.2},{64.192,-61.2},{64.192,-28},{19,-28}},
+      points={{80,-64},{64,-64},{64,-6},{18,-6},{18,-28},{19,-28}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
@@ -149,7 +146,7 @@ equation
       color={0,0,127},
       smooth=Smooth.None));
   connect(gain.u, mediumData_b.p_) annotation (Line(
-      points={{-123.2,-56},{-126,-56},{-126,-58},{-131,-58}},
+      points={{-123.2,-56},{-126,-56},{-126,-57.985},{-130.985,-57.985}},
       color={0,0,127},
       smooth=Smooth.None), Text(
       string="%second",
@@ -165,22 +162,22 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(LPTurbine.outlet,pressureSink_XRG. steam_a) annotation (Line(
-      points={{138,-76},{154,-76},{154,-78},{158,-78}},
+      points={{150,-80},{150,-84},{168,-84}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
   connect(IPTurbine.outlet,split_IET3_1. inlet) annotation (Line(
-      points={{100,-76},{112,-76},{112,-90},{116,-90}},
+      points={{110,-80},{110,-86},{116,-86},{116,-90}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
   connect(massFlowSource_XRG1.steam_a,split_IET3_1. outlet2) annotation (Line(
-      points={{144,-128},{150,-128},{150,-96},{126,-96}},
+      points={{110,-130},{126,-130},{126,-96}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
   connect(steamGenerator_1_XRG.reheat_out, IPTurbine.inlet) annotation (Line(
-      points={{26.8,-28},{116,-28},{116,-60}},
+      points={{26.8,-28},{100,-28},{100,-64}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
@@ -192,12 +189,15 @@ equation
       points={{-21,96},{3.4,96},{3.4,-52.75}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(split_IET3_1.outlet1, LPTurbine.outlet) annotation (Line(
-      points={{136,-90},{138,-90},{138,-76}},
+  connect(split_IET3_1.outlet1, LPTurbine.inlet) annotation (Line(
+      points={{136,-90},{136,-64},{140,-64}},
       color={0,131,169},
       pattern=LinePattern.Solid,
-      thickness=0.5,
-      smooth=Smooth.None));
+      thickness=0.5));
+  connect(massFlowSource_XRG.steam_a, steamGenerator_1_XRG.feedwater) annotation (Line(
+      points={{-74,-58},{-60,-58},{-60,-60},{-40,-60},{-40,-92},{19,-92},{19,-63.55}},
+      color={0,131,169},
+      thickness=0.5));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=false,extent={{-200,-200},{200,200}}),
                       graphics={
         Rectangle(extent={{-144,32},{198,-194}},lineColor={0,0,0}),
@@ -217,5 +217,11 @@ equation
           fillPattern=FillPattern.Solid,
           textString="Process model")}),
                                  Icon(coordinateSystem(preserveAspectRatio=true,
-          extent={{-100,-100},{100,100}})));
+          extent={{-100,-100},{100,100}})),
+    experiment(
+      StopTime=2000,
+      __Dymola_NumberOfIntervals=1000,
+      Tolerance=1e-005,
+      __Dymola_Algorithm="Dassl"),
+    __Dymola_experimentSetupOutput);
 end testCoalSupplyBoiler7_XRG;

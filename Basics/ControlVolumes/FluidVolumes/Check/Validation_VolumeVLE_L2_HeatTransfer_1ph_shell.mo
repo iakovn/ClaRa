@@ -1,14 +1,14 @@
 within ClaRa.Basics.ControlVolumes.FluidVolumes.Check;
 model Validation_VolumeVLE_L2_HeatTransfer_1ph_shell "Evaluation and validation scenario from VDI Wärmeatlas 9. Auflage 2002 Chapter Gg3"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.0.0                        //
+  // Component of the ClaRa library, version: 1.1.0                        //
   //                                                                           //
-  // Licensed by the DYNCAP research team under Modelica License 2.            //
-  // Copyright © 2013-2015, DYNCAP research team.                                   //
+  // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+  // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
-  // DYNCAP is a research project supported by the German Federal Ministry of  //
-  // Economics and Technology (FKZ 03ET2009).                                  //
-  // The DYNCAP research team consists of the following project partners:      //
+  // DYNCAP and DYNSTART are research projects supported by the German Federal //
+  // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+  // The research team consists of the following project partners:             //
   // Institute of Energy Systems (Hamburg University of Technology),           //
   // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
   // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -36,24 +36,24 @@ model Validation_VolumeVLE_L2_HeatTransfer_1ph_shell "Evaluation and validation 
         ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.NoFriction_L2,
     redeclare model HeatTransfer =
         ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.NusseltShell1ph_L2,
+    m_flow_nom=100,
     redeclare model Geometry =
-        ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlockWithTubes (
-        length=
-          2,
-        diameter_t=
-            20/1000,
+        Fundamentals.Geometry.HollowBlockWithTubes (
+        length=2,
+        diameter_t=20/1000,
         Nt=60,
         parallelTubes=false,
         staggeredAlignment=false,
-        height=
-          30/1000*10,
-        width=
-          2,
+        height=30/1000*10,
         Delta_z_par=26/1000,
         Delta_z_ort=30/1000,
         n=6,
-        N_rows=6),
-    m_flow_nom=100) "max(0.000001, ((1 - Volume.bulk.q)*Volume.M))/noEvent(max(Volume.bulk.VLE.d_l, Volume.bulk.d))"
+        N_rows=6,
+        z_in={30/1000*10/2},
+        z_out={30/1000*10/2},
+        width=2,
+        N_tubes=10,
+        N_passes=6)) "max(0.000001, ((1 - Volume.bulk.q)*Volume.M))/noEvent(max(Volume.bulk.VLE.d_l, Volume.bulk.d))"
     annotation (Placement(transformation(extent={{20,40},{0,60}})));
 
   Components.BoundaryConditions.BoundaryVLE_Txim_flow massFlowSource(

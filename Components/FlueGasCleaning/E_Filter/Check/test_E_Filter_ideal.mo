@@ -1,14 +1,14 @@
 within ClaRa.Components.FlueGasCleaning.E_Filter.Check;
-model Test_E_Filter_ideal "with flue gas model that includes argon"
+model test_E_Filter_ideal "with flue gas model that includes argon"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -42,9 +42,7 @@ model Test_E_Filter_ideal "with flue gas model that includes argon"
         extent={{-10,-10},{10,10}},
         rotation=0,
         origin={-70,-30})));
-  ClaRa.Components.FlueGasCleaning.E_Filter.E_Filter_L1_ideal e_Filter_dynamic(
-      separationRate=0.9995, xi_start={0.0,0,0.73,0,0.065,0.036,0,0.13,0.0})
-    annotation (Placement(transformation(extent={{-4,-28},{16,-8}})));
+  ClaRa.Components.FlueGasCleaning.E_Filter.E_Filter_L2_simple e_Filter_dynamic(separationRate=0.9995, xi_start={0.0,0,0.73,0,0.065,0.036,0,0.13,0.0}) annotation (Placement(transformation(extent={{-4,-28},{16,-8}})));
   Modelica.Thermal.HeatTransfer.Sources.FixedTemperature fixedTemperatureTop1(T=293.15)
                 annotation (Placement(transformation(
         extent={{10,-10},{-10,10}},
@@ -94,4 +92,4 @@ PURPOSE:
     experiment(StopTime=10),
     __Dymola_experimentSetupOutput,
     Icon(coordinateSystem(preserveAspectRatio=true, extent={{-100,-50},{100,60}})));
-end Test_E_Filter_ideal;
+end test_E_Filter_ideal;

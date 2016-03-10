@@ -1,14 +1,14 @@
 within ClaRa.Components.HeatExchangers.Check;
 model Test_RegenerativeAirPreheater
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.0.0                        //
+  // Component of the ClaRa library, version: 1.1.0                        //
   //                                                                           //
-  // Licensed by the DYNCAP research team under Modelica License 2.            //
-  // Copyright © 2013-2015, DYNCAP research team.                                   //
+  // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+  // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
-  // DYNCAP is a research project supported by the German Federal Ministry of  //
-  // Economics and Technology (FKZ 03ET2009).                                  //
-  // The DYNCAP research team consists of the following project partners:      //
+  // DYNCAP and DYNSTART are research projects supported by the German Federal //
+  // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+  // The research team consists of the following project partners:             //
   // Institute of Energy Systems (Hamburg University of Technology),           //
   // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
   // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -41,7 +41,7 @@ model Test_RegenerativeAirPreheater
     xi_const={0,0,0,0,0.79,0.21,0,0,0})
                     annotation (Placement(transformation(extent={{-42,-2},{-22,18}})));
   ClaRa.Components.BoundaryConditions.BoundaryGas_pTxi flueGasPressureSink2(p_const=100000) annotation (Placement(transformation(extent={{-42,-30},{-22,-10}})));
-  ClaRa.Components.HeatExchangers.RegenerativeAirPreheater_L4_array regenerativeAirPreheater(
+  ClaRa.Components.HeatExchangers.RegenerativeAirPreheater_L4 regenerativeAirPreheater(
     s_sp=0.6e-3,
     redeclare model Material = TILMedia.SolidTypes.TILMedia_St35_8,
     A_flueGas=0.45*(regenerativeAirPreheater.A_cross - regenerativeAirPreheater.A_hub),
@@ -53,22 +53,23 @@ model Test_RegenerativeAirPreheater
     T_start_flueGas={450,340},
     m_flow_flueGas_nom=565,
     p_start_flueGas={108600,100900},
-    redeclare model PressureLoss = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4,
+    redeclare model PressureLoss =
+        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4,
     N_cv=10,
-    p_start_freshAir={110000,104700},
-    redeclare model HeatTransferFlueGas = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Special.Convection_regenerativeAirPreheater_array,
+    redeclare model HeatTransferFlueGas =
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Convection.Convection_regenerativeAirPreheater_L4,
     frictionAtFlueGasInlet=false,
     frictionAtFlueGasOutlet=true,
     frictionAtFreshAirInlet=false,
-    frictionAtFreshAirOutlet=true) annotation (Placement(transformation(extent={{8,-16},{28,4}})));
+    frictionAtFreshAirOutlet=true,
+    p_start_freshAir={110000,104700}) annotation (Placement(transformation(extent={{8,-16},{28,4}})));
 
   Modelica.Blocks.Sources.Step step1(
     offset=40 + 273.15,
     startTime=800,
     height=20)
     annotation (Placement(transformation(extent={{-80,-2},{-60,18}})));
-  ClaRa.Components.HeatExchangers.RegenerativeAirPreheaterPrimaryAndSecondaryAir_L4_array
-    airPreheater(
+  ClaRa.Components.HeatExchangers.RegenerativeAirPreheaterPrimaryAndSecondaryAir_L4 airPreheater(
     T_start_primaryAir={400,400},
     T_start_secondaryAir={400,400},
     T_start_flueGas={400,400},
@@ -77,8 +78,7 @@ model Test_RegenerativeAirPreheater
     N_cv=10,
     xi_start_primaryAir={0,0,0,0,0.79,0.21,0,0,0},
     xi_start_secondaryAir={0,0,0,0,0.79,0.21,0,0,0},
-    xi_start_flueGas={0,0,0.219,0,0.689,0,0.029,0,0})
-               annotation (Placement(transformation(extent={{6,-100},{26,-80}})));
+    xi_start_flueGas={0,0,0.219,0,0.689,0,0.029,0,0}) annotation (Placement(transformation(extent={{6,-100},{26,-80}})));
   ClaRa.Components.BoundaryConditions.BoundaryGas_Txim_flow fluelGasFlowSource(
     m_flow_const=400,
     variable_m_flow=true,

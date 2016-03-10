@@ -10,3 +10,7 @@ mod
 Factorial
 A_hor_intCyl
 shape_intCyl
+CalculateStateChangeFraction
+SmoothZeroTransition
+maxAbs
+minAbs

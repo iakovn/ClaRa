@@ -1,14 +1,14 @@
 within ClaRa.Components.HeatExchangers.Check;
 model EvaluateDesuperheater "An evaluation scenario for the ShellAndTube_HEX_1 featuring part load. Comparing against an EBSILON model"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.0.0                        //
+  // Component of the ClaRa library, version: 1.1.0                        //
   //                                                                           //
-  // Licensed by the DYNCAP research team under Modelica License 2.            //
-  // Copyright © 2013-2015, DYNCAP research team.                                   //
+  // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+  // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
-  // DYNCAP is a research project supported by the German Federal Ministry of  //
-  // Economics and Technology (FKZ 03ET2009).                                  //
-  // The DYNCAP research team consists of the following project partners:      //
+  // DYNCAP and DYNSTART are research projects supported by the German Federal //
+  // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+  // The research team consists of the following project partners:             //
   // Institute of Energy Systems (Hamburg University of Technology),           //
   // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
   // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -16,6 +16,7 @@ model EvaluateDesuperheater "An evaluation scenario for the ShellAndTube_HEX_1 f
   //___________________________________________________________________________//
 
   extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb60;
+  import ModelicaServices.ExternalReferences.loadResource;
 
   Real Q_flow1=-desuperheater_1.summary.outline.Q_flow;
   Real Q_flow2=-desuperheater_2.summary.outline.Q_flow;
@@ -44,7 +45,7 @@ model EvaluateDesuperheater "An evaluation scenario for the ShellAndTube_HEX_1 f
     tableName="S",
     columns={2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,
         27,28,29,30,31,32,33,34,35},
-    fileName="TableBase/Desuperheater.mat")
+    fileName=loadResource("modelica://ClaRa/TableBase/Desuperheater.mat"))
     annotation (Placement(transformation(extent={{-100,40},{-80,60}})));
   Modelica.Blocks.Discrete.Sampler sampler[34](each samplePeriod=300)
     annotation (Placement(transformation(extent={{-72,40},{-52,60}})));
@@ -79,7 +80,8 @@ model EvaluateDesuperheater "An evaluation scenario for the ShellAndTube_HEX_1 f
     width=2,
     diameter_i=0.0189,
     N_tubes=217,
-    redeclare model WallMaterial = TILMedia.SolidTypes.TILMedia_Aluminum,
+    redeclare model WallMaterial =
+        TILMedia.SolidTypes.TILMedia_Aluminum,
     p_start_tubes=3200000,
     showExpertSummary=true,
     redeclare model PressureLossTubes =
@@ -96,7 +98,9 @@ model EvaluateDesuperheater "An evaluation scenario for the ShellAndTube_HEX_1 f
     redeclare model HeatTransfer_Shell =
         ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.IdealHeatTransfer_L2,
     redeclare model HeatTransferTubes =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2 (                      PL_alpha=[0.01,0.5025; 0.4,0.6; 0.6,0.8; 1,1], alpha_nom=62.5)) annotation (Placement(transformation(
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2 (                      PL_alpha=[0.01,0.5025; 0.4,0.6; 0.6,0.8; 1,1], alpha_nom=62.5),
+    redeclare model HeatExchangerType =
+        Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.CrossFlow)                   annotation (Placement(transformation(
         extent={{10,-10},{-10,10}},
         rotation=270,
         origin={32,2})));
@@ -139,15 +143,16 @@ model EvaluateDesuperheater "An evaluation scenario for the ShellAndTube_HEX_1 f
     h_const=2800e3,
     variable_p=true,
     p_const=3000000) annotation (Placement(transformation(extent={{-42,-72},{-22,-52}})));
-  HEXvle2vle_L3_1ph_BU_kA desuperheater_2(
+  HEXvle2vle_L3_1ph_kA desuperheater_2(
     initTypeShell=ClaRa.Basics.Choices.Init.steadyState,
     initTypeTubes=ClaRa.Basics.Choices.Init.steadyState,
     h_start_tubes=3e6,
     h_start_shell=2990e3,
     Q_flow_nom=1e6,
-    redeclare model WallMaterial = TILMedia.SolidTypes.TILMedia_Aluminum,
+    redeclare model WallMaterial =
+        TILMedia.SolidTypes.TILMedia_Aluminum,
     kA=98365.519,
-    CL_kA_mflow_tubes=[0.01,0.5025; 0.4,0.6; 0.6,0.8; 1,1],
+    CL_kA_mflow=[0.01,0.5025; 0.4,0.6; 0.6,0.8; 1,1],
     mass_struc=1,
     showExpertSummary=true,
     h_nom_shell=3500e3,
@@ -206,22 +211,22 @@ equation
       color={0,0,127},
       smooth=Smooth.None));
   connect(massFlowSource1.steam_a, desuperheater_1.In1) annotation (Line(
-      points={{64,2},{52.9,2},{52.9,2},{41.8,2}},
+      points={{64,2},{41.8,2}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
   connect(massFlowSource.steam_a, desuperheater_1.In2) annotation (Line(
-      points={{32,20},{32,16},{32,12},{38,12}},
+      points={{32,20},{32,12},{26,12}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
   connect(valveCompressible.inlet, desuperheater_1.Out2) annotation (Line(
-      points={{10,-24},{26,-24},{26,12}},
+      points={{10,-24},{38,-24},{38,12}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
   connect(desuperheater_1.Out1, valveCompressible1.inlet) annotation (Line(
-      points={{22,2},{16,2},{16,2},{10,2}},
+      points={{22,2},{10,2}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
@@ -265,12 +270,12 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(massFlowSource2.steam_a, desuperheater_2.In2) annotation (Line(
-      points={{54,-34},{38,-34},{38,-52}},
+      points={{54,-34},{26,-34},{26,-52}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
   connect(valveCompressible2.inlet, desuperheater_2.Out2) annotation (Line(
-      points={{10,-88},{26,-88},{26,-52}},
+      points={{10,-88},{38,-88},{38,-52}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));

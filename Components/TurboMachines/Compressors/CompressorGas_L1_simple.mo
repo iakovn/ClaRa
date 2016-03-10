@@ -1,14 +1,14 @@
 within ClaRa.Components.TurboMachines.Compressors;
 model CompressorGas_L1_simple "Simple compressor or fan for gas"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -18,7 +18,8 @@ model CompressorGas_L1_simple "Simple compressor or fan for gas"
   outer ClaRa.SimCenter simCenter;
 //parameter Boolean allow_reverseFlow = true annotation(Evaluate=true, Dialog(tab="Advanced"));
 extends ClaRa.Basics.Icons.Compressor;
-parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary "True if component shall contribute to automatic efficiency calculation" annotation(Dialog(tab="Summary and Visualisation"));
+parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary "True if component shall contribute to automatic efficiency calculation"
+                                                                                            annotation(Dialog(tab="Summary and Visualisation"));
   ClaRa.Basics.Interfaces.Connected2SimCenter connected2SimCenter(
     powerIn=0,
     powerOut=-P_hyd,
@@ -80,8 +81,9 @@ parameter Real eta = 0.85 "isentropic efficiency";
 
 //__________________________/ Inputs \_____________________________
 
- parameter ClaRa.Components.TurboMachines.Compressors.Internals.PresetVariableType presetVariableType="V_flow" "Specifies which variable is preset"
-                                                                                            annotation (Dialog(group="General Settings"));
+  parameter ClaRa.Components.TurboMachines.Compressors.Fundamentals.PresetVariableType
+    presetVariableType="V_flow" "Specifies which variable is preset"
+    annotation (Dialog(group="General Settings"));
 
 parameter Boolean use_P_shaftInput=false "= true, if P_shaft defined by input"
     annotation(Dialog(enable=(presetVariableType=="P_shaft"), group="Mechanical shaft power"));
@@ -113,7 +115,8 @@ parameter ClaRa.Basics.Units.Time Tau_aux=0.1 "Time constant of auxilliary kappa
 
  parameter Real kappa_initial = 1.3 "Initial value for kappas" annotation(dialog(tab = "Advanced"));
 
-  ClaRa.Components.TurboMachines.Compressors.Internals.GetInputsHydraulic getInputs annotation (Placement(transformation(
+  ClaRa.Components.TurboMachines.Compressors.Fundamentals.GetInputsHydraulic
+    getInputs annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=270,
         origin={0,40})));

@@ -10,8 +10,7 @@ partial model IdealPhases "The phases are in ideal thermodynamic equilibrium"
   ClaRa.Basics.Units.PressureDifference Delta_p_geo_in;
   ClaRa.Basics.Units.PressureDifference Delta_p_geo_out;
 public
-  Units.Length
-            level_abs "Absolute filling absLevel";
+  Units.Length level_abs "Absolute filling absLevel";
   Real level_rel(start=level_rel_start) "Relative filling absLevel";
   parameter Real level_rel_start=0.5 "Start value for relative filling Level";
 end IdealPhases;

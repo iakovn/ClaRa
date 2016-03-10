@@ -1,14 +1,14 @@
 within ClaRa.Components.Furnace.Check;
 model Test_CombustionChamber_vs_Burner_control
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -18,7 +18,6 @@ model Test_CombustionChamber_vs_Burner_control
   import ClaRa;
   extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb60;
   SimpleCombustionChamber combustionChamber(
-    calculate_LHV=false,
     xi_slag=0,
     xi_NOx=0,
     flueGas_outlet(xi_outflow(start={0.01,0,0.1,0,0.74,0.13,0,0.02,0})))
@@ -26,10 +25,10 @@ model Test_CombustionChamber_vs_Burner_control
   inner ClaRa.SimCenter simCenter(redeclare ClaRa.Basics.Media.Fuel.Coal_v2
       fuelModel1)
     annotation (Placement(transformation(extent={{-140,-320},{-120,-300}})));
-  ClaRa.Components.BoundaryConditions.BoundaryCoal_Txim_flow coalFlowSource(
+  ClaRa.Components.BoundaryConditions.BoundaryFuel_Txim_flow coalFlowSource(
     m_flow_const=1,
     variable_m_flow=true,
-    coalType=simCenter.fuelModel1,
+    fuelType=simCenter.fuelModel1,
     xi_const=simCenter.fuelModel1.defaultComposition) annotation (Placement(transformation(extent={{-64,-92},{-44,-72}})));
   ClaRa.Components.BoundaryConditions.BoundarySlag_pT coalSink annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
@@ -79,8 +78,7 @@ model Test_CombustionChamber_vs_Burner_control
     sign=-1,
     y_ref=1/30e6,
     Tau_i=1) annotation (Placement(transformation(extent={{-44,-36},{-64,-56}})));
-  ClaRa.Components.Adapters.CoalGas_join             coalGas_join
-    annotation (Placement(transformation(extent={{-28,-98},{-8,-78}})));
+  ClaRa.Components.Adapters.FuelFlueGas_join coalGas_join annotation (Placement(transformation(extent={{-28,-98},{-8,-78}})));
   ClaRa.Components.Furnace.Burner.Burner_L2_Static
                                             burner(
     redeclare model Burning_time =
@@ -106,10 +104,10 @@ model Test_CombustionChamber_vs_Burner_control
     xi_start_flueGas_out={0.01,0,0.1,0,0.74,0.13,0,0.02,0})
     annotation (Placement(transformation(extent={{14,-252},{74,-232}})));
 
-  ClaRa.Components.BoundaryConditions.BoundaryCoal_Txim_flow coalFlowSource1(
+  ClaRa.Components.BoundaryConditions.BoundaryFuel_Txim_flow coalFlowSource1(
     m_flow_const=1,
     variable_m_flow=true,
-    coalType=simCenter.fuelModel1,
+    fuelType=simCenter.fuelModel1,
     xi_const=simCenter.fuelModel1.defaultComposition) annotation (Placement(transformation(extent={{-64,-246},{-44,-226}})));
   ClaRa.Components.BoundaryConditions.BoundaryGas_Txim_flow flueGasFlowSource1(
     m_flow_const=2.2*6.7362,
@@ -117,18 +115,16 @@ model Test_CombustionChamber_vs_Burner_control
     variable_xi=false,
     xi_const={0,0,0.0005,0,0.8,0.1985,0,0.001,0})
                           annotation (Placement(transformation(extent={{-64,-242},{-44,-262}})));
-  ClaRa.Components.Adapters.CoalGas_join             coalGas_join1
-    annotation (Placement(transformation(extent={{-26,-252},{-6,-232}})));
-  ClaRa.Components.Adapters.CoalSlagFlueGas_join
+  ClaRa.Components.Adapters.FuelFlueGas_join coalGas_join1 annotation (Placement(transformation(extent={{-26,-252},{-6,-232}})));
+  ClaRa.Components.Adapters.FuelSlagFlueGas_join
     coalSlagFlueGas_join
     annotation (Placement(transformation(extent={{-10,-10},{10,10}},
         rotation=90,
         origin={28,-272})));
-  ClaRa.Components.BoundaryConditions.BoundaryCoal_Txim_flow coalFlowSource2(
+  ClaRa.Components.BoundaryConditions.BoundaryFuel_Txim_flow coalFlowSource2(
     xi_const={0.86,0.035,0.025,0.014,0.007,0.0505},
     variable_m_flow=false,
-    m_flow_const=0,
-    T_const=simCenter.T_amb) annotation (Placement(transformation(extent={{-66,-302},{-46,-282}})));
+    m_flow_const=0)          annotation (Placement(transformation(extent={{-66,-300},{-46,-280}})));
   ClaRa.Components.BoundaryConditions.BoundarySlag_pT slagSink(T_const=373.15) annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=0,
@@ -140,7 +136,7 @@ model Test_CombustionChamber_vs_Burner_control
     variable_xi=false,
     xi_const={0,0,0.0005,0,0.8,0.1985,0,0.001,0})
                     annotation (Placement(transformation(extent={{-66,-298},{-46,-318}})));
-  ClaRa.Components.Adapters.CoalSlagFlueGas_split
+  ClaRa.Components.Adapters.FuelSlagFlueGas_split
     coalSlagFlueGas_split
     annotation (Placement(transformation(extent={{-10,-10},{10,10}},
         rotation=90,
@@ -149,7 +145,7 @@ model Test_CombustionChamber_vs_Burner_control
         extent={{-10,-10},{10,10}},
         rotation=180,
         origin={84,-178})));
-  ClaRa.Components.BoundaryConditions.BoundaryCoal_pTxi coalSink1(xi_const={0.81,0.035,0.025,0.014,0.007,0.0005}, T_const=373.15) annotation (Placement(transformation(
+  ClaRa.Components.BoundaryConditions.BoundaryFuel_pTxi coalSink1(xi_const={0.81,0.035,0.025,0.014,0.007,0.0005}, T_const=373.15) annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=180,
         origin={108,-166})));
@@ -278,13 +274,12 @@ equation
       pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
-  connect(coalGas_join.coalDust_outlet, combustionChamber.inlet) annotation (
-      Line(
+  connect(coalGas_join.fuelFlueGas_outlet, combustionChamber.inlet) annotation (Line(
       points={{-8,-88},{12,-88}},
       color={118,106,98},
       thickness=0.5,
       smooth=Smooth.None));
-  connect(coalFlowSource.coal_a, coalGas_join.coal_inlet) annotation (Line(
+  connect(coalFlowSource.fuel_a,coalGas_join.fuel_inlet)  annotation (Line(
       points={{-44,-82},{-28,-82}},
       color={27,36,42},
       pattern=LinePattern.Solid,
@@ -301,24 +296,22 @@ equation
       color={118,106,98},
       thickness=0.5,
       smooth=Smooth.None));
-  connect(coalSink1.coal_a, coalSlagFlueGas_split.coal_inlet) annotation (Line(
+  connect(coalSink1.fuel_a, coalSlagFlueGas_split.fuel_outlet) annotation (Line(
       points={{98,-166},{22,-166},{22,-196}},
       color={27,36,42},
       thickness=0.5,
       smooth=Smooth.None));
-  connect(coalSlagFlueGas_split.slag_outlet, slagFlowSource.slag_outlet)
-    annotation (Line(
+  connect(coalSlagFlueGas_split.slag_inlet, slagFlowSource.slag_outlet) annotation (Line(
       points={{28,-196},{28,-178},{74,-178}},
       color={234,171,0},
       thickness=0.5,
       smooth=Smooth.None));
-  connect(flueGasPressureSink1.gas_a, coalSlagFlueGas_split.flueGas_inlet)
-    annotation (Line(
+  connect(flueGasPressureSink1.gas_a, coalSlagFlueGas_split.flueGas_outlet) annotation (Line(
       points={{54,-190},{34,-190},{34,-196}},
       color={118,106,98},
       thickness=0.5,
       smooth=Smooth.None));
-  connect(coalFlowSource1.coal_a, coalGas_join1.coal_inlet) annotation (Line(
+  connect(coalFlowSource1.fuel_a,coalGas_join1.fuel_inlet)  annotation (Line(
       points={{-44,-236},{-26,-236}},
       color={27,36,42},
       pattern=LinePattern.Solid,
@@ -330,19 +323,17 @@ equation
       color={118,106,98},
       thickness=0.5,
       smooth=Smooth.None));
-  connect(coalGas_join1.coalDust_outlet, burner.coalDust_inlet) annotation (
-      Line(
+  connect(coalGas_join1.fuelFlueGas_outlet, burner.fuelFlueGas_inlet) annotation (Line(
       points={{-6,-242},{14,-242}},
       color={118,106,98},
       thickness=0.5,
       smooth=Smooth.None));
-  connect(coalSlagFlueGas_split.coalSlagFlueGas_outlet, burner.outlet)
-    annotation (Line(
+  connect(coalSlagFlueGas_split.fuelSlagFlueGas_inlet, burner.outlet) annotation (Line(
       points={{28,-216},{28,-232}},
       color={118,106,98},
       thickness=0.5,
       smooth=Smooth.None));
-  connect(burner.inlet, coalSlagFlueGas_join.coalSlagFlueGas_outlet)
+  connect(burner.inlet,coalSlagFlueGas_join.fuelSlagFlueGas_outlet)
     annotation (Line(
       points={{28,-252},{28,-262}},
       color={118,106,98},
@@ -363,9 +354,9 @@ equation
       color={167,25,48},
       thickness=0.5,
       smooth=Smooth.None));
-  connect(coalFlowSource2.coal_a, coalSlagFlueGas_join.coal_inlet) annotation (
+  connect(coalFlowSource2.fuel_a,coalSlagFlueGas_join.fuel_inlet)  annotation (
       Line(
-      points={{-46,-292},{22,-292},{22,-282}},
+      points={{-46,-290},{22,-290},{22,-282}},
       color={27,36,42},
       pattern=LinePattern.Solid,
       thickness=0.5,

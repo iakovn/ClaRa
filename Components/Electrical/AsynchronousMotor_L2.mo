@@ -1,14 +1,14 @@
 within ClaRa.Components.Electrical;
 model AsynchronousMotor_L2 "A simple asynchronous e-motor"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                            //
+// Component of the ClaRa library, version: 1.1.0                            //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                              //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -23,15 +23,6 @@ model AsynchronousMotor_L2 "A simple asynchronous e-motor"
 
   import ClaRa.Basics.Units;
   import Modelica.Constants.pi;
-/////// The following block is be conform to MSL 3.2 and will be removed in the future////////////////
-  import ClaRa.Basics.Functions.TableInterpolation.tableInit;
-  import ClaRa.Basics.Functions.TableInterpolation.tableIpo;
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/////// The following block will be conform to MSL 3.2.1 and will be activated in the future//////////
-//   import ClaRa.Basics.Functions.TableInterpolation.getTableValueNoDer;
-//   import ClaRa.Basics.Functions.TableInterpolation.getTableValue;
-//////////////////////////////////////////////////////////////////////////////////////////////////////
 
   outer ClaRa.SimCenter simCenter;
 
@@ -63,7 +54,8 @@ model AsynchronousMotor_L2 "A simple asynchronous e-motor"
   parameter Real slip_start = (f_term_nom/N_pp - rpm_nom/60)/(f_term_nom/N_pp) "Initial slip" annotation(Dialog(tab="Initialisation"));
 
   parameter Boolean showExpertSummary=simCenter.showExpertSummary "|Summary and Visualisation||True, if expert summary should be applied";
-  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary "True if component shall contribute to automatic efficiency calculation" annotation(Dialog(tab="Summary and Visualisation"));
+  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary "True if component shall contribute to automatic efficiency calculation"
+                                                                                              annotation(Dialog(tab="Summary and Visualisation"));
 
   parameter Modelica.Blocks.Types.Smoothness smoothness=Modelica.Blocks.Types.Smoothness.LinearSegments "Smoothness of table interpolation" annotation(Dialog(tab="Expert Settings",enable=useCharLine));
 
@@ -78,15 +70,7 @@ protected
   Real slip_bd "Breakdown slip";
   Units.Voltage U_rotor0 "Induced rotor voltage at zero speed";
 
-/////// The following block will be conform to MSL 3.2.1 and will be activated in the future///////////
-//   final  parameter Modelica.Blocks.Types.ExternalCombiTable1D tableID=
-//       Modelica.Blocks.Types.ExternalCombiTable1D("NoName", "NoName", iCom.shape, {2}, smoothness)
-//     "External table object";
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/////// The following block is be conform to MSL 3.2 and will be removed in the future////////////////
-  final parameter Integer tableID=tableInit("NoName", "NoName", charLine_tau_s_, smoothness) "External table object";
-//////////////////////////////////////////////////////////////////////////////////////////////////////
+  Modelica.Blocks.Tables.CombiTable1D table(table=charLine_tau_s_, columns={2}, smoothness=smoothness);
 
 public
 record Summary
@@ -152,8 +136,10 @@ equation
   tau_bd = 3*U_rotor0^2/(8*pi^2*rpm_sync/60*f_term*L_rotor);
   slip_bd = R_rotor/L_rotor/2/pi/f_term;
   if useCharLine then
-    tau_rotor = tableIpo(tableID, 2, rpm/rpm_sync)*tau_nom*tau_bd/tau_bd_nom;
+    table.u[1] = rpm/rpm_sync;
+    tau_rotor = table.y[1]*tau_nom*tau_bd/tau_bd_nom;
   else
+    table.u[1] = 1;
     tau_rotor/(tau_bd) = 2/(slip/slip_bd + slip_bd/slip) "Formula of Kloss";
   end if;
 

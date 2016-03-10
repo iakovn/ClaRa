@@ -1,14 +1,14 @@
 within ClaRa.Components.TurboMachines.Turbines.Check;
 model testStackedTurbineStages
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -24,7 +24,6 @@ model testStackedTurbineStages
     Tau_aux=0.000001,
     useMechanicalPort=true,
     steadyStateTorque=false,
-    diameter=1.5,
     eta_mech=0.99,
     Delta_alpha_fixed=0,
     xi_nom={0,0,0,0,0.75,0.23,0,0,0},
@@ -36,11 +35,12 @@ model testStackedTurbineStages
     VIGVInfluence="Medium",
     T_in_nom=600,
     p_in_nom(displayUnit="bar") = 700000,
-    N_stages=5,
-    psi_nom_fixed=-2.5,
     N_VIGVstages=3,
     Pi_nom=1/7,
-    eta_isen_stage_nom=0.9) annotation (Placement(transformation(
+    eta_isen_stage_nom=0.9,
+    N_stages=5,
+    diameter=ones((5))*(1.5),
+    psi_nom_fixed=ones((5))*(-2.5)) annotation (Placement(transformation(
         extent={{-5,-10},{5,10}},
         rotation=0,
         origin={-29,-32})));

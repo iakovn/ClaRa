@@ -1,14 +1,14 @@
 within ClaRa.Components.Furnace.FlameRoom;
 model FlameRoomWithTubeBundle_L2_Static "Model for a combustion chamber section with inner tube bundle heating surfaces"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -28,10 +28,6 @@ inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy met
                                                               annotation(Dialog(tab="Initialisation"));
 
 //## V A R I A B L E   P A R T##################################################################################
-protected
-inner ClaRa.Basics.Units.MassFraction
-                                  prod_comp[flueGas.nc-1]; //Molar flow of produced components per coal mass burned
-
 //___________________/ iCom record \\__________________
 protected
   inner ClaRa.Basics.Records.IComGas_L2 iCom(
@@ -56,31 +52,31 @@ protected
 equation
   mass = geo.volume * (flueGasOutlet.d + flueGasInlet.d)/2;
 
-  //____________/ Resulting Xi for entire coal mass in the volume \______________
-  xi_coal_in = inStream(inlet.coal.xi_outflow);
+  //____________/ Resulting Xi for entire fuel mass in the volume \______________
+  xi_fuel_in = inStream(inlet.fuel.xi_outflow);
 
   //________________/ Mass balance - flue gas \______________________________________
-  0 =m_flow_coal_burned*(1 - xi_coal_in[6]*reactionZone.xi_slag) + inlet.flueGas.m_flow + outlet.flueGas.m_flow;
+  0 =m_flow_fuel_burned*(1 - xi_fuel_in[6]*reactionZone.xi_slag) + inlet.flueGas.m_flow + outlet.flueGas.m_flow;
 
   //______________ / Mass balance - Slag \____________________________________________________________________________
-  0 =inlet.slag.m_flow + m_flow_coal_burned*xi_coal_in[6]*reactionZone.xi_slag + outlet.slag.m_flow;
+  0 =inlet.slag.m_flow + m_flow_fuel_burned*xi_fuel_in[6]*reactionZone.xi_slag + outlet.slag.m_flow;
 
-  //______________/ Mass balance - Coal \____________________________
-  0 =outlet.coal.m_flow + inlet.coal.m_flow - m_flow_coal_burned;
+  //______________/ Mass balance - Fuel \____________________________
+  0 =outlet.fuel.m_flow + inlet.fuel.m_flow - m_flow_fuel_burned;
 
   //__________/ molar flow rates of combustable components (educts) into the whole burner system (maybe not all of it is burned) \________
-  n_flow_C = xi_coal_in[1]*inlet.coal.m_flow /ClaRa.Basics.Constants.M_C;
-  n_flow_H = xi_coal_in[2]*inlet.coal.m_flow /ClaRa.Basics.Constants.M_H;
-  n_flow_O = xi_coal_in[3]*inlet.coal.m_flow /ClaRa.Basics.Constants.M_O;
-  n_flow_N = xi_coal_in[4]*inlet.coal.m_flow /ClaRa.Basics.Constants.M_N;
+  n_flow_C = xi_fuel_in[1]*inlet.fuel.m_flow /ClaRa.Basics.Constants.M_C;
+  n_flow_H = xi_fuel_in[2]*inlet.fuel.m_flow /ClaRa.Basics.Constants.M_H;
+  n_flow_O = xi_fuel_in[3]*inlet.fuel.m_flow /ClaRa.Basics.Constants.M_O;
+  n_flow_N = xi_fuel_in[4]*inlet.fuel.m_flow /ClaRa.Basics.Constants.M_N;
                                                              // N not N2!!!!!!
-  n_flow_S = xi_coal_in[5]*inlet.coal.m_flow /ClaRa.Basics.Constants.M_S;
-  n_flow_Ash = xi_coal_in[6]*inlet.coal.m_flow /ClaRa.Basics.Constants.M_Ash;
-  n_flow_H2O = (1-sum(xi_coal_in))*inlet.coal.m_flow /ClaRa.Basics.Constants.M_H2O;
+  n_flow_S = xi_fuel_in[5]*inlet.fuel.m_flow /ClaRa.Basics.Constants.M_S;
+  n_flow_Ash = xi_fuel_in[6]*inlet.fuel.m_flow /ClaRa.Basics.Constants.M_Ash;
+  n_flow_H2O = (1-sum(xi_fuel_in))*inlet.fuel.m_flow /ClaRa.Basics.Constants.M_H2O;
 
   //_______________/ determination of lambda \_________________________
-  // theoretically required oxygen mass flow rate to burn all the coal
-   m_flow_oxygen_req = (1-coal_diffusity)*(n_flow_C + n_flow_H/4.0 + n_flow_S - n_flow_O/2)*ClaRa.Basics.Constants.M_O
+  // theoretically required oxygen mass flow rate to burn all the fuel
+   m_flow_oxygen_req = (1-fuel_diffusity)*(n_flow_C + n_flow_H/4.0 + n_flow_S - n_flow_O/2)*ClaRa.Basics.Constants.M_O
                                                                                             *2.0;
    m_flow_air_req*max(1e-32,flueGasInlet.xi[6]) = m_flow_oxygen_req;
 
@@ -90,38 +86,44 @@ equation
     lambdaComb = (inlet.flueGas.m_flow*flueGasInlet.xi[6])/max(1e-12, m_flow_oxygen_req);
     end if;
 
-  //calculation of actual coal and oxygen mass flow rates that are burned
+  //calculation of actual fuel and oxygen mass flow rates that are burned
   if noEvent(lambdaComb > 1) then
-    m_flow_coal_burned = (1 - coal_diffusity)*inlet.coal.m_flow;
+    m_flow_fuel_burned = (1 - fuel_diffusity)*inlet.fuel.m_flow;
     m_flow_oxygen_burned = m_flow_oxygen_req;
   else
-    m_flow_coal_burned = lambdaComb*(1 - coal_diffusity)*inlet.coal.m_flow;
+    m_flow_fuel_burned = lambdaComb*(1 - fuel_diffusity)*inlet.fuel.m_flow;
     m_flow_oxygen_burned = lambdaComb*m_flow_oxygen_req;
   end if;
 
   //_____________/ Calculation of the LHV \______________________________________
 
-  if LHV_calculationType == "fixed" then
-    LHV = LHV_fixed;
-  elseif LHV_calculationType == "Verbandsformel" then
-    LHV =(33907*xi_coal_in[1] + 142324*(xi_coal_in[2] - xi_coal_in[3]/8.) + 10465*xi_coal_in[5] - 2512*((1 - sum(xi_coal_in)) + 9*xi_coal_in[2]))*1000;
+  if inlet.fuel.LHV_calculationType == "predefined" then
+   LHV = inStream(inlet.fuel.LHV_outflow);
+  elseif inlet.fuel.LHV_calculationType == "Verbandsformel" then
+   LHV =(33907*xi_fuel_in[1] + 142324*(xi_fuel_in[2] - xi_fuel_in[3]/8.) + 10465*xi_fuel_in[5] - 2512*((1 - sum(xi_fuel_in)) + 9*xi_fuel_in[2]))*1000;
   else
-    LHV = LHV_fixed;
+   LHV = inStream(inlet.fuel.LHV_outflow);
   end if;
 
-  //______________________________/ mass balance of flue gas components \__________________________
-  zeros(flueGas.nc-1) =inlet.flueGas.m_flow*flueGasInlet.xi + outlet.flueGas.m_flow*xi_flueGas + m_flow_coal_burned*prod_comp;
+//   if (inlet.fuel.m_flow < 0 or inlet.fuel.m_flow > 0) or (outlet.fuel.m_flow < 0 or outlet.fuel.m_flow > 0) then
+//      LHV * (max(0,inlet.fuel.m_flow) + max(0,outlet.fuel.m_flow)) = (max(0,inlet.fuel.m_flow)*inStream(inlet.fuel.LHV_outflow) +  max(0,outlet.fuel.m_flow)*inStream(outlet.fuel.LHV_outflow));
+//   else
+//      LHV = inStream(inlet.fuel.LHV_outflow);
+//   end if;
 
-  //_____________/ Calculation of coal formation enthalpy with LHV for an ideal combustion\__________________
-  m_flow_coal_id = 1.0;
-  m_flow_flueGas_id =(m_flow_coal_id*(1 - xi_coal_in[6]*reactionZone.xi_slag));           //ideal flue gas mass flow
-   xi_flueGas_id =1/m_flow_flueGas_id*prod_comp;   //products of an ideal combustion
+  //______________________________/ mass balance of flue gas components \__________________________
+  zeros(flueGas.nc-1) =inlet.flueGas.m_flow*flueGasInlet.xi + outlet.flueGas.m_flow*xi_flueGas + m_flow_fuel_burned*reactionZone.prod_comp;
+
+  //_____________/ Calculation of fuel formation enthalpy with LHV for an ideal combustion\__________________
+  m_flow_fuel_id = 1.0;
+  m_flow_flueGas_id =(m_flow_fuel_id*(1 - xi_fuel_in[6]*reactionZone.xi_slag));           //ideal flue gas mass flow
+   xi_flueGas_id =1/m_flow_flueGas_id*reactionZone.prod_comp;   //products of an ideal combustion
 
    sum_comp = sum(xi_flueGas_id);
-  Delta_h_f - LHV =m_flow_flueGas_id*((ideal_combustion.h_i)*cat(1,xi_flueGas_id,{1 - sum(xi_flueGas_id)})) + xi_coal_in[6]*reactionZone.xi_slag*outlet.slagType.cp*T_0; //formation enthalpy of used coal
+  Delta_h_f - LHV =m_flow_flueGas_id*((ideal_combustion.h_i)*cat(1,xi_flueGas_id,{1 - sum(xi_flueGas_id)})) + xi_fuel_in[6]*reactionZone.xi_slag*outlet.slagType.cp*T_0; //formation enthalpy of used fuel
 
   //_______________/ Energy Balance flueGasCombustion \__________________________
-  0 =Q_flow_wall + Q_flow_top + Q_flow_bottom + Q_flow_CarrierTubes + Q_flow_TubeBundle + inlet.flueGas.m_flow*flueGasInlet.h + inlet.coal.m_flow*(inlet.coalType.cp*(inStream(inlet.coal.T_outflow) - T_0) + Delta_h_f) + outlet.coal.m_flow*(outlet.coalType.cp*(outlet.coal.T_outflow - T_0) + Delta_h_f) + outlet.slag.m_flow*outlet.slagType.cp*(inStream(outlet.slag.T_outflow) - T_0) + inlet.slag.m_flow*inlet.slagType.cp*(inlet.slag.T_outflow - T_0) + outlet.flueGas.m_flow*h_flueGas_out;
+  0 =Q_flow_wall + Q_flow_top + Q_flow_bottom + Q_flow_CarrierTubes + Q_flow_TubeBundle + inlet.flueGas.m_flow*flueGasInlet.h + inlet.fuel.m_flow*(inlet.fuelType.cp*(inStream(inlet.fuel.T_outflow) - T_0) + Delta_h_f) + outlet.fuel.m_flow*(outlet.fuelType.cp*(outlet.fuel.T_outflow - T_0) + Delta_h_f) + outlet.slag.m_flow*outlet.slagType.cp*(inStream(outlet.slag.T_outflow) - T_0) + inlet.slag.m_flow*inlet.slagType.cp*(inlet.slag.T_outflow - T_0) + outlet.flueGas.m_flow*h_flueGas_out;
 
   //______________/Properties for heat transfer corellation\_________
 
@@ -130,15 +132,21 @@ equation
 
   sum_xi = sum(flueGasOutlet.xi);
 
-  xi_coal_out = xi_coal_in; //no change of coal composition during combustion
+  xi_fuel_out = xi_fuel_in; //no change of fuel composition during combustion
 
-  xi_coal = (inlet.coal.m_flow)/(inlet.flueGas.m_flow);// amount of coal per flue gas mass
+  xi_fuel = (inlet.fuel.m_flow)/(inlet.flueGas.m_flow);// amount of fuel per flue gas mass
 
   //___________/ T_outflows \__________________________________________
-  outlet.coal.T_outflow = flueGasOutlet.T;
+  outlet.fuel.T_outflow = flueGasOutlet.T;
   outlet.flueGas.T_outflow = flueGasOutlet.T;
   inlet.slag.T_outflow =T_slag;
   heat_bottom.T = iCom.T_out;
+
+  //___________/ LHV_outflows \__________________________________________
+  outlet.fuel.LHV_outflow =LHV;
+  inlet.fuel.LHV_outflow =LHV;
+  outlet.fuel.LHV_calculationType = inlet.fuel.LHV_calculationType;
+
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-300,-100},
             {300,100}}),
                       graphics), Icon(coordinateSystem(preserveAspectRatio=true,
@@ -178,11 +186,11 @@ equation
 <li>Stationary mass and energy balances are used</li>
 <li>Tube bundles are regarded with replaceable geometry models</li>
 <li>Additional heat transfer ports to regard heat transfer for tube banks and carrier tubes</li>
-<li>The formation enthalpy of the used coal is calculated with the given Lower heating value and and ideal combustion with the given elemental composition of the coal</li>
+<li>The formation enthalpy of the used fuel is calculated with the given Lower heating value and and ideal combustion with the given elemental composition of the fuel</li>
 <li>Lower heating can be regarded with a fixed value or calculated according to the &QUOT;Verbandsformel&QUOT;</li>
 <li>Different heat transfer correlations can be chosen</li>
-<li>Capable to burn unburnt coal from lower burner sections</li>
-<li>Amount of burnable coal mass is calculated with particle diffusity which depends on models used to determine the mean migration speed according to the volume flow rates of the flue gas</li>
+<li>Capable to burn unburnt fuel from lower burner sections</li>
+<li>Amount of burnable fuel mass is calculated with particle diffusity which depends on models used to determine the mean migration speed according to the volume flow rates of the flue gas</li>
 </ul></p>
 </html>"));
 end FlameRoomWithTubeBundle_L2_Static;

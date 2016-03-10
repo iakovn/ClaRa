@@ -1,21 +1,21 @@
 within ClaRa.Basics.ControlVolumes.GasVolumes.Check;
 model TestFlueGasCell
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
   extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
-  FlueGasCell flueGasCell(
+  VolumeGas_L2 flueGasCell(
     redeclare model Geometry =
         ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry,
     allow_reverseFlow=true,
@@ -25,8 +25,8 @@ model TestFlueGasCell
     initType=ClaRa.Basics.Choices.Init.noInit,
     T_start=273.15 + 200,
     redeclare model HeatTransfer =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L2)
-    annotation (Placement(transformation(extent={{0,-10},{20,10}})));
+        Fundamentals.HeatTransport.Generic_HT.Constant_L2 (                           temperatureDifference="Arithmetic mean"))
+                                                                                          annotation (Placement(transformation(extent={{0,-10},{20,10}})));
 
   Modelica.Blocks.Sources.Ramp massFlowRate(
     height=-1,
@@ -75,12 +75,10 @@ model TestFlueGasCell
     variable_m_flow=true,
     xi_const={0.7,0.1,0.1,0.05,0.01,0.02,0.01,0.01,0})
                       annotation (Placement(transformation(extent={{-40,-10},{-20,10}})));
-  Components.BoundaryConditions.BoundaryGas_pTxi idealGasPressureSink_XRG(
-    p_const=simCenter.p_amb,
+  Components.BoundaryConditions.BoundaryGas_pTxi boundaryGas_pTxi(
     medium=simCenter.flueGasModel,
     variable_p=true,
-    xi_const={0.1,0.05,0.1,0.3,0.4,0.001,0.001,0.001,0})
-                     annotation (Placement(transformation(
+    xi_const={0.1,0.05,0.1,0.3,0.4,0.001,0.001,0.001,0}) annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=180,
         origin={50,0})));
@@ -97,7 +95,7 @@ equation
       points={{-63,-22},{-48.5,-22},{-48.5,0},{-40,0}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(dP.y, idealGasPressureSink_XRG.p) annotation (Line(
+  connect(dP.y, boundaryGas_pTxi.p) annotation (Line(
       points={{79,-6},{60,-6}},
       color={0,0,127},
       smooth=Smooth.None));
@@ -111,8 +109,7 @@ equation
       color={118,106,98},
       thickness=0.5,
       smooth=Smooth.None));
-  connect(flueGasCell.outlet, idealGasPressureSink_XRG.gas_a)
-    annotation (Line(
+  connect(flueGasCell.outlet, boundaryGas_pTxi.gas_a) annotation (Line(
       points={{20,0},{40,0}},
       color={118,106,98},
       thickness=0.5,

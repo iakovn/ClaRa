@@ -1,14 +1,14 @@
 within ClaRa.Basics.ControlVolumes.FluidVolumes;
 model VolumeVLE_L4_Advanced "A 1D tube-shaped control volume considering one-phase and two-phase heat transfer in a straight pipe with detailed dynamic momentum and energy balance."
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -20,8 +20,6 @@ model VolumeVLE_L4_Advanced "A 1D tube-shaped control volume considering one-pha
   import SI = ClaRa.Basics.Units;
   import Modelica.Constants.eps;
   import Modelica.Constants.g_n "gravity constant";
-  import
-    ClaRa.Basics.ControlVolumes.Fundamentals.FlowModels.FlowModelStructure "structure of flow model";
 
   outer ClaRa.SimCenter simCenter;
 
@@ -156,7 +154,7 @@ public
       outline(     showExpertSummary=showExpertSummary,
                    N_cv=geo.N_cv,
                    volume_tot=sum(geo.volume),
-                   Delta_p=outlet.p-inlet.p,
+                   Delta_p= inlet.p - outlet.p,
                    mass_tot=sum(mass),
                    H_tot=sum(h.*mass),
                    Q_flow_tot=sum(heat.Q_flow),
@@ -312,6 +310,7 @@ protected
     fluidPointer= fluid.vleFluidPointer)
     annotation (Placement(transformation(extent={{-80,-52},{-60,-34}})));
 
+public
     PressureLoss pressureLoss "Pressure loss model"
                           annotation(Placement(transformation(extent={{-40,0},
             {-20,20}})));
@@ -382,42 +381,107 @@ equation
 
 //-------------------------------------------
 //data exchange with friction model
-  for i in 2:geo.N_cv loop
-    pressureLoss.rho[i]=(fluidFM[i].d + fluidFM[i+1].d)/2;//smooth(1, if m_flow[i]>0 then fluid[i-1].d else fluid[i].d);
-    //pressure loss due to friction referring to total tube bundle (not a single tube).
-    m_flow[i]=pressureLoss.m_flow[i];
-  end for;
-  pressureLoss.rho[1]=fluidFM[1].d;
-  pressureLoss.rho[geo.N_cv+1]=fluidFM[geo.N_cv+1].d;
-
   m_flow[1]=inlet.m_flow;
-  m_flow[1]=pressureLoss.m_flow[1];
+  m_flow=pressureLoss.m_flow;
   m_flow[geo.N_cv+1]=-outlet.m_flow;
-  m_flow[geo.N_cv+1]=pressureLoss.m_flow[geo.N_cv+1];
 
 //-------------------------------------------
 //data exchange with heat transfer model
-  heatTransfer.m_flow=m_flow[1:geo.N_cv];
+  heatTransfer.m_flow=m_flow;
 
 //-------------------------------------------
 //pressure drop due to momentum current, friction, gravity
-  for i in 2:geo.N_cv loop
-    Delta_p_adv[i]=w[i-1]*abs(w[i-1])*fluid[i-1].d -w[i]*abs(w[i])*fluid[i].d;
-    //pressure due to friction
-    Delta_p_fric[i]= pressureLoss.Delta_p[i];
-    //pressure differece due to gravity
-    //Delta_p_grav[i]=fluidFM[i+1].d*g_n*(z[i+1]-z[i]);
-    Delta_p_grav[i]=fluidFM[i].d*g_n*(geo.z_out-geo.z_in)/geo.length*geo.Delta_x_FM[i];
-  end for;
 
-    Delta_p_adv[geo.N_cv+1]=w[geo.N_cv]*abs(w[geo.N_cv])*fluid[geo.N_cv].d -w_outlet*abs(w_outlet)*fluidOutlet.d;
-    Delta_p_adv[1]=w_inlet*abs(w_inlet)*fluidInlet.d -w[1]*abs(w[1])*fluid[1].d;
+//   Delta_p_adv[1]=w_inlet*abs(w_inlet)*fluidInlet.d -w[1]*abs(w[1])*fluid[1].d;
+//   Delta_p_adv[2:geo.N_cv] = {w[i-1]*abs(w[i-1])*fluid[i-1].d -w[i]*abs(w[i])*fluid[i].d for i in 2:geo.N_cv};
+//   Delta_p_adv[geo.N_cv+1]=w[geo.N_cv]*abs(w[geo.N_cv])*fluid[geo.N_cv].d -w_outlet*abs(w_outlet)*fluidOutlet.d;
 
-    Delta_p_fric[geo.N_cv+1]=pressureLoss.Delta_p[geo.N_cv+1];
-    Delta_p_fric[1]=pressureLoss.Delta_p[1];
+  Delta_p_fric= pressureLoss.Delta_p;
 
-    Delta_p_grav[geo.N_cv+1]=fluidFM[geo.N_cv+1].d*g_n*(geo.z_out-geo.z_in)/geo.length*geo.Delta_x_FM[geo.N_cv+1];
-    Delta_p_grav[1]=fluidFM[1].d*g_n*(geo.z_out-geo.z_in)/geo.length*geo.Delta_x_FM[1];
+  if geo.N_cv==1 then
+    if not frictionAtInlet and not frictionAtOutlet then
+      Delta_p_grav[1] = 0;
+      Delta_p_grav[2] = 0;
+      Delta_p_adv[1] = 0;
+      Delta_p_adv[2] = 0;
+    elseif not frictionAtInlet and frictionAtOutlet then
+      Delta_p_grav[1] = 0;
+      Delta_p_grav[2] = fluidFM[2].d*g_n*(geo.z_out - geo.z_in);
+      Delta_p_adv[1] = 0;
+      Delta_p_adv[2] = w_inlet*abs(w_inlet)*fluidInlet.d -w_outlet*abs(w_outlet)*fluidOutlet.d;
+    elseif  frictionAtInlet and not frictionAtOutlet then
+      Delta_p_grav[1] = fluidFM[1].d*g_n*(geo.z_out - geo.z_in);
+      Delta_p_grav[2] = 0;
+      Delta_p_adv[1] = w_inlet*abs(w_inlet)*fluidInlet.d -w_outlet*abs(w_outlet)*fluidOutlet.d;
+      Delta_p_adv[2] = 0;
+    else
+      // frictionAtOutlet and frictionAtnlet
+      Delta_p_grav[1] = fluidFM[1].d*g_n*(geo.z[1] - geo.z_in);
+      Delta_p_grav[2] = fluidFM[2].d*g_n*(geo.z_out - geo.z[1]);
+      Delta_p_adv[1] = w_inlet*abs(w_inlet)*fluidInlet.d -w[1]*abs(w[1])*fluid[1].d;
+      Delta_p_adv[2] = w[1]*abs(w[1])*fluid[1].d -w_outlet*abs(w_outlet)*fluidOutlet.d;
+    end if;
+  elseif geo.N_cv==2 then
+    if not frictionAtInlet and not frictionAtOutlet then
+      Delta_p_grav[1] = 0;
+      Delta_p_grav[2] = fluidFM[2].d*g_n*(geo.z_out - geo.z_in);
+      Delta_p_grav[3] = 0;
+      Delta_p_adv[1] = 0;
+      Delta_p_adv[2] = w_inlet*abs(w_inlet)*fluidInlet.d -w_outlet*abs(w_outlet)*fluidOutlet.d;
+      Delta_p_adv[3] = 0;
+    elseif not frictionAtInlet and frictionAtOutlet then
+      Delta_p_grav[1] = 0;
+      Delta_p_grav[2] = (fluidFM[2].d*geo.Delta_x_FM[2] + fluidFM[1].d*geo.Delta_x_FM[1])/(geo.Delta_x_FM[1]+geo.Delta_x_FM[2])*g_n*(geo.z[2] - geo.z_in);
+      Delta_p_grav[3] = fluidFM[3].d*g_n*(geo.z_out - geo.z[2]);
+      Delta_p_adv[1] = 0;
+      Delta_p_adv[2] = w_inlet*abs(w_inlet)*fluidInlet.d -w[2]*abs(w[2])*fluid[2].d;
+      Delta_p_adv[3] = w[2]*abs(w[2])*fluid[2].d -w_outlet*abs(w_outlet)*fluidOutlet.d;
+    elseif  frictionAtInlet and not frictionAtOutlet then
+      Delta_p_grav[1] = fluidFM[1].d*g_n*(geo.z[1] - geo.z_in);
+      Delta_p_grav[2] = (fluidFM[2].d*geo.Delta_x_FM[2] + fluidFM[3].d*geo.Delta_x_FM[3])/(geo.Delta_x_FM[3]+geo.Delta_x_FM[2])*g_n*(geo.z_out - geo.z[1]);
+      Delta_p_grav[3] = 0;
+      Delta_p_adv[1] = w_inlet*abs(w_inlet)*fluidInlet.d -w[1]*abs(w[1])*fluid[1].d;
+      Delta_p_adv[2] = w[1]*abs(w[1])*fluid[1].d -w_outlet*abs(w_outlet)*fluidOutlet.d;
+      Delta_p_adv[3] = 0;
+    else
+      // frictionAtOutlet and frictionAtnlet
+      Delta_p_grav[1] = fluidFM[1].d*g_n*(geo.z[1] - geo.z_in);
+      Delta_p_grav[2] = fluidFM[2].d*g_n*(geo.z[2] - geo.z[1]);
+      Delta_p_grav[3] = fluidFM[3].d*g_n*(geo.z_out - geo.z[2]);
+      Delta_p_adv[1] = w_inlet*abs(w_inlet)*fluidInlet.d -w[1]*abs(w[1])*fluid[1].d;
+      Delta_p_adv[2] = w[1]*abs(w[1])*fluid[1].d -w[2]*abs(w[2])*fluid[2].d;
+      Delta_p_adv[3] = w[2]*abs(w[2])*fluid[2].d -w_outlet*abs(w_outlet)*fluidOutlet.d;
+    end if;
+  else
+    for i in 3:geo.N_cv-1 loop
+      Delta_p_grav[i] = fluidFM[i].d*g_n*(geo.z[i] - geo.z[i-1]);
+      Delta_p_adv[i]=w[i-1]*abs(w[i-1])*fluid[i-1].d -w[i]*abs(w[i])*fluid[i].d;
+    end for;
+
+    if frictionAtInlet then
+      Delta_p_grav[1] = fluidFM[1].d*g_n*(geo.z[1] - geo.z_in);
+      Delta_p_grav[2] = fluidFM[2].d*g_n*(geo.z[2] - geo.z[1]);
+      Delta_p_adv[1] = w_inlet*abs(w_inlet)*fluidInlet.d -w[1]*abs(w[1])*fluid[1].d;
+      Delta_p_adv[2] = w[1]*abs(w[1])*fluid[1].d -w[2]*abs(w[2])*fluid[2].d;
+    else
+      Delta_p_grav[1] = 0;
+      Delta_p_grav[2] = (fluidFM[2].d*geo.Delta_x_FM[2] + fluidFM[1].d*geo.Delta_x_FM[1])/(geo.Delta_x_FM[1]+geo.Delta_x_FM[2])*g_n*(geo.z[2] - geo.z_in);
+      Delta_p_adv[1] = 0;
+      Delta_p_adv[2] = w_inlet*abs(w_inlet)*fluidInlet.d -w[2]*abs(w[2])*fluid[2].d;
+    end if;
+
+    if frictionAtOutlet then
+      Delta_p_grav[geo.N_cv+1] = fluidFM[geo.N_cv+1].d*g_n*(geo.z_out - geo.z[geo.N_cv]);
+      Delta_p_grav[geo.N_cv]   = fluidFM[geo.N_cv].d*g_n*(geo.z[geo.N_cv] - geo.z[geo.N_cv-1]);
+      Delta_p_adv[geo.N_cv] = w[geo.N_cv-1]*abs(w[geo.N_cv-1])*fluid[geo.N_cv-1].d -w[geo.N_cv]*abs(w[geo.N_cv])*fluid[geo.N_cv].d;
+      Delta_p_adv[geo.N_cv+1] = w[geo.N_cv]*abs(w[geo.N_cv])*fluid[geo.N_cv].d -w_outlet*abs(w_outlet)*fluidOutlet.d;
+    else
+      Delta_p_grav[geo.N_cv+1] = 0;
+      Delta_p_grav[geo.N_cv] = (fluidFM[geo.N_cv].d*geo.Delta_x_FM[geo.N_cv] + fluidFM[geo.N_cv+1].d*geo.Delta_x_FM[geo.N_cv+1])/(geo.Delta_x_FM[geo.N_cv+1]+geo.Delta_x_FM[geo.N_cv])*g_n*(geo.z_out - geo.z[geo.N_cv-1]);
+      Delta_p_adv[geo.N_cv] = w[geo.N_cv-1]*abs(w[geo.N_cv-1])*fluid[geo.N_cv-1].d -w_outlet*abs(w_outlet)*fluidOutlet.d;
+      Delta_p_adv[geo.N_cv+1] = 0;
+    end if;
+  end if;
 
 //-------------------------------------------
 //Enthalpy flows

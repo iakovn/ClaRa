@@ -1,14 +1,14 @@
 within ClaRa.Components.HeatExchangers;
 model IdealShell_L2 "A desuperheater having an ideal cooling | block-shaped geometry"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.0.0                        //
+  // Component of the ClaRa library, version: 1.1.0                        //
   //                                                                           //
-  // Licensed by the DYNCAP research team under Modelica License 2.            //
-  // Copyright © 2013-2015, DYNCAP research team.                                   //
+  // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+  // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
-  // DYNCAP is a research project supported by the German Federal Ministry of  //
-  // Economics and Technology (FKZ 03ET2009).                                  //
-  // The DYNCAP research team consists of the following project partners:      //
+  // DYNCAP and DYNSTART are research projects supported by the German Federal //
+  // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+  // The research team consists of the following project partners:             //
   // Institute of Energy Systems (Hamburg University of Technology),           //
   // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
   // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -25,7 +25,7 @@ model IdealShell_L2 "A desuperheater having an ideal cooling | block-shaped geom
         N_tubes=N_tubes,
         N_passes=N_passes,
         parallelTubes=parallelTubes,
-        orientation=mainOrientation,
+        flowOrientation=flowOrientation,
         z_in={z_in},
         z_out={z_out}),final heatSurfaceAlloc=2, redeclare model PhaseBorder =
         ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.IdeallyStirred);
@@ -35,14 +35,14 @@ model IdealShell_L2 "A desuperheater having an ideal cooling | block-shaped geom
     powerIn=0,
     powerOut=if not heatFlowIsLoss then -heat.Q_flow else 0,
     powerAux=0) if                                                                                                     contributeToCycleSummary;
-  outer ClaRa.simCenter   simCenter;
+  outer ClaRa.SimCenter   simCenter;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // parameter dialog~~~~~~~~~~~~~~~~~
   parameter Modelica.SIunits.Length height=1 "Height of the component"
     annotation (Dialog(tab="Geometry"));
   parameter Modelica.SIunits.Length width=1 "Width of the component"
     annotation (Dialog(tab="Geometry"));
-  parameter Modelica.SIunits.Length length=1 "Length of the component in flow direction"
+  parameter Modelica.SIunits.Length length=1 "Length of the component"
     annotation (Dialog(tab="Geometry"));
   parameter Modelica.SIunits.Length diameter_t=0.1 "Outer diameter of internal tubes"
     annotation (Dialog(tab="Geometry"));
@@ -50,19 +50,20 @@ model IdealShell_L2 "A desuperheater having an ideal cooling | block-shaped geom
     annotation (Dialog(tab="Geometry"));
   parameter Integer N_passes=1 "Number of passes of the internal tubes"
     annotation (Dialog(tab="Geometry"));
-  parameter ClaRa.Basics.Choices.GeometryOrientation mainOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical "Orientation of the component"
+  parameter ClaRa.Basics.Choices.GeometryOrientation flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.horizontal "Flow orientation at shell side"
                                    annotation (Dialog(tab="Geometry"));
-  parameter Boolean parallelTubes=false "True, if tubes are parallel to main orientation, else false"
+  parameter Boolean parallelTubes=false "True, if tubes are parallel to flow orientation, else false"
     annotation (Dialog(tab="Geometry"));
 
-  parameter Modelica.SIunits.Length z_in=length/2 "Inlet position from bottom"
+  parameter Modelica.SIunits.Length z_in=height/2 "Inlet position from bottom"
     annotation (Dialog(tab="Geometry", enable=orientation == ClaRa.Basics.Choices.GeometryOrientation.vertical));
-  parameter Modelica.SIunits.Length z_out=length/2 "Outlet position from bottom"
+  parameter Modelica.SIunits.Length z_out=height/2 "Outlet position from bottom"
     annotation (Dialog(tab="Geometry", enable=orientation == ClaRa.Basics.Choices.GeometryOrientation.vertical));
 
   parameter Boolean showData=true "True, if a data port containing p,T,h,s,m_flow shall be shown, else false"
     annotation (Dialog(tab="Summary and Visualisation"));
-  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary "True if component shall contribute to automatic efficiency calculation" annotation(Dialog(tab="Summary and Visualisation"));
+  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary "True if component shall contribute to automatic efficiency calculation"
+                                                                                              annotation(Dialog(tab="Summary and Visualisation"));
   parameter Boolean heatFlowIsLoss = true "True if heat flow is a loss (not a process product)" annotation(Dialog(tab="Summary and Visualisation"));
 protected
   ClaRa.Basics.Interfaces.EyeIn eye_int

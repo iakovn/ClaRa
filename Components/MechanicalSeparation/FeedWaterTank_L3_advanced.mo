@@ -1,14 +1,14 @@
 within ClaRa.Components.MechanicalSeparation;
 model FeedWaterTank_L3_advanced "Feedwater tank : separated volume approach | level-dependent phase separation"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -16,6 +16,7 @@ model FeedWaterTank_L3_advanced "Feedwater tank : separated volume approach | le
 //___________________________________________________________________________//
 
 extends ClaRa.Components.MechanicalSeparation.FeedWaterTank_base;
+  parameter ClaRa.Basics.Units.Length thickness_wall=0.005*diameter "Thickness of the cylinder wall"  annotation(Dialog(group="Geometry"));
   replaceable model material = TILMedia.SolidTypes.TILMedia_Steel constrainedby TILMedia.SolidTypes.TILMedia_Aluminum "Material of the walls"  annotation (Dialog(group="Fundamental Definitions"),choicesAllMatching);
   extends ClaRa.Basics.Icons.ComplexityLevel(complexity="L3");
   parameter Modelica.SIunits.Length radius_flange=0.05 "||Geometry|Flange radius";
@@ -43,6 +44,9 @@ extends ClaRa.Components.MechanicalSeparation.FeedWaterTank_base;
       ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3
     constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.PressureLoss_L3 "Pressure loss model"
                           annotation(Dialog(group="Fundamental Definitions"), choicesAllMatching);
+  replaceable model HeatTransfer =
+      ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3 (                      alpha_nom={3000,3000})                              constrainedby Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.HeatTransfer_L3 "Heat transfer to the walls"
+                                                                                              annotation (Dialog(group="Fundamental Definitions"),choicesAllMatching=true);
 
  record Outline
    extends ClaRa.Basics.Icons.RecordIcon;
@@ -185,8 +189,7 @@ extends ClaRa.Components.MechanicalSeparation.FeedWaterTank_base;
     level_rel_start=level_rel_start,
     Tau_cond=Tau_cond,
     showExpertSummary=showExpertSummary,
-    redeclare model HeatTransfer =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3 (             alpha_nom={3000,3000}),
+    redeclare model HeatTransfer =HeatTransfer,
     Tau_evap=Tau_evap,
     alpha_ph=500,
     h_liq_start=h_liq_start,
@@ -220,9 +223,9 @@ extends ClaRa.Components.MechanicalSeparation.FeedWaterTank_base;
     initChoice=ClaRa.Basics.Choices.Init.steadyState,
     length=length,
     N_rad=3,
-    diameter_o=diameter*1.01,
     diameter_i=diameter,
-    redeclare replaceable model Material = material)
+    redeclare replaceable model Material = material,
+    diameter_o=diameter + 2*thickness_wall)
              annotation (Placement(transformation(extent={{12,24},{32,44}})));
 
   Basics.Interfaces.FluidPortOut vent(Medium=medium)

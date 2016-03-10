@@ -1,14 +1,14 @@
 within ClaRa.Basics.ControlVolumes.FluidVolumes.Check;
 model Validation_VolumeVLE_L2_HeatTransfer_2ph_shell "Validation scenario from VDI Wärmeatlas 9. Auflage 2002 Chapter Ja 13 Example 2"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -60,16 +60,14 @@ extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
     m_flow_nom=m_flow_D,
     p_nom(displayUnit="Pa") = p,
     h_nom=h_out + 10e3,
-    redeclare model PressureLoss =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.NoFriction_L2,
     h_start=h_out,
     p_start(displayUnit="Pa") = p + 30,
-    initType=ClaRa.Basics.Choices.Init.steadyDensity,
     redeclare model PhaseBorder =
         ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.IdeallySeparated,
     redeclare model HeatTransfer =
         ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.NusseltShell2ph_L2,
-    redeclare model Geometry = ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowCylinderWithTubes (
+    redeclare model Geometry =
+        ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowCylinderWithTubes (
         N_inlet=1,
         N_outlet=1,
         z_in={diameter_shell_o/2},
@@ -81,7 +79,10 @@ extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
         diameter_t=diameter_tube_o,
         length_tubes=diameter_shell_o,
         N_rows=1),
-    heatSurfaceAlloc=2) "max(0.000001, ((1 - Volume.bulk.q)*Volume.M))/noEvent(max(Volume.bulk.VLE.d_l, Volume.bulk.d))"
+    heatSurfaceAlloc=2,
+    initType=ClaRa.Basics.Choices.Init.noInit,
+    redeclare model PressureLoss =
+        Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L2 (                           Delta_p_nom=10)) "max(0.000001, ((1 - Volume.bulk.q)*Volume.M))/noEvent(max(Volume.bulk.VLE.d_l, Volume.bulk.d))"
     annotation (Placement(transformation(extent={{52,-80},{32,-60}})));
 
   Components.BoundaryConditions.BoundaryVLE_hxim_flow MassFlowSource(
@@ -181,8 +182,8 @@ PURPOSE:
       \"T. Fujii, Vol. 15 pp235-246, Pergamon Press 1972,
 _______________________________________________________________________________________
 Compare the following values of simulation with experimental data from literature:
->>Nusselt number: Volume.heattransfer.Nu_2ph vs. Literature = 1285.74  vs. 1250
->>Heat transfer coefficient: Volume.heattransfer.alpha vs. Literature = 55290 vs. 53500 W/m²K
+>>Nusselt number: Volume.heattransfer.Nu_2ph vs. Literature = 1285  vs. 1250
+>>Heat transfer coefficient: Volume.heattransfer.alpha vs. Literature = 55636 vs. 53500 W/m²K
 
 
 ")}),

@@ -1,14 +1,14 @@
 within ClaRa.SubSystems.Boiler.Check;
 model Compare_SteamGenerator_1and2
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -75,7 +75,9 @@ protected
     annotation (Placement(transformation(extent={{-134,-61},{-128,-55}})));
 public
   Modelica.Blocks.Math.Gain gain(k=Model_boiler.m_flow_LS_nom) annotation (Placement(transformation(extent={{-122,-62},{-110,-50}})));
-  Visualisation.Scope scope(color={255,255,0}, t_simulation=15000) annotation (Placement(transformation(extent={{144,-44},{188,-4}})));
+  Visualisation.Scope scope(color={255,255,0},
+    hideInterface=false,
+    t_end=15000)                                                   annotation (Placement(transformation(extent={{144,-44},{188,-4}})));
   ClaRa.Components.TurboMachines.Turbines.SteamTurbineVLE_L1 HPTurbine1(
     rho_nom=74.2585,
     Pi=28e5/240e5,
@@ -96,7 +98,9 @@ public
     h_const=500e3,
     variable_m_flow=true) annotation (Placement(transformation(extent={{-94,-198},{-74,-178}})));
   Modelica.Blocks.Math.Gain gain1(k=Model_boiler.m_flow_LS_nom) annotation (Placement(transformation(extent={{-122,-192},{-110,-180}})));
-  Visualisation.Scope scope1(color={255,255,0}, t_simulation=15000) annotation (Placement(transformation(extent={{144,-174},{188,-134}})));
+  Visualisation.Scope scope1(color={255,255,0},
+    hideInterface=false,
+    t_end=15000)                                                    annotation (Placement(transformation(extent={{144,-174},{188,-134}})));
 protected
   Basics.Interfaces.SteamSignal      mediumData_b1
     annotation (Placement(transformation(extent={{-134,-191},{-128,-185}})));
@@ -163,7 +167,7 @@ equation
       color={0,0,127},
       smooth=Smooth.None));
   connect(gain.u, mediumData_b.p_) annotation (Line(
-      points={{-123.2,-56},{-126,-56},{-126,-58},{-131,-58}},
+      points={{-123.2,-56},{-126,-56},{-126,-57.985},{-130.985,-57.985}},
       color={0,0,127},
       smooth=Smooth.None), Text(
       string="%second",
@@ -214,7 +218,7 @@ equation
       smooth=Smooth.None));
   connect(gain1.u, mediumData_b1.p_)
                                    annotation (Line(
-      points={{-123.2,-186},{-126,-186},{-126,-188},{-131,-188}},
+      points={{-123.2,-186},{-126,-186},{-126,-187.985},{-130.985,-187.985}},
       color={0,0,127},
       smooth=Smooth.None), Text(
       string="%second",
@@ -269,6 +273,6 @@ NOTE:
 boiler SG1 calculates the mass flow from a characteristic line while boiler SG2 gets the mass flow rate from turbine models and calculates the pressure from a simple, 0D balance equations
  ")}),                           Icon(coordinateSystem(preserveAspectRatio=true,
           extent={{-100,-100},{100,100}})),
-    experiment(StopTime=50000),
+    experiment(StopTime=50000, Tolerance=1e-005),
     __Dymola_experimentSetupOutput);
 end Compare_SteamGenerator_1and2;

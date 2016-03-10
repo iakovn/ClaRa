@@ -1,14 +1,14 @@
 within ClaRa.Components.VolumesValvesFittings.Valves;
 model ThreeWayValveVLE_L2 "A voluminous three way valve for VLE media"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -33,7 +33,9 @@ record Summary
   ClaRa.Basics.Records.FluidVLE_L2           fluid;
 end Summary;
 
-  replaceable model PressureLoss =  ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.IdealSymetric_TWV constrainedby ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.TWV_L2 "Pressure loss model" annotation(choicesAllMatching);
+  replaceable model PressureLoss =
+      ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.IdealSymetric_TWV                      constrainedby ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.TWV_L2 "Pressure loss model"
+                                                                                            annotation(choicesAllMatching);
 
   parameter TILMedia.VLEFluidTypes.BaseVLEFluid   medium=simCenter.fluid1 "Medium in the component"
                                annotation(Dialog(group="Fundamental Definitions"));

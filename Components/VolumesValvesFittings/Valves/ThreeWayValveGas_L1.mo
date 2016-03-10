@@ -1,14 +1,14 @@
 within ClaRa.Components.VolumesValvesFittings.Valves;
 model ThreeWayValveGas_L1 "Three way valve for gaseous media, not suitable for back flows!"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -17,7 +17,9 @@ model ThreeWayValveGas_L1 "Three way valve for gaseous media, not suitable for b
   extends ClaRa.Components.VolumesValvesFittings.Valves.ThreeWayValve_baseGas;
   extends ClaRa.Basics.Icons.ComplexityLevel(complexity="L1");
 
-  replaceable model PressureLoss =  ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticFrictionFlowAreaSymetric_TWV constrainedby ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.TWV_L1 "Pressure loss model" annotation(choicesAllMatching);
+  replaceable model PressureLoss =
+      ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticFrictionFlowAreaSymetric_TWV  constrainedby ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.TWV_L1 "Pressure loss model"
+                                                                                            annotation(choicesAllMatching);
 
 public
   parameter SI.Area effectiveFlowArea=7.85e-3 "Effective flow area for outlets"
@@ -65,8 +67,8 @@ equation
   outlet2.m_flow = -pressureLoss.m_flow_2;
   inlet.m_flow + outlet1.m_flow + outlet2.m_flow =0;
 
-  // Isenthalpic state transformation (no storage and no loss of energy)
-  inlet.T_outflow *(-inlet.m_flow) = (inStream(outlet1.T_outflow)*outlet1.m_flow + inStream(outlet2.T_outflow)*outlet2.m_flow);
+  //Isothermal state transformation. Isenthalpic behaviour can not be modeled using ideal gas substance properties.
+  inlet.T_outflow *(-inlet.m_flow) = (inStream(outlet1.T_outflow)*outlet1.m_flow + inStream(outlet2.T_outflow)*outlet2.m_flow);// Please note: This valve is not designed for back flows. Please consider this as dummy value!
   outlet1.T_outflow = inStream(inlet.T_outflow);
   outlet2.T_outflow = inStream(inlet.T_outflow);
 

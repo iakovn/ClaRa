@@ -32,10 +32,8 @@ partial model CombustionChamberBase_additional_HPs
         rotation=180,
         origin={162,-60})));
 
-  ClaRa.Basics.Units.HeatFlowRate
-                              Q_flow_CarrierTubes;
-  ClaRa.Basics.Units.HeatFlowRate
-                              Q_flow_TubeBundle;
+  ClaRa.Basics.Units.HeatFlowRate Q_flow_CarrierTubes "Heat flow from carrier tubes";
+  ClaRa.Basics.Units.HeatFlowRate Q_flow_TubeBundle "Heat flow from tube bundle";
 
 equation
   //____________/ Heat port temperatures and Q_flows \____________________________

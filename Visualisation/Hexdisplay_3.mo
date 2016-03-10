@@ -1,14 +1,14 @@
 within ClaRa.Visualisation;
 model Hexdisplay_3 "Area-temperature diagram for HEX with three zones"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -19,8 +19,8 @@ model Hexdisplay_3 "Area-temperature diagram for HEX with three zones"
                                                                                                 annotation(Dialog(group="Input", enable=not showInterface));
   input ClaRa.Basics.Units.Temperature T_i[6]=zeros(6) "Hot side temperatures (if showInterface=false)"
                                                                                                 annotation(Dialog(group="Input", enable=not showInterface));
-  input Real yps_o[6] "Area fraction of vapour zone" annotation(Dialog(group="Input", enable=not showInterface));
-  input Real yps_i[6] "Area fraction of two-phase zone" annotation(Dialog(group="Input", enable=not showInterface));
+  input Real z_o[6] "Position of zone limits at outer side" annotation(Dialog(group="Input", enable=not showInterface));
+  input Real z_i[6] "Position of zone limits at inner side" annotation(Dialog(group="Input", enable=not showInterface));
   parameter Real y_min=0 "Choose or guess the minimal value of the y-axis" annotation(Dialog(group="Layout"));
   parameter Real y_max(min=y_min+Modelica.Constants.eps)=1 "Choose or guess the maximal value of the y-axis"
                                                       annotation(Dialog(group="Layout"));
@@ -31,13 +31,13 @@ public
   constant ClaRa.Basics.Types.Color colorc={0,131,169} "Line color"         annotation (Hide=false, Dialog(group="Layout"));
 
 protected
-  Real y_o[ size(yps_o, 1)];
-  Real y_i[ size(yps_i, 1)];
+  Real y_o[ size(z_o, 1)];
+  Real y_i[ size(z_i, 1)];
 
 public
-  Real yps[6] = if outerPhaseChange then yps_o else yps_i;
-  final Real[size(yps_o, 1), 2] point_o=transpose({yps_o*100,y_o})  annotation(Hide=false);
-  final Real[size(yps_i, 1), 2] point_i=transpose({yps_i*100,y_i})  annotation(Hide=false);
+  Real yps[6] = if outerPhaseChange then z_o else z_i;
+  final Real[size(z_o, 1), 2] point_o=transpose({z_o*100,y_o})  annotation(Hide=false);
+  final Real[size(z_i, 1), 2] point_i=transpose({z_i*100,y_i})  annotation(Hide=false);
 
 equation
   for i in 1:6 loop
@@ -86,16 +86,16 @@ annotation (    Icon(coordinateSystem(preserveAspectRatio=true, extent={{0,0},{
           extent={{-20,114},{120,104}},
           lineColor={27,36,42},
           textString="%Unit"),
-          Line(
-            points=DynamicSelect({{0,20},{50,57},{70,42},{100,100}}, point_o),
-            color=colorh,
-            pattern=LinePattern.Solid,
-            thickness=DynamicSelect(0.25,0.5)),
-          Line(
-            points=DynamicSelect({{0,0},{50,52},{70,40},{100,100}}, point_i),
-            color=colorc,
-            pattern=LinePattern.Solid,
-            thickness=DynamicSelect(0.25, 0.5)),
+        Line(
+          points=DynamicSelect({{0,20},{50,57},{70,42},{100,100}}, point_o),
+          color=DynamicSelect({167,25,48},colorh),
+          pattern=LinePattern.Solid,
+          thickness=DynamicSelect(0.25,0.5)),
+        Line(
+          points=DynamicSelect({{0,0},{50,52},{70,40},{100,100}}, point_i),
+          color=DynamicSelect({0,131,169},colorc),
+          pattern=LinePattern.Solid,
+          thickness=DynamicSelect(0.25,0.5)),
         Line(
           points={{50,0},{50,-2}},
           color={27,36,42},

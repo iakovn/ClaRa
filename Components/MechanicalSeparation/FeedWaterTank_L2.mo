@@ -1,14 +1,14 @@
 within ClaRa.Components.MechanicalSeparation;
 model FeedWaterTank_L2 "Feedwater tank : mixed volume approach | level-dependent phase separation"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -182,6 +182,6 @@ equation
   annotation (Icon(coordinateSystem(preserveAspectRatio=true, extent={{-300,
             -100},{300,100}}),
                    graphics),          Diagram(coordinateSystem(
-          preserveAspectRatio=true, extent={{-100,-60},{100,80}}),
+          preserveAspectRatio=true, extent={{-240,-140},{120,100}}),
                                                graphics));
 end FeedWaterTank_L2;

@@ -15,7 +15,8 @@ partial model SpecialHeatTransfer
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
 
- extends ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.HeatTransferGas;
+ extends
+    ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.HeatTransferGas;
 
   annotation (Icon(graphics), Diagram(graphics),
     Documentation(info="<html>

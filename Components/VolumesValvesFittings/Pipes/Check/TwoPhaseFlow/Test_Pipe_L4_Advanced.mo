@@ -1,14 +1,14 @@
 within ClaRa.Components.VolumesValvesFittings.Pipes.Check.TwoPhaseFlow;
 model Test_Pipe_L4_Advanced
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.0.0                        //
+  // Component of the ClaRa library, version: 1.1.0                        //
   //                                                                           //
-  // Licensed by the DYNCAP research team under Modelica License 2.            //
-  // Copyright © 2013-2015, DYNCAP research team.                                   //
+  // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+  // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
-  // DYNCAP is a research project supported by the German Federal Ministry of  //
-  // Economics and Technology (FKZ 03ET2009).                                  //
-  // The DYNCAP research team consists of the following project partners:      //
+  // DYNCAP and DYNSTART are research projects supported by the German Federal //
+  // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+  // The research team consists of the following project partners:             //
   // Institute of Energy Systems (Hamburg University of Technology),           //
   // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
   // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -17,8 +17,7 @@ model Test_Pipe_L4_Advanced
 
   extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
 
-  Modelica.Blocks.Math.MultiSum multiSum(nu=1) annotation (Placement(
-        transformation(
+  Modelica.Blocks.Math.MultiSum multiSum(nu=1) annotation (Placement(transformation(
         extent={{-6,-6},{6,6}},
         rotation=180,
         origin={77,2})));
@@ -30,7 +29,7 @@ model Test_Pipe_L4_Advanced
     variable_h=true,
     p_nom=100000) annotation (Placement(transformation(extent={{64,-13},{44,7}})));
   inner SimCenter simCenter(redeclare replaceable TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1, useHomotopy=false) annotation (Placement(transformation(extent={{-80,-80},{-60,-60}})));
-  PipeFlow_L4_Advanced tube(
+  PipeFlowVLE_L4_Advanced tube(
     z_in=0,
     showExpertSummary=true,
     showData=true,
@@ -56,7 +55,7 @@ model Test_Pipe_L4_Advanced
         ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4,
     initType=ClaRa.Basics.Choices.Init.noInit,
     frictionAtInlet=true,
-    frictionAtOutlet=true)                     annotation (Placement(transformation(extent={{24,-9},{-10,4}})));
+    frictionAtOutlet=true) annotation (Placement(transformation(extent={{24,-9},{-10,4}})));
 
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi massFlowSink(
     variable_p=true,
@@ -67,13 +66,11 @@ model Test_Pipe_L4_Advanced
         extent={{10,-10},{-10,10}},
         rotation=180,
         origin={-42,-3})));
-  inner Modelica.Fluid.System system
-    annotation (Placement(transformation(extent={{60,-80},{80,-60}})));
+  inner Modelica.Fluid.System system annotation (Placement(transformation(extent={{60,-80},{80,-60}})));
   Modelica.Blocks.Sources.Step outlet_pressure(
     startTime=100,
     height=0,
-    offset=1.9e7)
-    annotation (Placement(transformation(extent={{-96,-19},{-76,1}})));
+    offset=1.9e7) annotation (Placement(transformation(extent={{-96,-19},{-76,1}})));
   Modelica.Blocks.Sources.Ramp mass_flow(
     startTime=500,
     duration=20,
@@ -161,8 +158,7 @@ equation
       color={0,0,127},
       smooth=Smooth.None));
   annotation (
-    Diagram(coordinateSystem(preserveAspectRatio=false,extent={{-100,-100},{100,120}}),
-                    graphics={Text(
+    Diagram(coordinateSystem(preserveAspectRatio=false,extent={{-100,-100},{100,120}}), graphics={Text(
           extent={{-98,112},{100,72}},
           lineColor={0,128,0},
           horizontalAlignment=TextAlignment.Left,
@@ -196,6 +192,5 @@ Scenario:  increase of outer wall temperature (at t=200s 350K --> 650 K) causing
       Tolerance=1e-006,
       __Dymola_Algorithm="Dassl"),
     __Dymola_experimentSetupOutput(equdistant=false, events=false),
-    Icon(coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=
-            true)));
+    Icon(coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=true)));
 end Test_Pipe_L4_Advanced;

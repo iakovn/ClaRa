@@ -1,14 +1,14 @@
 within ClaRa.Components.FlueGasCleaning.Denitrification;
 model Denitrification_L1 "Model for a simple ammonia denitrification with fixed separation ratio"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -19,7 +19,7 @@ extends ClaRa.Basics.Icons.Separator;
   outer ClaRa.SimCenter simCenter;
 
 //## S U M M A R Y   D E F I N I T I O N ###################################################################
-   record Outline
+ record Outline
     extends ClaRa.Basics.Icons.RecordIcon;
     input Modelica.SIunits.Volume volume "System volume"
       annotation (Dialog(show));
@@ -41,7 +41,7 @@ extends ClaRa.Basics.Icons.Separator;
                                          annotation (Dialog(show));
     input Real NOx_separationRate "NOx separation rate"
       annotation (Dialog(show));
-   end Outline;
+ end Outline;
 
  record Summary
      extends ClaRa.Basics.Icons.RecordIcon;
@@ -52,33 +52,26 @@ extends ClaRa.Basics.Icons.Separator;
 
 //## P A R A M E T E R S #######################################################################################
 //_____________defintion of medium used in cell__________________________________________________________
-  inner parameter TILMedia.GasTypes.BaseGas      medium = simCenter.flueGasModel "Medium to be used in tubes"
-                                 annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
+  inner parameter TILMedia.GasTypes.BaseGas      medium = simCenter.flueGasModel "Medium to be used in tubes" annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
 
-  inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation"
-                                                              annotation(Dialog(tab="Initialisation"));
-  parameter Boolean allow_reverseFlow = true annotation(Dialog(tab="Advanced"));
-  parameter Boolean use_dynamicMassbalance = true annotation(Dialog(tab="Advanced"));
+  parameter Real separationRate(max = 0.99995) = 0.9995 "Separation rate" annotation (Dialog(group="Fundamental Definitions"));
 
-  parameter Real separationRate(min = 0, max = 1) = 0.995;
-
-inner parameter ClaRa.Basics.Units.MassFlowRate m_flow_nom= 200 "Nominal mass flow rates at inlet"
-                                        annotation(Dialog(tab="General", group="Nominal Values"));
-
+  inner parameter ClaRa.Basics.Units.MassFlowRate m_flow_nom= 200 "Nominal mass flow rates at inlet"  annotation(Dialog(tab="General", group="Nominal Values"));
   inner parameter ClaRa.Basics.Units.Pressure p_nom=1e5 "Nominal pressure"                    annotation(Dialog(group="Nominal Values"));
   inner parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_nom=1e5 "Nominal specific enthalpy"
                                                                                                annotation(Dialog(group="Nominal Values"));
 
-inner parameter ClaRa.Basics.Choices.Init initType=ClaRa.Basics.Choices.Init.noInit "Type of initialisation"
-                             annotation(Dialog(tab="Initialisation", choicesAllMatching));
-  parameter ClaRa.Basics.Units.Temperature T_start= 273.15 + 100.0 "Start value of system temperature"
-                                        annotation(Dialog(tab="Initialisation"));
+  inner parameter ClaRa.Basics.Choices.Init initType=ClaRa.Basics.Choices.Init.noInit "Type of initialisation" annotation(Dialog(tab="Initialisation", choicesAllMatching));
+  parameter ClaRa.Basics.Units.Temperature T_start= 273.15 + 100.0 "Start value of system temperature" annotation(Dialog(tab="Initialisation"));
+  parameter ClaRa.Basics.Units.Pressure p_start= 1.013e5 "Start value of sytsem pressure" annotation(Dialog(tab="Initialisation"));
+  parameter ClaRa.Basics.Units.MassFraction xi_start[medium.nc-1]=zeros(medium.nc-1) "Start value of sytsem mass fraction" annotation(Dialog(tab="Initialisation"));
+  inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation" annotation(Dialog(tab="Initialisation"));
 
-  parameter ClaRa.Basics.Units.Pressure p_start= 1.013e5 "Start value of sytsem pressure"
-                                     annotation(Dialog(tab="Initialisation"));
-  parameter ClaRa.Basics.Units.MassFraction xi_start[medium.nc-1]=zeros(medium.nc-1) "Start value of sytsem mass fraction"
-                                          annotation(Dialog(tab="Initialisation"));
+  parameter Boolean allow_reverseFlow = true "True if flow reversal shall be supported" annotation(Evaluate=true, Dialog(tab="Expert Settings"));
+  parameter Boolean use_dynamicMassbalance = true "True if a dynamic mass balance shall be applied" annotation(Evaluate=true, Dialog(tab="Expert Settings"));
 
+  parameter Boolean showData=true "True, if a data port containing p,T,h,s,m_flow shall be shown, else false"
+                                                                                            annotation (Dialog(tab="Summary and Visualisation"));
 //## V A R I A B L E   P A R T##################################################################################
 
 //____Connectors________________________________________________________________________________________________
@@ -107,9 +100,9 @@ replaceable model Geometry =
     annotation (Dialog(group="Fundamental Definitions"), choicesAllMatching=true);
 
   ClaRa.Components.FlueGasCleaning.Denitrification.Fundamentals.Denitrification_controlVolume deNOx_controlVolume(separationRate=separationRate, T_NH3_O2_mixture=473.15) annotation (Placement(transformation(extent={{-64,-20},{-24,20}})));
-  ClaRa.Basics.ControlVolumes.GasVolumes.FlueGasCell flueGasCell(
+  ClaRa.Basics.ControlVolumes.GasVolumes.VolumeGas_L2 flueGasCell(
     redeclare model Geometry = Geometry,
-    redeclare model HeatTransfer = HeatTransfer(heatSurfaceAlloc=1),
+    redeclare model HeatTransfer = HeatTransfer (heatSurfaceAlloc=1),
     redeclare model PressureLoss = PressureLoss,
     T_start=T_start,
     p_start=p_start,
@@ -120,8 +113,7 @@ replaceable model Geometry =
     h_nom=h_nom,
     useHomotopy=useHomotopy,
     allow_reverseFlow=allow_reverseFlow,
-    use_dynamicMassbalance=use_dynamicMassbalance)
-    annotation (Placement(transformation(extent={{12,-22},{56,22}})));
+    use_dynamicMassbalance=use_dynamicMassbalance) annotation (Placement(transformation(extent={{12,-22},{56,22}})));
 
 inner Summary summary(outline(
     volume=flueGasCell.summary.outline.volume_tot,
@@ -150,11 +142,15 @@ inner Summary summary(outline(
             -114},{-80,-94}})));
 
 public
-  Basics.Interfaces.EyeOut eyeOut annotation (Placement(transformation(extent={{80,-78},
+  Basics.Interfaces.EyeOut eyeOut if showData annotation (Placement(transformation(extent={{80,-78},
             {120,-42}}),          iconTransformation(extent={{90,-50},{110,-30}})));
 protected
   Basics.Interfaces.EyeIn eye_int annotation (Placement(transformation(extent={{48,-68},
             {32,-52}}),           iconTransformation(extent={{90,-84},{84,-78}})));
+public
+  Denitrification_L1_NH3port denitrification_L1_NH3port annotation (Placement(transformation(extent={{192,32},{212,52}})));
+  Fundamentals.Denitrification_controlVolume denitrification_controlVolume annotation (Placement(transformation(extent={{314,4},{334,24}})));
+  Fundamentals.Denitrification_controlVolume denitrification_controlVolume1 annotation (Placement(transformation(extent={{236,2},{256,22}})));
 equation
 
   //______________Eye port variable definition________________________
@@ -165,12 +161,12 @@ equation
   eye_int.h = flueGasCell.bulk.h/1e3;
 
   connect(inlet, deNOx_controlVolume.inlet) annotation (Line(
-      points={{-100,0},{-82,0},{-82,0},{-64,0}},
+      points={{-100,0},{-64,0}},
       color={118,106,98},
       thickness=0.5,
       smooth=Smooth.None));
   connect(deNOx_controlVolume.outlet, flueGasCell.inlet) annotation (Line(
-      points={{-24,0},{-6,0},{-6,0},{12,0}},
+      points={{-24,0},{12,0}},
       color={118,106,98},
       thickness=0.5,
       smooth=Smooth.None));

@@ -1,14 +1,14 @@
 within ClaRa.Visualisation;
 model DynDisplay "Dynamic Display of one variable"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -20,7 +20,10 @@ model DynDisplay "Dynamic Display of one variable"
   parameter String unit="°C" "Variable unit";
   parameter Integer decimalSpaces=1 "Accuracy to be displayed";
   parameter Boolean largeFonts= simCenter.largeFonts "True if visualisers shall be displayed as large as posible";
+  parameter Boolean provideConnector= false "If true a real output connector is provided";
   outer ClaRa.SimCenter simCenter;
+
+  Modelica.Blocks.Interfaces.RealOutput y(value=x1) if provideConnector annotation (Placement(transformation(extent={{100,-10},{120,10}}), iconTransformation(extent={{100,-10},{120,10}})));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
             -100},{100,100}}), graphics={
         Rectangle(
@@ -36,7 +39,7 @@ model DynDisplay "Dynamic Display of one variable"
           pattern=LinePattern.None,
           lineColor={27,36,42}),
         Text(
-          extent=if largeFonts then {{-100,0},{100,-100}} else {{-94,2},{106,-98}},
+          extent=DynamicSelect({{-100,0},{100,-100}}, if largeFonts then {{-100,0},{100,-100}} else {{-94,2},{106,-98}}),
           fillColor={215,215,215},
           fillPattern=FillPattern.Solid,
           lineColor=DynamicSelect({118,124,127}, if x1 > 0 then {0,131,169} else {167,25,48}),

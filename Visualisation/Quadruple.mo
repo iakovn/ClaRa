@@ -1,14 +1,14 @@
 within ClaRa.Visualisation;
 model Quadruple " Cross-shaped dynamic display of m_flow, p, T, h and m_flow"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -42,25 +42,25 @@ end DecimalSpaces;
           pattern=LinePattern.None,
           lineColor={0,0,0}),
         Text(
-          extent=if largeFonts then {{-200,0},{0,-100}} else {{-198,-44},{2,-66}},
+          extent=DynamicSelect({{-200,0},{0,-100}},if largeFonts then {{-200,0},{0,-100}} else {{-200,-20},{0,-80}}),
           fillColor={215,215,215},
           fillPattern=FillPattern.Solid,
           lineColor=DynamicSelect({230, 230, 230}, if time> 0 then if eye.m_flow>0 then {0,131,169} else {167,25,48} else {230,230,230}),
           textString=DynamicSelect(" m ", realString(eye.m_flow,1,integer(decimalSpaces.m_flow)) +" kg/s")),
         Text(
-          extent=if largeFonts then {{-202,-100},{0,-200}} else {{-200,-140},{0,-160}},
+          extent=DynamicSelect({{-200,-100},{0,-200}},if largeFonts then {{-200,-100},{0,-200}} else {{-200,-120},{0,-180}}),
           fillColor={215,215,215},
           fillPattern=FillPattern.Solid,
           lineColor=DynamicSelect({230,230,230},if time>0 then {0,131,169} else {230,230,230}),
           textString=DynamicSelect(" h ", realString(eye.h,1,integer(decimalSpaces.h)) + " kJ/kg")),
         Text(
-          extent=if largeFonts then {{0,0},{200,-100}} else {{0,-40},{200,-60}},
+          extent=DynamicSelect({{0,0},{200,-100}},if largeFonts then {{0,0},{200,-100}} else {{0,-20},{200,-80}}),
           textString=DynamicSelect(" T ", realString(eye.T,1,integer(decimalSpaces.T)) + " °C"),
           fillColor={215,215,215},
           fillPattern=FillPattern.Solid,
           lineColor=DynamicSelect({230,230,230},if time>0 then {0,131,169} else {230,230,230})),
         Text(
-          extent=if largeFonts then {{0,-100},{200,-200}} else {{0,-140},{200,-162}},
+          extent=DynamicSelect({{0,-100},{200,-200}}, if largeFonts then {{0,-100},{200,-200}} else {{0,-120},{200,-180}}),
           textString=DynamicSelect(" p ", realString(eye.p,1,integer(decimalSpaces.p)) + " bar"),
           fillColor={215,215,215},
           fillPattern=FillPattern.Solid,

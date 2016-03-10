@@ -1,14 +1,14 @@
 within ClaRa.Components.FlueGasCleaning.Denitrification.Fundamentals;
 model Denitrification_controlVolume
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -23,29 +23,29 @@ model Denitrification_controlVolume
   inner parameter TILMedia.GasTypes.BaseGas               medium = simCenter.flueGasModel "Medium to be used in tubes"
                                  annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
 
-parameter Modelica.SIunits.Temperature T_NH3_O2_mixture = 273.15+200;
-parameter Real separationRate(min = 0, max = 1) = 0.995;
+parameter Modelica.SIunits.Temperature T_NH3_O2_mixture = 273.15+200 "Temperature of ammonia oxygen inlet";
+parameter Real separationRate(min = 0, max = 1) = 0.995 "Efficiency of NOx separation";
 
 // standard formation enthalpy (T = 298.15K /p = 1.0 bar) for  components involved in deNOx catalysis
-final parameter Modelica.SIunits.MolarInternalEnergy Delta_f_H_NO = 91.271e3;
-final parameter Modelica.SIunits.MolarInternalEnergy Delta_f_H_NH3 = -45.940e3;
-final parameter Modelica.SIunits.MolarInternalEnergy Delta_f_H_H2O = -241.826e3;
+final parameter Modelica.SIunits.MolarInternalEnergy Delta_f_H_NO = 91.271e3 "Standrad formation enthalpy nitric oxide";
+final parameter Modelica.SIunits.MolarInternalEnergy Delta_f_H_NH3 = -45.940e3 "Standrad formation  enthalpy ammonia";
+final parameter Modelica.SIunits.MolarInternalEnergy Delta_f_H_H2O = -241.826e3 "Standrad formation  enthalpy water";
 
 //## V A R I A B L E   P A R T##################################################################################
 
 // Quantaties for deNOx catalysis
-Modelica.SIunits.MassFlowRate NH3_O2_m_flow;
-Modelica.SIunits.MassFlowRate flueGasMixture_m_flow;
+Modelica.SIunits.MassFlowRate NH3_O2_m_flow "Mass flow of ammoinia oxygen mix";
+Modelica.SIunits.MassFlowRate flueGasMixture_m_flow "Mass flow of flue gas mixture";
 //Molar flow rates
-Modelica.SIunits.MolarFlowRate n_flow_NOx_in;
-Modelica.SIunits.MolarFlowRate n_flow_O2_in;
-Modelica.SIunits.MolarFlowRate n_flow_NH3_req;
-Modelica.SIunits.MolarFlowRate n_flow_O2_req;
+Modelica.SIunits.MolarFlowRate n_flow_NOx_in "Molar flow rate of nitric oxides at inlet";
+Modelica.SIunits.MolarFlowRate n_flow_O2_in "Molar flow rate of oxygen at inlet";
+Modelica.SIunits.MolarFlowRate n_flow_NH3_req "Required molar flow rate of ammonia";
+Modelica.SIunits.MolarFlowRate n_flow_O2_req "Required molar flow rate of oxygen";
 // standard reaction enthalpy
-Modelica.SIunits.MolarInternalEnergy Delta_R_H;
-Modelica.SIunits.MassFraction NH3_O2_in_xi[medium.nc-1];
-Modelica.SIunits.MassFraction flueGasMixture_xi[medium.nc-1];
-Modelica.SIunits.HeatFlowRate Qdot;
+Modelica.SIunits.MolarInternalEnergy Delta_R_H "Reaction enthalpy";
+Modelica.SIunits.MassFraction NH3_O2_in_xi[medium.nc-1] "Inlet composition of ammonia oxygen mix";
+Modelica.SIunits.MassFraction flueGasMixture_xi[medium.nc-1] "Inlet composition of flue gas";
+Modelica.SIunits.HeatFlowRate Qdot "Heat flow to environment";
 
 //____Connectors________________________________________________________________________________________________
   ClaRa.Basics.Interfaces.GasPortIn inlet(Medium=medium)  annotation (Placement(

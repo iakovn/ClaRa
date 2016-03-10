@@ -1,14 +1,14 @@
 within ClaRa.Components.VolumesValvesFittings.Pipes.Check.OnePhaseFlow;
 model Test_Tube_FlueGas_L2_Simple
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.0.0                        //
+  // Component of the ClaRa library, version: 1.1.0                        //
   //                                                                           //
-  // Licensed by the DYNCAP research team under Modelica License 2.            //
-  // Copyright © 2013-2015, DYNCAP research team.                                   //
+  // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+  // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
-  // DYNCAP is a research project supported by the German Federal Ministry of  //
-  // Economics and Technology (FKZ 03ET2009).                                  //
-  // The DYNCAP research team consists of the following project partners:      //
+  // DYNCAP and DYNSTART are research projects supported by the German Federal //
+  // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+  // The research team consists of the following project partners:             //
   // Institute of Energy Systems (Hamburg University of Technology),           //
   // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
   // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -21,20 +21,20 @@ model Test_Tube_FlueGas_L2_Simple
     redeclare ClaRa.Basics.Media.Fuel.Slag_v2 slagModel,
     redeclare TILMedia.GasTypes.FlueGasTILMedia flueGasModel) annotation (Placement(transformation(extent={{70,76},{90,96}})));
 
-  Tube_FlueGas_L2_Simple tube(
+  PipeFlowGas_L4_Simple tube(
     length=10,
     N_cv=10,
     m_flow_nom=10,
-    T_nom=293.15*ones(tube.N_cv),
     initType=ClaRa.Basics.Choices.Init.noInit,
     N_tubes=1,
-    T_start=298.15*ones(tube.N_cv),
     diameter_i=0.5,
     redeclare model PressureLoss =
         ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4,
     redeclare model HeatTransfer =
         ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4,
-    xi_start={0,0,0.0005,0,0.7681,0.2314,0,0,0})                                                        annotation (Placement(transformation(extent={{-10,-86},{10,-74}})));
+    xi_start={0,0,0.0005,0,0.7681,0.2314,0,0,0},
+    T_nom=293.15*ones(10),
+    T_start=298.15*ones(10)) annotation (Placement(transformation(extent={{-16,-86},{16,-74}})));
 
   BoundaryConditions.BoundaryGas_pTxi flueGasFlowSource(
     variable_xi=false,
@@ -56,7 +56,8 @@ model Test_Tube_FlueGas_L2_Simple
     T_start=323.15*ones(tube.N_cv),
     diameter_i=tube.diameter_i,
     N_tubes=tube.N_tubes,
-    diameter_o=tube.diameter_i + 0.01) annotation (Placement(transformation(extent={{-6,-53},{6,-39}})));
+    diameter_o=tube.diameter_i + 0.01) annotation (Placement(transformation(extent={{-10,-53},
+            {10,-46}})));
   Modelica.Blocks.Sources.Ramp T_wall(
     duration=10,
     offset=298.15,
@@ -80,11 +81,11 @@ model Test_Tube_FlueGas_L2_Simple
         origin={-10,-20})));
 equation
   connect(flueGasFlowSource.gas_a, tube.inlet) annotation (Line(
-      points={{-34,-80},{-10,-80}},
+      points={{-34,-80},{-16,-80}},
       color={84,58,36},
       smooth=Smooth.None));
   connect(tube.outlet, flueGasPressureSink_top.gas_a) annotation (Line(
-      points={{10,-80},{70,-80}},
+      points={{16,-80},{70,-80}},
       color={84,58,36},
       smooth=Smooth.None));
   connect(thinWall.innerPhase, tube.heat) annotation (Line(
@@ -104,7 +105,7 @@ equation
       color={0,0,127},
       smooth=Smooth.None));
   connect(prescribedTemperature.port, thinWall.outerPhase) annotation (Line(
-      points={{-4,-20},{0,-20},{0,-39}},
+      points={{-4,-20},{0,-20},{0,-46}},
       color={191,0,0},
       smooth=Smooth.None));
   annotation (Diagram(coordinateSystem(extent={{-100,-100},{100,100}},

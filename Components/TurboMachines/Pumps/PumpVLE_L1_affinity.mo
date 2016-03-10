@@ -1,14 +1,15 @@
 within ClaRa.Components.TurboMachines.Pumps;
 model PumpVLE_L1_affinity "A pump for VLE mitures based on affinity laws"
+  import ClaRa;
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -95,14 +96,20 @@ public
       h=fluidOut.h,
       s=fluidOut.s,
       steamQuality=fluidOut.q,
-      H_flow=fluidOut.h*outlet.m_flow,
+      H_flow=-fluidOut.h*outlet.m_flow,
       rho=fluidOut.d))                                                                                                     annotation(Placement(transformation(
         extent={{-10,-11},{10,11}},
         origin={-70,-91})));
-  Modelica.Mechanics.Rotational.Interfaces.Flange_a shaft
+  Modelica.Mechanics.Rotational.Interfaces.Flange_a shaft if  useMechanicalPort
     annotation (Placement(transformation(extent={{-10,62},{10,82}}),
         iconTransformation(extent={{-10,89},{10,109}})));
 
+protected
+  ClaRa.Components.TurboMachines.Fundamentals.GetInputsRotary getInputsRotary
+    annotation (Placement(transformation(
+        extent={{-10,-10},{10,10}},
+        rotation=-90,
+        origin={0,20})));
 initial equation
  if stabiliseDelta_p then
   Delta_p_ps=Delta_p;
@@ -120,11 +127,11 @@ equation
 
 //____________________ Mechanics ___________________________
   if useMechanicalPort then
-    der(shaft.phi) = (2*pi*rpm/60);
-    J*a*rpm = - tau_fluid*2*pi*rpm/60 + shaft.tau*2*pi*rpm/60 "Mechanical momentum balance";
+    der(getInputsRotary.rotatoryFlange.phi) = (2*pi*rpm/60);
+    J*a*rpm = - tau_fluid*2*pi*rpm/60 + getInputsRotary.rotatoryFlange.tau*2*pi*rpm/60 "Mechanical momentum balance";
   else
     rpm = rpm_fixed;
-    shaft.phi = 0.0;
+    getInputsRotary.rotatoryFlange.phi = 0.0;
   end if;
 
   if (steadyStateTorque) then
@@ -200,7 +207,8 @@ equation
 //    inlet.h_outflow = inStream(outlet.h_outflow);;
 
   inlet.m_flow=V_flow*(SM(+Delta_p_eps,-Delta_p_eps, Delta_p)*fluidIn.d + SM(-Delta_p_eps,Delta_p_eps, Delta_p)*fluidOut.d);
+  connect(shaft, getInputsRotary.rotatoryFlange)
+    annotation (Line(points={{0,72},{0,72},{0,30}}, color={0,0,0}));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-            -100},{100,100}}),
-                      graphics), Icon(graphics));
+            -100},{100,100}})),  Icon(graphics));
 end PumpVLE_L1_affinity;

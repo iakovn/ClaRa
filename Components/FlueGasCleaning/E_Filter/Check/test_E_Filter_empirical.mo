@@ -1,14 +1,14 @@
 within ClaRa.Components.FlueGasCleaning.E_Filter.Check;
-model Test_E_Filter_empirical
+model test_E_Filter_empirical
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -44,14 +44,11 @@ model Test_E_Filter_empirical
         extent={{-10,-10},{10,10}},
         rotation=0,
         origin={-70,-30})));
-  E_Filter_L1_empirical
-           e_Filter_dynamic(
+  E_Filter_L2_empirical e_Filter_dynamic(
     redeclare model Geometry =
         ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry,
-    allow_reverseFlow=true,
     use_dynamicMassbalance=true,
-    A_el=200)
-    annotation (Placement(transformation(extent={{-4,-28},{16,-8}})));
+    A_el=200) annotation (Placement(transformation(extent={{-4,-28},{16,-8}})));
 
   Modelica.Thermal.HeatTransfer.Sources.FixedTemperature fixedTemperatureTop1(T=293.15)
                 annotation (Placement(transformation(
@@ -101,4 +98,4 @@ PURPOSE:
     experiment(StopTime=30),
     __Dymola_experimentSetupOutput,
     Icon(coordinateSystem(preserveAspectRatio=true, extent={{-100,-50},{100,60}})));
-end Test_E_Filter_empirical;
+end test_E_Filter_empirical;

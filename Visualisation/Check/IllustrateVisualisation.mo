@@ -1,14 +1,14 @@
 within ClaRa.Visualisation.Check;
 model IllustrateVisualisation
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -31,21 +31,24 @@ extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb80;
     Unit="Temperature at Pipe Outlet Flange",
     y_min=300,
     y_max=700,
-    t_simulation=20) annotation (Placement(transformation(extent={{28,16},{72,56}})));
+    t_end=20,
+    hideInterface=false)
+                     annotation (Placement(transformation(extent={{28,16},{72,56}})));
   ClaRa.Visualisation.StatePoint_phTs statePoint_phTs
     annotation (Placement(transformation(extent={{34,-10},{48,4}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_hxim_flow massFlowSource_h(variable_m_flow=true, h_const=3000e3) annotation (Placement(transformation(extent={{-64,-28},{-44,-8}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi pressureSink_ph(p_const=50e5, h_const=2000e3) annotation (Placement(transformation(extent={{84,-28},{64,-8}})));
-  ClaRa.Components.VolumesValvesFittings.Pipes.PipeFlow_L4_Simple pipe(
+  ClaRa.Components.VolumesValvesFittings.Pipes.PipeFlowVLE_L4_Simple pipe(
     showData=true,
     N_cv=10,
     h_start=ones(10)*3000e3,
     p_start=ones(10)*50e5,
     m_flow_nom=10,
-    redeclare model PressureLoss = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4,
     Delta_p_nom=1e5,
     frictionAtInlet=false,
-    frictionAtOutlet=true) annotation (Placement(transformation(extent={{-26,-23},{2,-13}})));
+    frictionAtOutlet=true,
+    redeclare model PressureLoss =
+        Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4)               annotation (Placement(transformation(extent={{-26,-23},{2,-13}})));
 
   Modelica.Blocks.Sources.Ramp ramp(
     height=-20,
@@ -56,7 +59,7 @@ extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb80;
   inner ClaRa.SimCenter simCenter(showExpertSummary=true) annotation (Placement(transformation(extent={{-114,-106},{-94,-86}})));
 equation
   connect(temperature.T, scope.u) annotation (Line(
-      points={{13,3},{22,3},{22,44.9231},{26.1143,44.9231}},
+      points={{17,2},{22,2},{22,44.9231},{26.1143,44.9231}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(pipe.outlet, pressureSink_ph.steam_a) annotation (Line(
@@ -76,7 +79,7 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(quadruple.eye, pipe.eye) annotation (Line(
-      points={{12,-31},{6,-31},{6,-21.8},{2,-21.8}},
+      points={{12,-31},{6,-31},{6,-21.4},{2.6,-21.4}},
       color={190,190,190},
       smooth=Smooth.None));
   connect(temperature.port, pipe.outlet) annotation (Line(
@@ -94,5 +97,7 @@ equation
       color={0,0,127},
       smooth=Smooth.None));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-            -100},{100,100}}), graphics));
+            -100},{100,100}}), graphics),
+    experiment(StopTime=50),
+    __Dymola_experimentSetupOutput);
 end IllustrateVisualisation;

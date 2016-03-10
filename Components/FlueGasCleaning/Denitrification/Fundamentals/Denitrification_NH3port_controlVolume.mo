@@ -1,14 +1,14 @@
 within ClaRa.Components.FlueGasCleaning.Denitrification.Fundamentals;
 model Denitrification_NH3port_controlVolume
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -24,44 +24,44 @@ model Denitrification_NH3port_controlVolume
     Placement(transformation(extent={{80,80},{100,100}})));
 
 // standard formation enthalpy (T = 298.15K /p = 1.0 bar) for  components involved in deNOx catalysis
-final parameter Modelica.SIunits.MolarInternalEnergy Delta_f_H_NO = 91.271e3;
-final parameter Modelica.SIunits.MolarInternalEnergy Delta_f_H_NH3 = -45.940e3;
-final parameter Modelica.SIunits.MolarInternalEnergy Delta_f_H_H2O = -241.826e3;
+final parameter Modelica.SIunits.MolarInternalEnergy Delta_f_H_NO = 91.271e3 "Standrad formation enthalpy nitric oxide";
+final parameter Modelica.SIunits.MolarInternalEnergy Delta_f_H_NH3 = -45.940e3 "Standrad formation  enthalpy ammonia";
+final parameter Modelica.SIunits.MolarInternalEnergy Delta_f_H_H2O = -241.826e3 "Standrad formation  enthalpy water";
 
 //## V A R I A B L E   P A R T##################################################################################
 
-Modelica.SIunits.MassFlowRate idealMixture_m_flow;
+Modelica.SIunits.MassFlowRate idealMixture_m_flow "Idealized mass flow";
 
 //Actual Molar flowrates at input ports
-Modelica.SIunits.MolarFlowRate n_flow_NH3_in;
-Modelica.SIunits.MolarFlowRate n_flow_O2_in;
-Modelica.SIunits.MolarFlowRate n_flow_NOx_in;
+Modelica.SIunits.MolarFlowRate n_flow_NH3_in "Molar flow rate of ammonia at inlet";
+Modelica.SIunits.MolarFlowRate n_flow_O2_in "Molar flow rate of oxygen at inlet";
+Modelica.SIunits.MolarFlowRate n_flow_NOx_in "Molar flow rate of nitric oxides at inlet";
 
 // Molar flowrates related to the catalysis
-Modelica.SIunits.MolarFlowRate n_flow_NH3_Cat_in;
-Modelica.SIunits.MolarFlowRate n_flow_O2_Cat_in;
-Modelica.SIunits.MolarFlowRate n_flow_NOx_Cat_in;
-Modelica.SIunits.MolarFlowRate n_flow_N2_Cat_out;
-Modelica.SIunits.MolarFlowRate n_flow_H2O_Cat_out;
+Modelica.SIunits.MolarFlowRate n_flow_NH3_Cat_in "Catalysis inlet ammonia mass flow";
+Modelica.SIunits.MolarFlowRate n_flow_O2_Cat_in "Catalysis inlet oxygen mass flow";
+Modelica.SIunits.MolarFlowRate n_flow_NOx_Cat_in "Catalysis inlet nitric oxide mass flow";
+Modelica.SIunits.MolarFlowRate n_flow_N2_Cat_out "Catalysis outlet nitrogen mass flow";
+Modelica.SIunits.MolarFlowRate n_flow_H2O_Cat_out "Catalysis outlet water mass flow";
 
 //excess of NH3, NOx, O2
-Modelica.SIunits.MolarFlowRate n_flow_NH3_exc;
-Modelica.SIunits.MolarFlowRate n_flow_O2_Cat_exc;
-Modelica.SIunits.MolarFlowRate n_flow_NOx_Cat_exc;
+Modelica.SIunits.MolarFlowRate n_flow_NH3_exc "Molar flow of excess ammonia";
+Modelica.SIunits.MolarFlowRate n_flow_O2_Cat_exc "Molar flow of excess oxygen";
+Modelica.SIunits.MolarFlowRate n_flow_NOx_Cat_exc "Molar flow of excess nitric oxide";
 
 // standard reaction enthalpy
-Modelica.SIunits.MolarInternalEnergy Delta_R_H;
-Modelica.SIunits.HeatFlowRate Qdot;
-Modelica.SIunits.HeatFlowRate reactionHeat;
+Modelica.SIunits.MolarInternalEnergy Delta_R_H "Standard reaction enthalpy";
+Modelica.SIunits.HeatFlowRate Qdot "Heat flow to environment (equals reaction heat)";
+Modelica.SIunits.HeatFlowRate reactionHeat "Reaction heat";
 
-Real NOx_separationRate;
+Real NOx_separationRate "Efficiency of NOx separation";
 
 Integer Case;
 
-Real xi_idealMixture[medium.nc- 1];
-Real xi_CatalysisOut[medium.nc- 1];
-Real h_idealMixture;
-Real h_CatalysisOut;
+Real xi_idealMixture[medium.nc- 1] "Gas mixture ideal";
+Real xi_CatalysisOut[medium.nc- 1] "Gas mixture at catalysis outlet";
+Real h_idealMixture "Specific enthalpy of gas mixture ideal";
+Real h_CatalysisOut "Specific enthalpy of gas mixture at catalysis outlet";
 
 //____Connectors________________________________________________________________________________________________
   ClaRa.Basics.Interfaces.GasPortIn flueGas_a(Medium=medium)  annotation (Placement(

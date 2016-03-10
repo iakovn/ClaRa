@@ -1,14 +1,15 @@
 within ClaRa.Components.TurboMachines.Compressors;
 model CompressorVLE_L1_stageStacked "Advanced compressor or fan for VLE mixtures using the stage stacking method  according to N. Gasparovic"
+  import ClaRa;
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -17,7 +18,8 @@ model CompressorVLE_L1_stageStacked "Advanced compressor or fan for VLE mixtures
 
   outer ClaRa.SimCenter simCenter;
 extends ClaRa.Basics.Icons.Compressor;
-parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary "True if component shall contribute to automatic efficiency calculation" annotation(Dialog(tab="Summary and Visualisation"));
+parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary "True if component shall contribute to automatic efficiency calculation"
+                                                                                            annotation(Dialog(tab="Summary and Visualisation"));
   ClaRa.Basics.Interfaces.Connected2SimCenter connected2SimCenter(
     powerIn=0,
     powerOut=-P_hyd,
@@ -57,9 +59,15 @@ parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary 
           allow_reverseFlow then Modelica.Constants.inf else -1e-5)) "outlet flow"
     annotation (Placement(transformation(extent={{90,-10},{110,10}})));
 
-   Modelica.Mechanics.Rotational.Interfaces.Flange_a shaft
+   Modelica.Mechanics.Rotational.Interfaces.Flange_a shaft if useMechanicalPort
      annotation (Placement(transformation(extent={{-10,90},{10,110}})));
-
+protected
+  ClaRa.Components.TurboMachines.Fundamentals.GetInputsRotary getInputsRotary
+    annotation (Placement(transformation(
+        extent={{-10,-10},{10,10}},
+        rotation=-90,
+        origin={0,20})));
+public
   TILMedia.VLEFluid_pT VLEFluid_inlet(
     vleFluidType=medium,
     p=fluid_inlet.p,
@@ -101,9 +109,9 @@ parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary 
   parameter SI.Pressure p_in_nom = 1.01325e5 "|Nominal Values|Nominal inlet pressure";
   parameter SI.MassFraction xi_nom[medium.nc - 1]=medium.xi_default "|Nominal Values|Nominal gas composition";
   parameter Boolean useFixedEnthalpyCharacteristic=false "|Nominal Values|True, if a fixed nominal stage enthalpy characteristic should be used";
-  parameter SI.Length diameter = 1.5 "Mean stage diameter" annotation(Dialog( group = "Nominal Values", enable = not useFixedEnthalpyCharacteristic));
-  parameter Real psi_nom_fixed=0.8 "Fixed nominal enthalpy stage characteristic (axial: 0.2 to 0.9, radial: 0.9 to 1.4)"
-                                                                                          annotation(Dialog( group = "Nominal Values", enable = useFixedEnthalpyCharacteristic)); //Axial compressor: ca. 0.2 to 0.9, Radial compressor: 0.9 to 1.4
+  parameter SI.Length diameter[N_stages] = ones(N_stages)*1.5 "Individual or mean stage diameter" annotation(Dialog( group = "Nominal Values", enable = not useFixedEnthalpyCharacteristic));
+  parameter Real psi_nom_fixed[N_stages]=ones(N_stages)*0.8 "Fixed nominal enthalpy stage characteristic (axial: 0.2 to 0.9, radial: 0.9 to 1.4)"
+                                                                                           annotation(Dialog( group = "Nominal Values", enable = useFixedEnthalpyCharacteristic));
   parameter String VIGVInfluence= "Lower" "Influence of VIGV on psi, phi and eta"
                                             annotation(Dialog(group="Parameters"), choices(choice="Higher", choice="Medium",  choice="Lower"));
 
@@ -380,6 +388,7 @@ public
 protected
   Basics.Interfaces.EyeIn eye_int annotation (Placement(transformation(extent={{48,-68},
             {32,-52}}),           iconTransformation(extent={{90,-84},{84,-78}})));
+
 initial equation
 
   fluid_inlet.m_flow = m_flow_corr_st[1]*VLEFluid_inlet.p/ VLEFluid_inlet.T^0.5;
@@ -408,11 +417,11 @@ initial equation
 equation
 //____________________ Mechanics ___________________________
     if useMechanicalPort then
-      der(shaft.phi) = (2*Modelica.Constants.pi*rpm/60);
-      J*a + tau_fluid + shaft.tau = 0 "Mechanical momentum balance";
+      der(getInputsRotary.rotatoryFlange.phi) = (2*Modelica.Constants.pi*rpm/60);
+      J*a + tau_fluid + getInputsRotary.rotatoryFlange.tau = 0 "Mechanical momentum balance";
     else
       rpm = rpm_fixed;
-      shaft.phi = 0.0;
+      getInputsRotary.rotatoryFlange.phi = 0.0;
     end if;
 
     if (steadyStateTorque) then
@@ -590,9 +599,9 @@ end if;
 
        //_____________/Additional values for stage enthalpy characteristic\_________________
        if useFixedEnthalpyCharacteristic == false then
-         psi_nom_st[1] = Delta_h_nom_st[1]/(Modelica.Constants.pi^2 * diameter^2 * (rpm_nom/60)^2/2) * (1 + vigv_coeff_psi_a*Delta_alpha_int[1]^2 + vigv_coeff_psi_b*Delta_alpha_int[1]);//eq. 19 (multiplied with additional inlet guide vane function)
+         psi_nom_st[1] = Delta_h_nom_st[1]/(Modelica.Constants.pi^2 * diameter[1]^2 * (rpm_nom/60)^2/2) * (1 + vigv_coeff_psi_a*Delta_alpha_int[1]^2 + vigv_coeff_psi_b*Delta_alpha_int[1]);//eq. 19 (multiplied with additional inlet guide vane function)
        else
-         psi_nom_st[1] = psi_nom_fixed * (1 + vigv_coeff_psi_a*Delta_alpha_int[1]^2 + vigv_coeff_psi_b*Delta_alpha_int[1]);
+         psi_nom_st[1] = psi_nom_fixed[1] * (1 + vigv_coeff_psi_a*Delta_alpha_int[1]^2 + vigv_coeff_psi_b*Delta_alpha_int[1]);
        end if;
 
       C_1_st[1] = 2/psi_nom_st[1];
@@ -666,9 +675,9 @@ end if;
    phi_rel_rp2 = rpm_corr_rel_st[1]; // Goettlich eq. 6.12 (error in Goettlich betw. eq. 6.11 and 6.12: phi_rel_1 = 1.0)
 
    if useFixedEnthalpyCharacteristic == false then
-     psi_nom_rp2 = Delta_h_nom_rp2/(Modelica.Constants.pi^2 * diameter^2 * (rpm_nom/60)^2/2);
+     psi_nom_rp2 = Delta_h_nom_rp2/(Modelica.Constants.pi^2 * diameter[1]^2 * (rpm_nom/60)^2/2);
    else
-     psi_nom_rp2 = psi_nom_fixed;
+     psi_nom_rp2 = psi_nom_fixed[1];
    end if;
 
    epsilon_rel_rp2 = (1 + (2/psi_nom_rp2) - (2/psi_nom_rp2) * phi_rel_rp2) * phi_rel_rp2;
@@ -752,9 +761,9 @@ end if;
 
     //_____________/Additional values for stage enthalpy characteristic\_________________
     if useFixedEnthalpyCharacteristic == false then
-      psi_nom_st[1] = Delta_h_nom_st[1]/(Modelica.Constants.pi^2 * diameter^2 * (rpm_nom/60)^2/2) * (1 + vigv_coeff_psi_a*Delta_alpha_int[1]^2 + vigv_coeff_psi_b*Delta_alpha_int[1]);//eq. 19 (multiplied with additional inlet guide vane function)
+      psi_nom_st[1] = Delta_h_nom_st[1]/(Modelica.Constants.pi^2 * diameter[1]^2 * (rpm_nom/60)^2/2) * (1 + vigv_coeff_psi_a*Delta_alpha_int[1]^2 + vigv_coeff_psi_b*Delta_alpha_int[1]);//eq. 19 (multiplied with additional inlet guide vane function)
     else
-      psi_nom_st[1] = psi_nom_fixed * (1 + vigv_coeff_psi_a*Delta_alpha_int[1]^2 + vigv_coeff_psi_b*Delta_alpha_int[1]);
+      psi_nom_st[1] = psi_nom_fixed[1] * (1 + vigv_coeff_psi_a*Delta_alpha_int[1]^2 + vigv_coeff_psi_b*Delta_alpha_int[1]);
     end if;
 
     C_1_st[1] = 2/psi_nom_st[1];
@@ -879,9 +888,9 @@ end if;
 
      //_____________/Additional values for stage enthalpy characteristic\_________________
      if useFixedEnthalpyCharacteristic == false then
-       psi_nom_st[i] = Delta_h_nom_st[i]/(Modelica.Constants.pi^2 * diameter^2 * (rpm_nom/60)^2/2) * (1 + vigv_coeff_psi_a*Delta_alpha_int[i]^2 + vigv_coeff_psi_b*Delta_alpha_int[i]);//eq. 19
+       psi_nom_st[i] = Delta_h_nom_st[i]/(Modelica.Constants.pi^2 * diameter[i]^2 * (rpm_nom/60)^2/2) * (1 + vigv_coeff_psi_a*Delta_alpha_int[i]^2 + vigv_coeff_psi_b*Delta_alpha_int[i]);//eq. 19
      else
-       psi_nom_st[i] = psi_nom_fixed * (1 + vigv_coeff_psi_a*Delta_alpha_int[i]^2 + vigv_coeff_psi_b*Delta_alpha_int[i]);
+       psi_nom_st[i] = psi_nom_fixed[i] * (1 + vigv_coeff_psi_a*Delta_alpha_int[i]^2 + vigv_coeff_psi_b*Delta_alpha_int[i]);
      end if;
 
      C_1_st[i] = 2/psi_nom_st[i];
@@ -1011,9 +1020,10 @@ end if;
       points={{40,-60},{92,-60}},
       color={190,190,190},
       smooth=Smooth.None));
+  connect(getInputsRotary.rotatoryFlange, shaft)
+    annotation (Line(points={{0,30},{0,100}},         color={0,0,0}));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-            -100},{100,100}}),
-                      graphics), Icon(graphics),
+            -100},{100,100}})),  Icon(graphics),
     Documentation(info="<html>
 <p><b>Model description: </b>A multi stage compressor model based on the stage stacking method of Gasparovic able to calculate off-design behaviour according to nominal values</p>
 <p><b>Contact:</b> Lasse Nielsen, TLK-Thermo GmbH</p>

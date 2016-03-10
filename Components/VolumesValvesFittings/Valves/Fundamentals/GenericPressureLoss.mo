@@ -17,7 +17,7 @@ partial model GenericPressureLoss
   SI.PressureDifference Delta_p "Pressure difference p_in - p_out";
   Real gamma "Heat capacity ratio at actual inlet";
 equation
-  ValveCharacteristics.u[1] = noEvent(max(0,iCom.opening_));
+  ValveCharacteristics.u[1] = noEvent(min(1, max(iCom.opening_, iCom.opening_leak_)));
   aperture_=noEvent(max(0,ValveCharacteristics.y[1]));
   Delta_p = iCom.p_in - iCom.p_out
   annotation (Icon(graphics));

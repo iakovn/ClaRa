@@ -1,14 +1,14 @@
 within ClaRa.Components.VolumesValvesFittings.Pipes.Check.FlowReversal;
 model Test_Pipe_L4_Advanced
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.0.0                        //
+  // Component of the ClaRa library, version: 1.1.0                        //
   //                                                                           //
-  // Licensed by the DYNCAP research team under Modelica License 2.            //
-  // Copyright © 2013-2015, DYNCAP research team.                                   //
+  // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+  // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
-  // DYNCAP is a research project supported by the German Federal Ministry of  //
-  // Economics and Technology (FKZ 03ET2009).                                  //
-  // The DYNCAP research team consists of the following project partners:      //
+  // DYNCAP and DYNSTART are research projects supported by the German Federal //
+  // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+  // The research team consists of the following project partners:             //
   // Institute of Energy Systems (Hamburg University of Technology),           //
   // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
   // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -30,7 +30,7 @@ model Test_Pipe_L4_Advanced
     variable_h=true,
     p_nom=1000) annotation (Placement(transformation(extent={{60,-39},{40,-19}})));
   inner SimCenter simCenter(redeclare replaceable TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1, useHomotopy=true) annotation (Placement(transformation(extent={{-80,-106},{-60,-86}})));
-  PipeFlow_L4_Advanced tube(
+  PipeFlowVLE_L4_Advanced tube(
     z_in=0,
     z_out=0,
     showExpertSummary=true,
@@ -49,9 +49,10 @@ model Test_Pipe_L4_Advanced
         320000,
         300000,
         tube.N_cv),
-    initType=ClaRa.Basics.Choices.Init.noInit,
     frictionAtInlet=true,
-    frictionAtOutlet=true)                     annotation (Placement(transformation(extent={{20,-36},{-10,-24}})));
+    suppressHighFrequencyOscillations=true,
+    initType=ClaRa.Basics.Choices.Init.steadyState,
+    frictionAtOutlet=true) annotation (Placement(transformation(extent={{20,-36},{-10,-24}})));
 
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi massFlowSink(
     variable_p=true,
@@ -194,11 +195,11 @@ Scenario:  1) pressure step at inlet (at t=100s 1e5 Pa --> 1.1e5 Pa
 ______________________________________________________________________________________________
 ",        fontSize=10)}),
     experiment(
-      StopTime=3000,
+      StopTime=2000,
       __Dymola_NumberOfIntervals=1000,
       Tolerance=1e-006,
       __Dymola_Algorithm="Dassl"),
-    __Dymola_experimentSetupOutput(equdistant=false),
+    __Dymola_experimentSetupOutput(equidistant=false),
     Icon(coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=
             true)));
 end Test_Pipe_L4_Advanced;

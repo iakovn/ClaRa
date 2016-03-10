@@ -1,13 +1,13 @@
 within ClaRa.Basics;
 package Units
 //___________________________________________________________________________//
-// Package of the ClaRa library, version: 1.0.0                          //
-// Models of the ClaRa library are tested under DYMOLA v2013 FD01.           //
+// Package of the ClaRa library, version: 1.1.0                              //
+// Models of the ClaRa library are tested under DYMOLA v2016 FD01.           //
 // It is planned to support alternative Simulators like SimulationX in the   //
 // future                                                                    //
 //___________________________________________________________________________//
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // This Modelica package is free software and the use is completely at your  //
 // own risk; it can be redistributed and/or modified under the terms of the  //
@@ -15,9 +15,9 @@ package Units
 // warranty) see Modelica.UsersGuide.ModelicaLicense2 or visit               //
 // http://www.modelica.org/licenses/ModelicaLicense2                         //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -25,7 +25,7 @@ package Units
 //___________________________________________________________________________//
 
   extends ClaRa.Basics.Icons.PackageIcons.Basics80;
-
+  type AbsolutePressure = Real(final quantity= "PressureDifference", final unit="Pa", displayUnit="Pa", nominal= 1e5, min=0);
   type Angle = Real(final quantity= "Angle", final unit="rad", displayUnit="deg", nominal= Modelica.Constants.pi);
   type Area = Real(final quantity= "Area", final unit="m2", displayUnit="m2", nominal= 1, min=0);
   type AreaFraction = Real(final quantity= "AreaFraction", final unit="m2/m2", displayUnit="m2/m2", nominal= 1, min=0);
@@ -54,6 +54,7 @@ package Units
   type HeatCapacityMassSpecific = Real(final quantity= "SpecificHeatCapacity", final unit="J/(kg.K)", displayUnit="J/(kg.K)", nominal= 1e3);
   type HeatExpansionRateLinear = Real (final quantity="HeatExpansionRateLinear", final unit="1/K", displayUnit="1/K", nominal=1e-6);
   type HeatFlowRate = Real(final quantity= "Power", final unit="W", displayUnit="W", nominal= 1e5);
+  type HeatFlux = Real(final quantity= "HeatFlux", final unit="W/m2", displayUnit="W/m2", nominal= 1e5);
   type InternalEnergy = Energy;
   type Inductance = Real (final quantity="Inductance",final unit="H");
   type KinematicViscosity = Real (final quantity="KinematicViscosity", final unit="m2/s", min=0);
@@ -61,6 +62,7 @@ package Units
   type MassFlowDensity = Real(final quantity= "MassFlowDensity", final unit="kg/(m2.s)", displayUnit="kg/(m2.s)", nominal=1);
   type Mass =         Real(final quantity= "Mass", final unit="kg", displayUnit="kg", nominal=1, min=0);
   type MassFlowRate = Real(final quantity= "MassFlowRate", final unit="kg/s", displayUnit="kg/s", nominal=1);
+  type MassFlux = Real(final quantity= "MassFlux", final unit="kg/(m2.s)", displayUnit="kg/(m^2.s)", nominal=1);
   type MassFraction = Real(final quantity= "MassFraction", final unit="kg/kg", displayUnit="kg/kg", nominal=1, min=0);
   type MassFraction_ppm =  Real(final quantity= "MassFraction", final unit="ug/kg", displayUnit="ug/kg", nominal=1, min=0);
   type MolFraction = Real(final quantity= "MassFraction", final unit="kg/kg", displayUnit="kg/kg", nominal=1, min=0);
@@ -71,9 +73,10 @@ package Units
   type Pressure = Real(final quantity= "Pressure", final unit="Pa", displayUnit="Pa", nominal= 1e5, min=0);
   type PressureDifference = Real(final quantity= "PressureDifference", final unit="Pa", displayUnit="Pa", nominal= 0);
   type RPM = Real(final quantity= "RotationsPerMinute", final unit="1/min", displayUnit="rpm", nominal= 0);
+  type RelativeHumidity = Real(final quantity= "RelativeHumidity", final unit="1", displayUnit="1", nominal= 0, min=0);
   type ShearModulus =     Real ( final quantity="ShearModulus", final unit="Pa", displayUnit="Pa", nominal=1e11);
   type Stress = Real ( final quantity="Stress", final unit="Pa", displayUnit="Pa", nominal=1e11);
-
+  type SurfaceTension = Real ( final quantity="SurfaceTension", final unit="kg/s2", displayUnit="kg/s2", nominal=1e-3);
   type ThermalConductivity = Real (final quantity="ThermalConductivity", final unit="W/(m.K)");
   type Temperature = Real(final quantity= "Temperature", final unit="K", min=0, start=293.15, displayUnit="K") "Absolute thermodynamic temperature";
   type TemperatureDifference = Real(final quantity= "TemperatureDifference", final unit="K", start=0, displayUnit="K") "Temperature diference";

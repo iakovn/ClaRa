@@ -1,14 +1,14 @@
 within ClaRa.Components.VolumesValvesFittings.Fittings.Check;
 model Test_SprayInjector
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -16,7 +16,7 @@ model Test_SprayInjector
 //___________________________________________________________________________//
 
 extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb60;
-  ClaRa.Components.VolumesValvesFittings.Fittings.SprayInjector_L3 injector(
+  SprayInjectorVLE_L3 injector(
     p_nom(displayUnit="Pa") = 12e5,
     m_flow_nom_main=150,
     h_nom_Main=3800e3,
@@ -26,8 +26,7 @@ extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb60;
     showExpertSummary=true,
     showData=true,
     initType=ClaRa.Basics.Choices.Init.steadyState,
-    p_start(displayUnit="Pa") = 250e5,
-    Delta_p_nozzle=1800000) annotation (Placement(transformation(extent={{-30,-60},{-10,-44}})));
+    p_start(displayUnit="Pa") = 250e5) annotation (Placement(transformation(extent={{-30,-60},{-10,-44}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi massFlowSource_XRG(h_const=800e3, p_const=30.0e5) annotation (Placement(transformation(extent={{60,-94},{40,-74}})));
   inner SimCenter simCenter(useHomotopy=true, redeclare replaceable TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1) annotation (Placement(transformation(extent={{80,80},{100,100}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_hxim_flow massFlowSource_XRG2(
@@ -68,14 +67,13 @@ extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb60;
     annotation (Placement(transformation(extent={{2,-56},{22,-44}})));
   Visualisation.Quadruple quadruple
     annotation (Placement(transformation(extent={{-8,-74},{12,-64}})));
-  SprayInjector_L3_advanced                                     injector1(
+  SprayInjectorVLE_L3_advanced injector1(
     p_start(displayUnit="Pa") = 12e5,
     showExpertSummary=true,
     showData=true,
     p_nom(displayUnit="Pa") = 250e5,
     redeclare model PressureLoss =
-        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint (                      m_flow_nom=10, Delta_p_nom=1.8e5))
-    annotation (Placement(transformation(extent={{-30,14},{-10,30}})));
+        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint (                      m_flow_nom=10, Delta_p_nom=1.8e5)) annotation (Placement(transformation(extent={{-30,14},{-10,30}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi massFlowSource_XRG3(h_const=800e3, p_const=30.0e5) annotation (Placement(transformation(extent={{60,-20},{40,0}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_hxim_flow massFlowSource_XRG4(
     m_flow_const=43.551,
@@ -109,23 +107,6 @@ equation
       points={{-79,-84},{-28,-84},{-28,-60}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(massFlowSource_XRG2.steam_a, injector.MainInlet)
-                                                       annotation (Line(
-      points={{-42,-50},{-36,-50},{-36,-50.4},{-30,-50.4}},
-      color={0,131,169},
-      thickness=0.5,
-      smooth=Smooth.None));
-  connect(massFlowSource_XRG.steam_a, injector.SprayInlet)
-                                                       annotation (Line(
-      points={{40,-84},{-22,-84},{-22,-60}},
-      color={0,131,169},
-      thickness=0.5,
-      smooth=Smooth.None));
-  connect(injector.outlet1, valve.inlet) annotation (Line(
-      points={{-10,-50.4},{-4,-50.4},{-4,-50},{2,-50}},
-      color={0,131,169},
-      thickness=0.5,
-      smooth=Smooth.None));
   connect(valve.outlet, massFlowSource_XRG1.steam_a)     annotation (Line(
       points={{22,-50},{40,-50}},
       color={0,131,169},
@@ -151,23 +132,6 @@ equation
       points={{-79,-84},{-70,-84},{-70,-10},{-28,-10},{-28,14}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(massFlowSource_XRG4.steam_a, injector1.MainInlet)
-    annotation (Line(
-      points={{-42,24},{-36,24},{-36,23.6},{-30,23.6}},
-      color={0,131,169},
-      thickness=0.5,
-      smooth=Smooth.None));
-  connect(massFlowSource_XRG3.steam_a, injector1.SprayInlet)
-    annotation (Line(
-      points={{40,-10},{-22,-10},{-22,14}},
-      color={0,131,169},
-      thickness=0.5,
-      smooth=Smooth.None));
-  connect(injector1.outlet1, valve1.inlet) annotation (Line(
-      points={{-10,23.6},{-4,23.6},{-4,24},{4,24}},
-      color={0,131,169},
-      thickness=0.5,
-      smooth=Smooth.None));
   connect(valve1.outlet, massFlowSource_XRG5.steam_a) annotation (Line(
       points={{24,24},{40,24}},
       color={0,131,169},
@@ -177,6 +141,32 @@ equation
       points={{-10,20.4},{-10,5},{-8,5}},
       color={190,190,190},
       smooth=Smooth.None));
+  connect(massFlowSource_XRG2.steam_a, injector.inlet1) annotation (Line(
+      points={{-42,-50},{-30,-50},{-30,-50.4}},
+      color={0,131,169},
+      thickness=0.5));
+  connect(injector.outlet, valve.inlet) annotation (Line(
+      points={{-10,-50.4},{-4,-50.4},{-4,-50},{2,-50}},
+      color={0,131,169},
+      pattern=LinePattern.Solid,
+      thickness=0.5));
+  connect(massFlowSource_XRG.steam_a, injector.inlet2) annotation (Line(
+      points={{40,-84},{-22,-84},{-22,-60}},
+      color={0,131,169},
+      thickness=0.5));
+  connect(massFlowSource_XRG4.steam_a, injector1.inlet1) annotation (Line(
+      points={{-42,24},{-30,24},{-30,23.6}},
+      color={0,131,169},
+      thickness=0.5));
+  connect(massFlowSource_XRG3.steam_a, injector1.inlet2) annotation (Line(
+      points={{40,-10},{10,-10},{-22,-10},{-22,14}},
+      color={0,131,169},
+      thickness=0.5));
+  connect(injector1.outlet, valve1.inlet) annotation (Line(
+      points={{-10,23.6},{-3,23.6},{-3,24},{4,24}},
+      color={0,131,169},
+      pattern=LinePattern.Solid,
+      thickness=0.5));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,
             -100},{100,100}}),
                          graphics={

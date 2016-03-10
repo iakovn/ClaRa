@@ -18,10 +18,12 @@ extends ClaRa.Basics.Icons.PackageIcons.Componentsb50;
       m_flow_const=+0.202/3.6,
       variable_m_flow=true) annotation (Placement(transformation(extent={{-24,-10},{-4,10}})));
     inner SimCenter simCenter(redeclare TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid2, redeclare TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1) annotation (Placement(transformation(extent={{-80,-72},{-60,-52}})));
-    PipeFlow_L2_Simple tubeBundle_L2_Simple(
+    PipeFlowVLE_L2_Simple tubeBundle_L2_Simple(
       initType=ClaRa.Basics.Choices.Init.noInit,
-      redeclare model PressureLoss = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4,
-      redeclare model HeatTransfer = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4,
+      redeclare model PressureLoss =
+          ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4,
+      redeclare model HeatTransfer =
+          ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4,
       frictionAtInlet=false,
       frictionAtOutlet=false) annotation (Placement(transformation(
           extent={{-10,-6},{10,6}},

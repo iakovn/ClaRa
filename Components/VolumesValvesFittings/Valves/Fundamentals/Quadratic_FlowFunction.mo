@@ -2,8 +2,7 @@ within ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals;
 model Quadratic_FlowFunction "Quadratic|zeta definition | supercritical flow"
   extends ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.GenericPressureLoss;
   import SI = ClaRa.Basics.Units;
-  import SM =
-          ClaRa.Basics.Functions.Stepsmoother;
+  import SM = ClaRa.Basics.Functions.Stepsmoother;
   outer Boolean checkValve;
   outer Boolean useHomotopy;
 

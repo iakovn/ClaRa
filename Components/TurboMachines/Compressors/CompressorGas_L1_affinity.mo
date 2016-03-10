@@ -1,14 +1,15 @@
 within ClaRa.Components.TurboMachines.Compressors;
 model CompressorGas_L1_affinity "A gas compressor or fan based on affinity laws"
+  import ClaRa;
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -19,7 +20,8 @@ import Modelica.Constants.pi;
 
   outer ClaRa.SimCenter simCenter;
 extends ClaRa.Basics.Icons.Compressor;
-parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary "True if component shall contribute to automatic efficiency calculation" annotation(Dialog(tab="Summary and Visualisation"));
+parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary "True if component shall contribute to automatic efficiency calculation"
+                                                                                            annotation(Dialog(tab="Summary and Visualisation"));
   ClaRa.Basics.Interfaces.Connected2SimCenter connected2SimCenter(
     powerIn=0,
     powerOut=-P_hyd,
@@ -55,9 +57,17 @@ parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary 
           allow_reverseFlow then Modelica.Constants.inf else -1e-5)) "outlet flow"
     annotation (Placement(transformation(extent={{90,-10},{110,10}})));
 
-  Modelica.Mechanics.Rotational.Interfaces.Flange_a shaft
+  Modelica.Mechanics.Rotational.Interfaces.Flange_a shaft if useMechanicalPort
     annotation (Placement(transformation(extent={{-10,90},{10,110}})));
 
+protected
+  ClaRa.Components.TurboMachines.Fundamentals.GetInputsRotary getInputsRotary
+    annotation (Placement(transformation(
+        extent={{-10,-10},{10,10}},
+        rotation=-90,
+        origin={0,20})));
+
+public
   TILMedia.Gas_pT flueGas_inlet( p = inlet.p, T = inStream(inlet.T_outflow), xi = inStream(inlet.xi_outflow), gasType = medium)
     annotation (Placement(transformation(extent={{-90,-12},{-70,8}})));
 
@@ -129,7 +139,6 @@ public
           h = flueGas_outlet.h,
           H_flow = -outlet.m_flow* flueGas_outlet.h)) annotation (Placement(transformation(extent={{-100,
             -114},{-80,-94}})));
-
 initial equation
   kappaB = kappa_initial;
   kappaA = kappa_initial;
@@ -138,11 +147,11 @@ equation
 
 //____________________ Mechanics ___________________________
   if useMechanicalPort then
-    der(shaft.phi) = (2*pi*rpm/60);
-    J*a*rpm = - tau_fluid*2*pi*rpm/60 + shaft.tau*2*pi*rpm/60 "Mechanical momentum balance";
+    der(getInputsRotary.rotatoryFlange.phi) = (2*pi*rpm/60);
+    J*a*rpm = - tau_fluid*2*pi*rpm/60 + getInputsRotary.rotatoryFlange.tau*2*pi*rpm/60 "Mechanical momentum balance";
   else
     rpm = rpm_fixed;
-    shaft.phi = 0.0;
+    getInputsRotary.rotatoryFlange.phi = 0.0;
   end if;
 
   if (steadyStateTorque) then
@@ -198,9 +207,10 @@ equation
       points={{40,-60},{92,-60}},
       color={190,190,190},
       smooth=Smooth.None));
+  connect(shaft, getInputsRotary.rotatoryFlange)
+    annotation (Line(points={{0,100},{0,30}}, color={0,0,0}));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-            -100},{100,100}}),
-                      graphics), Icon(coordinateSystem(preserveAspectRatio=false,
+            -100},{100,100}})),  Icon(coordinateSystem(preserveAspectRatio=false,
           extent={{-100,-100},{100,100}}),
                                       graphics));
 end CompressorGas_L1_affinity;

@@ -1,14 +1,14 @@
 within ClaRa.Components.Furnace.Check;
 model Test_CombustionChamber
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -19,9 +19,8 @@ model Test_CombustionChamber
   extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb60;
 
   SimpleCombustionChamber combustionChamber(
-    calculate_LHV=false,
     xi_NOx=0000,
-    coalType=simCenter.fuelModel1,
+    fuelType=simCenter.fuelModel1,
     medium=simCenter.flueGasModel,
     slagType=simCenter.slagModel) annotation (Placement(transformation(extent={{18,-36},{38,-16}})));
   inner ClaRa.SimCenter simCenter(       redeclare ClaRa.Basics.Media.Fuel.Coal_v1
@@ -42,11 +41,10 @@ model Test_CombustionChamber
         extent={{-10,-10},{10,10}},
         rotation=270,
         origin={28,10})));
-  ClaRa.Components.BoundaryConditions.BoundaryCoal_Txim_flow coalFlowSource(m_flow_const=1) annotation (Placement(transformation(extent={{-42,-16},{-22,4}})));
-  ClaRa.Components.Adapters.CoalGas_join             coalGas_join
-    annotation (Placement(transformation(extent={{-8,-36},{12,-16}})));
+  ClaRa.Components.BoundaryConditions.BoundaryFuel_Txim_flow coalFlowSource(m_flow_const=1) annotation (Placement(transformation(extent={{-42,-16},{-22,4}})));
+  ClaRa.Components.Adapters.FuelFlueGas_join coalGas_join annotation (Placement(transformation(extent={{-8,-36},{12,-16}})));
 equation
-  connect(coalFlowSource.coal_a, coalGas_join.coal_inlet) annotation (Line(
+  connect(coalFlowSource.fuel_a,coalGas_join.fuel_inlet)  annotation (Line(
       points={{-22,-6},{-16,-6},{-16,-20},{-8,-20}},
       color={27,36,42},
       pattern=LinePattern.Solid,
@@ -57,8 +55,7 @@ equation
       color={118,106,98},
       thickness=0.5,
       smooth=Smooth.None));
-  connect(coalGas_join.coalDust_outlet, combustionChamber.inlet) annotation (
-      Line(
+  connect(coalGas_join.fuelFlueGas_outlet, combustionChamber.inlet) annotation (Line(
       points={{12,-26},{18,-26}},
       color={118,106,98},
       thickness=0.5,

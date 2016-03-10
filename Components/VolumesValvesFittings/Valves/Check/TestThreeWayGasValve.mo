@@ -11,9 +11,10 @@ model TestThreeWayGasValve
   ThreeWayValveGas_L1 threeWayValve_Gas_L1(splitRatio_input=true, effectiveFlowArea=0.5) annotation (Placement(transformation(extent={{-10,-10},{10,8}})));
   BoundaryConditions.BoundaryGas_pTxi pressureSink_ph2(
                                                       p_const=1e5) annotation (Placement(transformation(extent={{60,-10},{40,10}})));
-  BoundaryConditions.BoundaryGas_pTxi pressureSink_ph3(p_const=1e5) annotation (Placement(transformation(extent={{60,-40},{40,-20}})));
-  BoundaryConditions.BoundaryGas_Txim_flow massFlowSource_h1(
-                                                            m_flow_const=10) annotation (Placement(transformation(extent={{-68,-10},{-48,10}})));
+  BoundaryConditions.BoundaryGas_pTxi pressureSink_ph3(p_const=1.005e5)
+                                                                    annotation (Placement(transformation(extent={{60,-40},{40,-20}})));
+  BoundaryConditions.BoundaryGas_pTxi      massFlowSource_h1(p_const(displayUnit="bar") = 150000)
+                                                                             annotation (Placement(transformation(extent={{-68,-10},{-48,10}})));
 equation
   connect(massFlowSource_h1.gas_a, threeWayValve_Gas_L1.inlet) annotation (Line(
       points={{-48,0},{-10,0}},

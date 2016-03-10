@@ -1,14 +1,14 @@
 within ClaRa.Components.TurboMachines.Compressors.Check;
 model Test_MassFlow_VIGVControlled
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -26,7 +26,6 @@ model Test_MassFlow_VIGVControlled
     steadyStateTorque=false,
     T_in_nom=293.15,
     m_flow_nom=20,
-    diameter=1.5,
     eta_mech=0.99,
     eta_isen_stage_nom=0.9,
     Delta_alpha_fixed=0,
@@ -34,9 +33,10 @@ model Test_MassFlow_VIGVControlled
     useExternalVIGVangle=true,
     useFixedEnthalpyCharacteristic=true,
     N_VIGVstages=1,
+    Pi_nom=1.125,
     N_stages=1,
-    psi_nom_fixed=0.8,
-    Pi_nom=1.125) annotation (Placement(transformation(
+    diameter=ones((1))*(1.5),
+    psi_nom_fixed=ones((1))*(0.8)) annotation (Placement(transformation(
         extent={{-8,-8},{8,8}},
         rotation=0,
         origin={-46,-54})));

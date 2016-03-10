@@ -1,14 +1,14 @@
 within ClaRa.Components.MechanicalSeparation.Check;
 model TestFeedWaterTank_1Separator "test case to compare FeedWaterTank_1 and FeedWaterTank_3"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -17,7 +17,8 @@ model TestFeedWaterTank_1Separator "test case to compare FeedWaterTank_1 and Fee
 
   extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb60;
 
-  inner SimCenter simCenter(redeclare replaceable TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1) annotation (Placement(transformation(extent={{80,32},{100,52}})));
+  inner SimCenter simCenter(redeclare replaceable TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1, showExpertSummary=true)
+                                                                                            annotation (Placement(transformation(extent={{-100,-240},{-60,-220}})));
   Modelica.Blocks.Sources.Ramp ramp(
     duration=1000,
     height=-5,
@@ -36,21 +37,17 @@ model TestFeedWaterTank_1Separator "test case to compare FeedWaterTank_1 and Fee
         origin={116,8})));
 
   Modelica.Blocks.Sources.Ramp ramp2(
-    duration=100,
     startTime=20000,
     offset=43,
-    height=5)
+    height=5,
+    duration=1)
     annotation (Placement(transformation(extent={{-98,-4},{-78,16}})));
-  ClaRa.Components.BoundaryConditions.BoundaryVLE_hxim_flow massFlowSource_XRG4(m_flow_const=-10, variable_m_flow=true) annotation (Placement(transformation(extent={{60,-128},{40,-108}})));
+  ClaRa.Components.BoundaryConditions.BoundaryVLE_hxim_flow massFlowSource_XRG4(m_flow_const=-10, variable_m_flow=true) annotation (Placement(transformation(extent={{62,-116},{42,-96}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_hxim_flow massFlowSource_XRG5(
     m_flow_const=400,
     variable_m_flow=true,
-    h_const=624.63e3) annotation (Placement(transformation(extent={{62,-98},{42,-78}})));
+    h_const=624.63e3) annotation (Placement(transformation(extent={{60,-100},{40,-80}})));
 
-  ClaRa.Components.BoundaryConditions.BoundaryVLE_hxim_flow massFlowSource_XRG6(
-    variable_m_flow=false,
-    h_const=3152.9e3,
-    m_flow_const=14) annotation (Placement(transformation(extent={{60,-68},{38,-48}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_hxim_flow massFlowSource_XRG7(
     m_flow_const=400,
     variable_m_flow=true,
@@ -59,7 +56,7 @@ model TestFeedWaterTank_1Separator "test case to compare FeedWaterTank_1 and Fee
         rotation=180,
         origin={-50,-58})));
 
-  ClaRa.Components.MechanicalSeparation.FeedWaterTank_L3 tank4(
+  ClaRa.Components.MechanicalSeparation.FeedWaterTank_L3 tank_L3(
     diameter=4,
     m_flow_cond_nom=400,
     m_flow_heat_nom=23,
@@ -69,21 +66,22 @@ model TestFeedWaterTank_1Separator "test case to compare FeedWaterTank_1 and Fee
     z_in=4,
     z_out=0.1,
     orientation=ClaRa.Basics.Choices.GeometryOrientation.horizontal,
-    initType=ClaRa.Basics.Choices.Init.steadyDensity,
-    redeclare model PressureLoss =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.NoFriction_L3,
     showExpertSummary=true,
     tau_evap=0.001,
+    Tau_cond=0.001,
+    initType=ClaRa.Basics.Choices.Init.steadyDensity,
+    smoothness=Modelica.Blocks.Types.Smoothness.ContinuousDerivative,
     p_nom=900000,
     p_start=900000,
-    Tau_cond=0.001) annotation (Placement(transformation(extent={{-34,-86},{26,-66}})));
+    redeclare model PressureLoss =
+        Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.NoFriction_L3)                       annotation (Placement(transformation(extent={{-34,-86},{26,-66}})));
 
   ClaRa.Components.BoundaryConditions.BoundaryVLE_hxim_flow massFlowSource_XRG12(m_flow_const=-10, variable_m_flow=true) annotation (Placement(transformation(extent={{60,-38},{40,-18}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_hxim_flow massFlowSource_XRG13(
     m_flow_const=400,
     variable_m_flow=true,
     h_const=624.63e3) annotation (Placement(transformation(extent={{62,-8},{42,12}})));
-  ClaRa.Components.MechanicalSeparation.FeedWaterTank_L2 tank1(
+  ClaRa.Components.MechanicalSeparation.FeedWaterTank_L2 tank_L2(
     diameter=4,
     m_flow_cond_nom=400,
     m_flow_heat_nom=23,
@@ -116,10 +114,9 @@ model TestFeedWaterTank_1Separator "test case to compare FeedWaterTank_1 and Fee
     m_flow_const=400,
     variable_m_flow=true,
     h_const=624.63e3) annotation (Placement(transformation(extent={{60,-196},{40,-176}})));
-  ClaRa.Components.BoundaryConditions.BoundaryVLE_hxim_flow massFlowSource_XRG3(
-    variable_m_flow=false,
-    h_const=3152.9e3,
-    m_flow_const=14) annotation (Placement(transformation(extent={{60,-166},{38,-146}})));
+  BoundaryConditions.BoundaryVLE_phxi                       massFlowSource_XRG3(
+    h_const=3152.9e3, p_const=12e5)
+                     annotation (Placement(transformation(extent={{62,-170},{42,-150}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_hxim_flow massFlowSource_XRG8(
     m_flow_const=400,
     variable_m_flow=true,
@@ -127,7 +124,7 @@ model TestFeedWaterTank_1Separator "test case to compare FeedWaterTank_1 and Fee
         extent={{10,-10},{-10,10}},
         rotation=180,
         origin={-50,-156})));
-  FeedWaterTank_L3_advanced tank2(
+  FeedWaterTank_L3_advanced tank_L3_adv(
     diameter=4,
     m_flow_cond_nom=400,
     m_flow_heat_nom=23,
@@ -138,45 +135,40 @@ model TestFeedWaterTank_1Separator "test case to compare FeedWaterTank_1 and Fee
     initType=ClaRa.Basics.Choices.Init.steadyDensity,
     showExpertSummary=true,
     Tau_evap=0.001,
-    z_tapping=4,
     z_condensate=4,
     z_feed=0.1,
     z_aux=4,
     z_vent=0.1,
+    Tau_cond=0.001,
+    z_tapping=0.2,
     redeclare model PressureLoss =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.NoFriction_L3,
-    absorbInflow=0,
+        Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3 (                  Delta_p_nom={2e5*423/14,1000*400/423,1000*23/423}),
     p_nom=900000,
-    p_start=900000,
-    Tau_cond=0.001) annotation (Placement(transformation(extent={{-30,-202},{30,-182}})));
+    p_start=900000)                                                                                                     annotation (Placement(transformation(extent={{-30,-202},{30,-182}})));
 
+  BoundaryConditions.BoundaryVLE_phxi                       massFlowSource_XRG9(
+    h_const=3152.9e3, p_const=12e5)
+                     annotation (Placement(transformation(extent={{62,-68},{42,-48}})));
+  VolumesValvesFittings.Valves.ValveVLE_L1 valveVLE_L1_1(redeclare model PressureLoss =
+        VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint (                                                                                Delta_p_nom=2e5*423/14, m_flow_nom=423)) annotation (Placement(transformation(extent={{20,-56},{0,-44}})));
+  Visualisation.Quadruple quadruple annotation (Placement(transformation(extent={{-16,-26},{4,-16}})));
+  Visualisation.Quadruple quadruple1 annotation (Placement(transformation(extent={{-14,-100},{6,-90}})));
 equation
   connect(ramp2.y, massFlowSource_XRG7.m_flow) annotation (Line(
       points={{-77,6},{-70,6},{-70,-64},{-62,-64}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(massFlowSource_XRG7.steam_a,tank4. heatingSteam) annotation (Line(
-      points={{-40,-58},{-24,-58},{-24,-68}},
+  connect(massFlowSource_XRG5.steam_a, tank_L3.condensate) annotation (Line(
+      points={{40,-90},{40,-70},{16,-70}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
-  connect(massFlowSource_XRG6.steam_a,tank4. heatingSteam) annotation (Line(
-      points={{38,-58},{-24,-58},{-24,-68}},
+  connect(massFlowSource_XRG4.steam_a, tank_L3.outlet) annotation (Line(
+      points={{42,-106},{-30,-106},{-30,-86}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
-  connect(massFlowSource_XRG5.steam_a,tank4. condensate) annotation (Line(
-      points={{42,-88},{42,-70},{16,-70}},
-      color={0,131,169},
-      thickness=0.5,
-      smooth=Smooth.None));
-  connect(massFlowSource_XRG4.steam_a,tank4. outlet) annotation (Line(
-      points={{40,-118},{-30,-118},{-30,-86}},
-      color={0,131,169},
-      thickness=0.5,
-      smooth=Smooth.None));
-  connect(tank1.outlet, massFlowSource_XRG12.steam_a)
-                                                   annotation (Line(
+  connect(tank_L2.outlet, massFlowSource_XRG12.steam_a) annotation (Line(
       points={{-32,-14},{-32,-28},{40,-28}},
       color={0,131,169},
       thickness=0.5,
@@ -185,39 +177,27 @@ equation
       points={{-77,6},{-70,6},{-70,26},{-62,26}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(massFlowSource_XRG15.steam_a, tank1.heatingSteam)
-                                                          annotation (Line(
+  connect(massFlowSource_XRG15.steam_a, tank_L2.heatingSteam) annotation (Line(
       points={{-40,32},{-26,32},{-26,4}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
-  connect(massFlowSource_XRG14.steam_a, tank1.heatingSteam)
-                                                          annotation (Line(
+  connect(massFlowSource_XRG14.steam_a, tank_L2.heatingSteam) annotation (Line(
       points={{40,32},{-26,32},{-26,4}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
-  connect(massFlowSource_XRG13.steam_a, tank1.condensate) annotation (Line(
+  connect(massFlowSource_XRG13.steam_a, tank_L2.condensate) annotation (Line(
       points={{42,2},{14,2}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
-  connect(massFlowSource_XRG8.steam_a,tank2. heatingSteam) annotation (Line(
-      points={{-40,-156},{-20,-156},{-20,-184}},
-      color={0,131,169},
-      thickness=0.5,
-      smooth=Smooth.None));
-  connect(massFlowSource_XRG3.steam_a,tank2. heatingSteam) annotation (Line(
-      points={{38,-156},{-20,-156},{-20,-184}},
-      color={0,131,169},
-      thickness=0.5,
-      smooth=Smooth.None));
-  connect(massFlowSource_XRG2.steam_a,tank2. condensate) annotation (Line(
+  connect(massFlowSource_XRG2.steam_a, tank_L3_adv.condensate) annotation (Line(
       points={{40,-186},{20,-186}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
-  connect(massFlowSource_XRG1.steam_a,tank2. outlet) annotation (Line(
+  connect(massFlowSource_XRG1.steam_a, tank_L3_adv.outlet) annotation (Line(
       points={{40,-216},{-30,-216},{-30,-202},{-26,-202}},
       color={0,131,169},
       thickness=0.5,
@@ -231,7 +211,7 @@ equation
       color={0,0,127},
       smooth=Smooth.None));
   connect(ramp1.y, massFlowSource_XRG5.m_flow) annotation (Line(
-      points={{105,8},{96,8},{96,-82},{64,-82}},
+      points={{105,8},{96,8},{96,-84},{62,-84}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(ramp1.y, massFlowSource_XRG2.m_flow) annotation (Line(
@@ -239,7 +219,7 @@ equation
       color={0,0,127},
       smooth=Smooth.None));
   connect(ramp.y, massFlowSource_XRG4.m_flow) annotation (Line(
-      points={{107,-20},{84,-20},{84,-112},{62,-112}},
+      points={{107,-20},{84,-20},{84,-100},{64,-100}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(ramp.y, massFlowSource_XRG12.m_flow) annotation (Line(
@@ -250,23 +230,55 @@ equation
       points={{107,-20},{84,-20},{84,-210},{62,-210}},
       color={0,0,127},
       smooth=Smooth.None));
-  annotation (Diagram(coordinateSystem(preserveAspectRatio=false,extent={{-100,
-            -240},{100,140}}),
+  connect(massFlowSource_XRG8.steam_a, tank_L3_adv.aux) annotation (Line(
+      points={{-40,-156},{16,-156},{16,-186}},
+      color={0,131,169},
+      thickness=0.5,
+      smooth=Smooth.None));
+  connect(massFlowSource_XRG3.steam_a, tank_L3_adv.heatingSteam) annotation (Line(
+      points={{42,-160},{-20,-160},{-20,-184}},
+      color={0,131,169},
+      thickness=0.5,
+      smooth=Smooth.None));
+  connect(valveVLE_L1_1.inlet, massFlowSource_XRG9.steam_a) annotation (Line(
+      points={{20,-50},{32,-50},{32,-58},{42,-58}},
+      color={0,131,169},
+      thickness=0.5));
+  connect(valveVLE_L1_1.outlet, tank_L3.heatingSteam) annotation (Line(
+      points={{0,-50},{0,-56},{-24,-56},{-24,-68}},
+      color={0,131,169},
+      pattern=LinePattern.Solid,
+      thickness=0.5));
+  connect(massFlowSource_XRG7.steam_a, tank_L3.heatingSteam) annotation (Line(
+      points={{-40,-58},{-24,-58},{-24,-68}},
+      color={0,131,169},
+      thickness=0.5));
+  connect(tank_L2.eye, quadruple.eye) annotation (Line(points={{-26,-15},{-26,-21},{-16,-21}}, color={190,190,190}));
+  connect(tank_L3.eye, quadruple1.eye) annotation (Line(points={{-24,-87},{-24,-87},{-24,-95},{-14,-95}}, color={190,190,190}));
+  annotation (Diagram(coordinateSystem(preserveAspectRatio=false,extent={{-100,-240},{100,140}}),
                          graphics={Text(
-          extent={{-100,116},{100,64}},
+          extent={{-98,108},{102,56}},
           lineColor={0,128,0},
           lineThickness=0.5,
           fillColor={102,198,0},
           fillPattern=FillPattern.Solid,
           horizontalAlignment=TextAlignment.Left,
+          fontSize=8,
           textString="_____________________________________________________
 PURPOSE:
-compare the filling behaviour of different tank models currently available
+compare the filling behaviour of different tank models currently available.
 _____________________________________________________
 HAVE A LOOK AT:
 Compare the different filling levels and pressures that can be found in the
-summaries",
-          fontSize=12),            Text(
+summaries.
+_____________________________________________________
+NOTE:
+The extra valve wired to tank_L3 is neccessary to introduce different 
+pressure losses to the tapping inlet and the aux inlet.
+_____________________________________________________
+SUMMARY: The tank_L3_adv is the most comprehensive tank model 
+thery a bit more difficult to initialize than tank_L1 but also more realistic than tank_L3"),
+                                   Text(
           extent={{-100,140},{48,116}},
           lineColor={0,128,0},
           lineThickness=0.5,
@@ -274,7 +286,7 @@ summaries",
           fillPattern=FillPattern.Solid,
           horizontalAlignment=TextAlignment.Left,
           fontSize=20,
-          textString="TESTED, 01.Mar. 2013 //FG")}),
+          textString="TESTED, 13. 01. 2016 //FG")}),
     Icon(coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=true)),
     experiment(StopTime=30000),
     __Dymola_experimentSetupOutput);

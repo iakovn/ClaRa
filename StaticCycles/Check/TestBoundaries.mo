@@ -1,6 +1,6 @@
 within ClaRa.StaticCycles.Check;
 model TestBoundaries
-  extends ClaRa.Basics.Icons.Init;
+  extends Basics.Icons.PackageIcons.ExecutableExample100;
 
   Boundary_blue boundary_blue(
     m_flow=10,

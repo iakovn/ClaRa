@@ -1,14 +1,14 @@
 within ClaRa.Components.Sensors.Check;
 model testGasCompositionSensor
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -27,8 +27,7 @@ model testGasCompositionSensor
     amplitude=20000,
     phase=0.017453292519943)
     annotation (Placement(transformation(extent={{-82,-24},{-62,-4}})));
-  Basics.ControlVolumes.GasVolumes.FlueGasCell flueGasCell
-    annotation (Placement(transformation(extent={{24,-30},{44,-10}})));
+  Basics.ControlVolumes.GasVolumes.VolumeGas_L2 flueGasCell annotation (Placement(transformation(extent={{24,-30},{44,-10}})));
   GasCompositionSensor
                      SensorCO1(compositionDefinedBy=1, N=8)
     annotation (Placement(transformation(extent={{-8,-60},{12,-40}})));
@@ -40,8 +39,7 @@ model testGasCompositionSensor
     amplitude=20000,
     phase=0.017453292519943)
     annotation (Placement(transformation(extent={{-82,-64},{-62,-44}})));
-  Basics.ControlVolumes.GasVolumes.FlueGasCell flueGasCell1
-    annotation (Placement(transformation(extent={{24,-70},{44,-50}})));
+  Basics.ControlVolumes.GasVolumes.VolumeGas_L2 flueGasCell1 annotation (Placement(transformation(extent={{24,-70},{44,-50}})));
 equation
   connect(sine.y, gasSink_pT.p) annotation (Line(
       points={{-61,-14},{-46,-14}},

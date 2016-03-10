@@ -1,14 +1,14 @@
 within ClaRa.Components.TurboMachines.Turbines.Check;
 model testSingleTurbineStage
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -16,8 +16,7 @@ model testSingleTurbineStage
 //___________________________________________________________________________//
   extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
   inner SimCenter simCenter(redeclare TILMedia.GasTypes.FlueGasTILMedia flueGasModel, T_amb=293.15) annotation (Placement(transformation(extent={{40,40},{60,60}})));
-  TurbineGas_L1_stageStacked
-                         GasFanAdvanced(
+  TurbineGas_L1_stageStacked GasFanAdvanced(
     rpm_nom=3000,
     useMechanicalPort=true,
     steadyStateTorque=false,
@@ -30,15 +29,14 @@ model testSingleTurbineStage
     m_flow_nom=100,
     VIGVInfluence="Medium",
     T_in_nom=600,
-    psi_nom_fixed=-2.5,
     eta_isen_stage_nom=0.9,
     Pi_nom=1/2,
     p_in_nom(displayUnit="bar") = 200000,
-    N_stages=1,
     N_VIGVstages=1,
     Tau_aux=0.0001,
-    useFixedEnthalpyCharacteristic=false)
-                            annotation (Placement(transformation(
+    useFixedEnthalpyCharacteristic=false,
+    N_stages=1,
+    psi_nom_fixed=ones((1))*(-2.5)) annotation (Placement(transformation(
         extent={{-5,-10},{5,10}},
         rotation=0,
         origin={-29,-36})));

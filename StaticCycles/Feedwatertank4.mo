@@ -1,14 +1,14 @@
 within ClaRa.StaticCycles;
 model Feedwatertank4 "Feedwatertank || par.: m_flow_FW, p_FW_nom || blue | blue | red | green"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                            //
+// Component of the ClaRa library, version: 1.1.0                            //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                              //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -33,13 +33,9 @@ model Feedwatertank4 "Feedwatertank || par.: m_flow_FW, p_FW_nom || blue | blue 
 
 //__________________________________________________
 
-//   final parameter ClaRa.Basics.Units.Pressure p_FWT = P_target_* p1 + p2
-//     "Feedwater tank pressure at current load";
-
   final parameter ClaRa.Basics.Units.Pressure p_FWT=P_target_*p_FWT_nom "Feedwater tank pressure at current load";
 
-  final parameter ClaRa.Basics.Units.MassFlowRate m_flow_tap2=-((h_cond_in-h_cond_out)*m_flow_cond + (h_tap_in1-h_cond_out)*m_flow_tap1)/(h_tap_in2 - h_cond_out) "Mass flow of the heating steam";
-
+  final parameter ClaRa.Basics.Units.MassFlowRate m_flow_tap2=(h_cond_out*m_flow_FW - h_cond_in*m_flow_cond - m_flow_tap1*h_tap_in1)/h_tap_in2 "Mass flow of the heating steam";
   final parameter ClaRa.Basics.Units.MassFlowRate m_flow_FW=P_target_*m_flow_nom "Mass flow of the condensate";
 
   final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_cond_out= TILMedia.VLEFluidFunctions.bubbleSpecificEnthalpy_pxi(medium, p_FWT);
@@ -92,10 +88,7 @@ equation
           fillColor={255,255,255},
           fillPattern=FillPattern.Solid,
           radius=20),
-        Line(
-          points={{-20,-20},{20,-20}},
-          color={255,255,255},
-          smooth=Smooth.Bezier),
+        Line(points={{-20,-20},{20,-20}}, color={255,255,255}),
         Line(
           points={{0,12},{0,-58},{-8,-48}},
           color={0,131,169},

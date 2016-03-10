@@ -1,14 +1,14 @@
 within ClaRa.Basics.ControlVolumes.FluidVolumes;
 model VolumeVLEGas_L3 "A volume element balancing liquid and gas phase with n inlet and outlet ports"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.0.0                        //
+  // Component of the ClaRa library, version: 1.1.0                        //
   //                                                                           //
-  // Licensed by the DYNCAP research team under Modelica License 2.            //
-  // Copyright © 2013-2015, DYNCAP research team.                                   //
+  // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+  // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
-  // DYNCAP is a research project supported by the German Federal Ministry of  //
-  // Economics and Technology (FKZ 03ET2009).                                  //
-  // The DYNCAP research team consists of the following project partners:      //
+  // DYNCAP and DYNSTART are research projects supported by the German Federal //
+  // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+  // The research team consists of the following project partners:             //
   // Institute of Energy Systems (Hamburg University of Technology),           //
   // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
   // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -29,7 +29,7 @@ model VolumeVLEGas_L3 "A volume element balancing liquid and gas phase with n in
     parameter Boolean showExpertSummary=false;
     ClaRa.Basics.Units.Volume volume_tot "Total volume";
     ClaRa.Basics.Units.Area A_heat_tot "Heat transfer area";
-    ClaRa.Basics.Units.Volume volume[2] if showExpertSummary "Volume of liquid and steam volume";
+    ClaRa.Basics.Units.Volume volume[2] if showExpertSummary "Volume of liquid and gas volume";
     ClaRa.Basics.Units.Area A_heat[2] if showExpertSummary "Heat transfer area";
     ClaRa.Basics.Units.Length level_abs "Absolue filling level";
     Real level_rel if showExpertSummary "relative filling level";
@@ -118,7 +118,7 @@ final parameter ClaRa.Basics.Units.EnthalpyMassSpecific  h_gas_start = TILMedia.
 
     parameter ClaRa.Basics.Units.Length radius_flange=0.05 "Flange radius" annotation(Dialog(group="Geometry"));
 
-  parameter Boolean showExpertSummary=false "|Summary and Visualisation||True, if expert summary should be applied";
+  parameter Boolean showExpertSummary=simCenter.showExpertSummary "|Summary and Visualisation||True, if expert summary should be applied";
   parameter Integer heatSurfaceAlloc=1 "Heat transfer area to be considered"          annotation(dialog(group="Geometry"),choices(choice=1 "Lateral surface",
                                                                                    choice=2 "Inner heat transfer surface"));
 
@@ -137,6 +137,8 @@ protected
 public
   ClaRa.Basics.Units.EnthalpyMassSpecific h_out[geo.N_outlet];
   ClaRa.Basics.Units.EnthalpyMassSpecific h_in[geo.N_inlet];
+  ClaRa.Basics.Units.MassFraction xi_out[geo.N_outlet, medium.nc-1];
+  ClaRa.Basics.Units.MassFraction xi_in[geo.N_inlet, medium.nc-1];
   inner ClaRa.Basics.Units.EnthalpyMassSpecific h_liq(start=h_liq_start) "Specific enthalpy of liquid phase";
   inner ClaRa.Basics.Units.EnthalpyMassSpecific h_gas(start=h_gas_start) "Specific enthalpy of vapour phase";
   Real drho_liqdt;
@@ -153,7 +155,8 @@ public
   ClaRa.Basics.Units.Mass mass_liq "Liquid mass";
   ClaRa.Basics.Units.Mass mass_gas "Vapour mass";
   inner ClaRa.Basics.Units.Pressure p(start=p_start, stateSelect=StateSelect.prefer) "System pressure";
-  ClaRa.Basics.Units.MassFraction xi_gas[gasType.nc-1](start=xi_start) "Gas mas fractions";
+  ClaRa.Basics.Units.MassFraction xi_gas[gasType.nc-1](start=xi_start) "Gas mass fractions";
+  ClaRa.Basics.Units.MassFraction xi_liq[medium.nc-1] "Liquid mass fractions";
   ClaRa.Basics.Units.Length level_abs;
   Real level_rel(start = level_rel_start);
   parameter Real   level_rel_start=0.5 "Initial value for relative level"
@@ -192,19 +195,6 @@ public
     annotation (Placement(transformation(extent={{12,60},{32,80}})));
 
     Summary summary(
-      outline(
-        showExpertSummary=showExpertSummary,
-        volume_tot=geo.volume,
-        volume={volume_liq,volume_gas},
-        A_heat=geo.A_heat[heatSurfaceAlloc]*{volume_liq, volume_gas}/geo.volume,
-        A_heat_tot=geo.A_heat[heatSurfaceAlloc],
-        level_abs=level_abs,
-        level_rel=.level_rel,
-        Delta_p=inlet[1].p - outlet[1].p,
-        fluidMass=mass_gas + mass_liq,
-        H_tot=h_liq*mass_liq + h_gas*mass_gas,
-        Q_flow_tot=heat.Q_flow,
-        Q_flow=heattransfer.heat.Q_flow),
       inlet(
         showExpertSummary=showExpertSummary,
         m_flow=inlet[1].m_flow,
@@ -241,10 +231,23 @@ public
         T=iCom.T,
         T_sat = {liq.VLE.T_l, -1},
         s={liq.s,gas.s},
-        steamQuality={liq.q,gas.q},
+        steamQuality={liq.q,gas.xi_gas/gas.xi[gasType.condensingIndex]},
         H=iCom.h .* {mass_liq,mass_gas},
         rho={liq.d,gas.d},
-        final N_cv=2))
+        final N_cv=2),
+    outline(
+      showExpertSummary=showExpertSummary,
+      volume_tot=geo.volume,
+      volume={volume_liq,volume_gas},
+      A_heat=geo.A_heat[heatSurfaceAlloc]*{volume_liq,volume_gas}/geo.volume,
+      A_heat_tot=geo.A_heat[heatSurfaceAlloc],
+      level_abs=level_abs,
+      level_rel=level_rel,
+      Delta_p=inlet[1].p - outlet[1].p,
+      fluidMass=mass_gas + mass_liq,
+      H_tot=h_liq*mass_liq + h_gas*mass_gas,
+      Q_flow_tot=heat.Q_flow,
+      Q_flow=heattransfer.heat.Q_flow))
       annotation (Placement(transformation(extent={{-60,-102},{-40,-82}})));
 
 protected
@@ -318,8 +321,14 @@ equation
 
   //_____________________________________________________
   //______Species Balance________________________________
-  der(xi_gas) = (ventIn.xi*vent.m_flow - xi_gas*gas.d*der(volume_gas) - xi_gas*volume_gas*drho_gasdt)/mass_gas;
+  der(xi_gas) = noEvent(if mass_gas >1e-6 then (ventIn.xi*vent.m_flow - xi_gas*gas.d*der(volume_gas) - xi_gas*volume_gas*drho_gasdt)/mass_gas else zeros(gasType.nc-1));
 // der(xi_gas) = zeros(gasType.nc-1);//
+  for i in 1:medium.nc-1 loop
+    der(xi_liq[i]) = noEvent( if mass_liq >1e-6 then (sum(inlet.m_flow.*xi_in[:,i]) + sum(outlet.m_flow.*xi_out[:,i])
+        + volume_liq*der(p) + p*der(volume_liq)
+        - xi_liq[i]*volume_liq*drho_liqdt
+        - liq.d*xi_liq[i]*der(volume_liq))/mass_liq else 0);
+  end for;
   //_____________________________________________________
   //______Energy Balances________________________________
   der(h_liq) = noEvent(if mass_liq > 1e-6 then (sum(inlet.m_flow.*h_in) + sum(outlet.m_flow.*h_out)
@@ -343,9 +352,11 @@ equation
 
   for i in 1:geo.N_inlet loop
     h_in[i] = if useHomotopy then homotopy(noEvent(actualStream(inlet[i].h_outflow)), noEvent(inStream(inlet[i].h_outflow))) else noEvent(actualStream(inlet[i].h_outflow));
+    xi_in[i,:] = if useHomotopy then homotopy(noEvent(actualStream(inlet[i].xi_outflow)), noEvent(inStream(inlet[i].xi_outflow))) else noEvent(actualStream(inlet[i].xi_outflow));
   end for;
   for i in 1:geo.N_outlet loop
     h_out[i] = if useHomotopy then homotopy(noEvent(actualStream(outlet[i].h_outflow)), h_liq) else noEvent(actualStream(outlet[i].h_outflow));
+    xi_out[i,:] = if useHomotopy then homotopy(noEvent(actualStream(outlet[i].xi_outflow)), xi_liq) else noEvent(actualStream(outlet[i].xi_outflow));
   end for;
 
   for i in 1:geo.N_inlet loop

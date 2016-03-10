@@ -1,13 +1,13 @@
 within ClaRa.Components.FlueGasCleaning.Desulfurization;
 model Desulfurization_L1_ideal "Model for an idealised desulfurization with chalk washing"
 //___________________________________________________________________________//
-// Package of the ClaRa library, version: 1.0.0                          //
-// Models of the ClaRa library are tested under DYMOLA v2013 FD01.           //
+// Package of the ClaRa library, version: 1.1.0                              //
+// Models of the ClaRa library are tested under DYMOLA v2016 FD01.           //
 // It is planned to support alternative Simulators like SimulationX in the   //
 // future                                                                    //
 //___________________________________________________________________________//
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // This Modelica package is free software and the use is completely at your  //
 // own risk; it can be redistributed and/or modified under the terms of the  //
@@ -15,9 +15,9 @@ model Desulfurization_L1_ideal "Model for an idealised desulfurization with chal
 // warranty) see Modelica.UsersGuide.ModelicaLicense2 or visit               //
 // http://www.modelica.org/licenses/ModelicaLicense2                         //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -29,8 +29,7 @@ model Desulfurization_L1_ideal "Model for an idealised desulfurization with chal
   ClaRa.Basics.Interfaces.Connected2SimCenter connected2SimCenter(
     powerIn=0,
     powerOut=-P_el,
-    powerAux=0) if                                                                                                   contributeToCycleSummary;
-  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary "True if component shall contribute to automatic efficiency calculation" annotation(Dialog(tab="Summary and Visualisation"));
+    powerAux=0) if contributeToCycleSummary;
 
   Basics.Interfaces.GasPortIn inlet(Medium=simCenter.flueGasModel)
     annotation (Placement(transformation(extent={{-110,-10},{-90,10}}),
@@ -80,44 +79,43 @@ model Desulfurization_L1_ideal "Model for an idealised desulfurization with chal
   inner parameter TILMedia.GasTypes.BaseGas      medium = simCenter.flueGasModel "Medium to be used in tubes"
                                  annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
 
-  inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation"
-                                                              annotation(Dialog(tab="Initialisation"));
-  parameter Boolean allow_reverseFlow = true "|Expert Settings|General|";
-  parameter Boolean use_dynamicMassbalance = true "|Expert Settings|General|";
-inner parameter Modelica.SIunits.MassFlowRate m_flow_nom= 200 "Nominal mass flow rates at inlet"
-                                        annotation(Dialog(tab="General", group="Nominal Values"));
-parameter Boolean useStabilisedMassFlow=false "|Expert Settings|Numerical Robustness|";
-    parameter SI.Time Tau= 0.001 "Time Constant of Stabilisation" annotation(Dialog(tab="Expert Settings", group = "Numerical Robustness", enable=useStabilisedMassFlow));
+  parameter Real SOx_separationRate = 0.95 "Sulphur separation rate" annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
+  parameter ClaRa.Basics.Units.Temperature T_in_H2O = 313.15 "Temperature of water inlet" annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
+  parameter Real specificPowerConsumption(unit="J/m3") = 9000 "Specific power consumption per standard m^3" annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
 
-  inner parameter ClaRa.Basics.Units.Pressure p_nom=1e5 "Nominal pressure"                    annotation(Dialog(group="Nominal Values"));
-  inner parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_nom=1e5 "Nominal specific enthalpy"
-                                                                                               annotation(Dialog(group="Nominal Values"));
-
-inner parameter ClaRa.Basics.Choices.Init initType=ClaRa.Basics.Choices.Init.noInit "Type of initialisation"
-                             annotation(Dialog(tab="Initialisation", choicesAllMatching));
-  parameter ClaRa.Basics.Units.Temperature T_start= 273.15 + 100.0 "Start value of system temperature"
-                                        annotation(Dialog(tab="Initialisation"));
-
-  parameter ClaRa.Basics.Units.Pressure p_start= 1.013e5 "Start value of sytsem pressure"
-                                     annotation(Dialog(tab="Initialisation"));
-  parameter ClaRa.Basics.Units.MassFraction xi_start[medium.nc-1]=zeros(medium.nc-1) "Start value of sytsem mass fraction"
-                                          annotation(Dialog(tab="Initialisation"));
-
-parameter Real SOx_separationRate = 0.95;
-parameter ClaRa.Basics.Units.Temperature T_in_H2O = 313.15;
-parameter Real specificPowerConsumption = 9000 "Specific power consumption per Nm^3 [J/Nm^3]";
-
-ClaRa.Basics.Units.Power P_el "Electric power consumption";
-ClaRa.Basics.Units.VolumeFlowRate V_flow_std "Standardized volume flow rate [Nm^3/s]";
-
-replaceable model Geometry =
-      ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowCylinder(diameter=4,length=10,z_in={0},z_out={10},orientation = ClaRa.Basics.Choices.GeometryOrientation.vertical,flowOrientation = ClaRa.Basics.Choices.GeometryOrientation.vertical)
-    constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry "1st: choose geometry definition | 2nd: edit corresponding record"
-    annotation (Dialog(group="Geometry"), choicesAllMatching=true);
   replaceable model PressureLoss =
       ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.NoFriction_L2
     constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.PressureLoss_L2 "1st: choose geometry definition | 2nd: edit corresponding record"
     annotation (Dialog(group="Fundamental Definitions"), choicesAllMatching=true);
+
+  replaceable model Geometry =
+      ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowCylinder(diameter=4,length=10,z_in={0},z_out={10},orientation = ClaRa.Basics.Choices.GeometryOrientation.vertical,flowOrientation = ClaRa.Basics.Choices.GeometryOrientation.vertical)
+    constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry "1st: choose geometry definition | 2nd: edit corresponding record"
+    annotation (Dialog(group="Geometry"), choicesAllMatching=true);
+
+  inner parameter Modelica.SIunits.MassFlowRate m_flow_nom= 200 "Nominal mass flow rates at inlet" annotation(Dialog(tab="General", group="Nominal Values"));
+  inner parameter ClaRa.Basics.Units.Pressure p_nom=1e5 "Nominal pressure"                    annotation(Dialog(group="Nominal Values"));
+  inner parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_nom=1e5 "Nominal specific enthalpy"
+                                                                                               annotation(Dialog(group="Nominal Values"));
+
+  inner parameter ClaRa.Basics.Choices.Init initType=ClaRa.Basics.Choices.Init.noInit "Type of initialisation" annotation(Dialog(tab="Initialisation", choicesAllMatching));
+  parameter ClaRa.Basics.Units.Temperature T_start= 273.15 + 100.0 "Start value of system temperature"   annotation(Dialog(tab="Initialisation"));
+
+  parameter ClaRa.Basics.Units.Pressure p_start= 1.013e5 "Start value of sytsem pressure" annotation(Dialog(tab="Initialisation"));
+  parameter ClaRa.Basics.Units.MassFraction xi_start[medium.nc-1]=zeros(medium.nc-1) "Start value of sytsem mass fraction" annotation(Dialog(tab="Initialisation"));
+  inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation" annotation(Dialog(tab="Initialisation"));
+
+  parameter Boolean allow_reverseFlow = true "True if simulation shall stop at reverse flow conditions" annotation(Dialog(tab="Expert Settings", group="General"));
+  parameter Boolean use_dynamicMassbalance = true "True if species balance shall be dynamic"  annotation(Dialog(tab="Expert Settings", group="General"));
+
+  parameter Boolean useStabilisedMassFlow=false "True if the outlet mass flow shall be low-pass filtered" annotation(Dialog(tab="Expert Settings", group="Numerical Robustness"));
+  parameter SI.Time Tau= 0.001 "Time Constant of Stabilisation" annotation(Dialog(tab="Expert Settings", group = "Numerical Robustness", enable=useStabilisedMassFlow));
+
+  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary "True if component shall contribute to automatic efficiency calculation"
+                                                                                            annotation(Dialog(tab="Summary and Visualisation"));
+
+ClaRa.Basics.Units.Power P_el "Electric power consumption";
+ClaRa.Basics.Units.VolumeFlowRate V_flow_std "Standardized volume flow rate";
 
     TILMedia.GasObjectFunctions.GasPointer GasPointer=
       TILMedia.GasObjectFunctions.GasPointer(
@@ -139,7 +137,7 @@ replaceable model Geometry =
         rotation=0,
         origin={-34,0})));
 
-  Basics.ControlVolumes.GasVolumes.FlueGasCell flueGasCell(
+  Basics.ControlVolumes.GasVolumes.VolumeGas_L2 flueGasCell(
     redeclare model Geometry = Geometry,
     redeclare model PressureLoss = PressureLoss,
     T_start=T_start,
@@ -153,9 +151,7 @@ replaceable model Geometry =
     allow_reverseFlow=allow_reverseFlow,
     use_dynamicMassbalance=use_dynamicMassbalance,
     redeclare model HeatTransfer =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Adiabat_L2(heatSurfaceAlloc=1))
-                                                   annotation (Placement(
-        transformation(
+        Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.IdealHeatTransfer_L2)               annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=0,
         origin={26,0})));
@@ -183,19 +179,14 @@ inner Summary summary(outline(
           T = outlet.T_outflow,
           p = inlet.p,
           h = flueGasCell.flueGasOutlet.h,
-          H_flow = -outlet.m_flow*flueGasCell.flueGasOutlet.h)) annotation (Placement(transformation(extent={{-100,
-            -114},{-80,-94}})));
+          H_flow = -outlet.m_flow*flueGasCell.flueGasOutlet.h)) annotation (Placement(transformation(extent={{-100,-100},{-80,-80}})));
 
 public
   Basics.Interfaces.EyeOut eyeOut annotation (Placement(transformation(extent={{80,-78},
             {120,-42}}),          iconTransformation(extent={{90,-50},{110,-30}})));
 protected
-  Basics.Interfaces.EyeIn eye_int annotation (Placement(transformation(extent={{48,-68},
-            {32,-52}}),           iconTransformation(extent={{90,-84},{84,-78}})));
-public
-  Modelica.Thermal.HeatTransfer.Sources.FixedTemperature fixedTemperature(T(
-        displayUnit="K") = 293.15)
-    annotation (Placement(transformation(extent={{-20,40},{0,60}})));
+  Basics.Interfaces.EyeIn eye_int annotation (Placement(transformation(extent={{32,-68},{48,-52}}),
+                                  iconTransformation(extent={{90,-84},{84,-78}})));
 equation
   V_flow_std = inlet.m_flow / TILMedia.GasObjectFunctions.density_pTxi(1.01325e5,273.15,inStream(inlet.xi_outflow),GasPointer);
   P_el = specificPowerConsumption * V_flow_std;
@@ -226,17 +217,13 @@ equation
       points={{40,-60},{100,-60}},
       color={190,190,190},
       smooth=Smooth.None));
-  connect(fixedTemperature.port, flueGasCell.heat) annotation (Line(
-      points={{0,50},{26,50},{26,10}},
-      color={191,0,0},
-      smooth=Smooth.None));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
             -100},{100,100}}),
                          graphics={                  Text(
           extent={{-84,72},{-12,28}},
           lineColor={27,36,42},
           textString="SOx")}),   Diagram(coordinateSystem(preserveAspectRatio=false,
-                   extent={{-100,-100},{100,100}}), graphics),
+                   extent={{-100,-100},{100,100}})),
     Documentation(info="<html>
 <p><b>Information</b></p>
 <p><b>Model description: </b>An ideal desulfurization model</p>

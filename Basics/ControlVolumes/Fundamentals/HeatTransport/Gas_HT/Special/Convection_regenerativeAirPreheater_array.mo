@@ -1,5 +1,6 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Special;
-model Convection_regenerativeAirPreheater_array "Gas || Convection Air Preheater Channels"
+model Convection_regenerativeAirPreheater_array
+  "Gas || Convection Air Preheater Channels"
 //___________________________________________________________________________//
 // Component of the ClaRa library, version: 1.0.0                        //
 //                                                                           //
@@ -15,12 +16,15 @@ model Convection_regenerativeAirPreheater_array "Gas || Convection Air Preheater
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
 
-  extends ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.HeatTransfer_L4;
+  extends
+    ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.HeatTransfer_L4;
     //ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Special.HeatTransfer_array;
   import ClaRa.Basics.Functions.Stepsmoother;
-   outer ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry_N_cv geo;
-  parameter Integer heatSurfaceAlloc=1 "To be considered heat transfer area"        annotation(dialog(enable=false,tab="Expert Setting"),choices(choice=1 "Lateral surface",
-                          choice=2 "Inner heat transfer surface", choice=3 "Selection to be extended"));
+   outer ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry_N_cv
+                                                                                geo;
+  parameter Integer heatSurfaceAlloc=1 "To be considered heat transfer area"        annotation(dialog(enable=false,tab="Expert Setting"),choices(choice=1
+        "Lateral surface",choice=2 "Inner heat transfer surface", choice=3
+        "Selection to be extended"));
 
   Modelica.SIunits.CoefficientOfHeatTransfer alpha[iCom.N_cv];
   outer TILMedia.Gas_ph  fluid[iCom.N_cv];

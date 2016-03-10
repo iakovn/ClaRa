@@ -1,14 +1,14 @@
 within ClaRa.Components.FlueGasCleaning.E_Filter;
 model E_Filter_L2_detailed "Model for an electrical dust filter based on the Deutsch-Equation for the separation rate, migration speed calculated in accodance with  C. Riehle, Basic and Theoretical Operation of ESPs, (1997)"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -20,8 +20,7 @@ model E_Filter_L2_detailed "Model for an electrical dust filter based on the Deu
   ClaRa.Basics.Interfaces.Connected2SimCenter connected2SimCenter(
     powerIn=0,
     powerOut=-powerConsumption,
-    powerAux=0) if                                                                                                     contributeToCycleSummary;
-  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary "True if component shall contribute to automatic efficiency calculation" annotation(Dialog(tab="Summary and Visualisation"));
+    powerAux=0) if contributeToCycleSummary;
 
 //## S U M M A R Y   D E F I N I T I O N ###################################################################
  record Outline
@@ -52,39 +51,40 @@ end Summary;
 
 //## P A R A M E T E R S #######################################################################################
 //_____________defintion of medium used in cell__________________________________________________________
-inner parameter TILMedia.GasTypes.BaseGas               medium = simCenter.flueGasModel "Medium to be used in tubes"
-                                  annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
+  inner parameter TILMedia.GasTypes.BaseGas               medium = simCenter.flueGasModel "Medium to be used in tubes" annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
+  parameter Real epsilon_r = 10 "Dielectric number of flueGas";
 
-inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation"
-                                                              annotation(Dialog(tab="Initialisation"));
+  parameter Real specific_powerConsumption(unit="W.h/m3") = 0.15 "Specific power consumption" annotation (Dialog(group="Fundamental Definitions"));
 
-parameter Boolean allow_reverseFlow = true annotation(Evaluate=true, Dialog(tab="Advanced"));
-parameter Boolean use_dynamicMassbalance = true annotation(Evaluate=true, Dialog(tab="Advanced"));
-inner parameter ClaRa.Basics.Units.MassFlowRate m_flow_nom= 10 "Nominal mass flow rates at inlet"
-                                        annotation(Dialog(tab="General", group="Nominal Values"));
+  inner parameter ClaRa.Basics.Units.MassFlowRate m_flow_nom= 10 "Nominal mass flow rates at inlet" annotation(Dialog(tab="General", group="Nominal Values"));
+  inner parameter ClaRa.Basics.Units.Pressure p_nom=1e5 "Nominal pressure"                    annotation(Dialog(group="Nominal Values"));
+  inner parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_nom=1e5 "Nominal specific enthalpy"  annotation(Dialog(group="Nominal Values"));
 
-inner parameter ClaRa.Basics.Units.Pressure p_nom=1e5 "Nominal pressure"                    annotation(Dialog(group="Nominal Values"));
-inner parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_nom=1e5 "Nominal specific enthalpy"  annotation(Dialog(group="Nominal Values"));
+  inner parameter ClaRa.Basics.Choices.Init initType=ClaRa.Basics.Choices.Init.noInit "Type of initialisation" annotation(Dialog(tab="Initialisation", choicesAllMatching));
+  parameter ClaRa.Basics.Units.Temperature T_start= 380 "Start value of system Temperature" annotation(Dialog(tab="Initialisation"));
+  parameter ClaRa.Basics.Units.Pressure p_start= 1.013e5 "Start value of system pressure" annotation(Dialog(tab="Initialisation"));
+  parameter ClaRa.Basics.Units.MassFraction xi_start[medium.nc-1]=zeros(medium.nc-1) "Start value of system mass fraction"
+                                                                                            annotation(Dialog(tab="Initialisation"));
+  inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation" annotation(Dialog(tab="Initialisation"));
 
-inner parameter ClaRa.Basics.Choices.Init initType=ClaRa.Basics.Choices.Init.noInit "Type of initialisation"
-                             annotation(Dialog(tab="Initialisation", choicesAllMatching));
-
-  parameter ClaRa.Basics.Units.Temperature T_start= 380 "Start value of system Temperature"
-                                        annotation(Dialog(tab="Initialisation"));
-parameter ClaRa.Basics.Units.Pressure p_start= 1.013e5 "Start value of system pressure"
-                                     annotation(Dialog(tab="Initialisation"));
-parameter ClaRa.Basics.Units.MassFraction xi_start[medium.nc-1]=zeros(medium.nc-1) "Start value of system mass fraction"
-                                          annotation(Dialog(tab="Initialisation"));
-parameter ClaRa.Basics.Units.Length diameter_particle = 50e-6 "Average diameter of ash particles";
-final parameter Real A1 = 1.257;
-final parameter Real A2 = 0.4;
-final parameter Real A3 = 0.55;
-parameter Real epsilon_r = 10 "Dielectric number of flueGas";
 // Quantaties required for the calculation of the separationRate
-parameter ClaRa.Basics.Units.Area A_filter = 100 "Collector area of E-Filter";
-parameter ClaRa.Basics.Units.Length d_plate = 0.2 "Distance  Plate-to-Plate or Plate-to-Wire, repectivaly";
-parameter Real specific_powerConsumption = 0.15 "in [Wh/m^3]";
+  parameter ClaRa.Basics.Units.Area A_filter = 100 "Collector area of E-Filter" annotation(Dialog(group="Geometry"));
+  parameter ClaRa.Basics.Units.Length d_plate = 0.2 "Distance  Plate-to-Plate or Plate-to-Wire, repectivaly"
+                                                                                            annotation(Dialog(group="Geometry"));
+  parameter ClaRa.Basics.Units.Length diameter_particle = 50e-6 "Average diameter of ash particles"
+                                                                                                   annotation(Dialog(group="Geometry"));
+  final parameter Real A1 = 1.257 "Auxiliary Area"
+                                                  annotation(Dialog(group="Geometry"));
+  final parameter Real A2 = 0.4 "Auxiliary Area" annotation(Dialog(group="Geometry"));
+  final parameter Real A3 = 0.55 "Auxiliary Area"
+                                                 annotation(Dialog(group="Geometry"));
 
+  parameter Boolean use_dynamicMassbalance = true "True if a dynamic mass balance shall be applied" annotation(Evaluate=true, Dialog(tab="Expert Settings"));
+
+  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary "True if component shall contribute to automatic efficiency calculation"
+                                                                                            annotation(Dialog(tab="Summary and Visualisation"));
+  parameter Boolean showData=true "True if a data port containing p,T,h,s,m_flow shall be shown, else false"
+                                                                                            annotation (Dialog(tab="Summary and Visualisation"));
 //## V A R I A B L E   P A R T##################################################################################
 
 Real separationRate;
@@ -108,27 +108,24 @@ Modelica.SIunits.ElectricCharge Q_sat "Saturation charge of particles";
 // Quantaties required for the calculation of the particles' saturation charge
 
 ClaRa.Basics.Units.VolumeFlowRate V_flow "Volumeflow rate of flue Gas entering the E-Filter";
-Integer case;
 
 protected
-   ClaRa.Basics.Units.EnthalpyMassSpecific h_out;
-   ClaRa.Basics.Units.EnthalpyMassSpecific h_in;
-   ClaRa.Basics.Units.EnthalpyMassSpecific h_dust;
-   inner ClaRa.Basics.Units.EnthalpyMassSpecific h(start=TILMedia.GasFunctions.specificEnthalpy_pTxi(simCenter.flueGasModel, p_start, T_start, xi_start));
-   Real drhodt;
-   Modelica.SIunits.Mass mass;
-   Modelica.SIunits.Pressure p(start=p_start);
-   Modelica.SIunits.MassFraction xi[medium.nc-1]( start=xi_start) "mass fraction";
-   Modelica.SIunits.MassFlowRate m_flow_dust_out;
-   Modelica.SIunits.Power powerConsumption;
+   ClaRa.Basics.Units.EnthalpyMassSpecific h_out "Specific enthalpy at outlet";
+   ClaRa.Basics.Units.EnthalpyMassSpecific h_in "Specific enthalpy at inlet";
+   ClaRa.Basics.Units.EnthalpyMassSpecific h_dust "Specific enthalpy of separated dust";
+   inner ClaRa.Basics.Units.EnthalpyMassSpecific h(start=TILMedia.GasFunctions.specificEnthalpy_pTxi(simCenter.flueGasModel, p_start, T_start, xi_start)) "Specific enthalpy of gas";
+   Real drhodt "Density derivative";
+   Modelica.SIunits.Mass mass "Mass in component";
+   Modelica.SIunits.Pressure p(start=p_start) "Pressure in component";
+   Modelica.SIunits.MassFraction xi[medium.nc-1]( start=xi_start) "Mass fraction";
+   Modelica.SIunits.MassFlowRate m_flow_dust_out "Mass flow of separated dust";
+   Modelica.SIunits.Power powerConsumption "Power consumption";
 
 //____Connectors________________________________________________________________________________________________
 public
-  ClaRa.Basics.Interfaces.GasPortIn inlet(Medium=medium, m_flow(min=if
-          allow_reverseFlow then -Modelica.Constants.inf else 1e-5)) "Inlet port"
+  ClaRa.Basics.Interfaces.GasPortIn inlet(Medium=medium) "Inlet port"
     annotation (Placement(transformation(extent={{-110,-10},{-90,10}})));
-  ClaRa.Basics.Interfaces.GasPortOut outlet(Medium=medium, m_flow(max=if
-          allow_reverseFlow then Modelica.Constants.inf else -1e-5)) "Outlet port"
+  ClaRa.Basics.Interfaces.GasPortOut outlet(Medium=medium) "Outlet port"
     annotation (Placement(transformation(extent={{90,-10},{110,10}})));
   ClaRa.Basics.Interfaces.HeatPort_a
                                    heat
@@ -233,7 +230,7 @@ protected
     xi_out=xi) annotation (Placement(transformation(extent={{80,-102},{100,-82}})));
 
 public
-  Basics.Interfaces.EyeOut eyeOut annotation (Placement(transformation(extent={{80,-78},
+  Basics.Interfaces.EyeOut eyeOut if showData annotation (Placement(transformation(extent={{80,-78},
             {120,-42}}),          iconTransformation(extent={{90,-50},{110,-30}})));
 protected
   Basics.Interfaces.EyeIn eye_int annotation (Placement(transformation(extent={{48,-68},
@@ -242,12 +239,6 @@ equation
   // Asserts ~~~~~~~~~~~~~~~~~~~
    assert(geo.volume>0, "The system volume must be greater than zero!");
     assert(geo.A_heat[heattransfer.heatSurfaceAlloc]>=0, "The area of heat transfer must be greater than zero!");
-    if allow_reverseFlow then
-      assert( 0==0, "Dummy");
-      else
-    assert(  not inlet.m_flow < 0, "Flow reversal at inlet, but allow_reverseFlow is set to FALSE!");
-    assert( not outlet.m_flow > 0, "Flow reversal at outlet, but allow_reverseFlow is set to FALSE!");
-    end if;
 
   // Port connection
   inlet.T_outflow  = bulk.T;
@@ -281,31 +272,21 @@ equation
       (inlet.m_flow*(flueGasInlet.xi - xi) + outlet.m_flow*(flueGasOutlet.xi - xi) + m_flow_dust_out*(dust.xi-xi));
   end if;
 
-if allow_reverseFlow then
   if inlet.m_flow > 0 and outlet.m_flow <=0 then
     V_flow = inlet.m_flow/flueGasInlet.d;
     m_flow_dust_out = separationRate *(-flueGasInlet.xi[1]*inlet.m_flow);
-    case  = 1;
   else if  inlet.m_flow > 0 and outlet.m_flow > 0 then
         V_flow = (inlet.m_flow/flueGasInlet.d + outlet.m_flow/flueGasOutlet.d);
         m_flow_dust_out = separationRate * (-flueGasOutlet.xi[1]*outlet.m_flow-flueGasInlet.xi[1]*inlet.m_flow);
-        case = 2;
   else if inlet.m_flow <= 0 and outlet.m_flow <= 0 then
        V_flow = 1e-20;
        m_flow_dust_out = -1e-20;
-       case = 3;
        else
        V_flow = outlet.m_flow/flueGasOutlet.d;
        m_flow_dust_out = separationRate *(-flueGasOutlet.xi[1]*outlet.m_flow);
-       case = 4;
             end if;
       end if;
   end if;
-else
-    V_flow = inlet.m_flow/flueGasInlet.d;
-    m_flow_dust_out = -separationRate *flueGasInlet.xi[1]*inlet.m_flow;
-
-end if;
 
  E_applied = U_applied/d_plate;
 

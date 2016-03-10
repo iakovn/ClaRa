@@ -1,14 +1,14 @@
 within ClaRa.Components.VolumesValvesFittings.Pipes.Check.OnePhaseFlow;
 model Test_Pipe_L1_TML_LongDistanceAndGravitationalPressureDrop
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.0.0                        //
+  // Component of the ClaRa library, version: 1.1.0                        //
   //                                                                           //
-  // Licensed by the DYNCAP research team under Modelica License 2.            //
-  // Copyright © 2013-2015, DYNCAP research team.                                   //
+  // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+  // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
-  // DYNCAP is a research project supported by the German Federal Ministry of  //
-  // Economics and Technology (FKZ 03ET2009).                                  //
-  // The DYNCAP research team consists of the following project partners:      //
+  // DYNCAP and DYNSTART are research projects supported by the German Federal //
+  // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+  // The research team consists of the following project partners:             //
   // Institute of Energy Systems (Hamburg University of Technology),           //
   // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
   // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -34,7 +34,7 @@ model Test_Pipe_L1_TML_LongDistanceAndGravitationalPressureDrop
     useHomotopy=false,
     useClaRaDelay=true,
     p_amb=1000000) annotation (Placement(transformation(extent={{-100,180},{-80,200}})));
-  TubeBundle_L1_TML tube(
+  PipeFlowVLE_L1_TML tube(
     showExpertSummary=true,
     kappa=1.25,
     showData=true,
@@ -47,7 +47,7 @@ model Test_Pipe_L1_TML_LongDistanceAndGravitationalPressureDrop
     length=10000,
     Delta_p_nom=1/7*1e5,
     z_in=150,
-    z_out=150)           annotation (Placement(transformation(extent={{20,77},{0,97}})));
+    z_out=150) annotation (Placement(transformation(extent={{20,77},{0,97}})));
 
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi massFlowSink(
     variable_p=true,
@@ -110,7 +110,7 @@ model Test_Pipe_L1_TML_LongDistanceAndGravitationalPressureDrop
         rotation=0,
         origin={310,-30})));
 
-  TubeBundle_L1_TML tube1(
+  PipeFlowVLE_L1_TML tube1(
     showExpertSummary=true,
     kappa=1.25,
     showData=true,
@@ -123,11 +123,11 @@ model Test_Pipe_L1_TML_LongDistanceAndGravitationalPressureDrop
     length=10000,
     Delta_p_nom=1/7*1e5,
     z_in=250,
-    z_out=250)           annotation (Placement(transformation(
+    z_out=250) annotation (Placement(transformation(
         extent={{10,-4},{-10,4}},
         rotation=0,
         origin={138,160})));
-  TubeBundle_L1_TML tube2(
+  PipeFlowVLE_L1_TML tube2(
     showExpertSummary=true,
     kappa=1.25,
     showData=true,
@@ -140,8 +140,8 @@ model Test_Pipe_L1_TML_LongDistanceAndGravitationalPressureDrop
     length=10000,
     Delta_p_nom=1/7*1e5,
     z_in=100,
-    z_out=100)           annotation (Placement(transformation(extent={{80,31},{60,51}})));
-  TubeBundle_L1_TML tube3(
+    z_out=100) annotation (Placement(transformation(extent={{80,31},{60,51}})));
+  PipeFlowVLE_L1_TML tube3(
     showExpertSummary=true,
     kappa=1.25,
     showData=true,
@@ -154,11 +154,11 @@ model Test_Pipe_L1_TML_LongDistanceAndGravitationalPressureDrop
     length=10000,
     Delta_p_nom=1/7*1e5,
     z_in=250,
-    z_out=100)           annotation (Placement(transformation(
+    z_out=100) annotation (Placement(transformation(
         extent={{10,4},{-10,-4}},
         rotation=90,
         origin={122,110})));
-  TubeBundle_L1_TML tube4(
+  PipeFlowVLE_L1_TML tube4(
     showExpertSummary=true,
     kappa=1.25,
     showData=true,
@@ -171,11 +171,11 @@ model Test_Pipe_L1_TML_LongDistanceAndGravitationalPressureDrop
     length=10000,
     Delta_p_nom=1/7*1e5,
     z_in=100,
-    z_out=150)           annotation (Placement(transformation(
+    z_out=150) annotation (Placement(transformation(
         extent={{10,-10},{-10,10}},
         rotation=270,
         origin={52,77})));
-  TubeBundle_L1_TML tube5(
+  PipeFlowVLE_L1_TML tube5(
     showExpertSummary=true,
     kappa=1.25,
     showData=true,
@@ -188,11 +188,11 @@ model Test_Pipe_L1_TML_LongDistanceAndGravitationalPressureDrop
     length=10000,
     Delta_p_nom=1/7*1e5,
     z_in=0,
-    z_out=250)           annotation (Placement(transformation(
+    z_out=250) annotation (Placement(transformation(
         extent={{-10,4},{10,-4}},
         rotation=90,
         origin={170,110})));
-  TubeBundle_L1_TML tube6(
+  PipeFlowVLE_L1_TML tube6(
     showExpertSummary=true,
     kappa=1.25,
     showData=true,
@@ -205,7 +205,7 @@ model Test_Pipe_L1_TML_LongDistanceAndGravitationalPressureDrop
     length=10000,
     Delta_p_nom=1/7*1e5,
     z_in=0,
-    z_out=0)             annotation (Placement(transformation(
+    z_out=0) annotation (Placement(transformation(
         extent={{10,-4.5},{-10,4.5}},
         rotation=0,
         origin={210,-29.5})));
@@ -272,7 +272,7 @@ model Test_Pipe_L1_TML_LongDistanceAndGravitationalPressureDrop
     T_start=320*ones(tube.N_cv),
     initChoice=ClaRa.Basics.Choices.Init.noInit,
     stateLocation=1) annotation (Placement(transformation(extent={{204,-17},{216,-12}})));
-  TubeBundle_L1_TML tube7(
+  PipeFlowVLE_L1_TML tube7(
     Delta_V_flow_out(start=0),
     z_in=0,
     showExpertSummary=true,

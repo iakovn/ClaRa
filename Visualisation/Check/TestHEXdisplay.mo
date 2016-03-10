@@ -1,14 +1,14 @@
 within ClaRa.Visualisation.Check;
 model TestHEXdisplay "Illustrates the capabilities of the HEXdisplay"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -68,10 +68,10 @@ extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb80;
     y_min=373,
     T_o=NTU.summary.T_o,
     T_i=NTU.summary.T_i,
-    yps_o=NTU.summary.eCom.z_o,
-    yps_i=NTU.summary.eCom.z_i,
     Unit="CounterFlow",
-    y_max=610) annotation (Placement(transformation(extent={{-18,-108},{94,-4}})));
+    y_max=610,
+    z_i=NTU.summary.eCom.z_i,
+    z_o=NTU.summary.eCom.z_o) annotation (Placement(transformation(extent={{-18,-108},{94,-4}})));
 
   ClaRa.Basics.ControlVolumes.SolidVolumes.NTU_L3_standalone NTU(
     N_t=N_tubes,
@@ -79,7 +79,8 @@ extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb80;
     length=length,
     outerPhaseChange=false,
     initChoice=ClaRa.Basics.Choices.Init.steadyTemperature,
-    redeclare function HeatCapacityAveraging = ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.ArithmeticMean,
+    redeclare function HeatCapacityAveraging =
+        ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.ArithmeticMean,
     radius_i=radius_i,
     radius_o=radius_o,
     p_o=p_o,
@@ -92,7 +93,8 @@ extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb80;
     alpha_o=ones(3)*alpha_o,
     T_w_i_start=ones(3)*T_i_in,
     T_w_o_start=ones(3)*T_o_in,
-    redeclare model HeatExchangerType = ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.CounterFlow_L3,
+    redeclare model HeatExchangerType =
+        ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.CounterFlow_L3,
     showExpertSummary=true,
     PI_1ph_in(initType=Modelica.Blocks.Types.InitPID.NoInit),
     PI_2ph(initType=Modelica.Blocks.Types.InitPID.NoInit)) annotation (Placement(transformation(extent={{74,-106},{94,-86}})));
@@ -101,25 +103,26 @@ extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb80;
     y_min=373,
     T_i=wall_NTU.summary.T_i,
     T_o=wall_NTU.summary.T_o,
-    yps_i=wall_NTU.summary.eCom.z_i,
-    yps_o=wall_NTU.summary.eCom.z_o,
     Unit="Parallel Flow",
-    y_max=610) annotation (Placement(transformation(extent={{128,-108},{240,-4}})));
+    y_max=610,
+    z_i=wall_NTU.summary.eCom.z_i,
+    z_o=wall_NTU.summary.eCom.z_o) annotation (Placement(transformation(extent={{128,-108},{240,-4}})));
   Hexdisplay_3 hexdisplay_3_3(
     y_min=373,
     Unit="Cross Flow",
     T_o=wall_NTU1.summary.T_o,
     T_i=wall_NTU1.summary.T_i,
-    yps_o=wall_NTU1.summary.eCom.z_o,
-    yps_i=wall_NTU1.summary.eCom.z_i,
-    y_max=610) annotation (Placement(transformation(extent={{278,-108},{390,-4}})));
+    y_max=610,
+    z_i=wall_NTU1.summary.eCom.z_i,
+    z_o=wall_NTU1.summary.eCom.z_o) annotation (Placement(transformation(extent={{278,-108},{390,-4}})));
   Basics.ControlVolumes.SolidVolumes.NTU_L3_standalone wall_NTU1(
     N_t=N_tubes,
     N_p=N_passes,
     length=length,
     outerPhaseChange=false,
     initChoice=ClaRa.Basics.Choices.Init.steadyTemperature,
-    redeclare function HeatCapacityAveraging = ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.ArithmeticMean,
+    redeclare function HeatCapacityAveraging =
+        ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.ArithmeticMean,
     radius_i=radius_i,
     radius_o=radius_o,
     p_o=p_o,
@@ -132,7 +135,8 @@ extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb80;
     alpha_o=ones(3)*alpha_o,
     T_w_i_start=ones(3)*T_i_in,
     T_w_o_start=ones(3)*T_o_in,
-    redeclare model HeatExchangerType = ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.CrossFlow_L3,
+    redeclare model HeatExchangerType =
+        ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.CrossFlow_L3,
     showExpertSummary=true,
     PI_2ph(initType=Modelica.Blocks.Types.InitPID.NoInit),
     PI_1ph_in(initType=Modelica.Blocks.Types.InitPID.NoInit)) annotation (Placement(transformation(extent={{368,-108},{388,-88}})));
@@ -184,8 +188,10 @@ public
     alpha_o=ones(3)*alpha_o,
     T_w_i_start=ones(3)*T_i_in,
     T_w_o_start=ones(3)*T_o_in,
-    redeclare model HeatExchangerType = ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.ParallelFlow_L3,
-    redeclare function HeatCapacityAveraging = ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.ArithmeticMean,
+    redeclare model HeatExchangerType =
+        ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.ParallelFlow_L3,
+    redeclare function HeatCapacityAveraging =
+        ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.ArithmeticMean,
     PI_2ph(initType=Modelica.Blocks.Types.InitPID.NoInit),
     PI_1ph_in(initType=Modelica.Blocks.Types.InitPID.NoInit)) annotation (Placement(transformation(extent={{220,-108},{240,-88}})));
 

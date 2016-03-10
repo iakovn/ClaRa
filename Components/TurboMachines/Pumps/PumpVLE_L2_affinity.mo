@@ -1,14 +1,14 @@
 within ClaRa.Components.TurboMachines.Pumps;
 model PumpVLE_L2_affinity "A pump for VLE mixtures with a finite fluid volume, based on affinity laws"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                            //
+// Component of the ClaRa library, version: 1.1.0                            //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                              //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -185,19 +185,20 @@ public
               steamQuality = fluidIn.q,
               H_flow= fluidIn.h*inlet.m_flow,
               rho=fluidIn.d),
-      outlet( showExpertSummary = showExpertSummary,
-              m_flow=-outlet.m_flow,
-              T=fluidOut.T,
-              p=outlet.p,
-              h=fluidOut.h,
-              s=fluidOut.s,
-              steamQuality = fluidOut.q,
-              H_flow= fluidOut.h*outlet.m_flow,
-              rho=fluidOut.d))  annotation(Placement(transformation(
+    outlet(
+      showExpertSummary=showExpertSummary,
+      m_flow=-outlet.m_flow,
+      T=fluidOut.T,
+      p=outlet.p,
+      h=fluidOut.h,
+      s=fluidOut.s,
+      steamQuality=fluidOut.q,
+      H_flow=-fluidOut.h*outlet.m_flow,
+      rho=fluidOut.d))          annotation(Placement(transformation(
         extent={{-10,-11},{10,11}},
         origin={-70,-91})));
 
-  Modelica.Mechanics.Rotational.Interfaces.Flange_a shaft
+  Modelica.Mechanics.Rotational.Interfaces.Flange_a shaft if  useMechanicalPort
     annotation (Placement(transformation(extent={{-10,62},{10,82}}),
         iconTransformation(extent={{-10,89},{10,109}})));
 

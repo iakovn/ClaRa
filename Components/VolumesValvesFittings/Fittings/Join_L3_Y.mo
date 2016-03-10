@@ -1,14 +1,14 @@
 within ClaRa.Components.VolumesValvesFittings.Fittings;
 model Join_L3_Y "A Y-join with non-ideal mixing"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -72,7 +72,7 @@ public
             {120,-30}}), iconTransformation(extent={{100,-50},{120,-30}})));
 protected
   Basics.Interfaces.EyeIn       eye_int
-    annotation (Placement(transformation(extent={{45,-81},{47,-79}})));
+    annotation (Placement(transformation(extent={{49,-41},{51,-39}})));
 public
   Basics.ControlVolumes.FluidVolumes.VolumeVLE_L3_TwoZonesNPort mixingZone(
     redeclare model Geometry =
@@ -99,11 +99,6 @@ public
     m_flow_nom=m_flow_nom) annotation (Placement(transformation(extent={{-10,-10},{10,10}})));
 
 equation
-  connect(eye,eye_int)  annotation (Line(
-      points={{110,-40},{78,-40},{78,-80},{46,-80}},
-      color={255,204,51},
-      thickness=0.5,
-      smooth=Smooth.None));
   connect(mixingZone.inlet[1], inlet1)                 annotation (Line(
       points={{-10,0},{-100,0}},
       color={0,131,169},
@@ -126,7 +121,8 @@ equation
     eye_int.s=mixingZone.fluidOut[1].s/1e3;
     eye_int.p=mixingZone.summary.fluid.p[1]/1e5;
     eye_int.h=mixingZone.summary.outlet[1].h/1e3;
+  connect(eye_int, eye) annotation (Line(points={{50,-40},{78,-40},{110,-40}}, color={190,190,190}));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
-            -100},{100,100}}), graphics), Icon(coordinateSystem(
+            -100},{100,100}})),           Icon(coordinateSystem(
           preserveAspectRatio=false, extent={{-100,-100},{100,100}}), graphics));
 end Join_L3_Y;

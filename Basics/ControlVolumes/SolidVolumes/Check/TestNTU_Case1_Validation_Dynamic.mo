@@ -1,75 +1,65 @@
 within ClaRa.Basics.ControlVolumes.SolidVolumes.Check;
 model TestNTU_Case1_Validation_Dynamic "Validation with TestThermalElements.TestNTU_Case2"
-//___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
-//                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
-//___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
-// Institute of Energy Systems (Hamburg University of Technology),           //
-// Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
-// TLK-Thermo GmbH (Braunschweig, Germany),                                  //
-// XRG Simulation GmbH (Hamburg, Germany).                                   //
-//___________________________________________________________________________//
-extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
+  //___________________________________________________________________________//
+  // Component of the ClaRa library, version: 1.1.0                        //
+  //                                                                           //
+  // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+  // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+  //___________________________________________________________________________//
+  // DYNCAP and DYNSTART are research projects supported by the German Federal //
+  // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+  // The research team consists of the following project partners:             //
+  // Institute of Energy Systems (Hamburg University of Technology),           //
+  // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
+  // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
+  // XRG Simulation GmbH (Hamburg, Germany).                                   //
+  //___________________________________________________________________________//
+  extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
   import SI = ClaRa.Basics.Units;
-  parameter Units.Temperature
-                           T_i_in = 100+273.15;
-  parameter Units.Temperature
-                           T_o_in = 300+273.15;
-   parameter Units.EnthalpyMassSpecific
-                                     h_i_in = TILMedia.VLEFluidFunctions.specificEnthalpy_pTxi(TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater(), p_i, T_i_in);
-   parameter Units.EnthalpyMassSpecific
-                                     h_o_in = TILMedia.VLEFluidFunctions.specificEnthalpy_pTxi(TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater(), p_o, T_o_in);
-  parameter Units.MassFlowRate
-                            m_flow_i = 10;
-  parameter Units.MassFlowRate
-                            m_flow_o = 100;
-  parameter Units.Pressure
-                        p_i = 0.9e5;
-  parameter Units.Pressure
-                        p_o = 300e5;
+  parameter Units.Temperature T_i_in=100 + 273.15;
+  parameter Units.Temperature T_o_in=300 + 273.15;
+  parameter Units.EnthalpyMassSpecific h_i_in=TILMedia.VLEFluidFunctions.specificEnthalpy_pTxi(
+      TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater(),
+      p_i,
+      T_i_in);
+  parameter Units.EnthalpyMassSpecific h_o_in=TILMedia.VLEFluidFunctions.specificEnthalpy_pTxi(
+      TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater(),
+      p_o,
+      T_o_in);
+  parameter Units.MassFlowRate m_flow_i=10;
+  parameter Units.MassFlowRate m_flow_o=100;
+  parameter Units.Pressure p_i=0.9e5;
+  parameter Units.Pressure p_o=300e5;
 
-  parameter Units.CoefficientOfHeatTransfer
-                                         alpha_i = 730;
-  parameter Units.CoefficientOfHeatTransfer
-                                         alpha_o = 7300;
+  parameter Units.CoefficientOfHeatTransfer alpha_i=730;
+  parameter Units.CoefficientOfHeatTransfer alpha_o=7300;
 
-  parameter Integer N_tubes = 200;
-  parameter Integer N_passes = 1;
-  parameter Units.Length
-                      radius_i = 0.05;
-  parameter Units.Length
-                      radius_o = 0.05+1e-6;
-  parameter Units.Length
-                      diameter_i = radius_i*2;
-  parameter Units.Length
-                      diameter_o = radius_o*2;
-  parameter Units.Length
-                      length = 4;
-  parameter Integer N_cv = 258;
+  parameter Integer N_tubes=200;
+  parameter Integer N_passes=1;
+  parameter Units.Length radius_i=0.05;
+  parameter Units.Length radius_o=0.05 + 1e-6;
+  parameter Units.Length diameter_i=radius_i*2;
+  parameter Units.Length diameter_o=radius_o*2;
+  parameter Units.Length length=4;
+  parameter Integer N_cv=258;
 
-    Units.HeatFlowRate
-                    Q_flow_tot;
-//    SI.HeatCapacityMassSpecific cp_o_m;
-//    SI.HeatCapacityMassSpecific cp_i_m;
-//    SI.HeatCapacityMassSpecific cp_o[N_cv];
-//    SI.HeatCapacityMassSpecific cp_i[N_cv];
+  Units.HeatFlowRate Q_flow_tot;
+  //    SI.HeatCapacityMassSpecific cp_o_m;
+  //    SI.HeatCapacityMassSpecific cp_i_m;
+  //    SI.HeatCapacityMassSpecific cp_o[N_cv];
+  //    SI.HeatCapacityMassSpecific cp_i[N_cv];
 
-//    Real x[N_cv];
-//    Real val = pipe_ColdSide.fluid[1].VLE.h_v;
-//    Integer Cell_hv "Zelle bei der Phasenwechsel auftritt";
-//    Integer Cells_hv_p1=Cell_hv+1;
+  //    Real x[N_cv];
+  //    Real val = pipe_ColdSide.fluid[1].VLE.h_v;
+  //    Integer Cell_hv "Zelle bei der Phasenwechsel auftritt";
+  //    Integer Cells_hv_p1=Cell_hv+1;
 
   inner SimCenter simCenter(
     steamCycleAllowFlowReversal=true,
     useHomotopy=false,
     redeclare TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1) annotation (Placement(transformation(extent={{80,75},{100,95}})));
 
-  Components.VolumesValvesFittings.Pipes.PipeFlow_L4_Simple pipe_HotSide(
+  Components.VolumesValvesFittings.Pipes.PipeFlowVLE_L4_Simple pipe_HotSide(
     length=length,
     N_tubes=N_tubes,
     N_cv=N_cv,
@@ -97,7 +87,7 @@ extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
     redeclare model HeatTransfer =
         ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4 (                      PL_kc=[0,1; 0.5,1; 0.7,1; 1,1], alpha_nom=alpha_o),
     initType=ClaRa.Basics.Choices.Init.steadyState) annotation (Placement(transformation(extent={{-6,28},{26,16}})));
-  Components.VolumesValvesFittings.Pipes.PipeFlow_L4_Simple pipe_ColdSide(
+  Components.VolumesValvesFittings.Pipes.PipeFlowVLE_L4_Simple pipe_ColdSide(
     length=length,
     N_tubes=N_tubes,
     N_cv=N_cv,
@@ -143,10 +133,8 @@ extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
     Delta_p(displayUnit="Pa"),
     p_const=p_i,
     variable_p=false) annotation (Placement(transformation(extent={{-60,-20},{-40,0}})));
-  ClaRa.Components.Sensors.Temperature           Hot_out_degC
-    annotation (Placement(transformation(extent={{36,22},{56,42}})));
-  ClaRa.Components.Sensors.Temperature           Cold_out_degC
-    annotation (Placement(transformation(extent={{-36,-10},{-16,10}})));
+  ClaRa.Components.Sensors.Temperature Hot_out_degC annotation (Placement(transformation(extent={{36,22},{56,42}})));
+  ClaRa.Components.Sensors.Temperature Cold_out_degC annotation (Placement(transformation(extent={{-36,-10},{-16,10}})));
   ClaRa.Basics.ControlVolumes.SolidVolumes.ThinWall_L4 thinWall(
     diameter_o=diameter_o,
     diameter_i=diameter_i,
@@ -182,8 +170,7 @@ extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
     offset=T_i_in,
     height=20,
     startTime=500,
-    duration=10)
-    annotation (Placement(transformation(extent={{120,-20},{100,0}})));
+    duration=10) annotation (Placement(transformation(extent={{120,-20},{100,0}})));
   Components.BoundaryConditions.BoundaryVLE_Txim_flow OuterSide_in1(
     m_flow_const=m_flow_o,
     T_const=T_o_in,
@@ -202,102 +189,90 @@ extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
     Delta_p(displayUnit="Pa"),
     p_const=p_o,
     variable_p=false) annotation (Placement(transformation(extent={{82,-48},{62,-28}})));
-  ClaRa.Components.Sensors.Temperature           Cold_out_degC1
-    annotation (Placement(transformation(extent={{-30,-88},{-10,-68}})));
-  ClaRa.Components.Sensors.Temperature           Hot_out_degC1
-    annotation (Placement(transformation(extent={{32,-38},{52,-18}})));
+  ClaRa.Components.Sensors.Temperature Cold_out_degC1 annotation (Placement(transformation(extent={{-30,-88},{-10,-68}})));
+  ClaRa.Components.Sensors.Temperature Hot_out_degC1 annotation (Placement(transformation(extent={{32,-38},{52,-18}})));
   FluidVolumes.VolumeVLE_2 outerVol(
     redeclare model Geometry =
         ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.PipeGeometry (
-        diameter=
-          diameter_o,
-        length=
-          length,
+        diameter=diameter_o,
+        length=length,
         N_tubes=N_tubes,
         N_passes=N_passes),
     redeclare model HeatTransfer =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2 (
-         alpha_nom=
-                alpha_o, PL_alpha=
-                            [0,1; 0.5,1]),
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2 (                      alpha_nom=alpha_o, PL_alpha=[0, 1; 0.5, 1]),
     m_flow_nom=m_flow_o,
     p_nom=p_o,
     h_nom=h_o_in,
     h_start=2000e3,
     p_start=30000000,
     initType=ClaRa.Basics.Choices.Init.steadyEnthalpy,
-    redeclare model PhaseBorder = ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.IdeallyStirred (position_Delta_p_geo="inlet"))
-    annotation (Placement(transformation(extent={{1,-28},{21,-48}})));
+    redeclare model PhaseBorder =
+        ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.IdeallyStirred (                        position_Delta_p_geo="inlet")) annotation (Placement(transformation(extent={{1,-28},{21,-48}})));
   FluidVolumes.VolumeVLE_2 innerVol(
     redeclare model HeatTransfer =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2 (
-         alpha_nom=
-                alpha_i, PL_alpha=
-                            [0,1; 0.5,1]),
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2 (                      alpha_nom=alpha_i, PL_alpha=[0, 1; 0.5, 1]),
     m_flow_nom=m_flow_i,
     p_nom=p_i,
     h_nom=h_i_in,
     initType=ClaRa.Basics.Choices.Init.steadyEnthalpy,
     h_start=3000e3,
     p_start=90000,
-    redeclare model PhaseBorder = ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.IdeallyStirred (position_Delta_p_geo="inlet"))
-    annotation (Placement(transformation(extent={{21,-98},{1,-78}})));
+    redeclare model PhaseBorder =
+        ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.IdeallyStirred (                        position_Delta_p_geo="inlet")) annotation (Placement(transformation(extent={{21,-98},{1,-78}})));
 equation
   for i in 1:pipe_ColdSide.N_cv loop
 
-     connect(pipe_ColdSide.heat[i], thinWall.innerPhase[(pipe_ColdSide.N_cv+1)-i]);
+    connect(pipe_ColdSide.heat[i], thinWall.innerPhase[(pipe_ColdSide.N_cv + 1) - i]);
     // x[i]=pipe_ColdSide.fluid[i].h;
-   end for;
+  end for;
 
-//   for i in 1:N_cv loop
-//      if i>=Cell_hv then
-//         cp_o[i]=pipe_HotSide.fluid[i].cp;
-//         cp_i[i]=pipe_ColdSide.fluid[i].cp;
-//      else
-//         cp_o[i]=0;
-//         cp_i[i]=0;
-//      end if;
-//    end for;
+  //   for i in 1:N_cv loop
+  //      if i>=Cell_hv then
+  //         cp_o[i]=pipe_HotSide.fluid[i].cp;
+  //         cp_i[i]=pipe_ColdSide.fluid[i].cp;
+  //      else
+  //         cp_o[i]=0;
+  //         cp_i[i]=0;
+  //      end if;
+  //    end for;
 
-  Q_flow_tot=sum(pipe_ColdSide.heat[i].Q_flow for i in 1:N_cv);
+  Q_flow_tot = sum(pipe_ColdSide.heat[i].Q_flow for i in 1:N_cv);
 
-//   cp_o_m=sum(cp_o)/(max(1,N_cv-Cell_hv));
-//   cp_i_m=sum(cp_i)/(max(1,N_cv-Cell_hv));
+  //   cp_o_m=sum(cp_o)/(max(1,N_cv-Cell_hv));
+  //   cp_i_m=sum(cp_i)/(max(1,N_cv-Cell_hv));
 
- // Cell_hv=integer(ClaRa.Basics.ControlVolumes.SolidVolumes.ValidateThermalElements.findValue_Case2(x,val));
+  // Cell_hv=integer(ClaRa.Basics.ControlVolumes.SolidVolumes.ValidateThermalElements.findValue_Case2(x,val));
 
-  connect(pipe_HotSide.outlet,Hot_out_degC. port) annotation (Line(
+  connect(pipe_HotSide.outlet, Hot_out_degC.port) annotation (Line(
       points={{26,22},{46,22}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
-  connect(Cold_out_degC.port,pipe_ColdSide. outlet) annotation (Line(
+  connect(Cold_out_degC.port, pipe_ColdSide.outlet) annotation (Line(
       points={{-26,-10},{-6,-10}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
-  connect(OuterSide_in.steam_a,pipe_HotSide. inlet)
-                                              annotation (Line(
+  connect(OuterSide_in.steam_a, pipe_HotSide.inlet) annotation (Line(
       points={{-38,22},{-6,22}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
-  connect(pipe_ColdSide.inlet,InnerSide_in. steam_a)
-                                                annotation (Line(
+  connect(pipe_ColdSide.inlet, InnerSide_in.steam_a) annotation (Line(
       points={{26,-10},{60,-10}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
-  connect(pipe_HotSide.heat,thinWall. outerPhase)     annotation (Line(
+  connect(pipe_HotSide.heat, thinWall.outerPhase) annotation (Line(
       points={{10,17.2},{10,10}},
       color={191,0,0},
       smooth=Smooth.None));
-  connect(Hot_out_degC.port,OuterSide_out. steam_a) annotation (Line(
+  connect(Hot_out_degC.port, OuterSide_out.steam_a) annotation (Line(
       points={{46,22},{60,22}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
-  connect(Cold_out_degC.port,InnerSide_out. steam_a) annotation (Line(
+  connect(Cold_out_degC.port, InnerSide_out.steam_a) annotation (Line(
       points={{-26,-10},{-40,-10}},
       color={0,131,169},
       thickness=0.5,
@@ -306,12 +281,12 @@ equation
       points={{99,-10},{82,-10}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(innerVol.inlet, InnerSide_in1.steam_a)      annotation (Line(
+  connect(innerVol.inlet, InnerSide_in1.steam_a) annotation (Line(
       points={{21,-88},{60,-88}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
-  connect(innerVol.outlet, Cold_out_degC1.port)      annotation (Line(
+  connect(innerVol.outlet, Cold_out_degC1.port) annotation (Line(
       points={{1,-88},{-20,-88}},
       color={0,131,169},
       thickness=0.5,
@@ -321,7 +296,7 @@ equation
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
-  connect(outerVol.outlet, Hot_out_degC1.port)      annotation (Line(
+  connect(outerVol.outlet, Hot_out_degC1.port) annotation (Line(
       points={{21,-38},{42,-38}},
       color={0,131,169},
       thickness=0.5,
@@ -331,7 +306,7 @@ equation
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
-  connect(outerVol.inlet, OuterSide_in1.steam_a)      annotation (Line(
+  connect(outerVol.inlet, OuterSide_in1.steam_a) annotation (Line(
       points={{1,-38},{-38,-38}},
       color={0,131,169},
       thickness=0.5,
@@ -364,9 +339,8 @@ equation
       points={{11,-71.4},{11,-78}},
       color={191,0,0},
       smooth=Smooth.None));
-  annotation (                                                        Diagram(
-        coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=true),
-        graphics={                Text(
+  annotation (
+    Diagram(coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=true), graphics={Text(
           extent={{-96,100},{102,60}},
           lineColor={0,128,0},
           horizontalAlignment=TextAlignment.Left,
@@ -376,8 +350,7 @@ PURPOSE:
 Test dynamic behaviour of NTU model
 
 ______________________________________________________________________________________________
-"),                    Text(
-          extent={{-140,104},{60,84}},
+"),Text(  extent={{-140,104},{60,84}},
           lineColor={0,128,0},
           fontSize=31,
           textString="TESTED -- 2015-01-26 //TT"),Text(

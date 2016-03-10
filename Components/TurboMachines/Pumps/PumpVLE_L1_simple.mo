@@ -1,14 +1,14 @@
 within ClaRa.Components.TurboMachines.Pumps;
 model PumpVLE_L1_simple "A pump for VLE mixtures with a volume flow rate depending on drive power and pressure difference only"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -22,7 +22,6 @@ extends ClaRa.Components.TurboMachines.Pumps.Pump_Base;
     powerAux=(P_drive - inlet.m_flow*(fluidOut.h - fluidIn.h))) if                                                                                                     contributeToCycleSummary;
 extends ClaRa.Basics.Icons.ComplexityLevel(complexity="L1");
 
-  parameter Real eta_hyd = 0.9 "Hydraulic efficiency" annotation(Dialog(group="Part Load and Efficiency"));
   parameter Real eta_mech = 0.98 "Mechanic efficiency of the drive"
    annotation(Dialog(group="Part Load and Efficiency"));
 parameter ClaRa.Basics.Units.Pressure Delta_p_eps=100 "|Expert Settings| Numerical Robustnes|Small pressure difference for linearisation around zero";
@@ -33,9 +32,18 @@ parameter ClaRa.Basics.Units.Pressure Delta_p_eps=100 "|Expert Settings| Numeric
         rotation=270,
         origin={0,120})));
   Fundamentals.Summary
-          summary(outline(V_flow=V_flow, P_hyd=P_hyd,Delta_p=Delta_p, head= Delta_p/(fluidIn.d*Modelica.Constants.g_n), NPSHa = (inlet.p - fluidIn.VLE.p_l)/(fluidIn.d*Modelica.Constants.g_n), eta_hyd= eta_hyd, eta_mech=eta_mech),
+          summary(outline(V_flow=V_flow, P_hyd=P_hyd,Delta_p=Delta_p, head= Delta_p/(fluidIn.d*Modelica.Constants.g_n), NPSHa = (inlet.p - fluidIn.VLE.p_l)/(fluidIn.d*Modelica.Constants.g_n), eta_hyd=0, eta_mech=eta_mech),
                   inlet(showExpertSummary=showExpertSummary,m_flow=inlet.m_flow, T=fluidIn.T, p=inlet.p, h=fluidIn.h, s=fluidIn.s, steamQuality = fluidIn.q, H_flow= fluidIn.h*inlet.m_flow,  rho=fluidIn.d),
-                  outlet(showExpertSummary=showExpertSummary,m_flow=outlet.m_flow, T=fluidOut.T, p=outlet.p, h=fluidOut.h, s=fluidOut.s, steamQuality = fluidOut.q, H_flow= fluidOut.h*outlet.m_flow,  rho=fluidOut.d))  annotation(Placement(transformation(
+    outlet(
+      showExpertSummary=showExpertSummary,
+      m_flow=-outlet.m_flow,
+      T=fluidOut.T,
+      p=outlet.p,
+      h=fluidOut.h,
+      s=fluidOut.s,
+      steamQuality=fluidOut.q,
+      H_flow=-fluidOut.h*outlet.m_flow,
+      rho=fluidOut.d))                                                                                                     annotation(Placement(transformation(
         extent={{-10,-11},{10,11}},
         origin={-70,-91})));
 equation

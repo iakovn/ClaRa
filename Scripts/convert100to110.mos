@@ -1,3 +1,0 @@
-﻿convertClear();
-convertModifiers("ClaRa.Visualisation.Scope", {"t_simulation=200"}, {"t_end=[%t_simulation% + %t_start%]"});
-convertModifiers("ClaRa.Visualisation.Scope", {"showInteface=true"}, {"hideInterface=[not %showInterface%]"});

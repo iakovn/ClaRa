@@ -1,14 +1,14 @@
 within ClaRa.Components.MechanicalSeparation;
 model Drum_L3_advanced "Drum : separated volume approach | level-dependent phase separation"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -23,19 +23,19 @@ extends ClaRa.Basics.Icons.Drum;
                                       medium=simCenter.fluid1 "Medium in the component"
                               annotation(Dialog(group="Fundamental Definitions"), choicesAllMatching);
   replaceable model material = TILMedia.SolidTypes.TILMedia_Steel constrainedby TILMedia.SolidTypes.TILMedia_Aluminum "Material of the walls" annotation (Dialog(group="Fundamental Definitions"),choicesAllMatching);
-
-  parameter Modelica.SIunits.Length diameter=1 "Diameter of the component"  annotation(Dialog(group="Geometry"));
-  parameter Modelica.SIunits.Length length=1 "Length of the component"  annotation(Dialog(group="Geometry"));
+  parameter Real CF_lambda=1 "Time-dependent correction factor for thermal conductivity of the wall" annotation (Dialog(group="Fundamental Definitions"));
+  parameter ClaRa.Basics.Units.Length diameter=1 "Diameter of the component"  annotation(Dialog(group="Geometry"));
+  parameter ClaRa.Basics.Units.Length length=1 "Length of the component"  annotation(Dialog(group="Geometry"));
+  parameter ClaRa.Basics.Units.Length thickness_wall=diameter*0.01/2 "Thickness of the cylinder wall"  annotation(Dialog(group="Geometry"));
   parameter Basics.Choices.GeometryOrientation      orientation=ClaRa.Basics.Choices.GeometryOrientation.vertical "Orientation of the component"
-                                    annotation(Dialog(group="Geometry"));
+                                                                                              annotation(Dialog(group="Geometry"));
 
-  parameter Modelica.SIunits.Length radius_flange=0.05 "||Geometry|Flange radius";
-  parameter SI.Length z_feed = 0 "||Geometry|Position of feedwater flange";
-  parameter SI.Length z_riser= 0.1 "||Geometry|position of riser flange";
-  parameter SI.Length z_sat = 0 "||Geometry|position of saturated steam outlet";
-  parameter SI.Length z_down = 0.1 "||Geometry|position of downcomer flange";
-  parameter Basics.Units.Time
-                       Tau_cond=0.01 "|Phase Separation|Mass Transfer Between Phases|Time constant of condensation";
+  parameter ClaRa.Basics.Units.Length radius_flange=0.05 "||Geometry|Flange radius";
+  parameter ClaRa.Basics.Units.Length z_feed = 0 "||Geometry|Position of feedwater flange";
+  parameter ClaRa.Basics.Units.Length z_riser= 0.1 "||Geometry|position of riser flange";
+  parameter ClaRa.Basics.Units.Length z_sat = 0 "||Geometry|position of saturated steam outlet";
+  parameter ClaRa.Basics.Units.Length z_down = 0.1 "||Geometry|position of downcomer flange";
+  parameter Basics.Units.Time Tau_cond=0.01 "|Phase Separation|Mass Transfer Between Phases|Time constant of condensation";
   parameter Basics.Units.Time Tau_evap=Tau_cond*1000 "|Phase Separation|Mass Transfer Between Phases|Time constant of evaporation";
   parameter Real absorbInflow=1 "|Phase Separation|Mass Transfer Between Phases|absorption of incoming mass flow to the zones 1: perfect in the allocated zone, 0: perfect according to steam quality";
   parameter SI.Area A_phaseBorder=volume.geo.A_hor*100 "|Phase Separation|Heat Transfer Between Phases|Heat transfer area at phase border";
@@ -44,22 +44,27 @@ extends ClaRa.Basics.Icons.Drum;
   parameter Modelica.Blocks.Types.Smoothness smoothness=Modelica.Blocks.Types.Smoothness.LinearSegments "|Phase Separation|Numerical Robustness|Smoothness of table interpolation for calculation of filling level";
 
   parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation"
-                                                              annotation(Dialog(tab="Initialisation"));
+                                                              annotation(Dialog(tab="Initialisation", group="Volume"));
 
   parameter SI.EnthalpyMassSpecific h_liq_start=-10 +
       TILMedia.VLEFluidFunctions.bubbleSpecificEnthalpy_pxi(medium,
-      volume.p_start) "|Initialisation||Start value of liquid specific enthalpy";
+      volume.p_start) "Start value of liquid specific enthalpy" annotation(Dialog(tab="Initialisation", group="Volume"));
   parameter SI.EnthalpyMassSpecific h_vap_start=+10 +
-      TILMedia.VLEFluidFunctions.dewSpecificEnthalpy_pxi(medium, volume.p_start) "|Initialisation||Start value of vapour specific enthalpy";
-  parameter Modelica.SIunits.Pressure p_start=1e5 "Start value of sytsem pressure"     annotation(Dialog(tab="Initialisation"));
-  parameter Real level_rel_start "Initial filling level" annotation(Dialog(tab="Initialisation"));
-  parameter Basics.Choices.Init      initType=ClaRa.Basics.Choices.Init.noInit "Type of initialisation"
-                             annotation(Dialog(tab="Initialisation"));
+      TILMedia.VLEFluidFunctions.dewSpecificEnthalpy_pxi(medium, volume.p_start) "Start value of vapour specific enthalpy" annotation(Dialog(tab="Initialisation", group="Volume"));
+  parameter ClaRa.Basics.Units.Pressure p_start=1e5 "Start value of sytsem pressure"     annotation(Dialog(tab="Initialisation", group="Volume"));
+  parameter Real level_rel_start = 0.5 "Initial filling level" annotation(Dialog(tab="Initialisation", group="Volume"));
+  parameter Basics.Choices.Init      initType=ClaRa.Basics.Choices.Init.steadyTemperature "Type of initialisation" annotation(Dialog(tab="Initialisation", group="Volume"));
+  parameter Modelica.SIunits.Temperature T_wall_start[wall.N_rad]=ones(wall.N_rad)*293.15 "Start values of wall temperature inner --> outer" annotation(Dialog(tab="Initialisation", group="Wall"));
+  parameter Basics.Choices.Init initChoice_wall=ClaRa.Basics.Choices.Init.noInit "Initialisation option for wall" annotation(Dialog(tab="Initialisation", group="Wall"));
+
   replaceable model PressureLoss =
       ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3
     constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.PressureLoss_L3 "Pressure loss model"
                           annotation(Dialog(group="Fundamental Definitions"), choicesAllMatching);
-  parameter Modelica.SIunits.Pressure p_nom=1e5 "Nominal pressure"  annotation(Dialog(group="Nominal Values"));
+  replaceable model HeatTransfer =
+      ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3 (                      alpha_nom={3000,3000})                              constrainedby Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.HeatTransfer_L3 "Heat transfer to the walls"
+                                                                                              annotation (Dialog(group="Fundamental Definitions"),choicesAllMatching=true);
+  parameter ClaRa.Basics.Units.Pressure p_nom=1e5 "Nominal pressure"  annotation(Dialog(group="Nominal Values"));
 
   parameter Boolean showExpertSummary=simCenter.showExpertSummary "|Summary and Visualisation||True, if expert summary should be applied";
   parameter Boolean showData=true "|Summary and Visualisation||True, if a data port containing p,T,h,s,m_flow shall be shown, else false";
@@ -205,8 +210,6 @@ extends ClaRa.Basics.Icons.Drum;
     level_rel_start=level_rel_start,
     Tau_cond=Tau_cond,
     showExpertSummary=showExpertSummary,
-    redeclare model HeatTransfer =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3 (             alpha_nom={3000,3000}),
     Tau_evap=Tau_evap,
     alpha_ph=500,
     redeclare model Geometry =
@@ -232,17 +235,21 @@ extends ClaRa.Basics.Icons.Drum;
         absorbInflow=absorbInflow,
         smoothness=smoothness),
     A_heat_ph=A_phaseBorder,
-    exp_HT_phases=expHT_phases) annotation (Placement(transformation(extent={{12,-30},{-8,-10}})));
+    exp_HT_phases=expHT_phases,
+    redeclare model HeatTransfer = HeatTransfer)
+                                annotation (Placement(transformation(extent={{12,-30},{-8,-10}})));
 
   ClaRa.Basics.ControlVolumes.SolidVolumes.ThickWall_L4 wall(
     sizefunc=+1,
     N_tubes=1,
-    initChoice=ClaRa.Basics.Choices.Init.steadyState,
     length=length,
     N_rad=3,
-    diameter_o=diameter*1.01,
     diameter_i=diameter,
-    redeclare replaceable model Material = material)
+    redeclare replaceable model Material = material,
+    diameter_o=diameter + 2*thickness_wall,
+    CF_lambda=CF_lambda,
+    T_start=T_wall_start,
+    initChoice=initChoice_wall)
              annotation (Placement(transformation(extent={{-8,28},{12,48}})));
 
   Basics.Interfaces.FluidPortOut sat(Medium=medium) "Saturated steam outlet"

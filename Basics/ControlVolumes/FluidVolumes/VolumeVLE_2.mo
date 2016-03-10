@@ -1,14 +1,14 @@
 within ClaRa.Basics.ControlVolumes.FluidVolumes;
 model VolumeVLE_2 "A lumped control volume for vapour/liquid equilibrium"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -72,36 +72,41 @@ end Summary;
 
   inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation"
                                                               annotation(Dialog(tab="Initialisation"));
-  inner parameter Modelica.SIunits.MassFlowRate m_flow_nom= 10 "Nominal mass flow rates at inlet"
+  inner parameter ClaRa.Basics.Units.MassFlowRate m_flow_nom= 10 "Nominal mass flow rates at inlet"
                                         annotation(Dialog(tab="General", group="Nominal Values"));
 
-  inner parameter Modelica.SIunits.Pressure p_nom=1e5 "Nominal pressure"                    annotation(Dialog(group="Nominal Values"));
-  inner parameter Modelica.SIunits.SpecificEnthalpy h_nom=1e5 "Nominal specific enthalpy"      annotation(Dialog(group="Nominal Values"));
+  inner parameter ClaRa.Basics.Units.Pressure p_nom=1e5 "Nominal pressure"                    annotation(Dialog(group="Nominal Values"));
+  inner parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_nom=1e5 "Nominal specific enthalpy"      annotation(Dialog(group="Nominal Values"));
+  inner parameter ClaRa.Basics.Units.MassFraction xi_nom[medium.nc-1] = medium.xi_default "Nominal mass fraction"      annotation(Dialog(group="Nominal Values"));
 
-  parameter Modelica.SIunits.SpecificEnthalpy h_start= 1e5 "Start value of sytsem specific enthalpy"
+  parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_start= 1e5 "Start value of sytsem specific enthalpy"
                                              annotation(Dialog(tab="Initialisation"));
-  parameter Modelica.SIunits.Pressure p_start= 1e5 "Start value of sytsem pressure" annotation(Dialog(tab="Initialisation"));
+  parameter ClaRa.Basics.Units.Pressure p_start= 1e5 "Start value of sytsem pressure" annotation(Dialog(tab="Initialisation"));
   inner parameter ClaRa.Basics.Choices.Init      initType=ClaRa.Basics.Choices.Init.noInit "Type of initialisation"
                              annotation(Dialog(tab="Initialisation", choicesAllMatching));
-
-  parameter Boolean showExpertSummary = false "|Summary and Visualisation||True, if expert summary should be applied";
+  parameter ClaRa.Basics.Units.MassFraction xi_start[medium.nc-1] = medium.xi_default "Start value for mass fraction" annotation(Dialog(tab="Initialisation"));
+  parameter Boolean showExpertSummary = simCenter.showExpertSummary "True, if expert summary should be applied" annotation(Dialog(tab="Summary and Visualisation"));
   parameter Integer heatSurfaceAlloc=1 "Heat transfer area to be considered"          annotation(dialog(group="Geometry"),choices(choice=1 "Lateral surface",
                                                                                    choice=2 "Inner heat transfer surface"));
 
 protected
-    parameter Modelica.SIunits.Density rho_nom= TILMedia.VLEFluidFunctions.density_phxi(medium, p_nom, h_nom) "Nominal density";
+    parameter ClaRa.Basics.Units.DensityMassSpecific rho_nom= TILMedia.VLEFluidFunctions.density_phxi(medium, p_nom, h_nom) "Nominal density";
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Variables and model instances ~~~~~~~~~~~~
 
-  Modelica.SIunits.SpecificEnthalpy h_out;
-  Modelica.SIunits.SpecificEnthalpy h_in;
-  inner Modelica.SIunits.SpecificEnthalpy h(start=h_start);
+  ClaRa.Basics.Units.EnthalpyMassSpecific h_out;
+  ClaRa.Basics.Units.EnthalpyMassSpecific h_in;
+  ClaRa.Basics.Units.EnthalpyMassSpecific h(start=h_start);
+
+  ClaRa.Basics.Units.MassFraction xi_out[medium.nc-1];
+  ClaRa.Basics.Units.MassFraction xi_in[medium.nc-1];
+  ClaRa.Basics.Units.MassFraction xi[medium.nc-1](start=xi_start);
 
   Real drhodt;//(unit="kg/(m3s)");
 
 public
-  Modelica.SIunits.Mass mass "Total system mass";
+  ClaRa.Basics.Units.Mass mass "Total system mass";
   inner ClaRa.Basics.Units.Pressure
                                 p(start=p_start, stateSelect=StateSelect.prefer) "System pressure";
 public
@@ -128,19 +133,22 @@ public
   TILMedia.VLEFluid_ph  fluidIn(vleFluidType =    medium, final p=inlet.p, final  h=h_in,
     computeTransportProperties=true,
     computeVLETransportProperties=true,
-    computeVLEAdditionalProperties=true)                                                        annotation (Placement(transformation(extent={{-90,-10},
+    computeVLEAdditionalProperties=true,
+    xi=xi_in)                                                                                   annotation (Placement(transformation(extent={{-90,-10},
             {-70,10}},                                                                                                    rotation=0)));
   TILMedia.VLEFluid_ph  fluidOut(vleFluidType =    medium, p=outlet.p, h=h_out,
     computeTransportProperties=true,
     computeVLETransportProperties=true,
-    computeVLEAdditionalProperties=true)                                         annotation(Placement(transformation(extent={{70,-10},
+    computeVLEAdditionalProperties=true,
+    xi=xi_out)                                                                   annotation(Placement(transformation(extent={{70,-10},
             {90,10}},                                                                                                    rotation=0)));
 
 protected
   inner TILMedia.VLEFluid_ph  bulk(vleFluidType =    medium, p=p, h=h,
     computeVLEAdditionalProperties=true,
     computeVLETransportProperties=true,
-    computeTransportProperties=true)                                                 annotation (Placement(transformation(extent={{-10,-10},
+    computeTransportProperties=true,
+    xi=xi)                                                                           annotation (Placement(transformation(extent={{-10,-10},
             {10,10}},                                                                                                    rotation=0)));
 
 public
@@ -177,10 +185,9 @@ protected
     fluidPointer_bulk=bulk.vleFluidPointer,
     fluidPointer_in=fluidIn.vleFluidPointer,
     fluidPointer_out=fluidOut.vleFluidPointer,
-    xi_nom=zeros(medium.nc)) "Internal communication record" annotation (Placement(transformation(extent={{-80,-102},{-60,-82}})));
-//     shape=geo.shape,
-equation
+    xi_nom=xi_nom) "Internal communication record"           annotation (Placement(transformation(extent={{-80,-102},{-60,-82}})));
 
+equation
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Asserts ~~~~~~~~~~~~~~~~~~~
   assert(geo.volume>0, "The system volume must be greater than zero!");
@@ -188,24 +195,24 @@ equation
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // System definition ~~~~~~~~
-   mass= if useHomotopy then geo.volume*homotopy(bulk.d,rho_nom) else geo.volume*bulk.d;
+  mass= if useHomotopy then geo.volume*homotopy(bulk.d,rho_nom) else geo.volume*bulk.d;
  // der(mass)=drhodt*geo.V;
-   drhodt*geo.volume=inlet.m_flow + outlet.m_flow "Mass balance";
-   drhodt=der(p)*bulk.drhodp_hxi
-                             + der(h)*bulk.drhodh_pxi;
-                                                   //calculating drhodt from state variables
+  drhodt*geo.volume=inlet.m_flow + outlet.m_flow "Mass balance";
+  drhodt=der(p)*bulk.drhodp_hxi + der(h)*bulk.drhodh_pxi + sum(der(xi)*bulk.drhodxi_ph) "calculating drhodt from state variables";
 
-    der(h) =  if useHomotopy then homotopy((inlet.m_flow*h_in + outlet.m_flow*h_out + geo.volume*der(p) + heat.Q_flow - h*geo.volume*drhodt), (m_flow_nom*h_in - m_flow_nom*h_out  + geo.volume*der(p) + heat.Q_flow - h*geo.volume*drhodt))/mass
-    else (inlet.m_flow*h_in + outlet.m_flow*h_out  + geo.volume*der(p) + heat.Q_flow - h*geo.volume*drhodt)/mass "Energy balance";
+  der(h) =  if useHomotopy then homotopy((inlet.m_flow*h_in + outlet.m_flow*h_out + geo.volume*der(p) + heat.Q_flow - h*geo.volume*drhodt), (m_flow_nom*h_in - m_flow_nom*h_out  + geo.volume*der(p) + heat.Q_flow - h*geo.volume*drhodt))/mass
+  else (inlet.m_flow*h_in + outlet.m_flow*h_out  + geo.volume*der(p) + heat.Q_flow - h*geo.volume*drhodt)/mass "Energy balance";
 
-    inlet.h_outflow=phaseBorder.h_inflow;
-    outlet.h_outflow=phaseBorder.h_outflow;
+  der(xi) =  if useHomotopy then homotopy((inlet.m_flow*xi_in + outlet.m_flow*xi_out - xi*geo.volume*drhodt), (m_flow_nom*xi_in - m_flow_nom*xi_out  - xi*geo.volume*drhodt))/mass
+  else (inlet.m_flow*xi_in + outlet.m_flow*xi_out  - xi*geo.volume*drhodt)/mass "Energy balance";
 
-//      h_in= if useHomotopy then homotopy(actualStream(inlet.h_outflow), h) else actualStream(inlet.h_outflow);
-//      h_out= if useHomotopy then homotopy(actualStream(outlet.h_outflow), h) else actualStream(outlet.h_outflow);
+  inlet.h_outflow=phaseBorder.h_inflow;
+  outlet.h_outflow=phaseBorder.h_outflow;
 
   h_in= if useHomotopy then homotopy(actualStream(inlet.h_outflow), inStream(inlet.h_outflow)) else actualStream(inlet.h_outflow);
   h_out= if useHomotopy then homotopy(actualStream(outlet.h_outflow), outlet.h_outflow) else actualStream(outlet.h_outflow);
+  xi_in= if useHomotopy then homotopy(actualStream(inlet.xi_outflow), inStream(inlet.xi_outflow)) else actualStream(inlet.xi_outflow);
+  xi_out= if useHomotopy then homotopy(actualStream(outlet.xi_outflow), outlet.xi_outflow) else actualStream(outlet.xi_outflow);
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //  In the following equations dividing the friction pressure loss into two parts located at the inlet and outlet side respectively leads
@@ -214,8 +221,8 @@ equation
 //    outlet.p = p - pressureLoss.Delta_p/2 + phaseBorder.dp_geo_out;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-   inlet.p  =p + pressureLoss.Delta_p + phaseBorder.Delta_p_geo_in;
-   outlet.p =p + phaseBorder.Delta_p_geo_out "The friction term is lumped at the inlet side to avoid direct coupling of two flow models, this avoids aniteration of mass flow rates in some application cases";
+  inlet.p  =p + pressureLoss.Delta_p + phaseBorder.Delta_p_geo_in;
+  outlet.p =p + phaseBorder.Delta_p_geo_out "The friction term is lumped at the inlet side to avoid direct coupling of two flow models, this avoids aniteration of mass flow rates in some application cases";
 
 // No chemical reaction taking place:
   inlet.xi_outflow   = inStream(outlet.xi_outflow);
@@ -228,6 +235,7 @@ initial equation
   if initType==ClaRa.Basics.Choices.Init.steadyState then
     der(h)=0;
     der(p)=0;
+    der(xi)=zeros(medium.nc-1);
   elseif initType==ClaRa.Basics.Choices.Init.steadyPressure then
     der(p)=0;
   elseif initType==ClaRa.Basics.Choices.Init.steadyEnthalpy then

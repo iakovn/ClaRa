@@ -4,7 +4,7 @@ Fluid2ClaRa
 ThermoPower2ClaRa
 ClaRa2ThermoPower
 Scalar2VectorHeatPort
-CoalSlagFlueGas_join
-CoalSlagFlueGas_split
-CoalGas_join
-CoalGas_split
+FuelSlagFlueGas_join
+FuelSlagFlueGas_split
+FuelFlueGas_join
+FuelFlueGas_split

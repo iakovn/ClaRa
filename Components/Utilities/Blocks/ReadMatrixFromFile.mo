@@ -1,14 +1,14 @@
 within ClaRa.Components.Utilities.Blocks;
 model ReadMatrixFromFile "Read a 2D matrix from file  || *.csv and *.mat(-v4) are supported"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -16,7 +16,12 @@ model ReadMatrixFromFile "Read a 2D matrix from file  || *.csv and *.mat(-v4) ar
 //___________________________________________________________________________//
 
   import Modelica.Blocks.Types;
+  import ModelicaServices.ExternalReferences.loadResource;
+  ////////// this is Dymola specific ///////////
   import DataFiles;
+  ////////// MSL 3.2.2 conform Version / going to be used in the future ///////
+  // import Modelica.Utilities.Streams.*;
+  //////////////////////////////////////////////
   extends Modelica.Blocks.Interfaces.BlockIcon;
 
   parameter String fileName="NoName" "file where matrix is stored"
@@ -26,9 +31,13 @@ model ReadMatrixFromFile "Read a 2D matrix from file  || *.csv and *.mat(-v4) ar
   parameter String matrixName="NoName" "table name on file or in function usertab (see docu)"
        annotation(Dialog(group="table data definition", enable = tableOnFile));
 
-  final parameter Integer matrixSize[2]=readMatrixSize(fileName, matrixName);
+  final parameter Integer matrixSize[2]=readMatrixSize(loadResource(fileName), matrixName);
+  ////////// this is Dymola specific ///////////
 protected
- parameter Real M[:,:] = readMatrix(fileName, matrixName, matrixSize[1], matrixSize[2]);
+  parameter Real M[:,:] = readMatrix(loadResource(fileName), matrixName, matrixSize[1], matrixSize[2]);
+  ////////// MSL 3.2.2 conform Version / going to be used in the future ///////
+  // parameter Real M[:,:] = readRealMatrix(loadResource(fileName), matrixName, matrixSize[1], matrixSize[2]);
+  //////////////////////////////////////////////
 
 public
   Modelica.Blocks.Interfaces.RealOutput y[matrixSize[1], matrixSize[2]]

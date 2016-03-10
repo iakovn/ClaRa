@@ -1,14 +1,14 @@
 within ClaRa.Basics.ControlVolumes.FluidVolumes;
 model VolumeVLE_3_TwoZones "A volume element balancing liquid and vapour phase"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.0.0                        //
+  // Component of the ClaRa library, version: 1.1.0                        //
   //                                                                           //
-  // Licensed by the DYNCAP research team under Modelica License 2.            //
-  // Copyright © 2013-2015, DYNCAP research team.                                   //
+  // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+  // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
-  // DYNCAP is a research project supported by the German Federal Ministry of  //
-  // Economics and Technology (FKZ 03ET2009).                                  //
-  // The DYNCAP research team consists of the following project partners:      //
+  // DYNCAP and DYNSTART are research projects supported by the German Federal //
+  // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+  // The research team consists of the following project partners:             //
   // Institute of Energy Systems (Hamburg University of Technology),           //
   // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
   // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -59,7 +59,7 @@ model VolumeVLE_3_TwoZones "A volume element balancing liquid and vapour phase"
         true);
 
   replaceable model PhaseBorder =
-      ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.RealSeparated
+      ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.RealSeparated(level_rel_start=level_rel_start)
     constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.RealPhases "1st: choose phase border model | 2nd: edit corresponding record"
     annotation (Dialog(group="Fundamental Definitions"), choicesAllMatching=
         true);
@@ -184,7 +184,7 @@ public
     annotation (Placement(transformation(extent={{-80,60},{-60,80}})));
   inner Geometry geo
     annotation (Placement(transformation(extent={{-48,60},{-28,80}})));
-  PhaseBorder phaseBorder(level_rel_start=level_rel_start)
+  PhaseBorder phaseBorder(final level_rel_start = level_rel_start)
     annotation (Placement(transformation(extent={{-18,60},{2,80}})));
   PressureLoss pressureLoss
     annotation (Placement(transformation(extent={{12,60},{32,80}})));
@@ -261,7 +261,7 @@ public
       rho=fluidOut.d),
     fluid(
       showExpertSummary=showExpertSummary,
-      mass={mass_vap,mass_liq},
+      mass={mass_liq,mass_vap},
       p={p,p},
       h=iCom.h,
       h_bub={liq.VLE.h_l,vap.VLE.h_l},

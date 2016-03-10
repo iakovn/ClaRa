@@ -1,14 +1,14 @@
 within ClaRa.Components.VolumesValvesFittings.Pipes.Check.OnePhaseFlow;
 model Test_Pipe_L4_Advanced
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.0.0                        //
+  // Component of the ClaRa library, version: 1.1.0                        //
   //                                                                           //
-  // Licensed by the DYNCAP research team under Modelica License 2.            //
-  // Copyright © 2013-2015, DYNCAP research team.                                   //
+  // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+  // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
-  // DYNCAP is a research project supported by the German Federal Ministry of  //
-  // Economics and Technology (FKZ 03ET2009).                                  //
-  // The DYNCAP research team consists of the following project partners:      //
+  // DYNCAP and DYNSTART are research projects supported by the German Federal //
+  // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+  // The research team consists of the following project partners:             //
   // Institute of Energy Systems (Hamburg University of Technology),           //
   // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
   // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -30,7 +30,7 @@ model Test_Pipe_L4_Advanced
     variable_h=true,
     p_nom=1000) annotation (Placement(transformation(extent={{60,-69},{40,-49}})));
   inner SimCenter simCenter(redeclare replaceable TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1, useHomotopy=true) annotation (Placement(transformation(extent={{-100,-140},{-80,-120}})));
-  PipeFlow_L4_Advanced tube(
+  PipeFlowVLE_L4_Advanced tube(
     z_in=0,
     z_out=0,
     showExpertSummary=true,
@@ -45,10 +45,11 @@ model Test_Pipe_L4_Advanced
         ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4,
     redeclare model HeatTransfer =
         ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4,
-    initType=ClaRa.Basics.Choices.Init.noInit,
     p_start=ones(tube.N_cv)*1e5,
     frictionAtInlet=true,
-    frictionAtOutlet=true)                     annotation (Placement(transformation(extent={{18,-69},{-10,-50}})));
+    frictionAtOutlet=true,
+    initType=ClaRa.Basics.Choices.Init.steadyState,
+    suppressHighFrequencyOscillations=true) annotation (Placement(transformation(extent={{14,-63},{-8,-55}})));
 
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi massFlowSink(
     variable_p=true,
@@ -129,12 +130,12 @@ equation
       color={0,0,127},
       smooth=Smooth.None));
   connect(tube.inlet, massFlowSource.steam_a) annotation (Line(
-      points={{18,-59.5},{28,-59.5},{28,-59},{40,-59}},
+      points={{14,-59},{40,-59}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
   connect(massFlowSink.steam_a, tube.outlet) annotation (Line(
-      points={{-36,-59},{-22,-59},{-22,-59.5},{-10,-59.5}},
+      points={{-36,-59},{-8,-59}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
@@ -155,12 +156,12 @@ equation
       color={0,0,127},
       smooth=Smooth.None));
   connect(thinWall1.innerPhase, tube.heat) annotation (Line(
-      points={{3,-42},{4,-42},{4,-51.9}},
+      points={{3,-42},{3,-55.8}},
       color={167,25,48},
       thickness=0.5,
       smooth=Smooth.None));
   connect(thinWall1.outerPhase, prescribedTemperature.port) annotation (Line(
-      points={{3,-32},{2,-32},{2,-22},{-28,-22}},
+      points={{3,-32},{3,-22},{-28,-22}},
       color={167,25,48},
       thickness=0.5,
       smooth=Smooth.None));

@@ -1,14 +1,14 @@
 within ClaRa.Basics.ControlVolumes.SolidVolumes;
 model ThickWall_L4 "A thick cylindric wall with radial descretisation"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -22,7 +22,7 @@ model ThickWall_L4 "A thick cylindric wall with radial descretisation"
     constrainedby TILMedia.SolidTypes.BaseSolid "Material of the cylinder" annotation (choicesAllMatching=true, Dialog(group="Fundamental Definitions"));
   input Real CF_lambda=1 "Time-dependent correction factor for thermal conductivity" annotation(Dialog(group="Fundamental Definitions"));
 protected
-  parameter Integer N_A_heat=N_rad*2 "number of surfaces used in order to model heat flow";
+  parameter Integer N_A_heat=N_rad*2 "Number of surfaces used in order to model heat flow";
 
   import SI = Modelica.SIunits;
 
@@ -62,6 +62,29 @@ public
   ClaRa.Basics.Interfaces.HeatPort_b innerPhase "Inner sider of the cylinder"
     annotation (Placement(transformation(extent={{-8,-48},{12,-28}}),
         iconTransformation(extent={{-12,-82},{8,-62}})));
+
+ record Summary
+  extends ClaRa.Basics.Icons.RecordIcon;
+  parameter Integer N_rad "Number of radial elements";
+  parameter Integer N_A_heat "Number of surfaces used in order to model heat flow";
+  input SI.Length diameter_o "Outer diameter";
+  input SI.Length diameter_i "Inner diameter";
+  input SI.Length length "Length of cylinder";
+  input Integer N_tubes "Number of tubes in parallel";
+  input SI.Length Delta_radius[N_rad] "Thicknes of the volume elements";
+  input SI.Length radius[N_rad+1] "Radii of the heat transfer areas";
+  input SI.Temperature T[N_rad] "Solid material temperature";
+  input SI.InternalEnergy U[N_rad] "Internal energy";
+  input SI.HeatFlowRate Q_flow[N_rad+1] "Heat flow through material";
+  input SI.Area A_heat[N_A_heat];
+  input SI.Length radius_m[N_A_heat];
+  input SI.Length radius_v[N_rad+2] "Radial position of the volume elements";
+  input SI.Mass mass;
+  input Units.HeatCapacityMassSpecific cp[N_rad] "Specific heat capacity";
+  input Units.DensityMassSpecific d[N_rad] "Material density";
+ end Summary;
+
+Summary summary(N_rad=N_rad, N_A_heat=N_A_heat, diameter_o=diameter_o, diameter_i=diameter_i, length=length, N_tubes=N_tubes, Delta_radius=Delta_radius, radius=radius, T=T, U=U, Q_flow=Q_flow, A_heat=A_heat, radius_m=radius_m, radius_v=radius_v,mass=mass, cp=solid.cp, d=solid.d);
 
 equation
 //symmetric discretization

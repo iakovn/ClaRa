@@ -1,14 +1,14 @@
 within ClaRa.Components.BoundaryConditions;
 model BoundarySlag_Tm_flow "A source defining mass flow and temperature"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                        //
+// Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -20,7 +20,8 @@ model BoundarySlag_Tm_flow "A source defining mass flow and temperature"
     powerIn=if massFlowIsLoss then 0 else min(0, slag_outlet.m_flow*h_slag),
     powerOut=if massFlowIsLoss then 0 else max(0, slag_outlet.m_flow*h_slag),
     powerAux=0) if                                                                                                     contributeToCycleSummary;
-  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary "True if component shall contribute to automatic efficiency calculation" annotation(Dialog(tab="Summary and Visualisation"));
+  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary "True if component shall contribute to automatic efficiency calculation"
+                                                                                              annotation(Dialog(tab="Summary and Visualisation"));
   parameter Boolean massFlowIsLoss = true "True if mass flow is a loss (not a process product)" annotation(Dialog(tab="Summary and Visualisation"));
 
   parameter ClaRa.Basics.Media.Fuel.PartialSlag slagType=simCenter.slagModel "Medium to be used"                      annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
@@ -28,7 +29,7 @@ model BoundarySlag_Tm_flow "A source defining mass flow and temperature"
   parameter Boolean variable_m_flow=false "True, if mass flow defined by variable input" annotation(Dialog(group="Define Variable Boundaries"));
   parameter Boolean variable_T=false "True, if temperature defined by variable input" annotation(Dialog(group="Define Variable Boundaries"));
   parameter SI.MassFlowRate m_flow_const=0 "Constant mass flow rate" annotation(Dialog(group="Constant Boundaries", enable= not variable_m_flow));
-  parameter SI.Temperature T_const=simCenter.T_amb "Constant specific temperature of source"
+  parameter SI.Temperature T_const=simCenter.T_amb_start "Constant specific temperature of source"
                                               annotation(Dialog(group="Constant Boundaries", enable= not hInputIsActive));
 
   outer ClaRa.SimCenter simCenter;

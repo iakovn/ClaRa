@@ -18,7 +18,7 @@ expandable connector EyeIn "Signal bus featuring pressure, specific enthalpy, te
         preserveAspectRatio=true, initialScale=0.2,
         extent={{-100,-100},{100,100}},
         grid={1,1}), graphics={Polygon(
-          points={{0,50},{100,0},{0,-50},{0,50}},
+          points={{-100,99},{100,0},{-100,-100},{-100,99}},
           lineColor={153,205,221},
           fillColor={153,205,221},
           fillPattern=FillPattern.Solid), Text(
@@ -26,7 +26,7 @@ expandable connector EyeIn "Signal bus featuring pressure, specific enthalpy, te
           lineColor={153,205,221},
           textString="%name"),
         Polygon(
-          points={{6,40},{85,0},{6,-40},{6,40}},
+          points={{-92,88},{85,0},{-92,-89},{-92,88}},
           lineColor={27,36,42},
           smooth=Smooth.None,
           fillColor={27,36,42},

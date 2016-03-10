@@ -2,7 +2,8 @@ within ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution;
 partial model RealPhases "The phases are NOT in ideal thermodynamic equilibrium"
 
   extends ClaRa.Basics.Icons.RealPhases;
-  parameter Real level_rel_start=0.5 "Start value for relative filling Level";
+  parameter Real level_rel_start=0.5 "Start value for relative filling level (set by applying control volume)"
+                                                                                          annotation(Dialog(enable=false, tab="Expert Settings"));
 
   outer parameter Boolean useHomotopy;
 
@@ -14,7 +15,8 @@ partial model RealPhases "The phases are NOT in ideal thermodynamic equilibrium"
   SI.Pressure Delta_p_geo_in[geo.N_inlet];
   SI.Pressure Delta_p_geo_out[geo.N_outlet];
 
-  SI.MassFraction zoneAlloc_in[geo.N_inlet] "Allocation of inlet mass flows to zones |1:liq|2:vap|"; // For two-zonal models only! Other wise a vector of size N_cv-1 must be introduced
+  SI.MassFraction zoneAlloc_in[geo.N_inlet] "Allocation of inlet mass flows to zones |1:liq|2:vap|";
+  // For two-zonal models only! Other wise a vector of size N_cv-1 must be introduced
   SI.MassFraction zoneAlloc_out[geo.N_outlet] "Allocation of outlet mass flows to zones |1:liq|2:vap|";
 
   SI.Length level_abs "Absolute filling absLevel";

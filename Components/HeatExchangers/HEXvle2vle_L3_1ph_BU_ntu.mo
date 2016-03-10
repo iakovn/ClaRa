@@ -1,14 +1,14 @@
 within ClaRa.Components.HeatExchangers;
-model HEXvle2vle_L3_1ph_BU_ntu "VLE 2 VLE | L3 | 1 phase on each side | Block shape | U-type| NTU Ansatz"
+model HEXvle2vle_L3_1ph_BU_ntu "VLE 2 VLE | L3 | 1 phase on each side | Block shape | U-type | NTU Ansatz"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.0.0                        //
+  // Component of the ClaRa library, version: 1.1.0                        //
   //                                                                           //
-  // Licensed by the DYNCAP research team under Modelica License 2.            //
-  // Copyright © 2013-2015, DYNCAP research team.                                   //
+  // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+  // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
-  // DYNCAP is a research project supported by the German Federal Ministry of  //
-  // Economics and Technology (FKZ 03ET2009).                                  //
-  // The DYNCAP research team consists of the following project partners:      //
+  // DYNCAP and DYNSTART are research projects supported by the German Federal //
+  // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+  // The research team consists of the following project partners:             //
   // Institute of Energy Systems (Hamburg University of Technology),           //
   // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
   // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -43,8 +43,10 @@ model HEXvle2vle_L3_1ph_BU_ntu "VLE 2 VLE | L3 | 1 phase on each side | Block sh
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation"
     annotation (Dialog(group="Fundamental Definitions"), choicesAllMatching);
-  parameter Basics.Units.Mass mass_struc=25000 "Mass of inner structure elements, additional to the tubes itself"
-    annotation (Dialog(tab="General", group="Heat exchanger weight"));
+  replaceable model HeatExchangerType =
+      Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.CounterFlow
+      constrainedby ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.GeneralHeatExchanger "Type of Heat Exchanger"
+    annotation (choicesAllMatching, Dialog(group="Fundamental Definitions"));
 
   //*********************************** / SHELL SIDE \ ***********************************//
   //________________________________ Shell fundamentals _______________________________//
@@ -75,8 +77,8 @@ model HEXvle2vle_L3_1ph_BU_ntu "VLE 2 VLE | L3 | 1 phase on each side | Block sh
     annotation (Dialog(tab="Shell Side", group="Geometry"));
   parameter Basics.Units.Length z_out_shell=0.1 "Outlet position from bottom"
     annotation (Dialog(tab="Shell Side", group="Geometry"));
-  //   parameter Basics.Choices.GeometryOrientation      mainOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical
-  //     "Orientation of the component"                                                                                                     annotation(Dialog(tab="Shell Side", group="Geometry"));
+  parameter Basics.Choices.GeometryOrientation flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical "Flow orientation at shell side"
+                                       annotation(Dialog(tab="Shell Side", group="Geometry"));
 
   //________________________________ Shell nominal parameter _____________________________________//
   parameter Basics.Units.MassFlowRate m_nom_shell=40 "Nominal mass flow on shell side"
@@ -110,27 +112,17 @@ model HEXvle2vle_L3_1ph_BU_ntu "VLE 2 VLE | L3 | 1 phase on each side | Block sh
         group="Fundamental Definitions"), choicesAllMatching);
 
   //________________________________ Tubes geometry _______________________________//
-  parameter Basics.Units.Length diameter_i=0.019 "Inner diameter of horizontal tubes"
-    annotation (Dialog(tab="Tubes", group="Geometry",groupImage="modelica://ClaRa/figures/ParameterDialog/HollowBlockWithTubes_2.png"));
-  parameter Basics.Units.Length diameter_o=0.027 "Outer diameter of horizontal tubes"
-    annotation (Dialog(tab="Tubes", group="Geometry"));
-  parameter Boolean staggeredAlignment=true "True, if the tubes are aligned staggeredly, false otherwise"
-    annotation (Dialog(tab="Tubes", group="Geometry"));
-  parameter Integer N_tubes=210 "Number of horizontal tubes"
-    annotation (Dialog(tab="Tubes", group="Geometry"));
-  parameter Integer N_passes=integer(floor(230/(3.14159*diameter_o*width*N_tubes))) "Number of passes of the internal tubes"
-    annotation (Dialog(tab="Tubes", group="Geometry"));
-  parameter Integer N_rows(
-    min=N_passes,
-    max=N_tubes) = N_passes "Number of pipe rows in flow direction"
-    annotation (Dialog(tab="Tubes", group="Geometry"));
-  parameter Boolean parallelTubes=false "True, if tubes are parallel to main orientation, else false"
-    annotation (Dialog(tab="Tubes", group="Geometry"));
-  parameter Basics.Units.Length z_in_tubes=height "Inlet position from bottom"
-    annotation (Dialog(tab="Tubes", group="Geometry"));
-  parameter Basics.Units.Length z_out_tubes=0.1 "Outlet position from bottom"
-    annotation (Dialog(tab="Tubes", group="Geometry"));
-
+  parameter Basics.Units.Length diameter_i=0.019 "Inner diameter of horizontal tubes"    annotation (Dialog(tab="Tubes", group="Tubes Geometry",groupImage="modelica://ClaRa/figures/ParameterDialog/HEX_ParameterDialogTubes.png"));
+  parameter Basics.Units.Length diameter_o=0.027 "Outer diameter of horizontal tubes"    annotation (Dialog(tab="Tubes", group="Tubes Geometry"));
+  parameter Integer N_tubes=210 "Number of horizontal tubes"    annotation (Dialog(tab="Tubes", group="Tubes Geometry"));
+  parameter Integer N_passes=integer(floor(230/(3.14159*diameter_o*width*N_tubes))) "Number of passes of the internal tubes"    annotation (Dialog(tab="Tubes", group="Tubes Geometry"));
+  parameter Boolean parallelTubes=false "True, if tubes are parallel to shell flow orientation"    annotation (Dialog(tab="Tubes", group="Tubes Geometry"));
+  parameter Basics.Units.Length z_in_tubes=height "Inlet position from bottom"    annotation (Dialog(tab="Tubes", group="Tubes Geometry"));
+  parameter Basics.Units.Length z_out_tubes=0.1 "Outlet position from bottom"    annotation (Dialog(tab="Tubes", group="Tubes Geometry"));
+  parameter Boolean staggeredAlignment=true "True, if the tubes are aligned staggeredly"    annotation (Dialog(tab="Tubes", group="Tubes Geometry"));
+  parameter Basics.Units.Length Delta_z_par=2*diameter_o "Distance between tubes parallel to flow direction"    annotation (Dialog(tab="Tubes", group="Tubes Geometry"));
+  parameter Basics.Units.Length Delta_z_ort=2*diameter_o "Distance between tubes orthogonal to flow direction"    annotation (Dialog(tab="Tubes", group="Tubes Geometry"));
+  parameter Integer N_rows(min=N_passes,max=N_tubes) = N_passes "Number of pipe rows in shell flow direction" annotation (Dialog(tab="Tubes", group="Tubes Geometry"));
   //________________________________ Tubes nominal parameter _____________________________________//
   parameter Basics.Units.MassFlowRate m_nom_tubes=400 "Nominal mass flow on side 2"
     annotation (Dialog(tab="Tubes", group="Nominal Values"));
@@ -155,22 +147,23 @@ model HEXvle2vle_L3_1ph_BU_ntu "VLE 2 VLE | L3 | 1 phase on each side | Block sh
   //________________________________ Wall fundamentals _______________________________//
   replaceable model WallMaterial = TILMedia.SolidTypes.TILMedia_Aluminum
     constrainedby TILMedia.SolidTypes.BaseSolid "Material of the cylinder"
-    annotation (choicesAllMatching=true, Dialog(tab="Wall", group=
+    annotation (choicesAllMatching=true, Dialog(tab="Tube Wall", group=
           "Fundamental Definitions"));
-  parameter Basics.Choices.Init initWall=ClaRa.Basics.Choices.Init.noInit "|Wall|Initialisation|Initialisation option for wall";
-  parameter Basics.Units.Temperature T_w_i_start=293.15 "|Wall|Initialisation|Initial wall temperature at inner side";
-  parameter Basics.Units.Temperature T_w_o_start=293.15 "|Wall|Initialisation|Initial wall temperature at shell side";
+  parameter Basics.Units.Mass mass_struc=25000 "Mass of inner structure elements, additional to the tubes itself"
+       annotation (Dialog(tab="Tube Wall", group="Fundamental Definitions"));
+  parameter Basics.Choices.Init initWall=ClaRa.Basics.Choices.Init.noInit "|Initialisation option for wall"    annotation (Dialog(tab="Tube Wall", group="Initialisation"));
+  parameter Basics.Units.Temperature T_w_i_start=293.15 "Initial wall temperature at inner side"    annotation (Dialog(tab="Tube Wall", group="Initialisation"));
+  parameter Basics.Units.Temperature T_w_o_start=293.15 "Initial wall temperature at shell side"    annotation (Dialog(tab="Tube Wall", group="Initialisation"));
 
   //*********************************** / EXPERT Settings and Visualisation \ ***********************************//
   parameter Boolean showExpertSummary=simCenter.showExpertSummary "|Summary and Visualisation||True, if expert summary should be applied";
   parameter Boolean showData=true "|Summary and Visualisation||True, if a data port containing p,T,h,s,m_flow shall be shown, else false";
 
   ClaRa.Basics.Interfaces.FluidPortIn In2(Medium=medium_tubes)
+    annotation (Placement(transformation(extent={{90,-70},{110,-50}}), iconTransformation(extent={{90,-70},{110,-50}})));
+  ClaRa.Basics.Interfaces.FluidPortOut Out2(Medium=medium_tubes)
     annotation (Placement(transformation(extent={{90,50},{110,70}}),
         iconTransformation(extent={{90,50},{110,70}})));
-  ClaRa.Basics.Interfaces.FluidPortOut Out2(Medium=medium_tubes)
-    annotation (Placement(transformation(extent={{90,-70},{110,-50}}),
-        iconTransformation(extent={{90,-70},{110,-50}})));
   ClaRa.Basics.Interfaces.FluidPortOut Out1(Medium=medium_shell)
     annotation (Placement(transformation(extent={{-10,-110},{10,-90}})));
   ClaRa.Basics.Interfaces.FluidPortIn In1(Medium=medium_shell)
@@ -189,13 +182,15 @@ model HEXvle2vle_L3_1ph_BU_ntu "VLE 2 VLE | L3 | 1 phase on each side | Block sh
     alpha_o=shell.heattransfer.alpha,
     mass_struc=mass_struc,
     N_t=N_tubes,
-    redeclare model HeatExchangerType =
-        ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.CounterFlow,
     cp_mean_i=(tubes.fluidIn.cp + tubes.fluidOut.cp)/2,
     cp_mean_a=(shell.fluidIn.cp + shell.fluidOut.cp)/2,
     T_w_i_start=T_w_i_start,
     T_w_a_start=T_w_o_start,
-    initChoice=initWall) annotation (Placement(transformation(extent={{20,20},{40,40}})));
+    initChoice=initWall,
+    redeclare model HeatExchangerType = HeatExchangerType)
+                         annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+        rotation=90,
+        origin={30,0})));
 
   Basics.ControlVolumes.FluidVolumes.VolumeVLE_2 tubes(
     medium=medium_tubes,
@@ -212,14 +207,14 @@ model HEXvle2vle_L3_1ph_BU_ntu "VLE 2 VLE | L3 | 1 phase on each side | Block sh
     h_nom=h_nom_tubes,
     showExpertSummary=showExpertSummary,
     redeclare model Geometry =
-        ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.PipeGeometry (
+        Basics.ControlVolumes.Fundamentals.Geometry.PipeGeometry (
         z_in={z_in_tubes},
         z_out={z_out_tubes},
         diameter=diameter_i,
         N_tubes=N_tubes,
         N_passes=N_passes,
-        length=if parallelTubes == true then height else length))
-    annotation (Placement(transformation(extent={{10,-10},{-10,10}},
+        length=if flowOrientation == ClaRa.Basics.Choices.GeometryOrientation.vertical then if parallelTubes == true then height else length else if parallelTubes == true then length else width))
+    annotation (Placement(transformation(extent={{-10,-10},{10,10}},
         rotation=90,
         origin={70,0})));
 
@@ -249,12 +244,14 @@ model HEXvle2vle_L3_1ph_BU_ntu "VLE 2 VLE | L3 | 1 phase on each side | Block sh
         N_passes=N_passes,
         parallelTubes=parallelTubes,
         z_in={z_in_shell},
-        flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical,
-        N_rows=N_rows),
-    heatSurfaceAlloc=2) annotation (Placement(transformation(
+        flowOrientation=flowOrientation,
+        N_rows=N_rows,
+        Delta_z_par=Delta_z_par,
+        Delta_z_ort=Delta_z_ort),
+    final heatSurfaceAlloc=2) annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=270,
-        origin={0,56})));
+        origin={0,0})));
 
   Summary summary(outline(
       showExpertSummary=showExpertSummary,
@@ -310,30 +307,30 @@ initial equation
 
 equation
   connect(tubes.inlet, In2) annotation (Line(
-      points={{70,10},{70,60},{100,60}},
-      color={0,131,169},
-      thickness=0.5,
-      smooth=Smooth.None));
-  connect(tubes.outlet, Out2) annotation (Line(
       points={{70,-10},{70,-60},{100,-60}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
+  connect(tubes.outlet, Out2) annotation (Line(
+      points={{70,10},{70,60},{100,60}},
+      color={0,131,169},
+      thickness=0.5,
+      smooth=Smooth.None));
   connect(tubes.heat, wall.innerPhase) annotation (Line(
-      points={{60,6.66134e-016},{30.5,6.66134e-016},{30.5,21},{30,21}},
+      points={{60,6.66134e-016},{42.5,6.66134e-016},{42.5,-4.44089e-016},{39,-4.44089e-016}},
       color={127,0,0},
       smooth=Smooth.None));
   connect(shell.inlet, In1) annotation (Line(
-      points={{1.83697e-015,66},{1.83697e-015,74},{0,74},{0,98}},
+      points={{1.83697e-015,10},{1.83697e-015,74},{0,74},{0,98}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
   connect(shell.heat, wall.outerPhase) annotation (Line(
-      points={{10,56},{30,56},{30,39}},
+      points={{10,-1.77636e-015},{21,-1.77636e-015},{21,4.44089e-016}},
       color={127,0,0},
       smooth=Smooth.None));
   connect(shell.outlet, Out1) annotation (Line(
-      points={{-1.83697e-015,46},{0,46},{0,-100}},
+      points={{-1.83697e-015,-10},{0,-10},{0,-100}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
@@ -350,5 +347,5 @@ equation
                    graphics={Text(
           extent={{-86,92},{86,52}},
           lineColor={27,36,42},
-          textString="NTU")}),Diagram(graphics));
+          textString="NTU")}));
 end HEXvle2vle_L3_1ph_BU_ntu;
