@@ -1,18 +1,23 @@
 within ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals;
 model Quadratic_FlowFunction "Quadratic|zeta definition | supercritical flow"
-  extends ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.GenericPressureLoss;
+  extends
+    ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.GenericPressureLoss;
   import SI = ClaRa.Basics.Units;
   import SM = ClaRa.Basics.Functions.Stepsmoother;
   outer Boolean checkValve;
   outer Boolean useHomotopy;
 
-  parameter SI.Area A_cross= 1 "|Valve Characteristics|Valve inlet cross section";
+  parameter SI.Area A_cross= 1
+    "|Valve Characteristics|Valve inlet cross section";
   parameter Real zeta= 100 "|Valve Characteristics|Pressure Loss coefficient";
-  final parameter Real Kvs(unit="m3/h") = A_cross*sqrt(2/zeta) *sqrt(1e5/1000)*3600 "|Valve Characteristics|Flow Coefficient at nominal opening (Delta_p_nom = 1e5 Pa, rho_nom=1000 kg/m^3(cold water))";
+  final parameter Real Kvs(unit="m3/h") = A_cross*sqrt(2/zeta) *sqrt(1e5/1000)*3600
+    "|Valve Characteristics|Flow Coefficient at nominal opening (Delta_p_nom = 1e5 Pa, rho_nom=1000 kg/m^3(cold water))";
 
-  parameter SI.MassFlowRate m_flow_nominal= Kvs/1000/3600 "|Valve Characteristics|Only for homotopy-based initialisation: Nominal mass flowrate at full aperture_";
+  parameter SI.MassFlowRate m_flow_nominal= Kvs/1000/3600
+    "|Valve Characteristics|Only for homotopy-based initialisation: Nominal mass flowrate at full aperture_";
 
-  parameter SI.Pressure Delta_p_eps= 100 "|Expert Settings||Small pressure difference for linearisation around zeor flow";
+  parameter SI.Pressure Delta_p_eps= 100
+    "|Expert Settings||Small pressure difference for linearisation around zeor flow";
 
 //  Real Delta_p_ "(p_inlet-p_outlet)/p_inlet";
 

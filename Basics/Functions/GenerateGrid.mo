@@ -1,7 +1,7 @@
 within ClaRa.Basics.Functions;
 function GenerateGrid "Generate grid discretization from scale functions"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.0                        //
+  // Component of the ClaRa library, version: 1.1.1                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,9 +15,10 @@ function GenerateGrid "Generate grid discretization from scale functions"
   // XRG Simulation GmbH (Hamburg, Germany).                                   //
   //___________________________________________________________________________//
 
-  extends Modelica.Icons.Function;
+  extends ClaRa.Basics.Icons.Function;
 
-  input Real SizeFunc[:] "array determining number and kind of different stretchings to be applied";
+  input Real SizeFunc[:]
+    "array determining number and kind of different stretchings to be applied";
   input Real L "length in discretization direction";
   input Integer N "number of cells in grid";
 
@@ -27,7 +28,8 @@ protected
   Integer N_sub "number of regions into which the grid shall be subdivided";
   Integer N_cv_sub[N]=zeros(N);
   //number of cells in each subdivision
-  Integer offset "Offset for discretization interval used in computation of dx[N] by going through the subdivisions";
+  Integer offset
+    "Offset for discretization interval used in computation of dx[N] by going through the subdivisions";
   //auxiliary variables......
   //Integer NextElem;
   Real remainder "Auxilliary variable: normalised remainder";

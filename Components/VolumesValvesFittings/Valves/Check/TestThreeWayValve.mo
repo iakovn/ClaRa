@@ -1,7 +1,7 @@
 within ClaRa.Components.VolumesValvesFittings.Valves.Check;
 model TestThreeWayValve
   extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
-  ThreeWayValveVLE_L1 threeWayValve_VLE_L1_1(splitRatio_input=true, effectiveFlowArea2=3.425e-3) annotation (Placement(transformation(extent={{-10,-14},{10,4}})));
+  ThreeWayValveVLE_L1 threeWayValve_VLE_L1_1(splitRatio_input=true) annotation (Placement(transformation(extent={{-10,-14},{10,4}})));
   inner SimCenter simCenter(showExpertSummary=true) annotation (Placement(transformation(extent={{-82,-70},{-62,-50}})));
   BoundaryConditions.BoundaryVLE_phxi pressureSink_ph(p_const=1e5) annotation (Placement(transformation(extent={{60,-14},{40,6}})));
   BoundaryConditions.BoundaryVLE_phxi pressureSink_ph1(p_const=1e5) annotation (Placement(transformation(extent={{60,-44},{40,-24}})));

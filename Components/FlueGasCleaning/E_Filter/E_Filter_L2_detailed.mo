@@ -1,7 +1,8 @@
 within ClaRa.Components.FlueGasCleaning.E_Filter;
-model E_Filter_L2_detailed "Model for an electrical dust filter based on the Deutsch-Equation for the separation rate, migration speed calculated in accodance with  C. Riehle, Basic and Theoretical Operation of ESPs, (1997)"
+model E_Filter_L2_detailed
+  "Model for an electrical dust filter based on the Deutsch-Equation for the separation rate, migration speed calculated in accodance with  C. Riehle, Basic and Theoretical Operation of ESPs, (1997)"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -23,7 +24,7 @@ model E_Filter_L2_detailed "Model for an electrical dust filter based on the Deu
     powerAux=0) if contributeToCycleSummary;
 
 //## S U M M A R Y   D E F I N I T I O N ###################################################################
- record Outline
+ model Outline
   //  parameter Boolean showExpertSummary annotation(Dialog(hide));
     input Modelica.SIunits.Volume V "System volume"      annotation (Dialog(show));
     input Modelica.SIunits.Mass m "System mass" annotation (Dialog(show));
@@ -33,16 +34,18 @@ model E_Filter_L2_detailed "Model for an electrical dust filter based on the Deu
     input Modelica.SIunits.Pressure Delta_p "Pressure loss"      annotation (Dialog(show));
     input Modelica.SIunits.Length lambda "Mean free path of particles";
     input Real Cu "Cunningham slip correction factor"     annotation (Dialog(show));
-    input Modelica.SIunits.Velocity w_m "Migration speed of dust particles in the E-field"
-                                                                                          annotation (Dialog(show));
+    input Modelica.SIunits.Velocity w_m
+      "Migration speed of dust particles in the E-field"                                  annotation (Dialog(show));
     input Modelica.SIunits.ElectricFieldStrength E_applied "E-Field in Filter" annotation (Dialog(show));
-    input Modelica.SIunits.ElectricCharge Q_sat "Saturation charge of particles" annotation (Dialog(show));
+    input Modelica.SIunits.ElectricCharge Q_sat
+      "Saturation charge of particles"                                           annotation (Dialog(show));
     input Real separationRate "Separation rate of E-Filter";
-    input Modelica.SIunits.MassFlowRate m_flow_dust_out "Masss flow of filtered dust";
+    input Modelica.SIunits.MassFlowRate m_flow_dust_out
+      "Masss flow of filtered dust";
     input Modelica.SIunits.Power powerConsumption "Auxiliary power";
  end Outline;
 
-record Summary
+model Summary
      extends ClaRa.Basics.Icons.RecordIcon;
      Outline outline;
      ClaRa.Basics.Records.FlangeGas  inlet;
@@ -51,48 +54,60 @@ end Summary;
 
 //## P A R A M E T E R S #######################################################################################
 //_____________defintion of medium used in cell__________________________________________________________
-  inner parameter TILMedia.GasTypes.BaseGas               medium = simCenter.flueGasModel "Medium to be used in tubes" annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
+  inner parameter TILMedia.GasTypes.BaseGas               medium = simCenter.flueGasModel
+    "Medium to be used in tubes"                                                                                       annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
   parameter Real epsilon_r = 10 "Dielectric number of flueGas";
 
-  parameter Real specific_powerConsumption(unit="W.h/m3") = 0.15 "Specific power consumption" annotation (Dialog(group="Fundamental Definitions"));
+  parameter Real specific_powerConsumption(unit="W.h/m3") = 0.15
+    "Specific power consumption"                                                              annotation (Dialog(group="Fundamental Definitions"));
 
-  inner parameter ClaRa.Basics.Units.MassFlowRate m_flow_nom= 10 "Nominal mass flow rates at inlet" annotation(Dialog(tab="General", group="Nominal Values"));
+  inner parameter ClaRa.Basics.Units.MassFlowRate m_flow_nom= 10
+    "Nominal mass flow rates at inlet"                                                              annotation(Dialog(tab="General", group="Nominal Values"));
   inner parameter ClaRa.Basics.Units.Pressure p_nom=1e5 "Nominal pressure"                    annotation(Dialog(group="Nominal Values"));
-  inner parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_nom=1e5 "Nominal specific enthalpy"  annotation(Dialog(group="Nominal Values"));
+  inner parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_nom=1e5
+    "Nominal specific enthalpy"                                                                  annotation(Dialog(group="Nominal Values"));
 
-  inner parameter ClaRa.Basics.Choices.Init initType=ClaRa.Basics.Choices.Init.noInit "Type of initialisation" annotation(Dialog(tab="Initialisation", choicesAllMatching));
-  parameter ClaRa.Basics.Units.Temperature T_start= 380 "Start value of system Temperature" annotation(Dialog(tab="Initialisation"));
-  parameter ClaRa.Basics.Units.Pressure p_start= 1.013e5 "Start value of system pressure" annotation(Dialog(tab="Initialisation"));
-  parameter ClaRa.Basics.Units.MassFraction xi_start[medium.nc-1]=zeros(medium.nc-1) "Start value of system mass fraction"
-                                                                                            annotation(Dialog(tab="Initialisation"));
-  inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation" annotation(Dialog(tab="Initialisation"));
+  inner parameter ClaRa.Basics.Choices.Init initType=ClaRa.Basics.Choices.Init.noInit
+    "Type of initialisation"                                                                                   annotation(Dialog(tab="Initialisation", choicesAllMatching));
+  parameter ClaRa.Basics.Units.Temperature T_start= 380
+    "Start value of system Temperature"                                                     annotation(Dialog(tab="Initialisation"));
+  parameter ClaRa.Basics.Units.Pressure p_start= 1.013e5
+    "Start value of system pressure"                                                      annotation(Dialog(tab="Initialisation"));
+  parameter ClaRa.Basics.Units.MassFraction xi_start[medium.nc-1]={0.01,0,0.25,0,0.7,0,0,0.04,0}
+    "Start value of system mass fraction"                                                   annotation(Dialog(tab="Initialisation"));
+  inner parameter Boolean useHomotopy=simCenter.useHomotopy
+    "True, if homotopy method is used during initialisation"                                                         annotation(Dialog(tab="Initialisation"));
 
 // Quantaties required for the calculation of the separationRate
-  parameter ClaRa.Basics.Units.Area A_filter = 100 "Collector area of E-Filter" annotation(Dialog(group="Geometry"));
-  parameter ClaRa.Basics.Units.Length d_plate = 0.2 "Distance  Plate-to-Plate or Plate-to-Wire, repectivaly"
-                                                                                            annotation(Dialog(group="Geometry"));
-  parameter ClaRa.Basics.Units.Length diameter_particle = 50e-6 "Average diameter of ash particles"
-                                                                                                   annotation(Dialog(group="Geometry"));
+  parameter ClaRa.Basics.Units.Area A_filter = 100 "Collector area of E-Filter"
+                                                                                annotation(Dialog(group="Geometry"));
+  parameter ClaRa.Basics.Units.Length d_plate = 0.2
+    "Distance  Plate-to-Plate or Plate-to-Wire, repectivaly"                                annotation(Dialog(group="Geometry"));
+  parameter ClaRa.Basics.Units.Length diameter_particle = 50e-6
+    "Average diameter of ash particles"                                                            annotation(Dialog(group="Geometry"));
   final parameter Real A1 = 1.257 "Auxiliary Area"
                                                   annotation(Dialog(group="Geometry"));
   final parameter Real A2 = 0.4 "Auxiliary Area" annotation(Dialog(group="Geometry"));
   final parameter Real A3 = 0.55 "Auxiliary Area"
                                                  annotation(Dialog(group="Geometry"));
 
-  parameter Boolean use_dynamicMassbalance = true "True if a dynamic mass balance shall be applied" annotation(Evaluate=true, Dialog(tab="Expert Settings"));
+  parameter Boolean use_dynamicMassbalance = true
+    "True if a dynamic mass balance shall be applied"                                               annotation(Evaluate=true, Dialog(tab="Expert Settings"));
 
-  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary "True if component shall contribute to automatic efficiency calculation"
-                                                                                            annotation(Dialog(tab="Summary and Visualisation"));
-  parameter Boolean showData=true "True if a data port containing p,T,h,s,m_flow shall be shown, else false"
-                                                                                            annotation (Dialog(tab="Summary and Visualisation"));
+  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary
+    "True if component shall contribute to automatic efficiency calculation"                annotation(Dialog(tab="Summary and Visualisation"));
+  parameter Boolean showData=true
+    "True if a data port containing p,T,h,s,m_flow shall be shown, else false"              annotation (Dialog(tab="Summary and Visualisation"));
 //## V A R I A B L E   P A R T##################################################################################
 
 Real separationRate;
-Modelica.SIunits.Velocity w_m "Migration speed of dust particles in the E-field";// Quantities required for the calculation of the particles' migration speed
+Modelica.SIunits.Velocity w_m
+    "Migration speed of dust particles in the E-field";                          // Quantities required for the calculation of the particles' migration speed
 Modelica.SIunits.Length lambda "Mean free path of particles";
-Modelica.SIunits.ElectricFieldStrength E_applied "E-Field in Filter estimated as E = U/d with U being the applied potential and d the distance between elektrodes, refer to Riehle 1997";
-     Modelica.Blocks.Interfaces.RealInput U_applied "Applied Voltage lading to E_applied=U_applied/d"
-                                                      annotation (Placement(
+Modelica.SIunits.ElectricFieldStrength E_applied
+    "E-Field in Filter estimated as E = U/d with U being the applied potential and d the distance between elektrodes, refer to Riehle 1997";
+     Modelica.Blocks.Interfaces.RealInput U_applied
+    "Applied Voltage lading to E_applied=U_applied/d" annotation (Placement(
         transformation(
         extent={{-12,-12},{12,12}},
         rotation=270,
@@ -101,23 +116,29 @@ Modelica.SIunits.ElectricFieldStrength E_applied "E-Field in Filter estimated as
         rotation=270,
         origin={-74,112})));
 
-ClaRa.Basics.Units.DynamicViscosity mu_flueGas "Dynamic viscosity of flueGas in E-Filter";
-Real Cu "Cunningham slip correction factor Cu = 1 + 2lambda/d *(A1 +A2exp[-A3*diameter_particle/lambda]])";
+ClaRa.Basics.Units.DynamicViscosity mu_flueGas
+    "Dynamic viscosity of flueGas in E-Filter";
+Real Cu
+    "Cunningham slip correction factor Cu = 1 + 2lambda/d *(A1 +A2exp[-A3*diameter_particle/lambda]])";
 
 Modelica.SIunits.ElectricCharge Q_sat "Saturation charge of particles";
 // Quantaties required for the calculation of the particles' saturation charge
 
-ClaRa.Basics.Units.VolumeFlowRate V_flow "Volumeflow rate of flue Gas entering the E-Filter";
+ClaRa.Basics.Units.VolumeFlowRate V_flow
+    "Volumeflow rate of flue Gas entering the E-Filter";
 
 protected
    ClaRa.Basics.Units.EnthalpyMassSpecific h_out "Specific enthalpy at outlet";
    ClaRa.Basics.Units.EnthalpyMassSpecific h_in "Specific enthalpy at inlet";
-   ClaRa.Basics.Units.EnthalpyMassSpecific h_dust "Specific enthalpy of separated dust";
-   inner ClaRa.Basics.Units.EnthalpyMassSpecific h(start=TILMedia.GasFunctions.specificEnthalpy_pTxi(simCenter.flueGasModel, p_start, T_start, xi_start)) "Specific enthalpy of gas";
+   ClaRa.Basics.Units.EnthalpyMassSpecific h_dust
+    "Specific enthalpy of separated dust";
+   inner ClaRa.Basics.Units.EnthalpyMassSpecific h(start=TILMedia.GasFunctions.specificEnthalpy_pTxi(simCenter.flueGasModel, p_start, T_start, xi_start))
+    "Specific enthalpy of gas";
    Real drhodt "Density derivative";
    Modelica.SIunits.Mass mass "Mass in component";
    Modelica.SIunits.Pressure p(start=p_start) "Pressure in component";
-   Modelica.SIunits.MassFraction xi[medium.nc-1]( start=xi_start) "Mass fraction";
+   Modelica.SIunits.MassFraction xi[medium.nc-1]( start=xi_start)
+    "Mass fraction";
    Modelica.SIunits.MassFlowRate m_flow_dust_out "Mass flow of separated dust";
    Modelica.SIunits.Power powerConsumption "Power consumption";
 
@@ -134,16 +155,22 @@ public
 //____replaceable models for heat transfer, pressure loss and geometry____________________________________________
   replaceable model HeatTransfer =
       ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Adiabat_L2
-    constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.HeatTransfer_L2 "1st: choose geometry definition | 2nd: edit corresponding record"
+    constrainedby
+    ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.HeatTransfer_L2
+    "1st: choose geometry definition | 2nd: edit corresponding record"
     annotation (Dialog(group="Fundamental Definitions"), choicesAllMatching=true);
     replaceable model PressureLoss =
       ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.NoFriction_L2
-    constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.PressureLoss_L2 "1st: choose geometry definition | 2nd: edit corresponding record"
+    constrainedby
+    ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.PressureLoss_L2
+    "1st: choose geometry definition | 2nd: edit corresponding record"
     annotation (Dialog(group="Fundamental Definitions"), choicesAllMatching=true);
 
   replaceable model Geometry =
       ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry
-    constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry "1st: choose geometry definition | 2nd: edit corresponding record"
+    constrainedby
+    ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry
+    "1st: choose geometry definition | 2nd: edit corresponding record"
     annotation (Dialog(group="Geometry"), choicesAllMatching=true);
 
 public
@@ -202,11 +229,13 @@ Summary summary(outline(
     T=inStream(inlet.T_outflow),
     p=inlet.p,
     h=flueGasInlet.h,
+    xi = inStream(inlet.xi_outflow),
     H_flow = inlet.m_flow*flueGasInlet.h),
     outlet(m_flow=-outlet.m_flow,
     T=outlet.T_outflow,
     p=outlet.p,
     h=flueGasOutlet.h,
+    xi = outlet.xi_outflow,
     H_flow = -outlet.m_flow*flueGasOutlet.h));
 
 protected

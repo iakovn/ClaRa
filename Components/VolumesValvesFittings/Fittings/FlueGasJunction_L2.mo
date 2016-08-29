@@ -1,7 +1,7 @@
 within ClaRa.Components.VolumesValvesFittings.Fittings;
 model FlueGasJunction_L2 "Adiabatic junction volume"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -19,7 +19,7 @@ extends ClaRa.Basics.Icons.Tpipe2;
 extends ClaRa.Basics.Icons.ComplexityLevel(complexity="L2");
   outer ClaRa.SimCenter simCenter;
 
- record Gas
+ model Gas
   extends ClaRa.Basics.Icons.RecordIcon;
   input ClaRa.Basics.Units.Mass m "Mass flow rate"
                                                annotation(Dialog);
@@ -35,7 +35,7 @@ extends ClaRa.Basics.Icons.ComplexityLevel(complexity="L2");
                                                                    annotation(Dialog);
  end Gas;
 
- inner record Summary
+ inner model Summary
    extends ClaRa.Basics.Icons.RecordIcon;
    Gas gas;
    ClaRa.Basics.Records.FlangeGas portA;
@@ -43,12 +43,12 @@ extends ClaRa.Basics.Icons.ComplexityLevel(complexity="L2");
    ClaRa.Basics.Records.FlangeGas portC;
  end Summary;
 
-inner parameter ClaRa.Basics.Choices.Init initType=ClaRa.Basics.Choices.Init.noInit "Type of initialisation"
-                             annotation(Dialog(tab="Initialisation", choicesAllMatching));
+inner parameter ClaRa.Basics.Choices.Init initType=ClaRa.Basics.Choices.Init.noInit
+    "Type of initialisation" annotation(Dialog(tab="Initialisation"), choicesAllMatching);
 
 // ***************************** defintion of medium used in cell *************************************************
-inner parameter TILMedia.GasTypes.BaseGas medium = simCenter.flueGasModel "Medium to be used in tubes"
-                                  annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
+inner parameter TILMedia.GasTypes.BaseGas medium = simCenter.flueGasModel
+    "Medium to be used in tubes"  annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
 
   Basics.Interfaces.GasPortIn      portA(Medium = medium, m_flow)
     annotation (Placement(transformation(extent={{-110,-10},{-90,10}}),
@@ -84,19 +84,22 @@ parameter ClaRa.Basics.Units.Volume volume;
   /****************** Initial values *******************/
 
 public
-  parameter ClaRa.Basics.Units.Pressure p_start=1.013e5 "Initial value for air pressure"
+  parameter ClaRa.Basics.Units.Pressure p_start=1.013e5
+    "Initial value for air pressure"
     annotation(Dialog(group="Initial Values"));
 //   parameter Boolean fixedInitialPressure = true
 //     "if true, initial pressure is fixed" annotation(Dialog(group="Initial Values"));
 
-  parameter ClaRa.Basics.Units.Temperature T_start=298.15 "Initial value for air temperature"
+  parameter ClaRa.Basics.Units.Temperature T_start=298.15
+    "Initial value for air temperature"
     annotation(Dialog(group="Initial Values"));
 
   parameter ClaRa.Basics.Units.MassFraction[medium.nc - 1]
-                                                         mixingRatio_initial=zeros(medium.nc-1) "Initial value for mixing ratio"
-                                     annotation(Dialog(group="Initial Values"));
+                                                         mixingRatio_initial=zeros(medium.nc-1)
+    "Initial value for mixing ratio" annotation(Dialog(group="Initial Values"));
 
-  final parameter Modelica.SIunits.SpecificEnthalpy h_start = TILMedia.GasFunctions.specificEnthalpy_pTxi(medium, p_start, T_start, mixingRatio_initial) "Start value for specific Enthalpy inside volume";
+  final parameter Modelica.SIunits.SpecificEnthalpy h_start = TILMedia.GasFunctions.specificEnthalpy_pTxi(medium, p_start, T_start, mixingRatio_initial)
+    "Start value for specific Enthalpy inside volume";
 
   ClaRa.Basics.Units.MassFraction xi[medium.nc - 1](start=mixingRatio_initial);
   Modelica.SIunits.SpecificEnthalpy h(start=h_start) "Specific enthalpy";
@@ -106,9 +109,9 @@ public
 
   Real drhodt "Density derivative";
 
-  inner Summary    summary(portA(m_flow=portA.m_flow,  T=flueGasPortA.T, p=portA.p, h=flueGasPortA.h, H_flow=portA.m_flow*flueGasPortA.h),
-                           portB(m_flow=portB.m_flow,  T=flueGasPortB.T, p=portB.p, h=flueGasPortB.h, H_flow=portB.m_flow*flueGasPortB.h),
-                           portC(m_flow=portC.m_flow,  T=flueGasPortC.T, p=portC.p, h=flueGasPortC.h, H_flow=portC.m_flow*flueGasPortC.h),
+  inner Summary    summary(portA(m_flow=portA.m_flow,  T=flueGasPortA.T, p=portA.p, h=flueGasPortA.h, xi=flueGasPortA.xi, H_flow=portA.m_flow*flueGasPortA.h),
+                           portB(m_flow=portB.m_flow,  T=flueGasPortB.T, p=portB.p, h=flueGasPortB.h, xi=flueGasPortB.xi, H_flow=portB.m_flow*flueGasPortB.h),
+                           portC(m_flow=portC.m_flow,  T=flueGasPortC.T, p=portC.p, h=flueGasPortC.h, xi=flueGasPortC.xi, H_flow=portC.m_flow*flueGasPortC.h),
                    gas(m=mass, T=bulk.T, p=p, h=h, H=h*mass, rho=bulk.d))
     annotation (Placement(transformation(extent={{-60,-102},{-40,-82}})));
 
@@ -142,7 +145,8 @@ equation
       + volume*der(p)) "Energy balance";
 
   der(xi) = 1/mass*(portA.m_flow*(flueGasPortA.xi-xi) +
-      portB.m_flow*(flueGasPortB.xi-xi) + portC.m_flow*(flueGasPortC.xi-xi)) "Mass balance";
+      portB.m_flow*(flueGasPortB.xi-xi) + portC.m_flow*(flueGasPortC.xi-xi))
+    "Mass balance";
 
       //______________ Balance euqations _______________________
 

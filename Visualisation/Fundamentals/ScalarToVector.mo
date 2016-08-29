@@ -1,7 +1,7 @@
 within ClaRa.Visualisation.Fundamentals;
 model ScalarToVector
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,11 +15,15 @@ model ScalarToVector
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
 
- parameter Modelica.SIunits.Time SampleTime=1 "Time interval| can be choiced as hour or second interval. Altogether you can give in all values.";
- parameter Modelica.SIunits.Time simulationTime=200 "Set here the simulation time";
- parameter Integer N=integer((simulationTime) /SampleTime+1) "number of components of the z vector";
+ parameter Modelica.SIunits.Time SampleTime=1
+    "Time interval| can be choiced as hour or second interval. Altogether you can give in all values.";
+ parameter Modelica.SIunits.Time simulationTime=200
+    "Set here the simulation time";
+ parameter Integer N=integer((simulationTime) /SampleTime+1)
+    "number of components of the z vector";
 public
-output Real[N] z "The components of this vector contains the values at each sample time of input variable y";
+output Real[N] z
+    "The components of this vector contains the values at each sample time of input variable y";
 
   Modelica.Blocks.Interfaces.RealInput u "Input signal"
     annotation (Placement(transformation(extent={{-140,40},{-100,80}})));

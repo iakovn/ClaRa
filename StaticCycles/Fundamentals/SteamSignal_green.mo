@@ -6,7 +6,6 @@ connector SteamSignal_green "Signal-based steam connector"
   annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-40,-100},{40,100}}),   graphics={Polygon(
           points={{-40,100},{40,100},{40,-100},{-40,-100},{-40,100}},
           lineColor={0,131,169},
-          smooth=Smooth.None,
-          fillColor={170,255,85},
+          fillColor={143,170,56},
           fillPattern=FillPattern.Solid)}), Diagram(coordinateSystem(extent={{-40,-100},{40,100}})));
 end SteamSignal_green;

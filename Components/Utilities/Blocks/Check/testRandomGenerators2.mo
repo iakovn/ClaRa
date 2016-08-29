@@ -1,7 +1,7 @@
 within ClaRa.Components.Utilities.Blocks.Check;
 model testRandomGenerators2
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -45,5 +45,7 @@ equation
       points={{-15,-60},{-6,-60},{-6,-40.2},{4,-40.2}},
       color={0,0,127},
       smooth=Smooth.None));
-  annotation (Diagram(graphics));
+  annotation (Diagram(graphics),
+    experiment(StopTime=10000),
+    __Dymola_experimentSetupOutput);
 end testRandomGenerators2;

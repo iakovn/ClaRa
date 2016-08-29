@@ -1,7 +1,8 @@
 within ClaRa.Basics.ControlVolumes.SolidVolumes;
-model ThinWall_L2 "A thin wall involving one volume element in heat flow direction"
+model ThinWall_L2
+  "A thin wall involving one volume element in heat flow direction"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -16,10 +17,10 @@ model ThinWall_L2 "A thin wall involving one volume element in heat flow directi
 //___________________________________________________________________________//
 
   extends ClaRa.Basics.Icons.WallThin;
- replaceable model Material = TILMedia.SolidTypes.TILMedia_Aluminum constrainedby TILMedia.SolidTypes.BaseSolid "Material of the cylinder"
-                                                                                            annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
-  input Real CF_lambda=1 "Time-dependent correction factor for thermal conductivity" annotation(Dialog(group="Fundamental Definitions"));
-  import SI = Modelica.SIunits;
+ replaceable model Material = TILMedia.SolidTypes.TILMedia_Aluminum constrainedby
+    TILMedia.SolidTypes.BaseSolid "Material of the cylinder"                                annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
+  input Real CF_lambda=1
+    "Time-dependent correction factor for thermal conductivity"                      annotation(Dialog(group="Fundamental Definitions"));
 
  parameter ClaRa.Basics.Units.Area A_heat "Surface area"
                                  annotation(Dialog(group="Geometry"));
@@ -27,15 +28,14 @@ model ThinWall_L2 "A thin wall involving one volume element in heat flow directi
 parameter ClaRa.Basics.Units.Length thickness_wall "Wall thickness"
                                   annotation(Dialog(group="Geometry"));
 
-//  parameter Boolean calculate_mass=true
-//     "True, if mass is calculated with nominal material density"
-//                                                               annotation (Dialog(group="Geometry"));
 public
   parameter ClaRa.Basics.Units.Mass mass "Fixed mass"     annotation(Dialog(group="Geometry"));
-  parameter ClaRa.Basics.Units.Temperature T_start=293.15 "Start values of wall temperature"  annotation(Dialog(group="Initialisation"));
+  parameter ClaRa.Basics.Units.Temperature T_start=293.15
+    "Start values of wall temperature"                                                        annotation(Dialog(group="Initialisation"));
 
-  parameter Integer stateLocation = 2 "Location of states" annotation(Dialog(group="Numerical Efficiency"), choices(choice=1 "Inner location of states",
-                                    choice=2 "Central location of states",  choice=3 "Outer location of states"));
+  parameter Integer stateLocation = 2 "Location of states" annotation(Dialog(group="Numerical Efficiency"), choices(choice=1
+        "Inner location of states", choice=2 "Central location of states",  choice=3
+        "Outer location of states"));
 
   ClaRa.Basics.Units.Temperature T(start=T_start,nominal=500);
   ClaRa.Basics.Units.InternalEnergy U(nominal = 4e6);
@@ -50,9 +50,10 @@ public
     annotation (Placement(transformation(extent={{-10,-60},{10,-40}}),
         iconTransformation(extent={{-10,-60},{10,-40}})));
 
-record Summary
+model Summary
   extends ClaRa.Basics.Icons.RecordIcon;
-  input Units.Area A_heat "Mean area of heat transfer (single tube)";
+  input ClaRa.Basics.Units.Area A_heat
+      "Mean area of heat transfer (single tube)";
   input ClaRa.Basics.Units.Length thickness_wall "Wall thickness";
   input ClaRa.Basics.Units.Mass mass "Wall mass";
   input ClaRa.Basics.Units.InternalEnergy U "Inner energy of wall";

@@ -1,7 +1,8 @@
 within ClaRa.Components.HeatExchangers.Check;
-model EvaluateDesuperheater "An evaluation scenario for the ShellAndTube_HEX_1 featuring part load. Comparing against an EBSILON model"
+model EvaluateDesuperheater
+  "An evaluation scenario for the ShellAndTube_HEX_1 featuring part load. Comparing against an EBSILON model"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.0                        //
+  // Component of the ClaRa library, version: 1.1.1                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -23,8 +24,8 @@ model EvaluateDesuperheater "An evaluation scenario for the ShellAndTube_HEX_1 f
   ClaRa.Components.VolumesValvesFittings.Valves.ValveVLE_L1
     valveCompressible(
     openingInputIsActive=false, redeclare model PressureLoss =
-        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint (
-         m_flow_nom=if ((416) > 0) then (416) else 10, Delta_p_nom=if ((0.020e5)
+        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint
+        (m_flow_nom=if ((416) > 0) then (416) else 10, Delta_p_nom=if ((0.020e5)
              <> 0) then (0.020e5) else 1000))
     annotation (Placement(transformation(extent={{10,-30},{-10,-18}})));
 
@@ -39,7 +40,8 @@ model EvaluateDesuperheater "An evaluation scenario for the ShellAndTube_HEX_1 f
     h_const=3000e3,
     variable_p=true,
     p_const=32310000) annotation (Placement(transformation(extent={{-42,-34},{-22,-14}})));
-  inner SimCenter simCenter(redeclare replaceable TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1) annotation (Placement(transformation(extent={{-100,-100},{-80,-80}})));
+  inner SimCenter simCenter(redeclare replaceable
+      TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater                                             fluid1) annotation (Placement(transformation(extent={{-100,-100},{-80,-80}})));
   Modelica.Blocks.Sources.CombiTimeTable MeasurementData(
     tableOnFile=true,
     tableName="S",
@@ -63,8 +65,8 @@ model EvaluateDesuperheater "An evaluation scenario for the ShellAndTube_HEX_1 f
   ClaRa.Components.VolumesValvesFittings.Valves.ValveVLE_L1
     valveCompressible1(
     openingInputIsActive=false, redeclare model PressureLoss =
-        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint (
-         m_flow_nom=if ((416) > 0) then (416) else 10, Delta_p_nom=if ((1000)
+        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint
+        (m_flow_nom=if ((416) > 0) then (416) else 10, Delta_p_nom=if ((1000)
              <> 0) then (1000) else 1000))
     annotation (Placement(transformation(extent={{10,-4},{-10,8}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi pressureSink1(
@@ -85,7 +87,8 @@ model EvaluateDesuperheater "An evaluation scenario for the ShellAndTube_HEX_1 f
     p_start_tubes=3200000,
     showExpertSummary=true,
     redeclare model PressureLossTubes =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L2 (             Delta_p_nom=100000),
+        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L2
+        (                                                                                                    Delta_p_nom=100000),
     z_in_tubes=0.1,
     m_nom_tubes=416,
     parallelTubes=false,
@@ -98,9 +101,11 @@ model EvaluateDesuperheater "An evaluation scenario for the ShellAndTube_HEX_1 f
     redeclare model HeatTransfer_Shell =
         ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.IdealHeatTransfer_L2,
     redeclare model HeatTransferTubes =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2 (                      PL_alpha=[0.01,0.5025; 0.4,0.6; 0.6,0.8; 1,1], alpha_nom=62.5),
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2
+        (                                                                                                    PL_alpha=[0.01,0.5025; 0.4,0.6; 0.6,0.8; 1,1], alpha_nom=62.5),
     redeclare model HeatExchangerType =
-        Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.CrossFlow)                   annotation (Placement(transformation(
+        Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.CrossFlow)
+                                                                                                        annotation (Placement(transformation(
         extent={{10,-10},{-10,10}},
         rotation=270,
         origin={32,2})));
@@ -110,8 +115,8 @@ model EvaluateDesuperheater "An evaluation scenario for the ShellAndTube_HEX_1 f
     openingInputIsActive=false,
     checkValve=true,
     redeclare model PressureLoss =
-        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint (
-         m_flow_nom=if ((416) > 0) then (416) else 10, Delta_p_nom=if ((0.020e5)
+        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint
+        (m_flow_nom=if ((416) > 0) then (416) else 10, Delta_p_nom=if ((0.020e5)
              <> 0) then (0.020e5) else 1000))
     annotation (Placement(transformation(extent={{10,-94},{-10,-82}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_hxim_flow massFlowSource2(
@@ -135,8 +140,8 @@ model EvaluateDesuperheater "An evaluation scenario for the ShellAndTube_HEX_1 f
   ClaRa.Components.VolumesValvesFittings.Valves.ValveVLE_L1
     valveCompressible3(
     openingInputIsActive=false, redeclare model PressureLoss =
-        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint (
-         m_flow_nom=if ((416) > 0) then (416) else 10, Delta_p_nom=if ((1000)
+        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint
+        (m_flow_nom=if ((416) > 0) then (416) else 10, Delta_p_nom=if ((1000)
              <> 0) then (1000) else 1000))
     annotation (Placement(transformation(extent={{10,-68},{-10,-56}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi pressureSink3(
@@ -158,7 +163,8 @@ model EvaluateDesuperheater "An evaluation scenario for the ShellAndTube_HEX_1 f
     h_nom_shell=3500e3,
     initWall=ClaRa.Basics.Choices.Init.noInit,
     redeclare model PressureLossTubes =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L2 (             Delta_p_nom=100000),
+        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L2
+        (                                                                                                    Delta_p_nom=100000),
     m_flow_nom_tubes=416,
     m_flow_nom_shell=21.627,
     redeclare model HeatExchangerType =

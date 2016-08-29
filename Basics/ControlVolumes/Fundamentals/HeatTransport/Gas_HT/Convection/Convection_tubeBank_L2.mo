@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Convection;
 model Convection_tubeBank_L2 "Tube Geo || L2 || Convection Tube Bank"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.0                        //
+  // Component of the ClaRa library, version: 1.1.1                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,22 +15,26 @@ model Convection_tubeBank_L2 "Tube Geo || L2 || Convection Tube Bank"
   // XRG Simulation GmbH (Hamburg, Germany).                                   //
   //___________________________________________________________________________//
 
-  extends ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Convection.HeatTransfer_L2;
+  extends
+    ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Convection.HeatTransfer_L2;
   outer ClaRa.Basics.Records.IComGas_L2 iCom;
 
   //Equations according to VDI-Waermeatlas
-  parameter Real CF_fouling=0.8 "Scaling factor accounting for the fouling of the wall";
+  parameter Real CF_fouling=0.8
+    "Scaling factor accounting for the fouling of the wall";
   parameter Integer heatSurfaceAlloc=2 "To be considered heat transfer area" annotation (dialog(enable=false, tab="Expert Setting"), choices(
       choice=1 "Lateral surface",
       choice=2 "Inner heat transfer surface",
       choice=3 "Selection to be extended"));
-  parameter String temperatureDifference="Logarithmic mean" "Temperature Difference" annotation (Dialog(group="Heat Transfer"), choices(
+  parameter String temperatureDifference="Logarithmic mean"
+    "Temperature Difference"                                                         annotation (Dialog(group="Heat Transfer"), choices(
       choice="Arithmetic mean",
       choice="Logarithmic mean",
       choice="Inlet",
       choice="Outlet"));
 public
-  ClaRa.Basics.Units.CoefficientOfHeatTransfer alpha "Heat transfer coefficient";
+  ClaRa.Basics.Units.CoefficientOfHeatTransfer alpha
+    "Heat transfer coefficient";
   ClaRa.Basics.Units.Velocity w "Flue gas velocity";
 
   Real Nu_llam "Nusselt number laminar";
@@ -38,21 +42,24 @@ public
   Real Nu_l0 "Nusselt number";
   Real Nu_tubeBank "Nusselt number at tube bank";
 
-  Units.Temperature Delta_T_wi "Temperature difference between wall and fluid inlet temperature";
-  Units.Temperature Delta_T_wo "Temperature difference between wall and fluid outlet temperature";
+  Units.Temperature Delta_T_wi
+    "Temperature difference between wall and fluid inlet temperature";
+  Units.Temperature Delta_T_wo
+    "Temperature difference between wall and fluid outlet temperature";
   Units.Temperature Delta_T_mean "Mean temperature";
   Units.Temperature Delta_T_U "Upper temperature difference";
   Units.Temperature Delta_T_L "Lower temperature difference";
 
 protected
   Real Re_psi1 "Corrected Reynolds number";
-  Real nu "Kinematic viscosity";
   Real f_a "Arrangement factor";
   ClaRa.Basics.Units.Length length_char "Characteristic length";
 
-  ClaRa.Basics.Units.Temperature T_prop_am "Arithmetic mean for calculation of substance properties";
+  ClaRa.Basics.Units.Temperature T_prop_am
+    "Arithmetic mean for calculation of substance properties";
   outer ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlockWithTubes geo;
-  ClaRa.Basics.Units.MassFraction xi_mean[iCom.mediumModel.nc - 1] "Mean medium composition";
+  ClaRa.Basics.Units.MassFraction xi_mean[iCom.mediumModel.nc - 1]
+    "Mean medium composition";
 
   TILMedia.Gas_pT properties(
     p=(iCom.p_in + iCom.p_out)/2,
@@ -76,8 +83,11 @@ equation
     Delta_T_mean = heat.T - (iCom.T_in + iCom.T_out)/2;
   elseif temperatureDifference == "Inlet" then
     Delta_T_mean = heat.T - iCom.T_in;
-  else
+  elseif temperatureDifference == "Outlet" then
     Delta_T_mean = heat.T - iCom.T_out;
+  else
+    Delta_T_mean = -1;
+    assert(true, "Unknown temperature difference option in HT model");
   end if;
 
   zeros(iCom.mediumModel.nc - 1) = -xi_mean*(iCom.m_flow_in - iCom.m_flow_out) + (iCom.m_flow_in*iCom.xi_in - iCom.m_flow_out*iCom.xi_out);
@@ -86,8 +96,7 @@ equation
   w = iCom.V_flow_in/geo.A_front;
   //undisturbed velocity at inlet is needed
   length_char = Modelica.Constants.pi/2*geo.diameter_t;
-  nu = properties.transp.eta/properties.d;
-  //Re_psi1 = w * length_char/(psi*nu);
+
   Re_psi1 = properties.d*w*length_char/(geo.psi*properties.transp.eta);
 
   Nu_llam = 0.664*sqrt(Re_psi1)*(properties.transp.Pr)^(1/3);

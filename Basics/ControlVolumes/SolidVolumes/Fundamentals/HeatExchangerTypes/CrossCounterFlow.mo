@@ -1,7 +1,8 @@
 within ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes;
-model CrossCounterFlow "cross-counter flow heatexchanger n tube rows and n passes"
+model CrossCounterFlow
+  "cross-counter flow heatexchanger n tube rows and n passes"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,14 +16,17 @@ model CrossCounterFlow "cross-counter flow heatexchanger n tube rows and n passe
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
 
-extends ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.GeneralHeatExchanger(
+extends
+    ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.GeneralHeatExchanger(
     final a=C[1],
     final b=C[2],
     final c=C[3],
     final d=C[4]);
-extends ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Icons.HEX_CrossCounterFlow_Icon;
+extends
+    ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Icons.HEX_CrossCounterFlow_Icon;
 
-parameter Integer N_rp "Number of tube rows and passes (number of rows and passes are equal)";
+parameter Integer N_rp
+    "Number of tube rows and passes (number of rows and passes are equal)";
 
 final parameter Real C[4]=
 if N_rp==1 then {0.433,1.60,0.267,0.5}

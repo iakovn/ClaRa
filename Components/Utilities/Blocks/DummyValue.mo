@@ -1,7 +1,7 @@
 within ClaRa.Components.Utilities.Blocks;
 model DummyValue "A dummy connection for Real inputs"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -16,7 +16,7 @@ model DummyValue "A dummy connection for Real inputs"
 //___________________________________________________________________________//
 
   Modelica.Blocks.Interfaces.RealOutput y
-    annotation (Placement(transformation(extent={{94,-10},{114,10}})));
+    annotation (Placement(transformation(extent={{100,-10},{120,10}}), iconTransformation(extent={{100,-10},{120,10}})));
 
 equation
   y=0;
@@ -27,22 +27,23 @@ equation
         Rectangle(
           extent={{-100,100},{100,-100}},
           pattern=LinePattern.Solid,
-          fillColor={0,0,0},
+          fillColor={27,36,42},
           fillPattern=FillPattern.Solid,
-          lineColor={0,0,0},
+          lineColor={27,36,42},
           radius=20),
         Rectangle(
           extent={{-100,100},{0,0}},
           pattern=LinePattern.Solid,
-          fillColor={255,255,0},
+          fillColor={235,183,0},
           fillPattern=FillPattern.Solid,
-          lineColor={0,0,0}),
+          lineColor={27,36,42}),
         Rectangle(
           extent={{0,0},{100,-100}},
           pattern=LinePattern.Solid,
-          fillColor={255,255,0},
+          fillColor={235,183,0},
           fillPattern=FillPattern.Solid,
-          lineColor={0,0,0})}), Diagram(coordinateSystem(
+          lineColor={27,36,42})}),
+                                Diagram(coordinateSystem(
         preserveAspectRatio=true,
         extent={{-100,-100},{100,100}},
         initialScale=0.01)));

@@ -1,7 +1,8 @@
 within ClaRa.Components.TurboMachines.Pumps;
-model PumpVLE_L2_affinity "A pump for VLE mixtures with a finite fluid volume, based on affinity laws"
+model PumpVLE_L2_affinity
+  "A pump for VLE mixtures with a finite fluid volume, based on affinity laws"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                            //
+// Component of the ClaRa library, version: 1.1.1                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -14,93 +15,100 @@ model PumpVLE_L2_affinity "A pump for VLE mixtures with a finite fluid volume, b
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
-  import SI = ClaRa.Basics.Units;
-  import pow = FluidDissipation.Utilities.Functions.General.SmoothPower;
 
   extends ClaRa.Basics.Icons.Pump;
   extends ClaRa.Basics.Icons.ComplexityLevel(complexity="L2");
-  //extends Modelica.Icons.UnderConstruction;
 
-  record Outline
-   extends ClaRa.Basics.Icons.RecordIcon;
-   input SI.VolumeFlowRate V_flow "Volume flow rate";
-   input SI.Power P_hyd "Hydraulic power";
-   input SI.PressureDifference Delta_p "Pressure difference";
-   input SI.Length head "Head";
-   input SI.Length NPSHa "Net positive suction head available";
-   input Real eta_hyd "Hydraulic efficiency";
-   input Real eta_mech "Mechanic efficiency";
+  model Outline
+    extends ClaRa.Components.TurboMachines.Pumps.Fundamentals.Outline;
+    input ClaRa.Basics.Units.RPM rpm "Pump revolutions per minute";
   end Outline;
 
-  record Summary
+  model Summary
     extends ClaRa.Basics.Icons.RecordIcon;
     Outline outline;
     ClaRa.Basics.Records.FlangeVLE  inlet;
     ClaRa.Basics.Records.FlangeVLE  outlet;
   end Summary;
 
-   parameter TILMedia.VLEFluidTypes.BaseVLEFluid   medium=simCenter.fluid1 "Medium in the component"
-                                         annotation(choicesAllMatching=true, Dialog(group="Fundamental Definitions"));
+   parameter TILMedia.VLEFluidTypes.BaseVLEFluid   medium=simCenter.fluid1
+    "Medium in the component"            annotation(choicesAllMatching=true, Dialog(group="Fundamental Definitions"));
 
-  parameter Boolean useMechanicalPort=false "|Fundamental Definitions|True, if a mechenical flange should be used";
-  parameter Boolean steadyStateTorque=false "|Fundamental Definitions|True, if steady state mechanical momentum shall be used";
+  parameter Boolean useMechanicalPort=false
+    "|Fundamental Definitions|True, if a mechenical flange should be used";
+  parameter Boolean steadyStateTorque=false
+    "|Fundamental Definitions|True, if steady state mechanical momentum shall be used";
   parameter SI.RPM rpm_fixed = 60 "Constant rotational speed of pump"
                                         annotation (Dialog( group = "Fundamental Definitions", enable = not useMechanicalPort));
 
-  parameter SI.RPM rpm_nom "|Characteristic field|Nomial rotational speed"
-                                                                          annotation(Dialog(groupImage="modelica://ClaRa/figures/ParameterDialog/PumpCharField1.png"));
-  parameter SI.VolumeFlowRate V_flow_max "|Characteristic field|Maximum volume flow rate at nominal speed";
-  parameter SI.Pressure Delta_p_max "|Characteristic field|Maximum pressure difference at nominal speed";
-  parameter Real exp_hyd= 0.5 "|Characteristic field|Exponent for affinity law";
+  parameter SI.RPM rpm_nom "Nomial rotational speed"
+                                                    annotation(Dialog(group = "Characteristic Field",groupImage="modelica://ClaRa/figures/ParameterDialog/PumpCharField1.png"));
+  parameter SI.VolumeFlowRate V_flow_max
+    "Maximum volume flow rate at nominal speed"                                      annotation(Dialog(group = "Characteristic Field"));
+  parameter SI.Pressure Delta_p_max
+    "Maximum pressure difference at nominal speed"                                 annotation(Dialog(group = "Characteristic Field"));
+  parameter Real exp_hyd= 0.5 "Exponent for affinity law"
+                                                         annotation(Dialog(group = "Characteristic Field"));
+  parameter Real drp_exp= 0 "droop of exp_hyd w.r.t. rpm" annotation(Dialog(group = "Characteristic Field"));
   parameter Modelica.SIunits.Inertia J "Moment of Inertia" annotation(Dialog(group="Time Response Definitions", enable= not steadyStateTorque));
 
   //_____/ Inner fluid model \__________________________________________________________
   replaceable model PressureLoss =
     ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L2
-  constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.PressureLoss_L2 "1st: choose friction model | 2nd: edit corresponding record"
-  annotation (Dialog(tab="Fluid flow inside pump",group="Pressure loss"), choicesAllMatching=true);
+  constrainedby
+    ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.PressureLoss_L2
+    "1st: choose friction model | 2nd: edit corresponding record"
+  annotation(Dialog(tab="Pump Volume", group="Fundamental Definitions"), choicesAllMatching=true);
 
-  parameter SI.Volume volume_fluid=0.01 "|Fluid flow inside pump|Geometry|Volume of fluid";
+  parameter SI.Volume volume_fluid=0.01 "Volume of fluid"  annotation(Dialog(tab="Pump Volume", group="Fundamental Definitions"));
 
-  parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation"
-                                                              annotation(Dialog(tab="Initialisation"));
-  parameter Modelica.SIunits.MassFlowRate m_flow_nom= 10 "Nominal mass flow rates at inlet"
-                                        annotation(Dialog(tab="Fluid flow inside pump", group="Nominal Values"));
+  parameter Modelica.SIunits.MassFlowRate m_flow_nom= 10
+    "Nominal mass flow rates at inlet"                                                      annotation(Dialog(tab="Pump Volume", group="Nominal Values"));
 
-  parameter Modelica.SIunits.Pressure p_nom=1e5 "Nominal pressure"
-      annotation(Dialog(tab="Fluid flow inside pump",group="Nominal Values"));
-  parameter Modelica.SIunits.SpecificEnthalpy h_nom=1e5 "Nominal specific enthalpy"
-      annotation(Dialog(tab="Fluid flow inside pump",group="Nominal Values"));
+  parameter Modelica.SIunits.Pressure p_nom=1e5 "Nominal pressure" annotation(Dialog(tab="Pump Volume",group="Nominal Values"));
+  parameter Modelica.SIunits.SpecificEnthalpy h_nom=1e5
+    "Nominal specific enthalpy"                                                     annotation(Dialog(tab="Pump Volume",group="Nominal Values"));
 
-  parameter Modelica.SIunits.SpecificEnthalpy h_start= 1e5 "Start value of sytsem specific enthalpy"
-                                             annotation(Dialog(tab="Initialisation"));
-  parameter Modelica.SIunits.Pressure p_start= 1e5 "Start value of sytsem pressure" annotation(Dialog(tab="Initialisation"));
-  parameter ClaRa.Basics.Choices.Init      initType=ClaRa.Basics.Choices.Init.noInit "Type of initialisation"
-                             annotation(Dialog(tab="Initialisation", choicesAllMatching));
+  parameter Modelica.SIunits.SpecificEnthalpy h_start= 1e5
+    "Start value of outlet specific enthalpy"                                                        annotation(Dialog(tab="Pump Volume", group="Initialisation"));
+  parameter Modelica.SIunits.Pressure p_start= 1e5
+    "Start value of outlet pressure"                                                annotation(Dialog(tab="Pump Volume", group="Initialisation"));
+  parameter ClaRa.Basics.Choices.Init      initType=ClaRa.Basics.Choices.Init.noInit
+    "Type of initialisation"                                                                                  annotation(Dialog(tab="Pump Volume", group="Initialisation"), choicesAllMatching);
+  parameter Boolean useHomotopy=simCenter.useHomotopy
+    "True, if homotopy method is used during initialisation"                                                     annotation(Dialog(tab="Pump Volume", group="Initialisation"));
 
   //________________________________________________________________________________
 
-  parameter Boolean showExpertSummary = simCenter.showExpertSummary "|Summary and Visualisation||True, if expert summary should be applied";
-  parameter Boolean showData=true "|Summary and Visualisation||True, if a data port containing p,T,h,s,m_flow shall be shown, else false";
+  parameter Boolean showExpertSummary = simCenter.showExpertSummary
+    "True, if expert summary should be applied"                                                     annotation(Dialog(tab="Summary and Visualisation"));
+  parameter Boolean showData=true
+    "True, if a data port containing p,T,h,s,m_flow shall be shown, else false"
+                                                                                                        annotation(Dialog(tab="Summary and Visualisation"));
+  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary
+    "True if component shall contribute to automatic efficiency calculation"                annotation(Dialog(tab="Summary and Visualisation"));
 
-  parameter Real eta_hyd_nom=0.8 "|Expert Settings|Hydraulic losses - refer to documentation for details|Max. hydraulic efficiency at nominal speed";
-  parameter Real exp_rpm=2 "|Expert Settings|Hydraulic losses - refer to documentation for details|Loss exponent w.r.t. rpm";
-  parameter Real V_flow_opt_(min=0.0, max=1) = 0.6 "|Expert Settings|Hydraulic losses - refer to documentation for details|Relative position of nest point at V_flow axis in p.u.";
-  parameter Real exp_flow=2 "|Expert Settings|Hydraulic losses - refer to documentation for details|Loss exponent w.r.t. volume flow";
-  parameter SI.RPM rpm_stirrS = rpm_nom/4 "|Expert Settings|Hydraulic losses - refer to documentation for details|RPM at which rotor starts to act like a stirrer";
-  parameter SI.RPM rpm_stirrE= rpm_nom/5 "|Expert Settings|Hydraulic losses - refer to documentation for details|RPM at which rotor acta like a stirrer";
-  parameter SI.Area clearSection= 1 "|Expert Settings|Non-Design operation - refer to documentation for details|Effective clear section of pump";
+  parameter Real eta_hyd_nom=0.8 "Max. hydraulic efficiency at nominal speed" annotation(Dialog(group = "Characteristic Field"));
+  parameter Real exp_rpm=2 "Loss exponent w.r.t. rpm" annotation(Dialog(tab = "Expert Settings", group="Hydraulic Losses - refer to documentation for details"));
+  parameter Real V_flow_opt_(min=0.0, max=1) = 0.6
+    "Relative position of nest point at V_flow axis in p.u."                                                annotation(Dialog(tab = "Expert Settings", group="Hydraulic Losses - refer to documentation for details"));
+  parameter Real exp_flow=2 "Loss exponent w.r.t. volume flow" annotation(Dialog(tab = "Expert Settings", group="Hydraulic Losses - refer to documentation for details"));
+  parameter SI.RPM rpm_stirrS = rpm_nom/4
+    "RPM at which rotor starts to act like a stirrer"                                       annotation(Dialog(tab = "Expert Settings", group="Hydraulic Losses - refer to documentation for details"));
+  parameter SI.RPM rpm_stirrE= rpm_nom/5
+    "RPM at which rotor acts like a stirrer"                                      annotation(Dialog(tab = "Expert Settings", group="Hydraulic Losses - refer to documentation for details"));
 
-  parameter SI.VolumeFlowRate V_flow_leak = 0.00002 "|Expert Settings|Non-Design operation - refer to documentation for details|Leakage mass flow";
-  parameter SI.Pressure Delta_p_eps= 100 "|Expert Settings|Numerical Robustness|Small pressure difference for linearisation around zero mass flow";
-  parameter Boolean stabiliseDelta_p=false "|Expert Settings|Numerical Robustness|Avoid chattering due to small pressure differences between inlet and outlet at small mass flows";
-  parameter SI.Time Tau_stab=1 "Stabiliser state time constant - refer to documentation for details."
-                                                                           annotation(Dialog(tab="Expert Settings",group="Numerical Robustness",enable=stabiliseDelta_p));
+  parameter SI.Area clearSection= 1 "Effective clear section of pump"
+                                                                     annotation(Dialog(tab = "Expert Settings", group="Non-Design Operation - refer to documentation for details"));
+  parameter SI.VolumeFlowRate V_flow_leak = 0.00002 "Leakage mass flow" annotation(Dialog(tab = "Expert Settings", group="Non-Design Operation - refer to documentation for details"));
 
-//   SI.Pressure Delta_p
-//     "Pressure difference between pressure side and suction side";
-//   SI.VolumeFlowRate V_flow "Volume flow rate";
-//   SI.Power P_hyd;
+  parameter SI.Pressure Delta_p_eps= 100
+    "Small pressure difference for linearisation around zero mass flow"                                 annotation(Dialog(tab = "Expert Settings", group="Numerical Robustness"));
+  parameter Boolean stabiliseDelta_p=false
+    "Avoid chattering due to small pressure differences between inlet and outlet at small mass flows"
+                                                                                                        annotation(Dialog(tab = "Expert Settings", group="Numerical Robustness"));
+  parameter SI.Time Tau_stab=1
+    "Stabiliser state time constant - refer to documentation for details."                  annotation(Dialog(tab="Expert Settings",group="Numerical Robustness",enable=stabiliseDelta_p));
 
   outer ClaRa.SimCenter simCenter;
   ClaRa.Basics.Interfaces.FluidPortIn inlet(
@@ -122,11 +130,8 @@ public
   Basics.Interfaces.EyeOut       eye if showData
     annotation (Placement(transformation(extent={{90,-70},{110,-50}}),
         iconTransformation(extent={{100,-70},{120,-50}})));
-protected
-  SI.MassFlowRate m_flow_in_start( start=m_flow_nom);
-  SI.MassFlowRate m_flow_out_start( start=m_flow_nom);
-  SI.EnthalpyMassSpecific h_iso_start(start=h_start);
 
+protected
   Basics.Interfaces.EyeIn       eye_int
     annotation (Placement(transformation(extent={{45,-61},{47,-59}})));
 
@@ -152,7 +157,9 @@ protected
     medium=medium,
     showData=false,
     rpm_stirrS=rpm_stirrS,
-    rpm_stirrE=rpm_stirrE) annotation (Placement(transformation(extent={{-10,-10},{10,10}})));
+    rpm_stirrE=rpm_stirrE,
+    contributeToCycleSummary=contributeToCycleSummary,
+    drp_exp=drp_exp)       annotation (Placement(transformation(extent={{-10,-10},{10,10}})));
 
   Basics.ControlVolumes.FluidVolumes.VolumeVLE_2 pumpFluidVolume(medium=medium,
     useHomotopy=useHomotopy,
@@ -175,7 +182,8 @@ public
               head= pump.Delta_p/(fluidIn.d*Modelica.Constants.g_n),
               NPSHa = (inlet.p - fluidIn.VLE.p_l)/(fluidIn.d*Modelica.Constants.g_n),
               eta_hyd= pump.eta_hyd,
-              eta_mech=1),
+              eta_mech=1,
+              rpm=pump.rpm),
       inlet(  showExpertSummary = showExpertSummary,
               m_flow=inlet.m_flow,
               T=fluidIn.T,
@@ -204,22 +212,17 @@ public
 
   SI.Power P_shaft=pump.P_shaft "Mechanicl power at shaft";
 
+// initial equation
+//   inlet.m_flow=m_flow_in_start;
+//   outlet.m_flow=m_flow_out_start;
+//   h_iso_start=pump.h_iso;
 equation
-  inlet.m_flow=m_flow_in_start;
-  outlet.m_flow=m_flow_out_start;
-  h_iso_start=pump.h_iso;
-
   eye_int.m_flow = -outlet.m_flow;
   eye_int.T = fluidOut.T-273.15;
   eye_int.s = fluidOut.s/1e3;
   eye_int.p = outlet.p/1e5;
   eye_int.h = fluidOut.h/1e3;
 
-  connect(eye,eye_int)  annotation (Line(
-      points={{100,-60},{46,-60}},
-      color={255,204,51},
-      thickness=0.5,
-      smooth=Smooth.None));
   connect(inlet, pump.inlet)                      annotation (Line(
       points={{-100,0},{-10,0}},
       color={0,131,169},
@@ -243,8 +246,8 @@ equation
       points={{0,9.9},{0,72}},
       color={0,0,0},
       smooth=Smooth.None));
+  connect(eye_int, eye) annotation (Line(points={{46,-60},{72,-60},{72,-60},{100,-60}}, color={190,190,190}));
   annotation (Icon(graphics),
       Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
-            100}}),
-              graphics));
+            100}})));
 end PumpVLE_L2_affinity;

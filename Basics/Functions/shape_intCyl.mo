@@ -1,7 +1,8 @@
 within ClaRa.Basics.Functions;
-function shape_intCyl "Horizontal area of a cylinder vertically intersecting a horizontal cylinder of large diameter discretised output"
+function shape_intCyl
+  "Horizontal area of a cylinder vertically intersecting a horizontal cylinder of large diameter discretised output"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -14,7 +15,7 @@ function shape_intCyl "Horizontal area of a cylinder vertically intersecting a h
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
-
+  extends ClaRa.Basics.Icons.Function;
   input Real H_fill "Total filling height";
   input Real D1 "Diameter of vertical cylinder";
   input Real D2 "Diameter of horizontal cylinder";

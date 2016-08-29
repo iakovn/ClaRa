@@ -1,7 +1,8 @@
 within ClaRa.Components.TurboMachines.Pumps;
-model PumpVLE_L1_simple "A pump for VLE mixtures with a volume flow rate depending on drive power and pressure difference only"
+model PumpVLE_L1_simple
+  "A pump for VLE mixtures with a volume flow rate depending on drive power and pressure difference only"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -24,10 +25,11 @@ extends ClaRa.Basics.Icons.ComplexityLevel(complexity="L1");
 
   parameter Real eta_mech = 0.98 "Mechanic efficiency of the drive"
    annotation(Dialog(group="Part Load and Efficiency"));
-parameter ClaRa.Basics.Units.Pressure Delta_p_eps=100 "|Expert Settings| Numerical Robustnes|Small pressure difference for linearisation around zero";
+parameter ClaRa.Basics.Units.Pressure Delta_p_eps=100
+    "|Expert Settings| Numerical Robustnes|Small pressure difference for linearisation around zero";
 
-  Modelica.Blocks.Interfaces.RealInput P_drive "Power input of the pump's motor"
-                                      annotation (Placement(transformation(
+  Modelica.Blocks.Interfaces.RealInput P_drive
+    "Power input of the pump's motor" annotation (Placement(transformation(
         extent={{-20,-20},{20,20}},
         rotation=270,
         origin={0,120})));
@@ -56,7 +58,8 @@ equation
   Delta_p=outlet.p-inlet.p "Momentum balance";
 //   inStream(inlet.h_outflow) + outlet.h_outflow + P_hyd/inlet.m_flow/eta_hyd = 0.0
 //     "Energy balance";
-  outlet.h_outflow = inStream(inlet.h_outflow)  + P_drive*eta_mech/(inlet.m_flow+1e-6) "Energy balance";
+  outlet.h_outflow = inStream(inlet.h_outflow)  + P_drive*eta_mech/(inlet.m_flow+1e-6)
+    "Energy balance";
 
   annotation (Icon(graphics), Diagram(graphics));
 end PumpVLE_L1_simple;

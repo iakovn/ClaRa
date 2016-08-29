@@ -1,7 +1,7 @@
 within ClaRa.SubSystems.Boiler.Check;
 model Compare_SteamGenerator_1and2
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -39,7 +39,8 @@ model Compare_SteamGenerator_1and2
         turbinesAndReheat_01_XRG.P_gen_) "Set value of live steam pressure"
     annotation (Placement(transformation(extent={{-132,80},{-112,100}})));
   Modelica.Blocks.Sources.RealExpression MV_Pressure_LS(y=homotopy(
-        realPlantPower_.y, turbinesAndReheat_01_XRG.P_gen_)) "Measurement value of live steam pressure"
+        realPlantPower_.y, turbinesAndReheat_01_XRG.P_gen_))
+    "Measurement value of live steam pressure"
     annotation (Placement(transformation(extent={{-132,64},{-112,84}})));
   Modelica.Blocks.Sources.Ramp ramp2(
     offset=1,
@@ -54,7 +55,8 @@ model Compare_SteamGenerator_1and2
     Pi=28e5/240e5,
     p_nom=24000000) annotation (Placement(transformation(extent={{77,-74},{89,-58}})));
   Components.BoundaryConditions.BoundaryVLE_phxi      pressureSink1(variable_p=false, p_const(displayUnit="Pa") = 3000) annotation (Placement(transformation(extent={{186,-90},{168,-70}})));
-  inner SimCenter simCenter(redeclare replaceable TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1) annotation (Placement(transformation(extent={{180,180},{200,200}})));
+  inner SimCenter simCenter(redeclare replaceable
+      TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater                                             fluid1) annotation (Placement(transformation(extent={{180,180},{200,200}})));
   Components.Control.PredictorModels_3508.TurbinesAndReheat_01_XRG turbinesAndReheat_01_XRG(CL_Deltah_p=[0.5000e7,0.9*0.1889e7; 0.6000e7,0.9*0.1889e7; 0.8000e7,0.9*0.1910e7; 1.0000e7,0.9*0.1923e7; 1.2000e7,0.9*0.1930e7; 1.4000e7,0.9*0.1933e7; 1.6000e7,0.9*0.1934e7; 1.8000e7,0.9*0.1933e7; 2.0000e7,0.9*0.1930e7; 2.2000e7,0.9*0.1926e7; 2.4000e7,0.9*0.1921e7; 2.5000e7,0.9*0.1921e7]) annotation (Placement(transformation(extent={{82,90},{112,124}})));
   ClaRa.Components.TurboMachines.Turbines.SteamTurbineVLE_L1 LPTurbine(
     Pi=3000/28e5,

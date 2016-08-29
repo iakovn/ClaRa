@@ -1,7 +1,8 @@
 within ClaRa.Components.Control.PowerPlantControl;
-model LiveSteamTemperature "A simple controller for the live steam temperature based on Strauss: \"Kraftwerkstechnik\", 5th edition, 2006."
+model LiveSteamTemperature
+  "A simple controller for the live steam temperature based on Strauss: \"Kraftwerkstechnik\", 5th edition, 2006."
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -87,21 +88,24 @@ public
         origin={-110,-80})));
   parameter Real T_a2_ref=873.15 "Reference value for controlled variable";
   parameter Real k_PID2=1 "Gain of PID2";
-  parameter Modelica.SIunits.Time Tau_i_PID2=0.5 "Integration time constant of PID2";
+  parameter Modelica.SIunits.Time Tau_i_PID2=0.5
+    "Integration time constant of PID2";
   parameter Real T_e2_ref=1 "Reference value injector 2 outlet temperature";
   parameter Real k_P2=1 "Gain value multiplied with input signal";
-  parameter Real Delta_T_2_ref=20 "Reference value for Temperature difference over injector 2";
+  parameter Real Delta_T_2_ref=20
+    "Reference value for Temperature difference over injector 2";
   parameter Real T_e1_ref=1 "Reference value for injector 1 outlet temperature";
   parameter Real k_PID1=1 "Gain of controller";
-  parameter Modelica.SIunits.Time Tau_i_PID1=0.5 "Time constant of Integrator block";
+  parameter Modelica.SIunits.Time Tau_i_PID1=0.5
+    "Time constant of Integrator block";
   parameter Real k_P1=1 "Gain of controller";
 equation
   connect(PID2.y, add2.u1) annotation (Line(
-      points={{7,57.1},{50,57.1},{50,48}},
+      points={{7,57},{50,57},{50,48}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(MeasurementValues.T_a2, PID2.u_m) annotation (Line(
-      points={{0,98},{-72,98},{-72,68},{-4,68},{-4,68},{-3.8,68}},
+      points={{0,98},{-72,98},{-72,68},{-3.8,68}},
       color={255,204,51},
       thickness=0.5,
       smooth=Smooth.None), Text(
@@ -137,19 +141,19 @@ equation
       color={0,0,127},
       smooth=Smooth.None));
   connect(P1.y, opening1) annotation (Line(
-      points={{-2,-78.9},{-2,-80},{-110,-80}},
+      points={{-2,-79},{-2,-80},{-110,-80}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(PID1.y, P1.u_s) annotation (Line(
-      points={{-2,-38.9},{-2,-43.25},{-2,-43.25},{-2,-47.5},{-2,-56},{-2,-56}},
+      points={{-2,-39},{-2,-56}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(feedback2.y, opening2) annotation (Line(
-      points={{7.5,25.1},{10,25.1},{10,20},{-110,20}},
+      points={{7.5,25},{10,25},{10,20},{-110,20}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(PID2.y, feedback2.u_s) annotation (Line(
-      points={{7,57.1},{7,52.5},{7.5,52.5},{7.5,48}},
+      points={{7,57},{7,52.5},{7.5,52.5},{7.5,48}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(MeasurementValues.T_e2, feedback2.u_m) annotation (Line(

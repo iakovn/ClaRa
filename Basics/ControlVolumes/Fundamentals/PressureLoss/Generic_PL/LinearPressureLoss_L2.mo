@@ -1,7 +1,8 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL;
-model LinearPressureLoss_L2 "All geo || Linear pressure loss || Nominal pressure difference"
+model LinearPressureLoss_L2
+  "All geo || Linear pressure loss || Nominal pressure difference"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.0                        //
+  // Component of the ClaRa library, version: 1.1.1                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,7 +16,8 @@ model LinearPressureLoss_L2 "All geo || Linear pressure loss || Nominal pressure
   // XRG Simulation GmbH (Hamburg, Germany).                                   //
   //___________________________________________________________________________//
   outer ClaRa.Basics.Records.IComBase_L2 iCom;
-  extends ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.PressureLoss_L2;
+  extends
+    ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.PressureLoss_L2;
   extends ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.TubeType_L2;
   extends ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.ShellType_L2;
 

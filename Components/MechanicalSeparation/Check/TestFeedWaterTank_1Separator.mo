@@ -1,7 +1,7 @@
 within ClaRa.Components.MechanicalSeparation.Check;
 model TestFeedWaterTank_1Separator "test case to compare FeedWaterTank_1 and FeedWaterTank_3"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,7 +15,49 @@ model TestFeedWaterTank_1Separator "test case to compare FeedWaterTank_1 and Fee
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
 
-  extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb60;
+ extends ClaRa.Basics.Icons.PackageIcons.ExecutableRegressiong100;
+model Regression
+  extends ClaRa.Basics.Icons.RegressionSummary;
+  Modelica.Blocks.Interfaces.RealInput mass_L1 "mass of L1 model";
+  Modelica.Blocks.Interfaces.RealInput mass_L3 "mass of L3 model";
+  Modelica.Blocks.Interfaces.RealInput mass_L3_adv "mass of L3 adv. model";
+
+  Modelica.Blocks.Interfaces.RealInput level_L1 "Level of L1 model";
+  Modelica.Blocks.Interfaces.RealInput level_L3 "Level of L3 model";
+  Modelica.Blocks.Interfaces.RealInput level_L3_adv "Level of L3 adv. model";
+
+  Modelica.Blocks.Interfaces.RealInput p_L1 "Steam quality of L1 model";
+  Modelica.Blocks.Interfaces.RealInput x_L3 "Steam quality of L3 model";
+  Modelica.Blocks.Interfaces.RealInput x_L3_adv "Steam quality of L3 adv. model";
+
+  Real y_level_L1_int = integrator1.y;
+  Real y_level_L3_int = integrator2.y;
+  Real y_level_L3a_int = integrator3.y;
+
+  Real y_mass_L1_max = timeExtrema1.y_max;
+  Real y_mass_L1_min = timeExtrema1.y_min;
+  Real y_mass_L3_max = timeExtrema2.y_max;
+  Real y_mass_L3_min = timeExtrema2.y_min;
+  Real y_mass_L3a_max = timeExtrema3.y_max;
+  Real y_mass_L3a_min = timeExtrema3.y_min;
+
+  Real y_p_L1_int = integrator4.y;
+  Real y_x_L3_int = integrator5.y;
+  Real y_x_L3a_int = integrator6.y;
+
+  protected
+  Components.Utilities.Blocks.Integrator integrator1(u = level_L1);
+  Components.Utilities.Blocks.Integrator integrator2(u = level_L3);
+  Components.Utilities.Blocks.Integrator integrator3(u = level_L3_adv);
+
+  Components.Utilities.Blocks.TimeExtrema timeExtrema1(u = mass_L1, startTime=500);
+  Components.Utilities.Blocks.TimeExtrema timeExtrema2(u = mass_L3, startTime=500, initOption=1, y_start={5000,0});
+  Components.Utilities.Blocks.TimeExtrema timeExtrema3(u = mass_L3_adv, startTime=500, initOption=1, y_start={5000,0});
+
+  Components.Utilities.Blocks.Integrator integrator4(u = p_L1, startTime=500);
+  Components.Utilities.Blocks.Integrator integrator5(u = x_L3, startTime=500);
+  Components.Utilities.Blocks.Integrator integrator6(u = x_L3_adv, startTime=500);
+end Regression;
 
   inner SimCenter simCenter(redeclare replaceable TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1, showExpertSummary=true)
                                                                                             annotation (Placement(transformation(extent={{-100,-240},{-60,-220}})));
@@ -71,10 +113,12 @@ model TestFeedWaterTank_1Separator "test case to compare FeedWaterTank_1 and Fee
     Tau_cond=0.001,
     initType=ClaRa.Basics.Choices.Init.steadyDensity,
     smoothness=Modelica.Blocks.Types.Smoothness.ContinuousDerivative,
+    levelOutput=true,
+    showLevel=true,
     p_nom=900000,
     p_start=900000,
-    redeclare model PressureLoss =
-        Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.NoFriction_L3)                       annotation (Placement(transformation(extent={{-34,-86},{26,-66}})));
+    redeclare model PressureLoss = Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.NoFriction_L3)
+                                                                                                    annotation (Placement(transformation(extent={{-34,-86},{26,-66}})));
 
   ClaRa.Components.BoundaryConditions.BoundaryVLE_hxim_flow massFlowSource_XRG12(m_flow_const=-10, variable_m_flow=true) annotation (Placement(transformation(extent={{60,-38},{40,-18}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_hxim_flow massFlowSource_XRG13(
@@ -91,11 +135,14 @@ model TestFeedWaterTank_1Separator "test case to compare FeedWaterTank_1 and Fee
     z_in=4,
     z_out=0.1,
     orientation=ClaRa.Basics.Choices.GeometryOrientation.horizontal,
-    initType=ClaRa.Basics.Choices.Init.steadyDensityPressure,
     redeclare model PressureLoss =
         ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.NoFriction_L2,
+    showLevel=true,
+    levelOutput=true,
     p_nom=900000,
-    p_start=900000) annotation (Placement(transformation(extent={{-36,-14},{24,6}})));
+    p_start=900000,
+    initType=ClaRa.Basics.Choices.Init.steadyDensityPressure)
+                    annotation (Placement(transformation(extent={{-36,-14},{24,6}})));
 
   ClaRa.Components.BoundaryConditions.BoundaryVLE_hxim_flow massFlowSource_XRG14(
     variable_m_flow=false,
@@ -109,7 +156,7 @@ model TestFeedWaterTank_1Separator "test case to compare FeedWaterTank_1 and Fee
         rotation=180,
         origin={-50,32})));
 
-  ClaRa.Components.BoundaryConditions.BoundaryVLE_hxim_flow massFlowSource_XRG1(m_flow_const=-10, variable_m_flow=true) annotation (Placement(transformation(extent={{60,-226},{40,-206}})));
+  ClaRa.Components.BoundaryConditions.BoundaryVLE_hxim_flow massFlowSource_XRG1(m_flow_const=-10, variable_m_flow=true) annotation (Placement(transformation(extent={{60,-242},{40,-222}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_hxim_flow massFlowSource_XRG2(
     m_flow_const=400,
     variable_m_flow=true,
@@ -123,7 +170,7 @@ model TestFeedWaterTank_1Separator "test case to compare FeedWaterTank_1 and Fee
     h_const=814e3) annotation (Placement(transformation(
         extent={{10,-10},{-10,10}},
         rotation=180,
-        origin={-50,-156})));
+        origin={-50,-132})));
   FeedWaterTank_L3_advanced tank_L3_adv(
     diameter=4,
     m_flow_cond_nom=400,
@@ -143,6 +190,8 @@ model TestFeedWaterTank_1Separator "test case to compare FeedWaterTank_1 and Fee
     z_tapping=0.2,
     redeclare model PressureLoss =
         Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3 (                  Delta_p_nom={2e5*423/14,1000*400/423,1000*23/423}),
+    levelOutput=true,
+    showLevel=true,
     p_nom=900000,
     p_start=900000)                                                                                                     annotation (Placement(transformation(extent={{-30,-202},{30,-182}})));
 
@@ -153,6 +202,26 @@ model TestFeedWaterTank_1Separator "test case to compare FeedWaterTank_1 and Fee
         VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint (                                                                                Delta_p_nom=2e5*423/14, m_flow_nom=423)) annotation (Placement(transformation(extent={{20,-56},{0,-44}})));
   Visualisation.Quadruple quadruple annotation (Placement(transformation(extent={{-16,-26},{4,-16}})));
   Visualisation.Quadruple quadruple1 annotation (Placement(transformation(extent={{-14,-100},{6,-90}})));
+  ClaRa.Components.BoundaryConditions.BoundaryVLE_hxim_flow massFlowSource_XRG6(
+    h_const=814e3,
+    variable_m_flow=false,
+    m_flow_const=-0.5)
+                   annotation (Placement(transformation(
+        extent={{10,-10},{-10,10}},
+        rotation=180,
+        origin={-50,-156})));
+  Visualisation.Quadruple quadruple2 annotation (Placement(transformation(extent={{-10,-216},{22,-206}})));
+  Visualisation.Quadruple quadruple3 annotation (Placement(transformation(extent={{-36,-180},{-4,-170}})));
+  Regression regression(mass_L1 = tank_L2.volume.summary.fluid.mass,
+    mass_L3= tank_L3.volume.summary.fluid.mass[2],
+    mass_L3_adv=tank_L3_adv.volume.summary.fluid.mass[2],
+    level_L1=tank_L2.summary.outline.level_rel,
+    level_L3=tank_L3.volume.summary.outline.level_rel,
+    level_L3_adv = tank_L3_adv.volume.summary.outline.level_rel,
+    p_L1=tank_L2.volume.summary.fluid.p,
+    x_L3=tank_L3.volume.summary.fluid.steamQuality[2],
+    x_L3_adv=tank_L3_adv.volume.summary.fluid.steamQuality[2]) annotation (Placement(transformation(extent={{-100,-160},{-80,-140}})));
+
 equation
   connect(ramp2.y, massFlowSource_XRG7.m_flow) annotation (Line(
       points={{-77,6},{-70,6},{-70,-64},{-62,-64}},
@@ -198,12 +267,12 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(massFlowSource_XRG1.steam_a, tank_L3_adv.outlet) annotation (Line(
-      points={{40,-216},{-30,-216},{-30,-202},{-26,-202}},
+      points={{40,-232},{-26,-232},{-26,-202}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
   connect(ramp2.y, massFlowSource_XRG8.m_flow) annotation (Line(
-      points={{-77,6},{-70,6},{-70,-162},{-62,-162}},
+      points={{-77,6},{-70,6},{-70,-138},{-62,-138}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(ramp1.y, massFlowSource_XRG13.m_flow) annotation (Line(
@@ -227,11 +296,11 @@ equation
       color={0,0,127},
       smooth=Smooth.None));
   connect(ramp.y, massFlowSource_XRG1.m_flow) annotation (Line(
-      points={{107,-20},{84,-20},{84,-210},{62,-210}},
+      points={{107,-20},{84,-20},{84,-226},{62,-226}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(massFlowSource_XRG8.steam_a, tank_L3_adv.aux) annotation (Line(
-      points={{-40,-156},{16,-156},{16,-186}},
+      points={{-40,-132},{16,-132},{16,-186}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
@@ -253,8 +322,15 @@ equation
       points={{-40,-58},{-24,-58},{-24,-68}},
       color={0,131,169},
       thickness=0.5));
-  connect(tank_L2.eye, quadruple.eye) annotation (Line(points={{-26,-15},{-26,-21},{-16,-21}}, color={190,190,190}));
-  connect(tank_L3.eye, quadruple1.eye) annotation (Line(points={{-24,-87},{-24,-87},{-24,-95},{-14,-95}}, color={190,190,190}));
+  connect(tank_L2.eye, quadruple.eye) annotation (Line(points={{-28,-15},{-28,-21},{-16,-21}}, color={190,190,190}));
+  connect(tank_L3.eye, quadruple1.eye) annotation (Line(points={{-26,-87},{-24,-87},{-24,-95},{-14,-95}}, color={190,190,190}));
+  connect(tank_L3_adv.vent, massFlowSource_XRG6.steam_a) annotation (Line(
+      points={{0,-182.2},{0,-182.2},{0,-174},{0,-156},{-40,-156}},
+      color={0,131,169},
+      pattern=LinePattern.Solid,
+      thickness=0.5));
+  connect(quadruple2.eye, tank_L3_adv.eye) annotation (Line(points={{-10,-211},{-16,-211},{-22,-211},{-22,-203}}, color={190,190,190}));
+  connect(quadruple3.eye, tank_L3_adv.eye_sat) annotation (Line(points={{-36,-175},{-36,-175},{-4,-175},{-4,-181}}, color={190,190,190}));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=false,extent={{-100,-240},{100,140}}),
                          graphics={Text(
           extent={{-98,108},{102,56}},
@@ -286,7 +362,11 @@ thery a bit more difficult to initialize than tank_L1 but also more realistic th
           fillPattern=FillPattern.Solid,
           horizontalAlignment=TextAlignment.Left,
           fontSize=20,
-          textString="TESTED, 13. 01. 2016 //FG")}),
+          textString="TESTED, 13. 01. 2016 //FG"),
+        Rectangle(
+          extent={{-100,140},{100,-240}},
+          lineColor={115,150,0},
+          lineThickness=0.5)}),
     Icon(coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=true)),
     experiment(StopTime=30000),
     __Dymola_experimentSetupOutput);

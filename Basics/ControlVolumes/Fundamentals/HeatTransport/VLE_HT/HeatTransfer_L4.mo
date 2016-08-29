@@ -1,7 +1,8 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT;
 partial model HeatTransfer_L4 "VLE || HT Base Class"
   extends ClaRa.Basics.Icons.Alpha;
-  extends ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.HeatTransferBaseVLE_L4;
+  extends
+    ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.HeatTransferBaseVLE_L4;
   outer ClaRa.Basics.Records.IComVLE_L3 iCom;
   outer ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.PipeGeometry_N_cv geo;
   outer parameter Boolean useHomotopy;

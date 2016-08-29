@@ -1,7 +1,8 @@
 within ClaRa.Components.VolumesValvesFittings.Valves;
-model ThreeWayValveGas_L1 "Three way valve for gaseous media, not suitable for back flows!"
+model ThreeWayValveGas_L1
+  "Three way valve for gaseous media, not suitable for back flows!"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -18,8 +19,10 @@ model ThreeWayValveGas_L1 "Three way valve for gaseous media, not suitable for b
   extends ClaRa.Basics.Icons.ComplexityLevel(complexity="L1");
 
   replaceable model PressureLoss =
-      ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticFrictionFlowAreaSymetric_TWV  constrainedby ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.TWV_L1 "Pressure loss model"
-                                                                                            annotation(choicesAllMatching);
+      ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticFrictionFlowAreaSymetric_TWV
+                                                                                                        constrainedby
+    ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.TWV_L1
+    "Pressure loss model"                                                                   annotation(choicesAllMatching);
 
 public
   parameter SI.Area effectiveFlowArea=7.85e-3 "Effective flow area for outlets"
@@ -27,14 +30,15 @@ public
 //   parameter SI.Area effectiveFlowArea2=effectiveFlowArea1 "Effective flow area for outlet 2"
 //     annotation(Dialog(group="Valve Parameters"));
 
-  parameter SI.PressureDifference Delta_p_smooth = 100 "Below this value, root function is approximated linearly"
-                                                                                 annotation(Dialog(tab = "Expert Settings", group="Numerical Robustness"));
+  parameter SI.PressureDifference Delta_p_smooth = 100
+    "Below this value, root function is approximated linearly"                   annotation(Dialog(tab = "Expert Settings", group="Numerical Robustness"));
 
-parameter Boolean useStabilisedMassFlow=false "|Expert Settings|Numerical Robustness|";
+parameter Boolean useStabilisedMassFlow=false
+    "|Expert Settings|Numerical Robustness|";
     parameter SI.Time Tau= 0.001 "Time Constant of Stabilisation" annotation(Dialog(tab="Expert Settings", group = "Numerical Robustness", enable=useStabilisedMassFlow));
 
 public
-  record Summary
+  model Summary
     extends ClaRa.Basics.Icons.RecordIcon;
     //     Outline outline;
     ClaRa.Basics.Records.FlangeGas           inlet;
@@ -42,9 +46,9 @@ public
     ClaRa.Basics.Records.FlangeGas           outlet2;
   end Summary;
 
-   Summary summary(inlet(m_flow=inlet.m_flow,  T=gasIn.T, p=inlet.p, h=gasIn.h, H_flow= gasIn.h*inlet.m_flow),
-                   outlet1(m_flow = -outlet1.m_flow, T=gasOut1.T, p=outlet1.p, h=gasOut1.h, H_flow= -gasOut1.h*outlet1.m_flow),
-                   outlet2(m_flow = -outlet2.m_flow, T=gasOut2.T, p=outlet2.p, h=gasOut2.h, H_flow= -gasOut2.h*outlet2.m_flow))
+   Summary summary(inlet(m_flow=inlet.m_flow,  T=gasIn.T, p=inlet.p, h=gasIn.h, xi=gasIn.xi, H_flow= gasIn.h*inlet.m_flow),
+                   outlet1(m_flow = -outlet1.m_flow, T=gasOut1.T, p=outlet1.p, h=gasOut1.h, xi=gasOut1.xi, H_flow= -gasOut1.h*outlet1.m_flow),
+                   outlet2(m_flow = -outlet2.m_flow, T=gasOut2.T, p=outlet2.p, h=gasOut2.h, xi=gasOut2.xi, H_flow= -gasOut2.h*outlet2.m_flow))
     annotation (Placement(transformation(extent={{-60,-100},{-40,-80}})));
 
 inner ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.ICom_TWV iCom(

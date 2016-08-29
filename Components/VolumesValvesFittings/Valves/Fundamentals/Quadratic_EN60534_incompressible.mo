@@ -1,24 +1,35 @@
 within ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals;
-model Quadratic_EN60534_incompressible "Quadratic|Kv definition | supercritical flow | incompressible |EN60534"
-  extends ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.GenericPressureLoss;
+model Quadratic_EN60534_incompressible
+  "Quadratic|Kv definition | supercritical flow | incompressible |EN60534"
+  extends
+    ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.GenericPressureLoss;
   import SI = ClaRa.Basics.Units;
   import SM = ClaRa.Basics.Functions.Stepsmoother;
-  parameter Real Kvs(unit="m3/h") = 1 "|Valve Characteristics|Flow Coefficient at nominal opening (Delta_p_nom = 1e5 Pa, rho_nom=1000 kg/m^3(cold water))";
-  Real Kv(unit="m3/h") "|Valve Characteristics|Flow Coefficient (Delta_p_nom = 1e5 Pa, rho_nom=1000 kg/m^3(cold water))";
-  parameter Real F_L= 0.75 "|Valve Characteristics|Relative Pressure drop without fittings (see docu for typical values)";
-  parameter SI.MassFlowRate m_flow_nominal= Kvs/1000/3600 "|Valve Characteristics|Only for homotopy-based initialisation: Nominal mass flowrate at full opening";
-  parameter Real diameter_inlet(unit="mm") = 10 "|Valve Characteristics|Inlet fitting's diameter";
-  parameter Real diameter_valve(unit="mm") = 10 "|Valve Characteristics|Valve diameter";
-  parameter Real diameter_outlet(unit="mm") = 10 "|Valve Characteristics|Outlet fitting's diameter";
+  parameter Real Kvs(unit="m3/h") = 1
+    "|Valve Characteristics|Flow Coefficient at nominal opening (Delta_p_nom = 1e5 Pa, rho_nom=1000 kg/m^3(cold water))";
+  Real Kv(unit="m3/h")
+    "|Valve Characteristics|Flow Coefficient (Delta_p_nom = 1e5 Pa, rho_nom=1000 kg/m^3(cold water))";
+  parameter Real F_L= 0.75
+    "|Valve Characteristics|Relative Pressure drop without fittings (see docu for typical values)";
+  parameter SI.MassFlowRate m_flow_nominal= Kvs/1000/3600
+    "|Valve Characteristics|Only for homotopy-based initialisation: Nominal mass flowrate at full opening";
+  parameter Real diameter_inlet(unit="mm") = 10
+    "|Valve Characteristics|Inlet fitting's diameter";
+  parameter Real diameter_valve(unit="mm") = 10
+    "|Valve Characteristics|Valve diameter";
+  parameter Real diameter_outlet(unit="mm") = 10
+    "|Valve Characteristics|Outlet fitting's diameter";
 
-  parameter SI.Pressure Delta_p_eps= 100 "|Expert Settings||Small pressure difference for linearisation around zeor flow";
+  parameter SI.Pressure Delta_p_eps= 100
+    "|Expert Settings||Small pressure difference for linearisation around zeor flow";
   SI.Pressure Delta_p_choke;
 //  Real Delta_p_ "(p_inlet-p_outlet)/p_inlet";
 
 protected
   constant Real K1= 0.0016 "Coeffitient for calculation of F_P";
 
-  Real F_P = 1/sqrt(1+(((1-diameter_valve^4/diameter_inlet^4) - (1-diameter_valve^4/diameter_outlet^4) + 0.5*(1-(diameter_valve/diameter_inlet)^2)^2 + (1-(diameter_valve/diameter_outlet)^2)^2)*Kv^2/diameter_valve^4)/K1) "Pipe geometry correction factor";
+  Real F_P = 1/sqrt(1+(((1-diameter_valve^4/diameter_inlet^4) - (1-diameter_valve^4/diameter_outlet^4) + 0.5*(1-(diameter_valve/diameter_inlet)^2)^2 + (1-(diameter_valve/diameter_outlet)^2)^2)*Kv^2/diameter_valve^4)/K1)
+    "Pipe geometry correction factor";
   SI.Pressure p_in = max(iCom.p_in, iCom.p_out);
   Real F_LP = F_L / sqrt(1+(F_L^2*((1-diameter_valve^4/diameter_inlet^4) + 0.5*(1-(diameter_valve/diameter_inlet)^2)^2)/K1*(Kv^2/diameter_valve^4)));
 equation

@@ -1,5 +1,5 @@
 within ClaRa.Components.TurboMachines.Pumps.Fundamentals;
-record Outline
+model Outline
  extends ClaRa.Basics.Icons.RecordIcon;
  input SI.VolumeFlowRate V_flow "Volume flow rate";
  input SI.Power P_hyd "Hydraulic power";

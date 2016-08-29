@@ -1,7 +1,8 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT;
-model NusseltShell2ph_L2 "Shell Geo, Horizontal Piping || L2 || HTC || Nusselt (2ph)"
+model NusseltShell2ph_L2
+  "Shell Geo, Horizontal Piping || L2 || HTC || Nusselt (2ph)"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.0                        //
+  // Component of the ClaRa library, version: 1.1.1                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,7 +16,8 @@ model NusseltShell2ph_L2 "Shell Geo, Horizontal Piping || L2 || HTC || Nusselt (
   // XRG Simulation GmbH (Hamburg, Germany).                                   //
   //___________________________________________________________________________//
 
-  extends ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.HeatTransfer_L2;
+  extends
+    ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.HeatTransfer_L2;
   //extends ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.HeatTransferVLE;
   extends ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.ShellType_L2;
 
@@ -57,15 +59,19 @@ model NusseltShell2ph_L2 "Shell Geo, Horizontal Piping || L2 || HTC || Nusselt (
 
 protected
   Modelica.SIunits.ReynoldsNumber Re_1ph "Reynolds number for one phase";
-  Modelica.SIunits.NusseltNumber Nu_1ph "Nusselt number one tube row for one phase";
+  Modelica.SIunits.NusseltNumber Nu_1ph
+    "Nusselt number one tube row for one phase";
   Modelica.SIunits.PrandtlNumber Pr_1ph "Prandtl number of fluid for one phase";
-  Real failureStatus_1ph "0== boundary conditions fulfilled | 1== failure >> check if still meaningfull results";
+  Real failureStatus_1ph
+    "0== boundary conditions fulfilled | 1== failure >> check if still meaningfull results";
   Real alpha_1ph;
 
   Modelica.SIunits.ReynoldsNumber Re_2ph "Reynolds number for one phase";
-  Modelica.SIunits.NusseltNumber Nu_2ph "Nusselt number one tube row for one phase";
+  Modelica.SIunits.NusseltNumber Nu_2ph
+    "Nusselt number one tube row for one phase";
   Modelica.SIunits.PrandtlNumber Pr_2ph "Prandtl number of fluid for one phase";
-  Real failureStatus_2ph "0== boundary conditions fulfilled | 1== failure >> check if still meaningfull results";
+  Real failureStatus_2ph
+    "0== boundary conditions fulfilled | 1== failure >> check if still meaningfull results";
   Real alpha_2ph;
   parameter Real steamQuality = TILMedia.VLEFluidFunctions.steamMassFraction_phxi(iCom.mediumModel, iCom.p_nom,iCom.h_nom,iCom.xi_nom);
 
@@ -83,16 +89,19 @@ protected
   constant Real heps=1000;
 
 public
-  final parameter Real C=if geo.staggeredAlignment then 1 else 0.8 "Correction factor for tube arrangement: offset pattern=1| aligned pattern=0.8"
+  final parameter Real C=if geo.staggeredAlignment then 1 else 0.8
+    "Correction factor for tube arrangement: offset pattern=1| aligned pattern=0.8"
                                                                                         annotation (Dialog(tab="General", group="Geometry"));
-  parameter Boolean heating_nom=false "Ture, if nominal state implies heating, else fasle" annotation (Dialog(group="Heat Transfer"));
+  parameter Boolean heating_nom=false
+    "Ture, if nominal state implies heating, else fasle"                                   annotation (Dialog(group="Heat Transfer"));
   parameter Integer heatSurfaceAlloc=2 "To be considered heat transfer area" annotation (dialog(enable=false, tab="Expert Setting"), choices(
       choice=1 "Lateral surface",
       choice=2 "Inner heat transfer surface",
       choice=3 "Selection to be extended"));
   Modelica.SIunits.CoefficientOfHeatTransfer alpha;
 
-  FluidDissipation.HeatTransfer.HeatExchanger.kc_tubeBundleFilmCondensation_lam_IN_var inVar_2ph(
+  FluidDissipation.HeatTransfer.HeatExchanger.kc_tubeBundleFilmCondensation_lam_IN_var
+                                                                                       inVar_2ph(
     cp_l=fluidObjectFunction_cp_bubble(
         iCom.p_out,
         iCom.xi_out,
@@ -141,14 +150,18 @@ public
         iCom.p_out,
         iCom.xi_out,
         iCom.fluidPointer_out)),
-    m_flow=max(1e-5, abs(iCom.m_flow_in))) "noEvent(max(Modelica.Constants.eps, max(iCom.m_flow_in, iCom.m_flow_out)))"
+    m_flow=max(1e-5, abs(iCom.m_flow_in)))
+    "noEvent(max(Modelica.Constants.eps, max(iCom.m_flow_in, iCom.m_flow_out)))"
                                                                                         annotation (Placement(transformation(extent={{-42,-100},{-22,-80}})));
 
-  final parameter FluidDissipation.HeatTransfer.HeatExchanger.kc_tubeBundleFilmCondensation_lam_IN_con inCon_2ph(
+  final parameter
+    FluidDissipation.HeatTransfer.HeatExchanger.kc_tubeBundleFilmCondensation_lam_IN_con
+                                                                                                       inCon_2ph(
     A_front=geo.A_front,
     d=geo.diameter_t,
     C=if geo.N_rows > 1 then C else 1) annotation (Placement(transformation(extent={{-14,-100},{6,-80}})));
-  final parameter FluidDissipation.HeatTransfer.HeatExchanger.kc_tubeBundle_1ph_IN_con inCon_1ph(
+  final parameter
+    FluidDissipation.HeatTransfer.HeatExchanger.kc_tubeBundle_1ph_IN_con               inCon_1ph(
     d=geo.diameter_t,
     staggeredAlignment=geo.staggeredAlignment,
     A_front=geo.A_front,
@@ -179,7 +192,8 @@ public
         iCom.h_out,
         iCom.xi_out,
         iCom.fluidPointer_out),
-    m_flow=max(1e-5, abs(iCom.m_flow_in))) "noEvent(max(Modelica.Constants.eps, max(iCom.m_flow_in, iCom.m_flow_out)))"
+    m_flow=max(1e-5, abs(iCom.m_flow_in)))
+    "noEvent(max(Modelica.Constants.eps, max(iCom.m_flow_in, iCom.m_flow_out)))"
                                                                                         annotation (Placement(transformation(extent={{62,-100},{82,-80}})));
   TILMedia.VLEFluid_pT fluid_wall(
     T = heat.T,
@@ -188,7 +202,9 @@ public
     computeTransportProperties=true,
     computeVLETransportProperties=true,
     computeVLEAdditionalProperties=true) annotation (Placement(transformation(extent={{80,80},{100,100}})));
-  final parameter FluidDissipation.HeatTransfer.HeatExchanger.kc_tubeBundleFilmCondensation_lam_IN_var inVar_2ph_nom(
+  final parameter
+    FluidDissipation.HeatTransfer.HeatExchanger.kc_tubeBundleFilmCondensation_lam_IN_var
+                                                                                                       inVar_2ph_nom(
     rho_g=TILMedia.VLEFluidFunctions.dewDensity_pxi(medium, iCom.p_nom),
     rho_l=TILMedia.VLEFluidFunctions.bubbleDensity_pxi(medium, iCom.p_nom),
     dh_lg=TILMedia.VLEFluidFunctions.dewSpecificEnthalpy_pxi(medium, iCom.p_nom) - TILMedia.VLEFluidFunctions.bubbleSpecificEnthalpy_pxi(medium, iCom.p_nom),
@@ -210,11 +226,13 @@ public
     eta_l=TILMedia.VLEFluidFunctions.dynamicViscosity_phxi(
         medium,
         iCom.p_nom,
-        TILMedia.VLEFluidFunctions.bubbleSpecificEnthalpy_pxi(medium, iCom.p_nom))) "The correction term for considering the heat flow direction is switched off for the nominal calculation"
+        TILMedia.VLEFluidFunctions.bubbleSpecificEnthalpy_pxi(medium, iCom.p_nom)))
+    "The correction term for considering the heat flow direction is switched off for the nominal calculation"
                                                                                         annotation (Placement(transformation(extent={{-40,-70},{-20,-50}})));
 
 public
-  final parameter FluidDissipation.HeatTransfer.HeatExchanger.kc_tubeBundle_1ph_IN_var inVar_1ph_nom(
+  final parameter
+    FluidDissipation.HeatTransfer.HeatExchanger.kc_tubeBundle_1ph_IN_var               inVar_1ph_nom(
     cp=TILMedia.VLEFluidFunctions.specificIsobaricHeatCapacity_phxi(
         iCom.mediumModel,
         iCom.p_nom,

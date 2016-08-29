@@ -3,7 +3,8 @@ record PartialFuel "Base class for solid type media definition"
 
 constant Integer nc(min=1);
 parameter Modelica.SIunits.SpecificHeatCapacity cp;
-constant Real[nc-1]  defaultComposition "Elemental Compostion of coal, e.g. {C,H,O,N,S,Ash,H2O}";
+constant Real[nc-1]  defaultComposition
+    "Elemental Compostion of coal, e.g. {C,H,O,N,S,Ash,H2O}";
  annotation (Icon(graphics={
         Line(
           points={{-72,34},{-38,6},{-4,48},{38,6},{66,36}},

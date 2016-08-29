@@ -1,14 +1,14 @@
 within ClaRa.StaticCycles;
 model FixedPressure "Pressure fix point || blue | green"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                            //
+// Component of the ClaRa library, version: 1.1.1                            //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                              //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -16,10 +16,14 @@ model FixedPressure "Pressure fix point || blue | green"
 //___________________________________________________________________________//
 // Green input: Values of p, m_flow and h are unknown and provided BY neighbor component.
 // Blue output: Value of p is unknown and provided BY neighbor component, values of m_flow and h are known in component and provided FOR neighbor component.
-parameter ClaRa.Basics.Units.Pressure p;
-final parameter ClaRa.Basics.Units.MassFlowRate m_flow(fixed=false);
-final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_in(fixed=false);
-final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_out=h_in;
+  parameter ClaRa.Basics.Units.Pressure p "Pressure" annotation(Dialog(group= "Fundamental Definitions"));
+
+  final parameter ClaRa.Basics.Units.MassFlowRate m_flow(fixed=false)
+    "Mass flow rate";
+  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_in(fixed=false)
+    "Inlet spec. enthalpy";
+  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_out=h_in
+    "Outlet spec. enthalpy";
 
   Fundamentals.SteamSignal_green outlet(m_flow=m_flow, h=h_out, p=p)
     annotation (Placement(transformation(extent={{-64,-10},{-44,10}}),

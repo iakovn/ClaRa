@@ -1,7 +1,7 @@
 within ClaRa.Basics.Functions;
-function ThermoRoot "Numerical Square root function"
+function ThermoRoot "Numerical square root function"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,9 +15,9 @@ function ThermoRoot "Numerical Square root function"
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
 
-  extends Modelica.Icons.Function;
-  input Real x;
-  input Real deltax;
+  extends ClaRa.Basics.Icons.Function;
+  input Real x "Input for square root calculation";
+  input Real deltax "Interpolation region";
   output Real y;
 protected
   Real C3;

@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes;
 package GasVolumes 
 //___________________________________________________________________________//
-// Package of the ClaRa library, version: 1.1.0                              //
+// Package of the ClaRa library, version: 1.1.1                              //
 // Models of the ClaRa library are tested under DYMOLA v2016 FD01.           //
 // It is planned to support alternative Simulators like SimulationX in the   //
 // future                                                                    //
@@ -26,5 +26,7 @@ package GasVolumes
 
 
     extends ClaRa.Basics.Icons.PackageIcons.Basics60;
+
+
 
 end GasVolumes;

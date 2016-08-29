@@ -1,7 +1,8 @@
 within ClaRa.Components.Furnace.GeneralTransportPhenomena.ParticleMigration;
-model MeanMigrationSpeed "Determines the mean migration speed in dependence of the fluegas flow rates"
+model MeanMigrationSpeed
+  "Determines the mean migration speed in dependence of the fluegas flow rates"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,7 +16,8 @@ model MeanMigrationSpeed "Determines the mean migration speed in dependence of t
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
 
-extends ClaRa.Components.Furnace.GeneralTransportPhenomena.ParticleMigration.PartialMigrationSpeed;
+extends
+    ClaRa.Components.Furnace.GeneralTransportPhenomena.ParticleMigration.PartialMigrationSpeed;
 
     parameter ClaRa.Basics.Units.Velocity
                                       w_initial = 2 annotation(Dialog(tab="Start and initialisation values"));

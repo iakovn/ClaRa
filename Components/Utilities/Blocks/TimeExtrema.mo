@@ -1,7 +1,8 @@
 within ClaRa.Components.Utilities.Blocks;
-model TimeExtrema "Calculates the minimum and maximum value in a given period of time"
+model TimeExtrema
+  "Calculates the minimum and maximum value in a given period of time"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -14,6 +15,9 @@ model TimeExtrema "Calculates the minimum and maximum value in a given period of
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
+  parameter SI.Time startTime= 0 "Start time for min/max evaluation";
+  parameter Integer initOption= 0 "Init option |initial u| y_min/max_start" annotation(Dialog(group="Initialisation"), choices(choice=0 "initial u", choice=1 "initial y_min/y_max"));
+  parameter Real y_start[2]= {10,-10} "Y_min_start | y_max_start"  annotation(Dialog(group="Initialisation", enable=initOption==1));
 
 protected
   Real ymax;
@@ -27,36 +31,41 @@ public
   Modelica.Blocks.Interfaces.RealInput u
     annotation (Placement(transformation(extent={{-140,-20},{-100,20}})));
 equation
-  der(ymax)=noEvent(if ymax<u then (u-ymax)/1 else 0);
-  der(ymin)=noEvent(if ymin>u then (u-ymin)/1 else 0);
+  der(ymax)= if  time >= startTime then noEvent(if ymax<u then (u-ymax)/1 else 0) else 0;
+  der(ymin)= if  time >= startTime then noEvent(if ymin>u then (u-ymin)/1 else 0) else 0;
   y_max=ymax;
   y_min=ymin;
 initial equation
-  ymax=u;
-  ymin=u;
+  if initOption==0 then
+    ymax=u;
+    ymin=u;
+  elseif initOption ==1 then
+    ymin=y_start[1];
+    ymax=y_start[2];
+  else
+    assert(false, "Unknown initi option in component " + getInstanceName());
+  end if;
   annotation (Icon(graphics={
         Rectangle(
           extent={{-100,102},{100,-98}},
-          lineColor={0,0,0},
-          fillColor={255,255,255},
+          lineColor={221,222,223},
+          fillColor={118,124,127},
           fillPattern=FillPattern.Solid),
         Line(
           points={{-80,80},{-80,-78},{76,-78}},
-          color={0,0,0},
+          color={221,222,223},
           smooth=Smooth.None),
         Line(
-          points={{-68,-16},{-44,34},{-18,64},{-14,-36},{6,-38},{10,-28},{28,20},
-              {55.9805,-7.98047},{100,6}},
-          color={0,0,0},
+          points={{-80,-16},{-56,34},{-30,64},{-26,-36},{-6,-38},{-2,-28},{16,20},{43.9805,-7.98047},{76,2}},
+          color={221,222,223},
           smooth=Smooth.Bezier),
         Line(
-          points={{-68,-18},{-46,-18},{-16,-18},{-16,-18},{-10,-40},{16,-40},{
-              16,-40},{100,-40}},
-          color={44,91,135},
+          points={{-80,-18},{-58,-18},{-28,-18},{-28,-18},{-22,-40},{4,-40},{4,-40},{76,-40}},
+          color={27,36,42},
           smooth=Smooth.Bezier),
         Line(
-          points={{-68,-14},{-44,36},{-26,58},{8,58},{100,58}},
-          color={191,0,0},
+          points={{-80,-14},{-56,36},{-38,58},{-4,58},{76,58}},
+          color={167,25,48},
           smooth=Smooth.Bezier)}),
                                  Diagram(graphics));
 end TimeExtrema;

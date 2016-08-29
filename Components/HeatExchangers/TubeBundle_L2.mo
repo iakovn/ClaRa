@@ -1,7 +1,7 @@
 within ClaRa.Components.HeatExchangers;
 model TubeBundle_L2 "A flexible 0D tube bundle model"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.0                        //
+  // Component of the ClaRa library, version: 1.1.1                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -37,19 +37,22 @@ model TubeBundle_L2 "A flexible 0D tube bundle model"
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // parameter dialog~~~~~~~~~~~~~~~~~
-  parameter Modelica.SIunits.Length length=1 "Length of the volume in flow direction" annotation(Dialog(group="Geometry"));
+  parameter Modelica.SIunits.Length length=1
+    "Length of the volume in flow direction"                                          annotation(Dialog(group="Geometry"));
   parameter Modelica.SIunits.Length diameter=0.1 "Diameter of the single tube" annotation(Dialog(group="Geometry"));
   parameter Integer N_tubes=1 "Number of prallel tubes" annotation(Dialog(group="Geometry"));
   parameter Integer N_passes=1 "Number of passes of the internal tubes" annotation(Dialog(group="Geometry"));
   parameter Modelica.SIunits.Length z_in=length/2 "Inlet position from bottom" annotation(Dialog(group="Geometry"));
-  parameter Modelica.SIunits.Length z_out=length/2 "Outlet position from bottom"
-                                            annotation(Dialog(group="Geometry", groupImage="modelica://ClaRa/figures/ParameterDialog/PipeGeometry.png"));
+  parameter Modelica.SIunits.Length z_out=length/2
+    "Outlet position from bottom"           annotation(Dialog(group="Geometry", groupImage="modelica://ClaRa/figures/ParameterDialog/PipeGeometry.png"));
 
-  parameter Boolean showData=true "True, if a data port containing p,T,h,s,m_flow shall be shown, else false"
+  parameter Boolean showData=true
+    "True, if a data port containing p,T,h,s,m_flow shall be shown, else false"
                                                                                               annotation(Dialog(tab="Summary and Visualisation"));
-  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary "True if component shall contribute to automatic efficiency calculation"
-                                                                                              annotation(Dialog(tab="Summary and Visualisation"));
-  parameter Boolean heatFlowIsLoss = true "True if heat flow is a loss (not a process product)" annotation(Dialog(tab="Summary and Visualisation"));
+  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary
+    "True if component shall contribute to automatic efficiency calculation"                  annotation(Dialog(tab="Summary and Visualisation"));
+  parameter Boolean heatFlowIsLoss = true
+    "True if heat flow is a loss (not a process product)"                                       annotation(Dialog(tab="Summary and Visualisation"));
   ClaRa.Basics.Interfaces.EyeOut eye if showData
     annotation (Placement(transformation(extent={{90,-90},{110,-70}})));
 
@@ -68,7 +71,6 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   annotation (
-    Placement(transformation(extent={{-8,-10},{12,10}})),
     Icon(graphics),
     Diagram(graphics));
 end TubeBundle_L2;

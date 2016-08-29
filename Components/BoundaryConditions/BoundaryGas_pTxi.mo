@@ -1,7 +1,8 @@
 within ClaRa.Components.BoundaryConditions;
-model BoundaryGas_pTxi "A gas source defining pressure, Temperature and composition"
+model BoundaryGas_pTxi
+  "A gas source defining pressure, Temperature and composition"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -20,24 +21,29 @@ extends ClaRa.Basics.Icons.FlowSink;
     powerIn=if massFlowIsLoss then 0 else min(0, gas_a.m_flow*h_port),
     powerOut=if massFlowIsLoss then 0 else max(0, gas_a.m_flow*h_port),
     powerAux=0) if                                                                                                     contributeToCycleSummary;
-  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary "True if component shall contribute to automatic efficiency calculation"
-                                                                                              annotation(Dialog(tab="Summary and Visualisation"));
-  parameter Boolean massFlowIsLoss = true "True if mass flow is a loss (not a process product)" annotation(Dialog(tab="Summary and Visualisation"));
+  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary
+    "True if component shall contribute to automatic efficiency calculation"                  annotation(Dialog(tab="Summary and Visualisation"));
+  parameter Boolean massFlowIsLoss = true
+    "True if mass flow is a loss (not a process product)"                                       annotation(Dialog(tab="Summary and Visualisation"));
 
-  parameter TILMedia.GasTypes.BaseGas                 medium = simCenter.flueGasModel "Medium to be used in tubes"
-                                                                                              annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
-  parameter Boolean variable_p=false "True, if pressure defined by variable input" annotation(Dialog(group="Define Variable Boundaries"));
-  parameter Boolean variable_T=false "True, if spc. temperature defined by variable input" annotation(Dialog(group="Define Variable Boundaries"));
-  parameter Boolean variable_xi=false "True, if composition defined by variable input"    annotation(Dialog(group="Define Variable Boundaries"));
+  parameter TILMedia.GasTypes.BaseGas                 medium = simCenter.flueGasModel
+    "Medium to be used in tubes"                                                              annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
+  parameter Boolean variable_p=false
+    "True, if pressure defined by variable input"                                  annotation(Dialog(group="Define Variable Boundaries"));
+  parameter Boolean variable_T=false
+    "True, if spc. temperature defined by variable input"                                  annotation(Dialog(group="Define Variable Boundaries"));
+  parameter Boolean variable_xi=false
+    "True, if composition defined by variable input"                                      annotation(Dialog(group="Define Variable Boundaries"));
 
   parameter SI.Pressure p_const=simCenter.p_amb_start "Constant pressure"                annotation(Dialog(group="Constant Boundaries", enable= not variable_p));
-  parameter SI.Temperature T_const=simCenter.T_amb_start "Constant specific temperature of source"
-                                               annotation(Dialog(group="Constant Boundaries", enable= not hInputIsActive));
-  parameter SI.MassFraction xi_const[medium.nc-1]=zeros(medium.nc-1) "Constant composition"
-                            annotation(Dialog(group="Constant Boundaries", enable= not variable_xi));
+  parameter SI.Temperature T_const=simCenter.T_amb_start
+    "Constant specific temperature of source"  annotation(Dialog(group="Constant Boundaries", enable= not hInputIsActive));
+  parameter SI.MassFraction xi_const[medium.nc-1]=zeros(medium.nc-1)
+    "Constant composition"  annotation(Dialog(group="Constant Boundaries", enable= not variable_xi));
 
    TILMedia.GasObjectFunctions.GasPointer GasPointer=
-        TILMedia.GasObjectFunctions.GasPointer(medium.concatGasName,8,medium.xi_default,medium.nc_propertyCalculation,medium.nc,medium.condensingIndex,0) "Pointer to external medium memory";
+        TILMedia.GasObjectFunctions.GasPointer(medium.concatGasName,8,medium.xi_default,medium.nc_propertyCalculation,medium.nc,medium.condensingIndex,0)
+    "Pointer to external medium memory";
 
   outer ClaRa.SimCenter simCenter;
 protected
@@ -47,9 +53,11 @@ protected
   SI.EnthalpyMassSpecific h_port;
 
 public
-  Modelica.Blocks.Interfaces.RealInput p(value=p_in) if (variable_p) "Variable mass flow rate"
+  Modelica.Blocks.Interfaces.RealInput p(value=p_in) if (variable_p)
+    "Variable mass flow rate"
     annotation (Placement(transformation(extent={{-120,40},{-80,80}})));
-  Modelica.Blocks.Interfaces.RealInput T(value=T_in) if (variable_T) "Variable specific temperature"
+  Modelica.Blocks.Interfaces.RealInput T(value=T_in) if (variable_T)
+    "Variable specific temperature"
     annotation (Placement(transformation(extent={{-120,-20},{-80,20}})));
   Modelica.Blocks.Interfaces.RealInput xi[medium.nc-1](value=xi_in) if
        (variable_xi) "Variable composition"

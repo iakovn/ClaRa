@@ -1,7 +1,7 @@
 within ClaRa.Components.BoundaryConditions;
 model PrescribedMassFlowVLE "A mass flow anchor with prescribed mass flow rate"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -19,18 +19,21 @@ model PrescribedMassFlowVLE "A mass flow anchor with prescribed mass flow rate"
 
   //extends BaseClasses.Interfaces.DataInterface(p_int=outlet.p/1e5,h_int=outlet.h_outflow/1e3, m_flow_int=-outlet.m_flow, T_int=refrigerant.T-273.15, s_int=refrigerant.s/1e3);
 
-  parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium=simCenter.fluid1 "Medium in the component"
+  parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium=simCenter.fluid1
+    "Medium in the component"
     annotation (choicesAllMatching, Dialog(group="Fundamental Definitions"));
   //   parameter Modelica.SIunits.AbsolutePressure dp_nominal
   //     "Nominal pressure drop at full opening" annotation(Dialog(group="Nominal Values"));
   //   parameter Modelica.SIunits.MassFlowRate m_flow_nominal
   //     "Nominal mass flowrate at full opening" annotation(Dialog(group="Nominal Values"));
 
-  parameter Boolean m_flowInputIsActive=false "True, if  a variable m_flow is used"
+  parameter Boolean m_flowInputIsActive=false
+    "True, if  a variable m_flow is used"
     annotation (Dialog(group="Control Signals"));
 
   //Real opening;
-  Modelica.Fluid.Types.HydraulicConductance k "Hydraulic conductance at full opening";
+  Modelica.Fluid.Types.HydraulicConductance k
+    "Hydraulic conductance at full opening";
   //=m_flow_nominal/dp_nominal
   Modelica.SIunits.Pressure Delta_p "p_inlet-p_outlet";
   Modelica.SIunits.MassFlowRate m_flow "Mass flowrate";

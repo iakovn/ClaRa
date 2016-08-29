@@ -1,7 +1,7 @@
 within ClaRa.Components.Furnace.GeneralTransportPhenomena.ThermalCapacities;
 model ThermalLowPass "A simple thermal low pass with time constant tau"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,11 +15,13 @@ model ThermalLowPass "A simple thermal low pass with time constant tau"
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
 
-  extends ClaRa.Components.Furnace.GeneralTransportPhenomena.ThermalCapacities.PartialThermalCapacity;
+  extends
+    ClaRa.Components.Furnace.GeneralTransportPhenomena.ThermalCapacities.PartialThermalCapacity;
 
 public
   parameter ClaRa.Basics.Units.Time Tau=1 "Time constant for thermal low pass";
-  parameter ClaRa.Basics.Units.Temperature T_out_initial=273.15 + 250 "Initial value for Temperature at heat_out";
+  parameter ClaRa.Basics.Units.Temperature T_out_initial=273.15 + 250
+    "Initial value for Temperature at heat_out";
 
 initial equation
   heat_out.T  = T_out_initial;

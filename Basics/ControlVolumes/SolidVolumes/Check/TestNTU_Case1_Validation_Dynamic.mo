@@ -1,7 +1,8 @@
 within ClaRa.Basics.ControlVolumes.SolidVolumes.Check;
-model TestNTU_Case1_Validation_Dynamic "Validation with TestThermalElements.TestNTU_Case2"
+model TestNTU_Case1_Validation_Dynamic
+  "Validation with TestThermalElements.TestNTU_Case2"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.0                        //
+  // Component of the ClaRa library, version: 1.1.1                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -75,7 +76,7 @@ model TestNTU_Case1_Validation_Dynamic "Validation with TestThermalElements.Test
         1080.51e3,
         N_cv),
     redeclare model PressureLoss =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4 (             Delta_p_nom(displayUnit="Pa") = 100),
+        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4,
     p_start=linspace(
         p_o + 100,
         p_o,
@@ -85,8 +86,10 @@ model TestNTU_Case1_Validation_Dynamic "Validation with TestThermalElements.Test
         p_o,
         N_cv),
     redeclare model HeatTransfer =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4 (                      PL_kc=[0,1; 0.5,1; 0.7,1; 1,1], alpha_nom=alpha_o),
-    initType=ClaRa.Basics.Choices.Init.steadyState) annotation (Placement(transformation(extent={{-6,28},{26,16}})));
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4
+        (                                                                               alpha_nom=alpha_o),
+    initType=ClaRa.Basics.Choices.Init.steadyState,
+    Delta_p_nom=100)                                annotation (Placement(transformation(extent={{-6,28},{26,16}})));
   Components.VolumesValvesFittings.Pipes.PipeFlowVLE_L4_Simple pipe_ColdSide(
     length=length,
     N_tubes=N_tubes,
@@ -107,14 +110,16 @@ model TestNTU_Case1_Validation_Dynamic "Validation with TestThermalElements.Test
         450e3,
         N_cv),
     redeclare model HeatTransfer =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4 (                      PL_kc=[0,1; 0.5,1; 0.7,1; 1,1], alpha_nom=alpha_i),
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4
+        (                                                                              alpha_nom=alpha_i),
     redeclare model PressureLoss =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4 (             Delta_p_nom(displayUnit="Pa") = 100),
+        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4,
     h_start=linspace(
         h_i_in,
         h_i_in + 30000,
         N_cv),
-    initType=ClaRa.Basics.Choices.Init.steadyState) annotation (Placement(transformation(extent={{26,-16},{-6,-4}})));
+    initType=ClaRa.Basics.Choices.Init.steadyState,
+    Delta_p_nom=100)                                annotation (Placement(transformation(extent={{26,-16},{-6,-4}})));
   Components.BoundaryConditions.BoundaryVLE_Txim_flow OuterSide_in(
     m_flow_const=m_flow_o,
     T_const=T_o_in,
@@ -199,7 +204,8 @@ model TestNTU_Case1_Validation_Dynamic "Validation with TestThermalElements.Test
         N_tubes=N_tubes,
         N_passes=N_passes),
     redeclare model HeatTransfer =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2 (                      alpha_nom=alpha_o, PL_alpha=[0, 1; 0.5, 1]),
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2
+        (                                                                                                    alpha_nom=alpha_o, PL_alpha=[0, 1; 0.5, 1]),
     m_flow_nom=m_flow_o,
     p_nom=p_o,
     h_nom=h_o_in,
@@ -207,10 +213,12 @@ model TestNTU_Case1_Validation_Dynamic "Validation with TestThermalElements.Test
     p_start=30000000,
     initType=ClaRa.Basics.Choices.Init.steadyEnthalpy,
     redeclare model PhaseBorder =
-        ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.IdeallyStirred (                        position_Delta_p_geo="inlet")) annotation (Placement(transformation(extent={{1,-28},{21,-48}})));
+        ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.IdeallyStirred
+        (                                                                                                    position_Delta_p_geo="inlet")) annotation (Placement(transformation(extent={{1,-28},{21,-48}})));
   FluidVolumes.VolumeVLE_2 innerVol(
     redeclare model HeatTransfer =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2 (                      alpha_nom=alpha_i, PL_alpha=[0, 1; 0.5, 1]),
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2
+        (                                                                                                    alpha_nom=alpha_i, PL_alpha=[0, 1; 0.5, 1]),
     m_flow_nom=m_flow_i,
     p_nom=p_i,
     h_nom=h_i_in,
@@ -218,7 +226,8 @@ model TestNTU_Case1_Validation_Dynamic "Validation with TestThermalElements.Test
     h_start=3000e3,
     p_start=90000,
     redeclare model PhaseBorder =
-        ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.IdeallyStirred (                        position_Delta_p_geo="inlet")) annotation (Placement(transformation(extent={{21,-98},{1,-78}})));
+        ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.IdeallyStirred
+        (                                                                                                    position_Delta_p_geo="inlet")) annotation (Placement(transformation(extent={{21,-98},{1,-78}})));
 equation
   for i in 1:pipe_ColdSide.N_cv loop
 
@@ -316,27 +325,27 @@ equation
       color={0,0,127},
       smooth=Smooth.None));
   connect(outerVol.heat, NTU.outerPhase[1]) annotation (Line(
-      points={{11,-48},{11,-54.6}},
+      points={{11,-48},{11,-55.5}},
       color={191,0,0},
       smooth=Smooth.None));
   connect(outerVol.heat, NTU.outerPhase[2]) annotation (Line(
-      points={{11,-48},{11,-54}},
+      points={{11,-48},{11,-54.9}},
       color={191,0,0},
       smooth=Smooth.None));
   connect(outerVol.heat, NTU.outerPhase[3]) annotation (Line(
-      points={{11,-48},{11,-53.4}},
+      points={{11,-48},{11,-54.3}},
       color={191,0,0},
       smooth=Smooth.None));
   connect(NTU.innerPhase[1], innerVol.heat) annotation (Line(
-      points={{11,-72.6},{11,-78}},
+      points={{11,-71.7},{11,-78}},
       color={191,0,0},
       smooth=Smooth.None));
   connect(NTU.innerPhase[2], innerVol.heat) annotation (Line(
-      points={{11,-72},{11,-78}},
+      points={{11,-71.1},{11,-78}},
       color={191,0,0},
       smooth=Smooth.None));
   connect(NTU.innerPhase[3], innerVol.heat) annotation (Line(
-      points={{11,-71.4},{11,-78}},
+      points={{11,-70.5},{11,-78}},
       color={191,0,0},
       smooth=Smooth.None));
   annotation (
@@ -371,9 +380,7 @@ Increase (20 K) of cold side inlet temperature at 500s
 ______________________________________________________________________________________________
 ")}),
     experiment(
-      StopTime=1500,
-      NumberOfIntervals=1500,
-      Algorithm="Dassl"),
+      StopTime=1500),
     __Dymola_experimentSetupOutput,
     Icon(coordinateSystem(extent={{-100,-100},{100,100}})));
 end TestNTU_Case1_Validation_Dynamic;

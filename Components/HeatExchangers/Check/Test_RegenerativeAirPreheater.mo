@@ -1,7 +1,7 @@
 within ClaRa.Components.HeatExchangers.Check;
 model Test_RegenerativeAirPreheater
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.0                        //
+  // Component of the ClaRa library, version: 1.1.1                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -16,8 +16,8 @@ model Test_RegenerativeAirPreheater
   //___________________________________________________________________________//
   extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
   import ClaRa;
-  inner ClaRa.SimCenter simCenter(          redeclare TILMedia.GasTypes.FlueGasTILMedia
-                                        flueGasModel)
+  inner ClaRa.SimCenter simCenter(          redeclare
+      TILMedia.GasTypes.FlueGasTILMedia flueGasModel)
     annotation (Placement(transformation(extent={{78,22},{98,42}})));
   ClaRa.Components.BoundaryConditions.BoundaryGas_Txim_flow fluelGasFlowSource1(
     variable_T=true,
@@ -69,7 +69,8 @@ model Test_RegenerativeAirPreheater
     startTime=800,
     height=20)
     annotation (Placement(transformation(extent={{-80,-2},{-60,18}})));
-  ClaRa.Components.HeatExchangers.RegenerativeAirPreheaterPrimaryAndSecondaryAir_L4 airPreheater(
+  ClaRa.Components.HeatExchangers.RegenerativeAirPreheaterPrimaryAndSecondaryAir_L4
+                                                                                    airPreheater(
     T_start_primaryAir={400,400},
     T_start_secondaryAir={400,400},
     T_start_flueGas={400,400},

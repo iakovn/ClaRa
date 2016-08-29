@@ -1,7 +1,7 @@
 within ClaRa.Components.VolumesValvesFittings.Fittings.Check;
 model Test_Junction
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -26,14 +26,14 @@ model Test_Junction
     variable_m_flow=false,
     variable_T=false,
     m_flow_const=0.1,
-    xi_const={0.7,0.1,0.1,0.05,0.01,0.02,0.01,0.01,0})
-                      annotation (Placement(transformation(extent={{-74,4},{-54,24}})));
+    xi_const={0.7,0.1,0.1,0.05,0.01,0.02,0.01,0.01,0},
+    T_const=298.15)   annotation (Placement(transformation(extent={{-74,4},{-54,24}})));
   ClaRa.Components.BoundaryConditions.BoundaryGas_Txim_flow source1(
     variable_m_flow=false,
     variable_T=false,
     m_flow_const=0.1,
-    xi_const={0.7,0.1,0.1,0.05,0.01,0.02,0.01,0.01,0})
-                      annotation (Placement(transformation(extent={{-74,26},{-54,46}})));
+    xi_const={0.7,0.1,0.1,0.05,0.01,0.02,0.01,0.01,0},
+    T_const=298.15)   annotation (Placement(transformation(extent={{-74,26},{-54,46}})));
   ClaRa.Components.BoundaryConditions.BoundaryGas_Txim_flow sink(
     variable_m_flow=false,
     variable_T=false,
@@ -103,8 +103,8 @@ model Test_Junction
   ClaRa.Components.VolumesValvesFittings.Valves.ValveGas_L1
     flueGasValve_L1_2(
     redeclare model PressureLoss =
-        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticZeta (
-         A_cross=
+        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticZeta
+        (A_cross=
            0.05, zeta=0.0002))
     annotation (Placement(transformation(extent={{-12,-90},{8,-80}})));
   ClaRa.Basics.ControlVolumes.GasVolumes.VolumeGas_L2 flueGasCell1(
@@ -112,13 +112,14 @@ model Test_Junction
         ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry,
     m_flow_nom=0.5,
     redeclare model PressureLoss =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.NoFriction_L2)                 annotation (Placement(transformation(extent={{-42,-96},{-22,-76}})));
+        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.NoFriction_L2)
+                                                                                                        annotation (Placement(transformation(extent={{-42,-96},{-22,-76}})));
 
   ClaRa.Components.VolumesValvesFittings.Valves.ValveGas_L1
     flueGasValve_L1_1(
     redeclare model PressureLoss =
-        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticZeta (
-         A_cross=
+        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticZeta
+        (A_cross=
            0.01, zeta=0.0005))
     annotation (Placement(transformation(extent={{-12,-60},{8,-50}})));
 equation

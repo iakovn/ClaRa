@@ -1,7 +1,7 @@
 within ClaRa.Components.Sensors;
 model GasSensorBase "Base class for gas sensors"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -21,11 +21,11 @@ model GasSensorBase "Base class for gas sensors"
   ClaRa.Basics.Interfaces.GasPortOut outlet(Medium=medium) "Outlet port"
     annotation (Placement(transformation(extent={{90,-110},{110,-90}}),
         iconTransformation(extent={{90,-110},{110,-90}})));
-
+  extends ClaRa.Basics.Icons.Sensor1;
   outer ClaRa.SimCenter simCenter;
 
-inner parameter TILMedia.GasTypes.BaseGas medium = simCenter.flueGasModel "Medium to be used"
-                         annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
+inner parameter TILMedia.GasTypes.BaseGas medium = simCenter.flueGasModel
+    "Medium to be used"  annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
 
 equation
   inlet.p = outlet.p;

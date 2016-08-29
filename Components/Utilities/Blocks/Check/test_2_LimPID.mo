@@ -1,7 +1,7 @@
 within ClaRa.Components.Utilities.Blocks.Check;
 model test_2_LimPID
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -24,7 +24,10 @@ model test_2_LimPID
     sign=-1,
     k=0.001,
     Tau_i=100,
-    Ni=0.001) annotation (Placement(transformation(extent={{-64,2},{-44,22}})));
+    Ni=0.001,
+    use_activateInput=true,
+    t_activation=0)
+              annotation (Placement(transformation(extent={{-64,2},{-44,22}})));
   ClaRa.Components.TurboMachines.Pumps.PumpVLE_L1_simple pump(eta_mech=1) annotation (Placement(transformation(extent={{-20,-48},{0,-28}})));
   BoundaryConditions.BoundaryVLE_phxi pressureSink_XRG(p_const=100000) annotation (Placement(transformation(extent={{-80,-48},{-60,-28}})));
   BoundaryConditions.BoundaryVLE_phxi pressureSink_XRG1(variable_p=true, p_const=1000000) annotation (Placement(transformation(extent={{34,-48},{14,-28}})));
@@ -41,7 +44,7 @@ model test_2_LimPID
     annotation (Placement(transformation(extent={{-96,-24},{-76,-4}})));
   Modelica.Blocks.Sources.RealExpression setPoint_m_flow(y=1000)
     annotation (Placement(transformation(extent={{-96,14},{-76,34}})));
-  Modelica.Blocks.Sources.BooleanExpression activate_controller(y=time > 5)
+  Modelica.Blocks.Sources.BooleanExpression activate_controller(y=time > 2)
     annotation (Placement(transformation(extent={{-96,-8},{-76,12}})));
   Modelica.Blocks.Continuous.FirstOrder firstOrder(T=1, initType=Modelica.Blocks.Types.Init.SteadyState)
     annotation (Placement(transformation(
@@ -49,22 +52,8 @@ model test_2_LimPID
         rotation=180,
         origin={56,-34})));
 equation
-  connect(pressureSink_XRG.steam_a, pump.inlet)          annotation (Line(
-      points={{-60,-38},{-20,-38}},
-      color={191,56,33},
-      thickness=0.5,
-      smooth=Smooth.None));
-  connect(pump.outlet, pressureSink_XRG1.steam_a)   annotation (Line(
-      points={{0,-38},{14,-38}},
-      color={191,56,33},
-      thickness=0.5,
-      smooth=Smooth.None));
   connect(PID.y, pump.P_drive) annotation (Line(
-      points={{-43.1,12},{-10,12},{-10,-26}},
-      color={0,0,127},
-      smooth=Smooth.None));
-  connect(firstOrder.u, ramp2.y) annotation (Line(
-      points={{68,-34},{72,-34},{72,-32},{75,-32}},
+      points={{-43,12},{-10,12},{-10,-26}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(firstOrder.y, pressureSink_XRG1.p) annotation (Line(
@@ -76,9 +65,20 @@ equation
       color={0,0,127},
       smooth=Smooth.None));
   connect(setPoint_m_flow.y, PID.u_m) annotation (Line(
-      points={{-75,24},{-70,24},{-70,-8},{-54,-8},{-54,0}},
+      points={{-75,24},{-70,24},{-70,-8},{-53.9,-8},{-53.9,0}},
       color={0,0,127},
       smooth=Smooth.None));
+  connect(pressureSink_XRG.steam_a, pump.inlet) annotation (Line(
+      points={{-60,-38},{-40,-38},{-20,-38}},
+      color={0,131,169},
+      thickness=0.5));
+  connect(pump.outlet, pressureSink_XRG1.steam_a) annotation (Line(
+      points={{0,-38},{8,-38},{14,-38}},
+      color={0,131,169},
+      pattern=LinePattern.Solid,
+      thickness=0.5));
+  connect(activate_controller.y, PID.activateInput) annotation (Line(points={{-75,2},{-72,2},{-72,4},{-66,4}}, color={255,0,255}));
+  connect(ramp2.y, firstOrder.u) annotation (Line(points={{75,-32},{72,-32},{72,-34},{68,-34}}, color={0,0,127}));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},{100,100}}),
                             graphics={
                                   Text(

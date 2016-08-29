@@ -1,7 +1,8 @@
 within ClaRa.Components.Furnace.FlameRoom;
-model FlameRoomAdditionalAir_L2_Static "Model for a flame room section with additional secondary air inlet inside a combustion chamber"
+model FlameRoomAdditionalAir_L2_Static
+  "Model for a flame room section with additional secondary air inlet inside a combustion chamber"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -20,13 +21,15 @@ extends ClaRa.Components.Furnace.BaseClasses.CombustionChamberBase(
 extends ClaRa.Basics.Icons.FlameRoom;
 
 //## P A R A M E T E R S #######################################################################################
-inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation"
-                                                              annotation(Dialog(tab="Initialisation"));
+inner parameter Boolean useHomotopy=simCenter.useHomotopy
+    "True, if homotopy method is used during initialisation"  annotation(Dialog(tab="Initialisation"));
 
 //## V A R I A B L E   P A R T##################################################################################
 
-ClaRa.Basics.Units.MassFraction xi_flueGasMix[flueGas.nc - 1] "Flue gas mixture composition";
-ClaRa.Basics.Units.EnthalpyMassSpecific h_flueGasMix "Specific enthalpy of flue gas mixture";
+ClaRa.Basics.Units.MassFraction xi_flueGasMix[flueGas.nc - 1]
+    "Flue gas mixture composition";
+ClaRa.Basics.Units.EnthalpyMassSpecific h_flueGasMix
+    "Specific enthalpy of flue gas mixture";
 
 //_____________________/ Connectors \______________________________
 public
@@ -34,6 +37,9 @@ public
 
 //_____________________/ Media Objects \_________________________________
 protected
+  inner TILMedia.Gas_ph        flueGasOutlet(p(start = p_start_flueGas_out)=outlet.flueGas.p,xi=xi_flueGas_del,
+      gasType=flueGas, h=h_flueGas_out_del)
+      annotation (Placement(transformation(extent={{-130,74},{-110,94}})));
   TILMedia.Gas_pT    primaryAir_inlet(p=fuelFlueGas_inlet.flueGas.p, T=inStream(fuelFlueGas_inlet.flueGas.T_outflow), xi=inStream(
         fuelFlueGas_inlet.flueGas.xi_outflow),
     gasType=flueGas)
@@ -63,7 +69,75 @@ protected
     V_flow_out=V_flow_flueGas_out,
     xi_out=xi_flueGas) annotation (Placement(transformation(extent={{244,-102},{268,-76}})));
 
+//___________________/ Summary \\__________________
+  Summary summary(
+    outline(
+      volume=geo.volume,
+      A_cross=geo.A_front,
+      A_wall=if geo.flowOrientation == ClaRa.Basics.Choices.GeometryOrientation.vertical then 2*(geo.width + geo.length)*geo.height else 2*(geo.width + geo.height)*geo.length,
+      height=geo.height,
+      m=mass,
+      m_flow_fuel_burned=m_flow_fuel_burned,
+      m_flow_oxygen_burned=m_flow_oxygen_burned,
+      m_flow_oxygen_req=m_flow_oxygen_req,
+      m_flow_air_req=m_flow_air_req,
+      lambdaComb=lambdaComb,
+      NOx_fraction=reactionZone.xi_NOx,
+      CO_fraction=reactionZone.xi_CO,
+      LHV=LHV,
+      Q_combustion=m_flow_fuel_burned*LHV,
+      w_migration=particleMigration.w,
+      t_dwell_flueGas=t_dwell_flueGas,
+      burning_time=burning_time.t,
+      unburntFraction=unburntFraction,
+      T_out=flueGasOutlet.T,
+      h_out=flueGasOutlet.h),
+    inlet(
+      flueGas(
+        m_flow=inlet.flueGas.m_flow,
+        T=actualStream(inlet.flueGas.T_outflow),
+        p=inlet.flueGas.p,
+        h=flueGasInlet.h,
+        xi=actualStream(inlet.flueGas.xi_outflow),
+        H_flow=flueGasInlet.h*inlet.flueGas.m_flow),
+      fuel(
+        m_flow=inlet.fuel.m_flow,
+        T=actualStream(inlet.fuel.T_outflow),
+        p=inlet.fuel.p,
+        cp=inlet.fuelType.cp),
+      slag(
+        m_flow=inlet.slag.m_flow,
+        T=actualStream(inlet.slag.T_outflow),
+        p=inlet.slag.p)),
+    outlet(
+      flueGas(
+        m_flow=-outlet.flueGas.m_flow,
+        T=actualStream(outlet.flueGas.T_outflow),
+        p=outlet.flueGas.p,
+        h=h_flueGas_out,
+        xi=actualStream(outlet.flueGas.xi_outflow),
+        H_flow=-h_flueGas_out*outlet.flueGas.m_flow),
+      fuel(
+        m_flow=-outlet.fuel.m_flow,
+        T=actualStream(outlet.fuel.T_outflow),
+        p=outlet.fuel.p,
+        cp=outlet.fuelType.cp),
+      slag(
+        m_flow=outlet.slag.m_flow,
+        T=actualStream(outlet.slag.T_outflow),
+        p=outlet.slag.p))) annotation (Placement(transformation(extent={{274,-102},{300,-76}})));
+
+initial equation
+  unburntFraction = 0;
+
 equation
+
+  if noEvent(t_dwell_flueGas < burning_time.t) then
+    der(unburntFraction) = 1/Tau * ((1.0 - t_dwell_flueGas/burning_time.t) - unburntFraction);
+  else
+    der(unburntFraction) = 1/Tau * (0-unburntFraction);
+  end if;
+
   mass = geo.volume * (flueGasOutlet.d + inlet_GasMix.d)/2;
 
   //____________/ Resulting Xi for entire fuel mass in the volume \______________
@@ -99,7 +173,7 @@ equation
 
   //_______________/ determination of lambda \_________________________
   // theoretically required oxygen mass flow rate to burn all the fuel
-   m_flow_oxygen_req = (1-fuel_diffusity)*(n_flow_C + n_flow_H/4.0 + n_flow_S - n_flow_O/2)*Basics.Constants.M_O
+   m_flow_oxygen_req = (1-unburntFraction)*(n_flow_C + n_flow_H/4.0 + n_flow_S - n_flow_O/2)*Basics.Constants.M_O
                                                                                             *2.0;
    m_flow_air_req*max(1e-32,primaryAir_inlet.xi[6]) = m_flow_oxygen_req;
 
@@ -111,10 +185,10 @@ equation
 
   //calculation of actual fuel and oxygen mass flow rates that are burned
   if noEvent(lambdaComb > 1) then
-    m_flow_fuel_burned = (1 - fuel_diffusity)*(inlet.fuel.m_flow + fuelFlueGas_inlet.fuel.m_flow);
+    m_flow_fuel_burned = (1 - unburntFraction)*(inlet.fuel.m_flow + fuelFlueGas_inlet.fuel.m_flow);
     m_flow_oxygen_burned = m_flow_oxygen_req;
   else
-    m_flow_fuel_burned = lambdaComb*(1 - fuel_diffusity)*(inlet.fuel.m_flow + fuelFlueGas_inlet.fuel.m_flow);
+    m_flow_fuel_burned = lambdaComb*(1 - unburntFraction)*(inlet.fuel.m_flow + fuelFlueGas_inlet.fuel.m_flow);
     m_flow_oxygen_burned = lambdaComb*m_flow_oxygen_req;
   end if;
 
@@ -126,6 +200,8 @@ equation
     else
      LHV = inStream(inlet.fuel.LHV_outflow);
    end if;
+
+   cp = (inlet.fuel.m_flow*inStream(inlet.fuel.cp_outflow) + fuelFlueGas_inlet.fuel.m_flow*inStream(fuelFlueGas_inlet.fuel.cp_outflow))/(fuelFlueGas_inlet.fuel.m_flow + inlet.fuel.m_flow);
 
 //   if (inlet.fuel.m_flow < 0 or inlet.fuel.m_flow > 0) or (outlet.fuel.m_flow < 0 or outlet.fuel.m_flow > 0) or (fuelFlueGas_inlet.fuel.m_flow < 0 or fuelFlueGas_inlet.fuel.m_flow > 0) then
 //     LHV * (max(0,fuelFlueGas_inlet.fuel.m_flow) + max(0,inlet.fuel.m_flow) + max(0,outlet.fuel.m_flow)) = (max(0,fuelFlueGas_inlet.fuel.m_flow)*inStream(fuelFlueGas_inlet.fuel.LHV_outflow) + max(0,inlet.fuel.m_flow)*inStream(inlet.fuel.LHV_outflow) +  max(0,outlet.fuel.m_flow)*inStream(outlet.fuel.LHV_outflow));
@@ -146,7 +222,7 @@ equation
 
   //_______________/ Energy Balance flueGasCombustion \__________________________
 
-  0 =Q_flow_wall + Q_flow_top + Q_flow_bottom + inlet.flueGas.m_flow*flueGasInlet.h + fuelFlueGas_inlet.flueGas.m_flow*primaryAir_inlet.h + inlet.fuel.m_flow*(inlet.fuelType.cp*(inStream(inlet.fuel.T_outflow) - T_0) + Delta_h_f) + fuelFlueGas_inlet.fuel.m_flow*(fuelFlueGas_inlet.fuelType.cp*(inStream(fuelFlueGas_inlet.fuel.T_outflow) - T_0) + Delta_h_f) + outlet.fuel.m_flow*(outlet.fuelType.cp*(outlet.fuel.T_outflow - T_0) + Delta_h_f) + outlet.slag.m_flow*outlet.slagType.cp*(inStream(outlet.slag.T_outflow) - T_0) + inlet.slag.m_flow*inlet.slagType.cp*(inlet.slag.T_outflow - T_0) + outlet.flueGas.m_flow*h_flueGas_out;
+  0 =Q_flow_wall + Q_flow_top + Q_flow_bottom + inlet.flueGas.m_flow*flueGasInlet.h + fuelFlueGas_inlet.flueGas.m_flow*primaryAir_inlet.h + inlet.fuel.m_flow*(inStream(inlet.fuel.cp_outflow)*(inStream(inlet.fuel.T_outflow) - T_0) + Delta_h_f) + fuelFlueGas_inlet.fuel.m_flow*(inStream(fuelFlueGas_inlet.fuel.cp_outflow)*(inStream(fuelFlueGas_inlet.fuel.T_outflow) - T_0) + Delta_h_f) + outlet.fuel.m_flow*(cp*(outlet.fuel.T_outflow - T_0) + Delta_h_f) + outlet.slag.m_flow*outlet.slagType.cp*(actualStream(outlet.slag.T_outflow) - T_0) + inlet.slag.m_flow*inlet.slagType.cp*(actualStream(inlet.slag.T_outflow) - T_0) + outlet.flueGas.m_flow*h_flueGas_out;
 
   sum_xi = sum(flueGasOutlet.xi);
 
@@ -164,13 +240,31 @@ equation
   //___________/ T_outflows \__________________________________________
   outlet.fuel.T_outflow = flueGasOutlet.T;
   outlet.flueGas.T_outflow = flueGasOutlet.T;
-  inlet.slag.T_outflow =T_slag;          //inlet.slag is outflowing slag
   heat_bottom.T = iCom.T_out;
+
+  if slagTemperature_calculationType==1 then
+    inlet.slag.T_outflow = T_slag;
+    outlet.slag.T_outflow = T_slag;
+  elseif slagTemperature_calculationType==2 then
+    inlet.slag.T_outflow = flueGasOutlet.T;
+    outlet.slag.T_outflow = flueGasOutlet.T;
+  elseif slagTemperature_calculationType==3 then
+    inlet.slag.T_outflow = (flueGasOutlet.T + inlet_GasMix.T)/2;
+    outlet.slag.T_outflow = (flueGasOutlet.T + inlet_GasMix.T)/2;
+  elseif slagTemperature_calculationType==4 then
+    inlet.slag.T_outflow = flueGasInlet.T;
+    outlet.slag.T_outflow = flueGasInlet.T;
+  else
+    inlet.slag.T_outflow = T_slag;
+    outlet.slag.T_outflow = T_slag;
+    assert(slagTemperature_calculationType==1 or slagTemperature_calculationType==2 or slagTemperature_calculationType==3 or slagTemperature_calculationType==4, "Invalid slag temperature calculation type");
+  end if;
 
   //___________/ LHV_outflows \__________________________________________
   outlet.fuel.LHV_outflow =LHV;
   inlet.fuel.LHV_outflow =LHV;
   fuelFlueGas_inlet.fuel.LHV_outflow =LHV;
+
   if (fuelFlueGas_inlet.fuel.LHV_calculationType == "predefined") and (inlet.fuel.LHV_calculationType == "predefined") then
     outlet.fuel.LHV_calculationType = "predefined";
   elseif (fuelFlueGas_inlet.fuel.LHV_calculationType == "Verbandsformel") and (inlet.fuel.LHV_calculationType == "Verbandsformel") then
@@ -180,16 +274,36 @@ equation
     assert(fuelFlueGas_inlet.fuel.LHV_calculationType == "predefined" and inlet.fuel.LHV_calculationType == "predefined" or fuelFlueGas_inlet.fuel.LHV_calculationType == "Verbandsformel" and inlet.fuel.LHV_calculationType == "Verbandsformel", "Please check your LHV calculation settings inside boundaries. Mixed LHV_calculationTypes are not supported inside one fuel stream");
   end if;
 
+  outlet.fuel.cp_outflow =cp;
+  inlet.fuel.cp_outflow =cp;
+  fuelFlueGas_inlet.fuel.cp_outflow =cp;
+
   //_____________/ Pressures \______________________________________________
   fuelFlueGas_inlet.fuel.p = outlet.flueGas.p;
   fuelFlueGas_inlet.flueGas.p = outlet.flueGas.p;
 
- //____________/ (Dummy) values for inlet_outflows \_____________
+  inlet.flueGas.xi_outflow = xi_flueGas;
+  outlet.flueGas.xi_outflow = xi_flueGas;
+
+  //___________/ Dummy T_outflows \__________________________________________
+  inlet.fuel.T_outflow = outlet.flueGas.T_outflow;
+  //outlet.slag.T_outflow = inStream(outlet.slag.T_outflow);
+  inlet.flueGas.T_outflow  = outlet.flueGas.T_outflow;
+
+  //____________/ (Dummy) values for inlet_outflows \_____________
   fuelFlueGas_inlet.fuel.xi_outflow = xi_fuel_out;
   fuelFlueGas_inlet.flueGas.xi_outflow =  xi_flueGas;
 
   fuelFlueGas_inlet.fuel.T_outflow = inStream(fuelFlueGas_inlet.fuel.T_outflow);
   fuelFlueGas_inlet.flueGas.T_outflow = inStream(fuelFlueGas_inlet.flueGas.T_outflow);
+
+  //______________Eye port variable definition________________________
+  eye_int.m_flow = -outlet.flueGas.m_flow;
+  eye_int.T = flueGasOutlet.T-273.15;
+  eye_int.s = flueGasOutlet.s/1e3;
+  eye_int.p = flueGasOutlet.p/1e5;
+  eye_int.h = flueGasOutlet.h/1e3;
+  eye_int.xi = flueGasOutlet.xi;
 
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-300,-100},
             {300,100}}),
@@ -222,29 +336,33 @@ equation
           smooth=Smooth.None)}), Icon(coordinateSystem(preserveAspectRatio=true,
           extent={{-300,-100},{300,100}}), graphics={
         Text(
-          extent={{32,90},{240,56}},
+          extent={{32,74},{240,44}},
           lineColor={0,0,0},
           fillColor={255,255,255},
           fillPattern=FillPattern.Solid,
-          textString=DynamicSelect("", "T_out="+realString(T_outlet,1,integer(1)) +"K")),
+          visible=showData,
+          textString=DynamicSelect("", "T_out="+String(bulk.T,format="1.0f") +" K")),
         Text(
-          extent={{32,-14},{240,-48}},
+          extent={{32,-6},{240,-36}},
           lineColor={0,0,0},
           fillColor={255,255,255},
           fillPattern=FillPattern.Solid,
-          textString=DynamicSelect("", "alphaA="+realString(heattransfer.effAlphaA,1,integer(0))+"")),
+          visible=showData,
+          textString=DynamicSelect("", "Q_wall="+String(Q_flow_wall/1e6,format="1.0f")+" MW")),
         Text(
-          extent={{34,44},{242,10}},
+          extent={{32,34},{240,4}},
           lineColor={0,0,0},
           fillColor={255,255,255},
           fillPattern=FillPattern.Solid,
-          textString=DynamicSelect("", "lambda="+realString(min(99,lambda),1,integer(1)))),
+          visible=showData,
+          textString=DynamicSelect("", "lambda="+String(min(99,lambdaComb),format="1.1f"))),
         Text(
-          extent={{34,-54},{242,-88}},
+          extent={{32,-46},{240,-76}},
           lineColor={0,0,0},
           fillColor={255,255,255},
           fillPattern=FillPattern.Solid,
-          textString=DynamicSelect("", "Q="+realString(-Q_combustion/1e6,1,integer(0))+"MW"))}),
+          visible=showData,
+          textString=DynamicSelect("", "Q_comb="+String(m_flow_fuel_burned*LHV/1e6,format="1.0f")+" MW"))}),
     Documentation(info="<html>
 <p><b>Model description: </b>A stationary flame room model for fuel fired furnaces with additional air port</p>
 <p><b>Contact:</b> Lasse Nielsen, TLK-Thermo GmbH</p>

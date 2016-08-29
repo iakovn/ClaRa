@@ -1,6 +1,30 @@
 within ClaRa.Components.HeatExchangers.Check;
 model Test_HEXvle2vle_L3_2ph_CH_simple
- extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
+ extends ClaRa.Basics.Icons.PackageIcons.ExecutableRegressiong100;
+model Regression
+  extends ClaRa.Basics.Icons.RegressionSummary;
+  Modelica.Blocks.Interfaces.RealInput V_liq "Liquid shell volume";
+  Modelica.Blocks.Interfaces.RealInput T_shell_out "Shell outlet temperature";
+  Modelica.Blocks.Interfaces.RealInput p_shell_out "IP turbine outlet enthalpy";
+  Modelica.Blocks.Interfaces.RealInput Q_flow_tot "Total heat flow";
+
+  Real y_Q_flow_tot_int = integrator1.y;
+  Real y_Q_flow_tot = Q_flow_tot;
+
+  Real y_V_liq_int = integrator2.y;
+  Real y_V_liq = V_liq;
+
+  Real y_T_shell_out_int = integrator3.y;
+  Real y_T_shell_out = T_shell_out;
+  Real y_p_shell_out_int = integrator4.y;
+  Real y_p_shell_out = p_shell_out;
+
+  protected
+  Components.Utilities.Blocks.Integrator integrator1(u = Q_flow_tot, startTime=1000);
+  Components.Utilities.Blocks.Integrator integrator2(u = V_liq, startTime=1000);
+  Components.Utilities.Blocks.Integrator integrator3(u = T_shell_out, startTime=1000);
+  Components.Utilities.Blocks.Integrator integrator4(u = p_shell_out, startTime=1000);
+end Regression;
 
   HEXvle2vle_L3_2ph_CH_simple hex(
     mass_struc=1,
@@ -12,7 +36,8 @@ model Test_HEXvle2vle_L3_2ph_CH_simple
         ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.QuadraticParallelZones_L3,
     z_in_shell=10,
     redeclare model HeatTransferTubes =
-        Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L2 (                            alpha_nom=5000),
+        Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L2
+        (                                                                                                    alpha_nom=5000),
     T_w_start=linspace(
         200 + 273.15,
         450 + 273.15,
@@ -33,7 +58,8 @@ model Test_HEXvle2vle_L3_2ph_CH_simple
     z_out_shell=0.1,
     initTypeTubes=ClaRa.Basics.Choices.Init.noInit,
     redeclare model HeatTransfer_Shell =
-        Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.Constant_L3_ypsDependent (                   alpha_nom={1000,3000}),
+        Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.Constant_L3_ypsDependent
+        (                                                                                                    alpha_nom={1000,3000}),
     level_rel_start=0.2,
     N_tubes=500)                                                                                                     annotation (Placement(transformation(extent={{-6,-72},{14,-52}})));
 
@@ -76,7 +102,8 @@ model Test_HEXvle2vle_L3_2ph_CH_simple
     offset=961e3,
     startTime=10000,
     height=-106e3) annotation (Placement(transformation(extent={{100,-94},{80,-74}})));
-  inner SimCenter simCenter(useHomotopy=true, redeclare TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1,
+  inner SimCenter simCenter(useHomotopy=true, redeclare
+      TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater                                                   fluid1,
     showExpertSummary=true)                                                                                       annotation (Placement(transformation(extent={{40,40},{80,60}})));
   Visualisation.Hexdisplay_3 hexdisplay_3_1(
     T_o={hex.shell.summary.inlet[1].T,hex.shell.summary.outlet[1].T,hex.shell.summary.outlet[1].T,hex.shell.summary.outlet[1].T,hex.shell.summary.outlet[1].T,hex.shell.summary.outlet[1].T},
@@ -118,6 +145,11 @@ model Test_HEXvle2vle_L3_2ph_CH_simple
     Tau_i=120,
     sign=1) annotation (Placement(transformation(extent={{-28,-77},{-38,-67}})));
   Modelica.Blocks.Sources.RealExpression realExpression(y=2) annotation (Placement(transformation(extent={{-8,-86},{-24,-76}})));
+
+     Regression regression(V_liq = hex.shell.summary.outline.volume[1],
+     T_shell_out = hex.shell.summary.outlet[1].T,
+     p_shell_out = hex.shell.summary.outlet[1].p,
+     Q_flow_tot = -hex.summary.outline.Q_flow) annotation (Placement(transformation(extent={{-120,80},{-100,100}})));
 equation
 
   connect(m_hot.y, massFlowSource_h.m_flow) annotation (Line(
@@ -161,18 +193,19 @@ equation
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
-  connect(hex.eye1, quadruple1.eye) annotation (Line(points={{6.8,-71.8},{6.8,-92},{12,-92}}, color={190,190,190}));
+  connect(hex.eye1, quadruple1.eye) annotation (Line(points={{8,-73},{8,-92},{12,-92}},       color={190,190,190}));
   connect(hex.eye2, quadruple.eye) annotation (Line(points={{-7,-62},{-8,-62},{-8,-42},{-42,-42}},   color={190,190,190}));
   connect(p_cold.y, pressureSink_ph1.p) annotation (Line(points={{-99,-54},{-96,-54},{-92,-54}}, color={0,0,127}));
   connect(p_hot.y, pressureSink_ph.p) annotation (Line(points={{-99,-82},{-92,-82}}, color={0,0,127}));
   connect(level_abs1.y, PI.u_s) annotation (Line(points={{-19,-72},{-22,-72},{-27,-72}}, color={0,0,127}));
-  connect(realExpression.y, PI.u_m) annotation (Line(points={{-24.8,-81},{-33,-81},{-33,-78}}, color={0,0,127}));
+  connect(realExpression.y, PI.u_m) annotation (Line(points={{-24.8,-81},{-33.05,-81},{-33.05,-78}},
+                                                                                            color={0,0,127}));
   connect(hex.Out1, valve_shell1.inlet) annotation (Line(
       points={{4,-72},{4,-88},{-48,-88}},
       color={0,131,169},
       pattern=LinePattern.Solid,
       thickness=0.5));
-  connect(PI.y, valve_shell1.opening_in) annotation (Line(points={{-38.45,-72},{-58,-72},{-58,-79}}, color={0,0,127}));
+  connect(PI.y, valve_shell1.opening_in) annotation (Line(points={{-38.5,-72},{-58,-72},{-58,-79}},  color={0,0,127}));
   connect(hex.Out2, pressureSink_ph1.steam_a) annotation (Line(
       points={{-6,-60},{-72,-60}},
       color={0,131,169},
@@ -182,7 +215,7 @@ equation
           preserveAspectRatio=false,
         initialScale=0.1),            graphics={  Text(
           extent={{-96,102},{142,56}},
-          lineColor={0,128,0},
+          lineColor={115,150,0},
           horizontalAlignment=TextAlignment.Left,
           fontSize=11,
           textString="______________________________________________________________________________________________
@@ -192,10 +225,13 @@ Test robustness and prove steady-state initialisation capabilities. Check contro
 ______________________________________________________________________________________________"),
                        Text(
           extent={{-114,102},{44,84}},
-          lineColor={0,128,0},
+          lineColor={115,150,0},
           fontSize=30,
-          textString="TESTED -- 2014-10-16 //TH")}),
-                                                 Icon(coordinateSystem(extent={{-100,-100},{100,100}})),
+          textString="TESTED -- 2014-10-16 //TH"),
+        Rectangle(
+          extent={{-120,100},{100,-100}},
+          lineColor={115,150,0},
+          lineThickness=0.5)}),                  Icon(coordinateSystem(extent={{-100,-100},{100,100}})),
     experiment(StopTime=12000, Tolerance=1e-005),
     __Dymola_experimentSetupOutput);
 end Test_HEXvle2vle_L3_2ph_CH_simple;

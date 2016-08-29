@@ -1,12 +1,37 @@
 within ClaRa.Components.HeatExchangers.Check;
 model Test_HEXvle2vle_L3_2ph_BU_ntu
- extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
+ extends ClaRa.Basics.Icons.PackageIcons.ExecutableRegressiong100;
+model Regression
+  extends ClaRa.Basics.Icons.RegressionSummary;
+  Modelica.Blocks.Interfaces.RealInput V_liq "Liquid shell volume";
+  Modelica.Blocks.Interfaces.RealInput T_shell_out "Shell outlet temperature";
+  Modelica.Blocks.Interfaces.RealInput p_shell_out "IP turbine outlet enthalpy";
+  Modelica.Blocks.Interfaces.RealInput Q_flow_tot "Total heat flow";
+
+  Real y_Q_flow_tot_int = integrator1.y;
+  Real y_Q_flow_tot = Q_flow_tot;
+
+  Real y_V_liq_int = integrator2.y;
+  Real y_V_liq = V_liq;
+
+  Real y_T_shell_out_int = integrator3.y;
+  Real y_T_shell_out = T_shell_out;
+  Real y_p_shell_out_int = integrator4.y;
+  Real y_p_shell_out = p_shell_out;
+
+  protected
+  Components.Utilities.Blocks.Integrator integrator1(u = Q_flow_tot, startTime=1000);
+  Components.Utilities.Blocks.Integrator integrator2(u = V_liq, startTime=1000);
+  Components.Utilities.Blocks.Integrator integrator3(u = T_shell_out, startTime=1000);
+  Components.Utilities.Blocks.Integrator integrator4(u = p_shell_out, startTime=1000);
+end Regression;
 
   HEXvle2vle_L3_2ph_BU_ntu hex(
     redeclare model WallMaterial =
         TILMedia.SolidTypes.TILMedia_Aluminum,
     redeclare model PressureLossTubes =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.VLE_PL.PressureLossCoeffcient_L2 (             Delta_p_smooth=100, zeta_TOT=5),
+        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.VLE_PL.PressureLossCoeffcient_L2
+        (                                                                                                    Delta_p_smooth=100, zeta_TOT=5),
     redeclare model PressureLossShell =
         ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3,
     gain_eff=1,
@@ -25,7 +50,8 @@ model Test_HEXvle2vle_L3_2ph_BU_ntu
     level_rel_start=0.2,
     initTypeShell=ClaRa.Basics.Choices.Init.steadyDensity,
     redeclare model HeatTransfer_Shell =
-        Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.Constant_L3_ypsDependent (                   alpha_nom={1000,5000}),
+        Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.Constant_L3_ypsDependent
+        (                                                                                                    alpha_nom={1000,5000}),
     z_in_tubes=hex.height/2,
     z_out_tubes=hex.height/2,
     z_out_shell=0.05,
@@ -35,8 +61,10 @@ model Test_HEXvle2vle_L3_2ph_BU_ntu
     redeclare function HeatCapacityAveraging =
         Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.ArithmeticMean,
     redeclare model HeatTransferTubes =
-        Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.NusseltPipe1ph_L2 (                          CF_alpha_tubes=0.5),
-    smoothness=Modelica.Blocks.Types.Smoothness.LinearSegments)
+        Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.NusseltPipe1ph_L2
+        (                                                                                                    CF_alpha_tubes=0.5),
+    smoothness=Modelica.Blocks.Types.Smoothness.LinearSegments,
+    levelOutput=true)
                    annotation (Placement(transformation(extent={{16,-68},{36,-48}})));
 
   Sensors.Temperature                  Temp_Tubes_out
@@ -140,6 +168,10 @@ model Test_HEXvle2vle_L3_2ph_BU_ntu
     y_start=0.5,
     Tau_i=120) annotation (Placement(transformation(extent={{-20,-46},{-30,-36}})));
   Modelica.Blocks.Sources.RealExpression realExpression(y=0.8) annotation (Placement(transformation(extent={{2,-46},{-14,-36}})));
+  Regression regression(V_liq = hex.shell.summary.outline.volume[1],
+    T_shell_out = hex.shell.summary.outlet[1].T,
+    p_shell_out = hex.shell.summary.outlet[1].p,
+    Q_flow_tot = hex.wall.nTU.summary.Q_flow_tot) annotation (Placement(transformation(extent={{-100,-60},{-80,-40}})));
 equation
 
   connect(valve_tubes1.inlet,Temp_Tubes_out. port) annotation (Line(
@@ -180,7 +212,7 @@ equation
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
-  connect(hex.eye2, quadruple.eye) annotation (Line(points={{36.4,-50},{42,-50},{42,-45}},          color={190,190,190}));
+  connect(hex.eye2, quadruple.eye) annotation (Line(points={{37,-50},{42,-50},{42,-45}},            color={190,190,190}));
   connect(p_steam.y, pressureSink_ph.p) annotation (Line(points={{-79,-80},{-74,-80}},           color={0,0,127}));
   connect(pressureSink_ph1.p, p_cool.y) annotation (Line(points={{94,-38},{94,-38},{94,-30},{99,-30}}, color={0,0,127}));
   connect(T_cool.y, massFlowSource_h1.T) annotation (Line(points={{99,-86},{96,-86},{96,-62}}, color={0,0,127}));
@@ -193,10 +225,11 @@ equation
       color={0,131,169},
       thickness=0.5));
   connect(quadruple2.eye, massFlowSource_h1.eye) annotation (Line(points={{38,-70},{58,-70},{74,-70}}, color={190,190,190}));
-  connect(quadruple1.eye, hex.eye1) annotation (Line(points={{-8,-78},{28.8,-78},{28.8,-67.8}},  color={190,190,190}));
+  connect(quadruple1.eye, hex.eye1) annotation (Line(points={{-8,-78},{30,-78},{30,-69}},        color={190,190,190}));
   connect(massFlowSource_h.eye, quadruple3.eye) annotation (Line(points={{74,8},{36,8}}, color={190,190,190}));
-  connect(level_abs1.y, PI.u_m) annotation (Line(points={{3,-68},{-2,-68},{-25,-68},{-25,-47}}, color={0,0,127}));
-  connect(PI.y, valve_shell1.opening_in) annotation (Line(points={{-30.45,-41},{-50,-41},{-50,-77},{-40,-77}}, color={0,0,127}));
+  connect(level_abs1.y, PI.u_m) annotation (Line(points={{3,-68},{-2,-68},{-25.05,-68},{-25.05,-47}},
+                                                                                            color={0,0,127}));
+  connect(PI.y, valve_shell1.opening_in) annotation (Line(points={{-30.5,-41},{-50,-41},{-50,-77},{-40,-77}},  color={0,0,127}));
   connect(realExpression.y, PI.u_s) annotation (Line(points={{-14.8,-41},{-19,-41}}, color={0,0,127}));
   annotation (Diagram(coordinateSystem(extent={{-100,-100},{140,120}},
           preserveAspectRatio=false,
@@ -214,8 +247,11 @@ ________________________________________________________________________________
           extent={{-100,120},{58,102}},
           lineColor={0,128,0},
           fontSize=31,
-          textString="TESTED -- 2016-03-02 //TH")}),
-                                                 Icon(coordinateSystem(extent={{-100,-100},{140,100}})),
+          textString="TESTED -- 2016-03-02 //TH"),
+        Rectangle(
+          extent={{-100,120},{140,-100}},
+          lineColor={115,150,0},
+          lineThickness=0.5)}),                  Icon(coordinateSystem(initialScale=0.1)),
     experiment(
       StopTime=12000,
       __Dymola_NumberOfIntervals=50000,

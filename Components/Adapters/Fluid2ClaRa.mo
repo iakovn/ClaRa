@@ -1,7 +1,7 @@
 within ClaRa.Components.Adapters;
 model Fluid2ClaRa "A Modelica.Fluid to ClaRa connector"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,14 +15,17 @@ model Fluid2ClaRa "A Modelica.Fluid to ClaRa connector"
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
 
-  replaceable package ModelicaMedium = Modelica.Media.Water.WaterIF97_ph "Medium model of the MSL part"
-                                   annotation (choicesAllMatching=true, Dialog(group="Fundamental Definitions"));
+  replaceable package ModelicaMedium = Modelica.Media.Water.WaterIF97_ph
+    "Medium model of the MSL part" annotation (choicesAllMatching=true, Dialog(group="Fundamental Definitions"));
   outer ClaRa.SimCenter simCenter;
-  parameter TILMedia.VLEFluidTypes.BaseVLEFluid ClaRaMedium = simCenter.fluid1 "Medium in the component"
-    annotation(choices(choice=simCenter.fluid1 "First fluid defined in global simCenter",
-                       choice=simCenter.fluid2 "Second fluid defined in global simCenter",
-                       choice=simCenter.fluid3 "Third fluid defined in global simCenter"),
-                                                          Dialog(group="Fundamental Definitions"));
+  parameter TILMedia.VLEFluidTypes.BaseVLEFluid ClaRaMedium = simCenter.fluid1
+    "Medium in the component"
+    annotation(choices(choice=simCenter.fluid1
+        "First fluid defined in global simCenter",
+                       choice=simCenter.fluid2
+        "Second fluid defined in global simCenter",
+                       choice=simCenter.fluid3
+        "Third fluid defined in global simCenter"),       Dialog(group="Fundamental Definitions"));
   Modelica.Fluid.Interfaces.FluidPort_a port_a(redeclare package Medium =
         ModelicaMedium)
     annotation (Placement(transformation(extent={{-108,-12},{-88,8}}),

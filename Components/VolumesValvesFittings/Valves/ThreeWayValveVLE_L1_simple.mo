@@ -1,7 +1,8 @@
 within ClaRa.Components.VolumesValvesFittings.Valves;
-model ThreeWayValveVLE_L1_simple "Three way valve for vle media | no reverse flow | no pressure dependeny |"
+model ThreeWayValveVLE_L1_simple
+  "Three way valve for vle media | no reverse flow | no pressure dependeny |"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -22,7 +23,7 @@ model ThreeWayValveVLE_L1_simple "Three way valve for vle media | no reverse flo
 //     ClaRa.Basics.Units.Volume volume_tot "Total volume";
 // end Outline;
 
-record Summary
+model Summary
   extends ClaRa.Basics.Icons.RecordIcon;
 //   Outline outline;
   ClaRa.Basics.Records.FlangeVLE           inlet;

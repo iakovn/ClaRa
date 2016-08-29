@@ -1,7 +1,7 @@
 within ClaRa.Components.FlueGasCleaning.Denitrification;
 model Denitrification_L1_NH3port "Model for a simple ammonia denitrification"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -20,10 +20,10 @@ extends ClaRa.Basics.Icons.Separator;
   outer ClaRa.SimCenter simCenter;
 
 //## S U M M A R Y   D E F I N I T I O N ###################################################################
-  record Outline
+  model Outline
     extends ClaRa.Basics.Icons.RecordIcon;
     input Modelica.SIunits.Volume V "System volume" annotation (Dialog(show));
-    input Modelica.SIunits.Mass m "System mass" annotation (Dialog(show));
+    input Modelica.SIunits.Mass mass "System mass" annotation (Dialog(show));
     input Modelica.SIunits.Enthalpy H "System enthalpy"
       annotation (Dialog(show));
     input Modelica.SIunits.Pressure p "System pressure"
@@ -36,13 +36,13 @@ extends ClaRa.Basics.Icons.Separator;
       annotation (Dialog(show));
     input Modelica.SIunits.MassFlowRate mflow_NH3 "Requirered NH3 flow rate"
       annotation (Dialog(show));
-    input Modelica.SIunits.HeatFlowRate reactionHeat "Reaction heat of deNOx catalysis"
-                                         annotation (Dialog(show));
+    input Modelica.SIunits.HeatFlowRate reactionHeat
+      "Reaction heat of deNOx catalysis" annotation (Dialog(show));
     input Real NOx_separationRate "NOx separation rate"
       annotation (Dialog(show));
   end Outline;
 
- record Summary
+ model Summary
      extends ClaRa.Basics.Icons.RecordIcon;
      Outline outline;
      ClaRa.Basics.Records.FlangeGas  inlet;
@@ -52,25 +52,35 @@ extends ClaRa.Basics.Icons.Separator;
 
 //## P A R A M E T E R S #######################################################################################
 //_____________defintion of medium used in cell__________________________________________________________
-  inner parameter TILMedia.GasTypes.BaseGas      medium = simCenter.flueGasModel "Medium to be used in tubes" annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
+  inner parameter TILMedia.GasTypes.BaseGas      medium = simCenter.flueGasModel
+    "Medium to be used in tubes"                                                                              annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
 
 //  parameter Real separationRate(max = 0.99995) = 0.9995 "Separation rate" annotation (Dialog(group="Fundamental Definitions"));
 
-  inner parameter ClaRa.Basics.Units.MassFlowRate m_flow_nom= 200 "Nominal mass flow rates at inlet"  annotation(Dialog(tab="General", group="Nominal Values"));
+  inner parameter ClaRa.Basics.Units.MassFlowRate m_flow_nom= 200
+    "Nominal mass flow rates at inlet"                                                                annotation(Dialog(tab="General", group="Nominal Values"));
   inner parameter ClaRa.Basics.Units.Pressure p_nom=1e5 "Nominal pressure"                    annotation(Dialog(group="Nominal Values"));
-  inner parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_nom=1e5 "Nominal specific enthalpy"
-                                                                                               annotation(Dialog(group="Nominal Values"));
+  inner parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_nom=1e5
+    "Nominal specific enthalpy"                                                                annotation(Dialog(group="Nominal Values"));
 
-  inner parameter ClaRa.Basics.Choices.Init initType=ClaRa.Basics.Choices.Init.noInit "Type of initialisation" annotation(Dialog(tab="Initialisation", choicesAllMatching));
-  parameter ClaRa.Basics.Units.Temperature T_start= 273.15 + 100.0 "Start value of system temperature" annotation(Dialog(tab="Initialisation"));
-  parameter ClaRa.Basics.Units.Pressure p_start= 1.013e5 "Start value of sytsem pressure" annotation(Dialog(tab="Initialisation"));
-  parameter ClaRa.Basics.Units.MassFraction xi_start[medium.nc-1]=zeros(medium.nc-1) "Start value of sytsem mass fraction" annotation(Dialog(tab="Initialisation"));
-  inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation" annotation(Dialog(tab="Initialisation"));
+  inner parameter ClaRa.Basics.Choices.Init initType=ClaRa.Basics.Choices.Init.noInit
+    "Type of initialisation"                                                                                   annotation(Dialog(tab="Initialisation", choicesAllMatching));
+  parameter ClaRa.Basics.Units.Temperature T_start= 273.15 + 100.0
+    "Start value of system temperature"                                                                annotation(Dialog(tab="Initialisation"));
+  parameter ClaRa.Basics.Units.Pressure p_start= 1.013e5
+    "Start value of sytsem pressure"                                                      annotation(Dialog(tab="Initialisation"));
+  parameter ClaRa.Basics.Units.MassFraction xi_start[medium.nc-1]={0.01,0,0.25,0,0.7,0,0,0.04,0}
+    "Start value of sytsem mass fraction"                                                                                              annotation(Dialog(tab="Initialisation"));
+  inner parameter Boolean useHomotopy=simCenter.useHomotopy
+    "True, if homotopy method is used during initialisation"                                                         annotation(Dialog(tab="Initialisation"));
 
-  parameter Boolean allow_reverseFlow = true "True if flow reversal shall be supported" annotation(Evaluate=true, Dialog(tab="Expert Settings"));
-  parameter Boolean use_dynamicMassbalance = true "True if a dynamic mass balance shall be applied" annotation(Evaluate=true, Dialog(tab="Expert Settings"));
+  parameter Boolean allow_reverseFlow = true
+    "True if flow reversal shall be supported"                                          annotation(Evaluate=true, Dialog(tab="Expert Settings"));
+  parameter Boolean use_dynamicMassbalance = true
+    "True if a dynamic mass balance shall be applied"                                               annotation(Evaluate=true, Dialog(tab="Expert Settings"));
 
-  parameter Boolean showData=true "True, if a data port containing p,T,h,s,m_flow shall be shown, else false"
+  parameter Boolean showData=true
+    "True, if a data port containing p,T,h,s,m_flow shall be shown, else false"
                                                                                             annotation (Dialog(tab="Summary and Visualisation"));
 
 //## V A R I A B L E   P A R T##################################################################################
@@ -93,16 +103,22 @@ extends ClaRa.Basics.Icons.Separator;
 //____replaceable models for heat transfer, pressure loss and geometry______________________________________________
 replaceable model Geometry =
       ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry
-    constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry "1st: choose geometry definition | 2nd: edit corresponding record"
+    constrainedby
+    ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry
+    "1st: choose geometry definition | 2nd: edit corresponding record"
     annotation (Dialog(group="Geometry"), choicesAllMatching=true);
 
  replaceable model HeatTransfer =
       ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Adiabat_L2
-    constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.HeatTransfer_L2 "1st: choose geometry definition | 2nd: edit corresponding record"
+    constrainedby
+    ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.HeatTransfer_L2
+    "1st: choose geometry definition | 2nd: edit corresponding record"
     annotation (Dialog(group="Fundamental Definitions"), choicesAllMatching=true);
   replaceable model PressureLoss =
       ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.NoFriction_L2
-    constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.PressureLoss_L2 "1st: choose geometry definition | 2nd: edit corresponding record"
+    constrainedby
+    ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.PressureLoss_L2
+    "1st: choose geometry definition | 2nd: edit corresponding record"
     annotation (Dialog(group="Fundamental Definitions"), choicesAllMatching=true);
 
   Fundamentals.Denitrification_NH3port_controlVolume deNOx_NH3port_controlVolume annotation (Placement(transformation(extent={{-60,-16},{-28,16}})));
@@ -123,11 +139,11 @@ replaceable model Geometry =
 
  inner Summary summary(outline(
     V=flueGasCell.summary.outline.volume_tot,
-    m=flueGasCell.summary.gas.m,
-    H=flueGasCell.summary.gas.H,
-    h=flueGasCell.summary.gas.h,
-    T=flueGasCell.summary.gas.T,
-    p=flueGasCell.summary.gas.p,
+    mass=flueGasCell.summary.outline.mass,
+    H=flueGasCell.summary.outline.H,
+    h=flueGasCell.summary.outline.h,
+    T=flueGasCell.summary.outline.T,
+    p=flueGasCell.summary.outline.p,
     Delta_p=flueGasCell.pressureLoss.Delta_p,
     NOx_separationRate = deNOx_NH3port_controlVolume.NOx_separationRate,
     mflow_NH3 = deNOx_NH3port_controlVolume.NH3_inlet.m_flow,
@@ -136,16 +152,19 @@ replaceable model Geometry =
           T = inStream(inlet.T_outflow),
           p = inlet.p,
           h = deNOx_NH3port_controlVolume.gasMixture_a.h,
+          xi = inStream(inlet.xi_outflow),
           H_flow = deNOx_NH3port_controlVolume.gasMixture_a.h*inlet.m_flow),
     NH3inlet(m_flow = deNOx_NH3port_controlVolume.NH3_inlet.m_flow,
           T = inStream(deNOx_NH3port_controlVolume.NH3_inlet.T_outflow),
           p = deNOx_NH3port_controlVolume.NH3_inlet.p,
           h = deNOx_NH3port_controlVolume.gasMixture_NH3in.h,
+          xi = inStream(NH3_inlet.xi_outflow),
           H_flow = deNOx_NH3port_controlVolume.gasMixture_NH3in.h*deNOx_NH3port_controlVolume.NH3_inlet.m_flow),
     outlet(m_flow = -outlet.m_flow,
           T = outlet.T_outflow,
           p = inlet.p,
           h = flueGasCell.flueGasOutlet.h,
+          xi = outlet.xi_outflow,
           H_flow = -flueGasCell.flueGasOutlet.h*outlet.m_flow)) annotation (Placement(transformation(extent={{-98,
             -100},{-78,-80}})));
 

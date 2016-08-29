@@ -1,7 +1,8 @@
 within ClaRa.Basics.ControlVolumes.FluidVolumes;
-model VolumeVLEGas_L3 "A volume element balancing liquid and gas phase with n inlet and outlet ports"
+model VolumeVLEGas_L3
+  "A volume element balancing liquid and gas phase with n inlet and outlet ports"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.0                        //
+  // Component of the ClaRa library, version: 1.1.1                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -24,23 +25,28 @@ model VolumeVLEGas_L3 "A volume element balancing liquid and gas phase with n in
 
   //_____________________________________________________
   //____________loal record definition__________________
-  record Outline
+  model Outline
     extends ClaRa.Basics.Icons.RecordIcon;
     parameter Boolean showExpertSummary=false;
-    ClaRa.Basics.Units.Volume volume_tot "Total volume";
-    ClaRa.Basics.Units.Area A_heat_tot "Heat transfer area";
-    ClaRa.Basics.Units.Volume volume[2] if showExpertSummary "Volume of liquid and gas volume";
-    ClaRa.Basics.Units.Area A_heat[2] if showExpertSummary "Heat transfer area";
-    ClaRa.Basics.Units.Length level_abs "Absolue filling level";
-    Real level_rel if showExpertSummary "relative filling level";
-    ClaRa.Basics.Units.Mass fluidMass "Total fluid mass";
-    ClaRa.Basics.Units.Enthalpy H_tot if showExpertSummary "Systems's enthalpy";
-    ClaRa.Basics.Units.HeatFlowRate Q_flow_tot "Total heat flow rate";
-    ClaRa.Basics.Units.HeatFlowRate Q_flow[2] if showExpertSummary "Zonal heat flow rate";
-    ClaRa.Basics.Units.PressureDifference Delta_p "Pressure difference p_in - p_out";
+    input ClaRa.Basics.Units.Volume volume_tot "Total volume";
+    input ClaRa.Basics.Units.Area A_heat_tot "Heat transfer area";
+    input ClaRa.Basics.Units.Volume volume[2] if showExpertSummary
+      "Volume of liquid and gas volume";
+    input ClaRa.Basics.Units.Area A_heat[2] if showExpertSummary
+      "Heat transfer area";
+    input ClaRa.Basics.Units.Length level_abs "Absolue filling level";
+    input Real level_rel if showExpertSummary "relative filling level";
+    input ClaRa.Basics.Units.Mass fluidMass "Total fluid mass";
+    input ClaRa.Basics.Units.Enthalpy H_tot if showExpertSummary
+      "Systems's enthalpy";
+    input ClaRa.Basics.Units.HeatFlowRate Q_flow_tot "Total heat flow rate";
+    input ClaRa.Basics.Units.HeatFlowRate Q_flow[2] if showExpertSummary
+      "Zonal heat flow rate";
+    input ClaRa.Basics.Units.PressureDifference Delta_p
+      "Pressure difference p_in - p_out";
   end Outline;
 
-  record Summary
+  model Summary
     extends ClaRa.Basics.Icons.RecordIcon;
     Outline outline;
     ClaRa.Basics.Records.FlangeVLE inlet;
@@ -57,70 +63,87 @@ model VolumeVLEGas_L3 "A volume element balancing liquid and gas phase with n in
    end ICom;
   //_____________________________________________________
   //_______________replaceable models____________________
-  inner parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium=simCenter.fluid1 "Medium in the component"
+  inner parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium=simCenter.fluid1
+    "Medium in the component"
     annotation (Dialog(group="Fundamental Definitions"), choicesAllMatching);
-  inner parameter TILMedia.GasTypes.BaseGas gasType = simCenter.flueGasModel "Gas medium"
-                  annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
+  inner parameter TILMedia.GasTypes.BaseGas gasType = simCenter.flueGasModel
+    "Gas medium"  annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
   replaceable model HeatTransfer =
       ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.Constant_L3_ypsDependent
-    constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.HeatTransferBaseVLE_L3 "1st: choose heat transfer model | 2nd: edit corresponding record"
+    constrainedby
+    ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.HeatTransferBaseVLE_L3
+    "1st: choose heat transfer model | 2nd: edit corresponding record"
     annotation (Dialog(group="Fundamental Definitions"), choicesAllMatching=
         true);
 
   replaceable model PressureLoss =
       ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3
-    constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.PressureLoss_L3 "1st: choose friction model | 2nd: edit corresponding record"
-                                                                  annotation (
+    constrainedby
+    ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.PressureLoss_L3
+    "1st: choose friction model | 2nd: edit corresponding record" annotation (
       Dialog(group="Fundamental Definitions"), choicesAllMatching=true);
 
   replaceable model Geometry =
       ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry
-    constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry "1st: choose geometry definition | 2nd: edit corresponding record"
+    constrainedby
+    ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry
+    "1st: choose geometry definition | 2nd: edit corresponding record"
     annotation (Dialog(group="Geometry"), choicesAllMatching=true);
 
   //_____________________________________________________
   //______________________parameters_____________________
-  parameter ClaRa.Basics.Units.CoefficientOfHeatTransfer alpha_ph=50000 "|Phase Border|HTC of the phase border";
-  parameter ClaRa.Basics.Units.Area A_heat_ph=geo.A_hor*100 "|Phase Border|Heat transfer area at phase border";
+  parameter ClaRa.Basics.Units.CoefficientOfHeatTransfer alpha_ph=50000
+    "|Phase Border|HTC of the phase border";
+  parameter ClaRa.Basics.Units.Area A_heat_ph=geo.A_hor*100
+    "|Phase Border|Heat transfer area at phase border";
   //*min(volume_liq/volume_gas, V_gas/volume_liq)
 
-  inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation"
+  inner parameter Boolean useHomotopy=simCenter.useHomotopy
+    "True, if homotopy method is used during initialisation"
     annotation (Dialog(tab="Initialisation"));
-   inner parameter ClaRa.Basics.Units.MassFlowRate m_flow_nom=10 "Nominal mass flow rates at inlet"
+   inner parameter ClaRa.Basics.Units.MassFlowRate m_flow_nom=10
+    "Nominal mass flow rates at inlet"
      annotation (Dialog(tab="General", group="Nominal Values"));
 
    inner parameter ClaRa.Basics.Units.Pressure p_nom=1e5 "Nominal pressure"
      annotation (Dialog(group="Nominal Values"));
 
   final parameter ClaRa.Basics.Units.DensityMassSpecific rho_liq_nom=
-      TILMedia.VLEFluidFunctions.bubbleDensity_pxi(medium, p_nom) "Nominal density";
+      TILMedia.VLEFluidFunctions.bubbleDensity_pxi(medium, p_nom)
+    "Nominal density";
   final parameter ClaRa.Basics.Units.DensityMassSpecific rho_gas_nom=
       1.2 "Nominal density";
 
   parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_liq_start=-10 +
-      TILMedia.VLEFluidFunctions.bubbleSpecificEnthalpy_pxi(medium, p_start) "Start value of sytsem specific enthalpy"
+      TILMedia.VLEFluidFunctions.bubbleSpecificEnthalpy_pxi(medium, p_start)
+    "Start value of sytsem specific enthalpy"
     annotation (Dialog(tab="Initialisation"));
-  parameter ClaRa.Basics.Units.Temperature T_gas_start = 293.15 "Start value of sgas zone's temperature"
+  parameter ClaRa.Basics.Units.Temperature T_gas_start = 293.15
+    "Start value of sgas zone's temperature"
     annotation (Dialog(tab="Initialisation"));
 
-final parameter ClaRa.Basics.Units.EnthalpyMassSpecific  h_gas_start = TILMedia.GasFunctions.specificEnthalpy_pTxi(gasType, p_start, T_gas_start, xi_start) "Start value of gas zone's specific enthalpy"
+final parameter ClaRa.Basics.Units.EnthalpyMassSpecific  h_gas_start = TILMedia.GasFunctions.specificEnthalpy_pTxi(gasType, p_start, T_gas_start, xi_start)
+    "Start value of gas zone's specific enthalpy"
     annotation (Dialog(tab="Initialisation"));
 
-  parameter ClaRa.Basics.Units.Pressure p_start=1e5 "Start value of sytsem pressure"
-                                     annotation (Dialog(tab="Initialisation"));
+  parameter ClaRa.Basics.Units.Pressure p_start=1e5
+    "Start value of sytsem pressure" annotation (Dialog(tab="Initialisation"));
 
-  parameter ClaRa.Basics.Units.MassFraction xi_start[gasType.nc-1]= zeros(gasType.nc-1) "Initial gas mass fraction"
-                                                                                            annotation (Dialog(tab="Initialisation"));
-  inner parameter String initType = "No init, use start values as guess" "Type of initialisation"
+  parameter ClaRa.Basics.Units.MassFraction xi_start[gasType.nc-1]= zeros(gasType.nc-1)
+    "Initial gas mass fraction"                                                             annotation (Dialog(tab="Initialisation"));
+  inner parameter String initType = "No init, use start values as guess"
+    "Type of initialisation"
     annotation (Dialog(tab="Initialisation"), choices(choice = "No init, use start values as guess", choice="Steady state in p, h_liq, T_gas",
             choice = "Steady state in p", choice="steady State in h_liq and T_gas", choice = "Fixed value for filling level",
              choice = "Fixed values for filling level, p, h_liq, T_gas"));
 
     parameter ClaRa.Basics.Units.Length radius_flange=0.05 "Flange radius" annotation(Dialog(group="Geometry"));
 
-  parameter Boolean showExpertSummary=simCenter.showExpertSummary "|Summary and Visualisation||True, if expert summary should be applied";
-  parameter Integer heatSurfaceAlloc=1 "Heat transfer area to be considered"          annotation(dialog(group="Geometry"),choices(choice=1 "Lateral surface",
-                                                                                   choice=2 "Inner heat transfer surface"));
+  parameter Boolean showExpertSummary=simCenter.showExpertSummary
+    "|Summary and Visualisation||True, if expert summary should be applied";
+  parameter Integer heatSurfaceAlloc=1 "Heat transfer area to be considered"          annotation(Dialog(group="Geometry"),choices(choice=1
+        "Lateral surface",                                                         choice=2
+        "Inner heat transfer surface"));
 
 protected
     constant ClaRa.Basics.Units.Length level_abs_min=1e-6;
@@ -139,13 +162,17 @@ public
   ClaRa.Basics.Units.EnthalpyMassSpecific h_in[geo.N_inlet];
   ClaRa.Basics.Units.MassFraction xi_out[geo.N_outlet, medium.nc-1];
   ClaRa.Basics.Units.MassFraction xi_in[geo.N_inlet, medium.nc-1];
-  inner ClaRa.Basics.Units.EnthalpyMassSpecific h_liq(start=h_liq_start) "Specific enthalpy of liquid phase";
-  inner ClaRa.Basics.Units.EnthalpyMassSpecific h_gas(start=h_gas_start) "Specific enthalpy of vapour phase";
+  inner ClaRa.Basics.Units.EnthalpyMassSpecific h_liq(start=h_liq_start)
+    "Specific enthalpy of liquid phase";
+  inner ClaRa.Basics.Units.EnthalpyMassSpecific h_gas(start=h_gas_start)
+    "Specific enthalpy of vapour phase";
   Real drho_liqdt;
   Real drho_gasdt;
   //(unit="kg/(m3s)");
-  ClaRa.Basics.Units.Volume volume_liq(start=geo.volume*level_rel_start) "Liquid volume";
-  ClaRa.Basics.Units.Volume volume_gas(start=geo.volume*level_rel_start) "Vapour volume";
+  ClaRa.Basics.Units.Volume volume_liq(start=geo.volume*level_rel_start)
+    "Liquid volume";
+  ClaRa.Basics.Units.Volume volume_gas(start=geo.volume*level_rel_start)
+    "Vapour volume";
 
   ClaRa.Basics.Units.HeatFlowRate Q_flow_phases "Heat flow between phases";
 
@@ -154,8 +181,10 @@ public
 
   ClaRa.Basics.Units.Mass mass_liq "Liquid mass";
   ClaRa.Basics.Units.Mass mass_gas "Vapour mass";
-  inner ClaRa.Basics.Units.Pressure p(start=p_start, stateSelect=StateSelect.prefer) "System pressure";
-  ClaRa.Basics.Units.MassFraction xi_gas[gasType.nc-1](start=xi_start) "Gas mass fractions";
+  inner ClaRa.Basics.Units.Pressure p(start=p_start, stateSelect=StateSelect.prefer)
+    "System pressure";
+  ClaRa.Basics.Units.MassFraction xi_gas[gasType.nc-1](start=xi_start)
+    "Gas mass fractions";
   ClaRa.Basics.Units.MassFraction xi_liq[medium.nc-1] "Liquid mass fractions";
   ClaRa.Basics.Units.Length level_abs;
   Real level_rel(start = level_rel_start);
@@ -164,9 +193,11 @@ public
   ClaRa.Basics.Units.PressureDifference Delta_p_geo_in[geo.N_inlet];
   ClaRa.Basics.Units.PressureDifference Delta_p_geo_out[geo.N_outlet];
 
-  ClaRa.Basics.Interfaces.FluidPortIn inlet[geo.N_inlet](each Medium=medium) "Inlet port"
+  ClaRa.Basics.Interfaces.FluidPortIn inlet[geo.N_inlet](each Medium=medium)
+    "Inlet port"
     annotation (Placement(transformation(extent={{-110,-10},{-90,10}})));
-  ClaRa.Basics.Interfaces.FluidPortOut outlet[geo.N_outlet](each Medium=medium) "Outlet port"
+  ClaRa.Basics.Interfaces.FluidPortOut outlet[geo.N_outlet](each Medium=medium)
+    "Outlet port"
     annotation (Placement(transformation(extent={{90,-10},{110,10}})));
   ClaRa.Basics.Interfaces.HeatPort_a
                                    heat annotation (
@@ -220,7 +251,8 @@ public
         T=ventIn.T,
         p=vent.p,
         h=ventIn.h,
-        H_flow=ventIn.h*vent.m_flow),
+        H_flow=ventIn.h*vent.m_flow,
+        xi=ventIn.xi),
       fluid(
         showExpertSummary=showExpertSummary,
         mass={mass_liq,mass_gas},
@@ -317,7 +349,8 @@ equation
   //_______Mass Balances_________________________________
   drho_liqdt*volume_liq = -liq.d*der(volume_liq) + sum(inlet.m_flow)
      + sum(outlet.m_flow) "Liquid mass balance";
-  drho_gasdt*volume_gas = -gas.d*der(volume_gas) + vent.m_flow "Gas mass balance";
+  drho_gasdt*volume_gas = -gas.d*der(volume_gas) + vent.m_flow
+    "Gas mass balance";
 
   //_____________________________________________________
   //______Species Balance________________________________
@@ -363,7 +396,8 @@ equation
     inlet[i].p = p + pressureLoss.Delta_p[i] + Delta_p_geo_in[i];
   end for;
   for i in 1:geo.N_outlet loop
-    outlet[i].p = p + Delta_p_geo_out[i] "The friction term is lumped at the inlet side to avoid direct coupling of two flow models, this avoids aniteration of mass flow rates in some application cases";
+    outlet[i].p = p + Delta_p_geo_out[i]
+      "The friction term is lumped at the inlet side to avoid direct coupling of two flow models, this avoids aniteration of mass flow rates in some application cases";
   end for;
   vent.p=p;
   vent.xi_outflow = xi_gas;

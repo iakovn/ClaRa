@@ -1,7 +1,8 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.VLE_PL;
-model PressureLossCoeffcient_L2 "All geo || Quadratic pressure loss || constant pressure loss coefficient || density dependent "
+model PressureLossCoeffcient_L2
+  "All geo || Quadratic pressure loss || constant pressure loss coefficient || density dependent "
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.0                        //
+  // Component of the ClaRa library, version: 1.1.1                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,7 +16,8 @@ model PressureLossCoeffcient_L2 "All geo || Quadratic pressure loss || constant 
   // XRG Simulation GmbH (Hamburg, Germany).                                   //
   //___________________________________________________________________________//
 
-  extends ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.VLE_PL.PressureLoss_L2;
+  extends
+    ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.VLE_PL.PressureLoss_L2;
   extends ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.TubeType_L2;
   extends ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.ShellType_L2;
   import TILMedia.Internals.VLEFluidObjectFunctions.density_phxi;
@@ -39,8 +41,10 @@ public
         10,
         Delta_p)*rho_out) annotation (Placement(transformation(extent={{-28,-80},{-8,-60}})));
 
-  parameter SI.Pressure Delta_p_smooth=100 "Start linearisation for decreasing pressure loss";
-  parameter FluidDissipation.Utilities.Types.PressureLossCoefficient zeta_TOT "Pressure loss coefficient";
+  parameter SI.Pressure Delta_p_smooth=100
+    "Start linearisation for decreasing pressure loss";
+  parameter FluidDissipation.Utilities.Types.PressureLossCoefficient zeta_TOT
+    "Pressure loss coefficient";
 equation
   rho_in = density_phxi(
     iCom.p_in,

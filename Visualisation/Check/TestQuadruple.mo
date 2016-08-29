@@ -1,7 +1,7 @@
 within ClaRa.Visualisation.Check;
 model TestQuadruple
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -45,7 +45,8 @@ model TestQuadruple
     unit="kJ/kg",
     varname="Test")
     annotation (Placement(transformation(extent={{0,-40},{20,-20}})));
-  Quadruple quadruple annotation (Placement(transformation(extent={{-6,-7},{44,11}})));
+  Quadruple quadruple(decimalSpaces(T=2, p=3))
+                      annotation (Placement(transformation(extent={{-6,-7},{44,11}})));
   Basics.Interfaces.EyeOut eyeOut annotation (Placement(transformation(extent={{-44,-8},{-24,12}}), iconTransformation(extent={{-164,24},{-154,34}})));
   inner SimCenter simCenter                    annotation (Placement(transformation(extent={{60,-40},{80,-20}})));
 equation
@@ -54,23 +55,23 @@ equation
       color={190,190,190},
       smooth=Smooth.None));
   connect(m.y, eyeOut.m_flow) annotation (Line(
-      points={{-61,76},{-46,76},{-46,2},{-34,2}},
+      points={{-61,76},{-46,76},{-46,2.05},{-33.95,2.05}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(T.y, eyeOut.T) annotation (Line(
-      points={{-61,36},{-46,36},{-46,2},{-34,2}},
+      points={{-61,36},{-46,36},{-46,2.05},{-33.95,2.05}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(h.y, eyeOut.h) annotation (Line(
-      points={{-61,-4},{-46,-4},{-46,2},{-34,2}},
+      points={{-61,-4},{-46,-4},{-46,2.05},{-33.95,2.05}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(p.y, eyeOut.p) annotation (Line(
-      points={{-61,-44},{-46,-44},{-46,2},{-34,2}},
+      points={{-61,-44},{-46,-44},{-46,2.05},{-33.95,2.05}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(s.y, eyeOut.s) annotation (Line(
-      points={{-59,-80},{-46,-80},{-46,2},{-34,2}},
+      points={{-59,-80},{-46,-80},{-46,2.05},{-33.95,2.05}},
       color={0,0,127},
       smooth=Smooth.None));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}),

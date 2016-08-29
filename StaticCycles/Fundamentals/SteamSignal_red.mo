@@ -7,6 +7,6 @@ connector SteamSignal_red "Signal-based steam connector"
           Rectangle(
           extent={{-40,100},{40,-100}},
           lineColor={0,131,169},
-          fillColor={255,170,213},
+          fillColor={186,72,88},
           fillPattern=FillPattern.Solid)}), Diagram(coordinateSystem(extent={{-40,-100},{40,100}})));
 end SteamSignal_red;

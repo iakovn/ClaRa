@@ -7,25 +7,25 @@ record IComBase_L3
   parameter Integer N_inlet= 1 "Number of inlet ports";
   parameter Integer N_outlet= 1 "Number of outlet ports";
 //____Inlet______________________________________________________________________________
-  input SI.Pressure p_in[N_inlet] "|Inlet||Inlet pressure";
-  input SI.Temperature T_in[N_inlet] "|Inlet||Inlet Temperature";
-  input SI.MassFlowRate  m_flow_in[ N_inlet] "|Inlet||Inlet mass flow";
+  SI.Pressure p_in[N_inlet] "|Inlet||Inlet pressure";
+  SI.Temperature T_in[N_inlet] "|Inlet||Inlet Temperature";
+  SI.MassFlowRate  m_flow_in[ N_inlet] "|Inlet||Inlet mass flow";
 
 //____Outlet_____________________________________________________________________________
-  input SI.Pressure p_out[N_outlet] "|Outlet||Outlet pressure";
-  input SI.Temperature T_out[N_outlet] "|Outlet||Outlet Temperature";
-  input SI.MassFlowRate  m_flow_out[N_outlet] "|Outlet||Outlet mass flow";
+  SI.Pressure p_out[N_outlet] "|Outlet||Outlet pressure";
+  SI.Temperature T_out[N_outlet] "|Outlet||Outlet Temperature";
+  SI.MassFlowRate  m_flow_out[N_outlet] "|Outlet||Outlet mass flow";
 
 //_____Bulk______________________________________________________________________________
-  input SI.Temperature T[N_cv] "|System||Bulk Temperature";
-  input SI.Pressure p[N_cv] "|System||Outlet pressure";
+  SI.Temperature T[N_cv] "|System||Bulk Temperature";
+  SI.Pressure p[N_cv] "|System||Outlet pressure";
 
 //_____Nominal___________________________________________________________________________
-  parameter input SI.Pressure  p_nom=1e5 "Nominal pressure" annotation(Dialog(tab="Nominal"));
-  parameter input SI.PressureDifference  Delta_p_nom=1e4 "Nominal pressure" annotation(Dialog(tab="Nominal"));
-  parameter input SI.MassFlowRate  m_flow_nom "Nominal mass flow" annotation(Dialog(tab="Nominal"));
-  parameter input SI.EnthalpyMassSpecific  h_nom=1e4 "Nominal enthalpy" annotation(Dialog(tab="Nominal"));
-  parameter input SI.MassFraction  xi_nom[:]= {1} "Nominal mass fraction" annotation(Dialog(tab="Nominal"));
+  parameter SI.Pressure  p_nom=1e5 "Nominal pressure" annotation(Dialog(tab="Nominal"));
+  parameter SI.PressureDifference  Delta_p_nom=1e4 "Nominal pressure" annotation(Dialog(tab="Nominal"));
+  parameter SI.MassFlowRate  m_flow_nom "Nominal mass flow" annotation(Dialog(tab="Nominal"));
+  parameter SI.EnthalpyMassSpecific  h_nom=1e4 "Nominal enthalpy" annotation(Dialog(tab="Nominal"));
+  parameter SI.MassFraction  xi_nom[:]= {1} "Nominal mass fraction" annotation(Dialog(tab="Nominal"));
 annotation (   defaultComponentName="iCom",
     defaultComponentPrefixes="inner");
 end IComBase_L3;

@@ -1,7 +1,7 @@
 within ClaRa.Components.VolumesValvesFittings.Valves;
 model ValveGas_L1 "Valve for gas flows with replaceable flow models"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -19,35 +19,39 @@ model ValveGas_L1 "Valve for gas flows with replaceable flow models"
   extends ClaRa.Basics.Icons.ComplexityLevel(complexity="L1");
 
   import SI = ClaRa.Basics.Units;
-  record Outline
+  model Outline
     extends ClaRa.Basics.Icons.RecordIcon;
     parameter Boolean showExpertSummary;
-    SI.VolumeFlowRate V_flow "Volume flow rate";
-    SI.PressureDifference Delta_p "Pressure difference p_out - p_in";
-    Real PR if  showExpertSummary "Pressure ration p_out/p_in";
-    Real PR_crit if   showExpertSummary "Critical pressure ratio";
-    Real opening_ "Valve opening in p.u.";
+    input SI.VolumeFlowRate V_flow "Volume flow rate";
+    input SI.PressureDifference Delta_p "Pressure difference p_out - p_in";
+    input Real PR if  showExpertSummary "Pressure ration p_out/p_in";
+    input Real PR_crit if   showExpertSummary "Critical pressure ratio";
+    input Real opening_ "Valve opening in p.u.";
   end Outline;
 
-  record Summary
+  model Summary
     extends ClaRa.Basics.Icons.RecordIcon;
     Outline outline;
     ClaRa.Basics.Records.FlangeGas   inlet;
     ClaRa.Basics.Records.FlangeGas   outlet;
   end Summary;
 
-  parameter TILMedia.GasTypes.BaseGas medium = simCenter.flueGasModel "Flue gas model used in component"
+  parameter TILMedia.GasTypes.BaseGas medium = simCenter.flueGasModel
+    "Flue gas model used in component"
     annotation (choicesAllMatching, Dialog(group="Fundamental Definitions"));
 
   replaceable model PressureLoss =
       ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticKV
-    constrainedby ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.GenericPressureLoss "Pressure loss model at the tubes side"
-                                            annotation (Dialog(group=
+    constrainedby
+    ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.GenericPressureLoss
+    "Pressure loss model at the tubes side" annotation (Dialog(group=
           "Fundamental Definitions"), choicesAllMatching);
-  inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation"
+  inner parameter Boolean useHomotopy=simCenter.useHomotopy
+    "True, if homotopy method is used during initialisation"
     annotation (Dialog(group="Fundamental Definitions"));
 
-  parameter Boolean openingInputIsActive=false "True, if  a variable opening is used"
+  parameter Boolean openingInputIsActive=false
+    "True, if  a variable opening is used"
     annotation (Dialog(group="Control Signals"));
   parameter Real opening_const_=1 "A constant opening: =1: open, =0: closed"
     annotation (Dialog(group="Control Signals", enable=not openingInputIsActive));
@@ -55,9 +59,12 @@ model ValveGas_L1 "Valve for gas flows with replaceable flow models"
   inner parameter Boolean checkValve=false "True, if valve is check valve"
     annotation (Evaluate=true, Dialog(group="Fundamental Definitions"));
 
-  parameter Boolean showExpertSummary=simCenter.showExpertSummary "|Summary and Visualisation||True, if expert summary should be applied";
-  parameter Boolean showData=true "|Summary and Visualisation||True, if a data port containing p,T,h,s,m_flow shall be shown, else false";
-  parameter Boolean useStabilisedMassFlow=false "|Expert Settings|Numerical Robustness|";
+  parameter Boolean showExpertSummary=simCenter.showExpertSummary
+    "|Summary and Visualisation||True, if expert summary should be applied";
+  parameter Boolean showData=true
+    "|Summary and Visualisation||True, if a data port containing p,T,h,s,m_flow shall be shown, else false";
+  parameter Boolean useStabilisedMassFlow=false
+    "|Expert Settings|Numerical Robustness|";
   parameter SI.Time Tau= 0.1 "Time Constant of Stabilisation" annotation(Dialog(tab="Expert Settings", group = "Numerical Robustness", enable=useStabilisedMassFlow));
   parameter Real opening_leak_ = 0 "Leakage valve opening in p.u." annotation(Dialog(tab="Expert Settings", group = "Numerical Robustness"));
 
@@ -73,8 +80,8 @@ model ValveGas_L1 "Valve for gas flows with replaceable flow models"
   Modelica.Blocks.Interfaces.RealInput opening_in(
     min=0,
     max=1,
-    value=opening_) if (openingInputIsActive) "=1: completely open, =0: completely closed"
-                                                 annotation (Placement(
+    value=opening_) if (openingInputIsActive)
+    "=1: completely open, =0: completely closed" annotation (Placement(
         transformation(
         origin={0,80},
         extent={{-20,-20},{20,20}},
@@ -118,12 +125,14 @@ public
       T=gasIn.T,
       p=inlet.p,
       h=gasIn.h,
+      xi=gasIn.xi,
       H_flow=gasIn.h*inlet.m_flow),
     outlet(
       m_flow=-outlet.m_flow,
       T=gasOut.T,
       p=outlet.p,
       h=gasOut.h,
+      xi=gasOut.xi,
       H_flow=-gasOut.h*outlet.m_flow))
     annotation (Placement(transformation(extent={{-40,-52},{-20,-32}})));
 protected

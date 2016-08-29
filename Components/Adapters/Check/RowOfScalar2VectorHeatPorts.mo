@@ -1,7 +1,7 @@
 within ClaRa.Components.Adapters.Check;
 model RowOfScalar2VectorHeatPorts
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -16,7 +16,7 @@ model RowOfScalar2VectorHeatPorts
 //___________________________________________________________________________//
   extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
  Real Q_flow_sum=-sum(scalar2VectorHeatPort.heatVector.Q_flow);
-  VolumesValvesFittings.Pipes.PipeFlow_L4_Simple pipe1(
+  ClaRa.Components.VolumesValvesFittings.Pipes.PipeFlowVLE_L4_Simple pipe1(
     length=20,
     h_start=ones(pipe1.geo.N_cv)*1e5,
     m_flow_nom=5,
@@ -30,12 +30,13 @@ model RowOfScalar2VectorHeatPorts
     initType=ClaRa.Basics.Choices.Init.noInit,
     showExpertSummary=true,
     redeclare model HeatTransfer =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4 (                      alpha_nom=10000),
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4
+        (                                                                                                    alpha_nom=10000),
     N_cv=10,
     frictionAtInlet=true,
-    frictionAtOutlet=true) annotation (Placement(transformation(extent={{-28,-68},{-8,-56}})));
+    frictionAtOutlet=true) annotation (Placement(transformation(extent={{-32,-67},{-4,-57}})));
 
-  VolumesValvesFittings.Pipes.PipeFlow_L4_Simple pipe2(
+  ClaRa.Components.VolumesValvesFittings.Pipes.PipeFlowVLE_L4_Simple pipe2(
     length=20,
     N_cv=10,
     m_flow_nom=5,
@@ -48,9 +49,10 @@ model RowOfScalar2VectorHeatPorts
     h_start=ones(pipe2.N_cv)*1e5,
     showExpertSummary=true,
     redeclare model HeatTransfer =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4 (                      alpha_nom=10000),
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4
+        (                                                                                                    alpha_nom=10000),
     frictionAtInlet=true,
-    frictionAtOutlet=true) annotation (Placement(transformation(extent={{12,-68},{32,-56}})));
+    frictionAtOutlet=true) annotation (Placement(transformation(extent={{13,-67},{39,-57}})));
 
   BoundaryConditions.BoundaryVLE_pTxi pressureSink_pT(p_const=4900000) annotation (Placement(transformation(extent={{78,-72},{60,-52}})));
   Basics.ControlVolumes.SolidVolumes.ThinWall_L4 thinWall_1(
@@ -63,7 +65,7 @@ model RowOfScalar2VectorHeatPorts
     Delta_x=pipe1.Delta_x,
     stateLocation=2,
     initChoice=ClaRa.Basics.Choices.Init.noInit,
-    T_start=ones(thinWall_1.N_ax)*(528 + 273.15)) annotation (Placement(transformation(extent={{-28,-46},{-8,-26}})));
+    T_start=ones(thinWall_1.N_ax)*(528 + 273.15)) annotation (Placement(transformation(extent={{-28,-32},{-8,-24}})));
   Basics.ControlVolumes.SolidVolumes.ThinWall_L4 thinWall_2(
     N_ax=pipe2.N_cv,
     diameter_o=pipe2.diameter_i + 0.004,
@@ -74,7 +76,7 @@ model RowOfScalar2VectorHeatPorts
     Delta_x=pipe2.Delta_x,
     stateLocation=2,
     initChoice=ClaRa.Basics.Choices.Init.noInit,
-    T_start=ones(thinWall_2.N_ax)*(528 + 273.15)) annotation (Placement(transformation(extent={{16,-46},{36,-26}})));
+    T_start=ones(thinWall_2.N_ax)*(528 + 273.15)) annotation (Placement(transformation(extent={{16,-34},{36,-26}})));
   Scalar2VectorHeatPort scalar2VectorHeatPort(
     length=pipe1.length,
     N=pipe1.N_cv,
@@ -92,7 +94,8 @@ model RowOfScalar2VectorHeatPorts
         rotation=270,
         origin={26,-8})));
   inner SimCenter simCenter annotation (Placement(transformation(extent={{-100,-100},{-80,-80}})));
-  BoundaryConditions.BoundaryVLE_hxim_flow massFlowSource_h(h_const=35e5, m_flow_const=0.3) annotation (Placement(transformation(extent={{-64,-74},{-44,-54}})));
+  BoundaryConditions.BoundaryVLE_hxim_flow massFlowSource_h(h_const=35e5, m_flow_const=0.3,
+    showData=true)                                                                          annotation (Placement(transformation(extent={{-68,-72},{-48,-52}})));
   Visualisation.Quadruple quadruple
     annotation (Placement(transformation(extent={{-70,-96},{-50,-86}})));
   Visualisation.DynDisplay dynDisplay(varname="T outlet pipe1", x1=pipe1.summary.fluid.T[
@@ -131,25 +134,25 @@ model RowOfScalar2VectorHeatPorts
     annotation (Placement(transformation(extent={{-40,-52},{-20,-44}})));
 equation
   connect(pipe1.outlet, pipe2.inlet) annotation (Line(
-      points={{-8,-62},{12,-62}},
+      points={{-4,-62},{13,-62}},
       color={0,131,169},
       pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(pipe2.outlet, pressureSink_pT.steam_a) annotation (Line(
-      points={{32,-62},{60,-62}},
+      points={{39,-62},{60,-62}},
       color={0,131,169},
       pattern=LinePattern.Solid,
       thickness=0.5,
       smooth=Smooth.None));
   connect(scalar2VectorHeatPort.heatVector, thinWall_1.outerPhase) annotation (
       Line(
-      points={{-18,-18},{-18,-26}},
+      points={{-18,-18},{-18,-24}},
       color={167,25,48},
       thickness=0.5,
       smooth=Smooth.None));
   connect(thinWall_1.innerPhase, pipe1.heat) annotation (Line(
-      points={{-18,-46},{-18,-57.2}},
+      points={{-18,-32},{-18,-58}},
       color={167,25,48},
       thickness=0.5,
       smooth=Smooth.None));
@@ -160,17 +163,17 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(thinWall_2.innerPhase, pipe2.heat) annotation (Line(
-      points={{26,-46},{26,-57.2},{22,-57.2}},
+      points={{26,-34},{26,-58}},
       color={167,25,48},
       thickness=0.5,
       smooth=Smooth.None));
   connect(massFlowSource_h.steam_a, pipe1.inlet) annotation (Line(
-      points={{-44,-64},{-36,-64},{-36,-62},{-28,-62}},
+      points={{-48,-62},{-32,-62}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
   connect(massFlowSource_h.eye, quadruple.eye) annotation (Line(
-      points={{-44,-72},{-40,-72},{-40,-91},{-70,-91}},
+      points={{-48,-70},{-40,-70},{-40,-91},{-70,-91}},
       color={190,190,190},
       smooth=Smooth.None));
   connect(fixedTemperature1.port, scalar2VectorHeatPort.heatScalar) annotation (

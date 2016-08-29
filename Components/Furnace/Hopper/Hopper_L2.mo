@@ -1,7 +1,7 @@
 within ClaRa.Components.Furnace.Hopper;
 model Hopper_L2 "Model for a hopper section of a combustion chamber"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -21,20 +21,24 @@ model Hopper_L2 "Model for a hopper section of a combustion chamber"
 extends ClaRa.Components.Furnace.BaseClasses.HopperBase(geo(
         flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical));
 
-inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation"
-                                                              annotation(Dialog(tab="Initialisation"));
+inner parameter Boolean useHomotopy=simCenter.useHomotopy
+    "True, if homotopy method is used during initialisation"  annotation(Dialog(tab="Initialisation"));
 
   Real sum_xi "Sum of inlet components";
   Real drhodt "Density derivative";
 
-  ClaRa.Basics.Units.MassFraction xi_flueGas_in_del[flueGas.nc - 1] "Flue gas mixture composition";
+  ClaRa.Basics.Units.MassFraction xi_flueGas_in_del[flueGas.nc - 1]
+    "Flue gas mixture composition";
 
-  ClaRa.Basics.Units.MassFlowRate m_flow_in_del "Pseudo state for inlet mass flow";
-  ClaRa.Basics.Units.MassFlowRate m_flow_out_del "Pseudo state for outlet mass flow";
+  ClaRa.Basics.Units.MassFlowRate m_flow_in_del
+    "Pseudo state for inlet mass flow";
+  ClaRa.Basics.Units.MassFlowRate m_flow_out_del
+    "Pseudo state for outlet mass flow";
   ClaRa.Basics.Units.Temperature T_bulk_del "Pseudo state for bulk temperature";
-  ClaRa.Basics.Units.DensityMassSpecific rho_bulk_del "Pseudo state for bulk density";
+  ClaRa.Basics.Units.DensityMassSpecific rho_bulk_del
+    "Pseudo state for bulk density";
 
-  record Outline
+  model Outline
   //  parameter Boolean showExpertSummary annotation(Dialog(hide));
     extends ClaRa.Basics.Icons.RecordIcon;
     input ClaRa.Basics.Units.Volume
@@ -50,20 +54,21 @@ inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy met
     input ClaRa.Basics.Units.Temperature
                                      T_out "Outlet temperature";
     input ClaRa.Basics.Units.EnthalpyMassSpecific
-                                              h_out "Flue gas enthalpy at outlet";
+                                              h_out
+      "Flue gas enthalpy at outlet";
   end Outline;
 
-  record Fuel
+  model Fuel
     extends ClaRa.Basics.Icons.RecordIcon;
     input ClaRa.Basics.Units.MassFlowRate m_flow "Mass flow rate"
       annotation (Dialog);
     input ClaRa.Basics.Units.Temperature T "Temperature" annotation (Dialog);
     input ClaRa.Basics.Units.Pressure p "Pressure" annotation (Dialog);
-    input ClaRa.Basics.Units.HeatCapacityMassSpecific cp "Specific heat capacity"
-                               annotation (Dialog);
+    input ClaRa.Basics.Units.HeatCapacityMassSpecific cp
+      "Specific heat capacity" annotation (Dialog);
   end Fuel;
 
-  record Slag
+  model Slag
     extends ClaRa.Basics.Icons.RecordIcon;
     input ClaRa.Basics.Units.MassFlowRate m_flow "Mass flow rate"
       annotation (Dialog);
@@ -71,14 +76,14 @@ inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy met
     input ClaRa.Basics.Units.Pressure p "Pressure" annotation (Dialog);
   end Slag;
 
-  record Flow
+  model Flow
     extends ClaRa.Basics.Icons.RecordIcon;
     ClaRa.Basics.Records.FlangeGas flueGas;
     Fuel fuel;
     Slag slag;
   end Flow;
 
-  record Summary
+  model Summary
     extends ClaRa.Basics.Icons.RecordIcon;
     Outline outline;
     Flow inlet;
@@ -100,6 +105,7 @@ inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy met
         T=actualStream(inlet.flueGas.T_outflow),
         p=inlet.flueGas.p,
         h=flueGasInlet.h,
+        xi=actualStream(inlet.flueGas.xi_outflow),
         H_flow=flueGasInlet.h*inlet.flueGas.m_flow),
       fuel(
         m_flow=inlet.fuel.m_flow,
@@ -116,6 +122,7 @@ inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy met
         T=actualStream(outlet.flueGas.T_outflow),
         p=outlet.flueGas.p,
         h=h_flueGas_out,
+        xi=actualStream(outlet.flueGas.xi_outflow),
         H_flow=-h_flueGas_out*outlet.flueGas.m_flow),
       fuel(
         m_flow=-outlet.fuel.m_flow,
@@ -185,10 +192,10 @@ equation
   der(h_flueGas_out) = (Q_flow_wall + Q_flow_top + Q_flow_bottom
                 + inlet.flueGas.m_flow * (flueGasInlet.h - h_flueGas_out)
                 + outlet.flueGas.m_flow * (flueGasOutlet.h - h_flueGas_out)
-                + inlet.slag.m_flow * (inlet.slagType.cp * (T_Slag - 298.15) - h_flueGas_out)
-                + outlet.slag.m_flow * (inlet.slagType.cp * (inStream(outlet.slag.T_outflow)  - 298.15) - h_flueGas_out)
-                + inlet.fuel.m_flow *(inlet.fuelType.cp * (inStream(inlet.fuel.T_outflow)  - 298.15) - h_flueGas_out)
-                + outlet.fuel.m_flow * (outlet.fuelType.cp * (outlet.fuel.T_outflow - 298.15) - h_flueGas_out))/mass;
+                + inlet.slag.m_flow * (inlet.slagType.cp * (actualStream(inlet.slag.T_outflow) - 298.15) - h_flueGas_out)
+                + outlet.slag.m_flow * (inlet.slagType.cp * (actualStream(outlet.slag.T_outflow)  - 298.15) - h_flueGas_out)
+                + inlet.fuel.m_flow *(inStream(inlet.fuel.cp_outflow) * (inStream(inlet.fuel.T_outflow)  - 298.15) - h_flueGas_out)
+                + outlet.fuel.m_flow * (outlet.fuel.cp_outflow * (outlet.fuel.T_outflow - 298.15) - h_flueGas_out))/mass;
 
   V_flow_flueGas_in = 0;
   V_flow_flueGas_out = 0;
@@ -206,9 +213,25 @@ equation
  //___________/ T_outflows \______________
   outlet.fuel.T_outflow = bulk.T;
   outlet.flueGas.T_outflow = bulk.T;
-
-  inlet.slag.T_outflow = T_Slag;
   heat_bottom.T = bulk.T;
+
+  if slagTemperature_calculationType==1 then
+    inlet.slag.T_outflow = T_Slag;
+    outlet.slag.T_outflow = T_Slag;
+  elseif slagTemperature_calculationType==2 then
+    inlet.slag.T_outflow = flueGasOutlet.T;
+    outlet.slag.T_outflow = flueGasOutlet.T;
+  elseif slagTemperature_calculationType==3 then
+    inlet.slag.T_outflow = (flueGasOutlet.T + flueGasInlet.T)/2;
+    outlet.slag.T_outflow = (flueGasOutlet.T + flueGasInlet.T)/2;
+  elseif slagTemperature_calculationType==4 then
+    inlet.slag.T_outflow = flueGasInlet.T;
+    outlet.slag.T_outflow = flueGasInlet.T;
+  else
+    inlet.slag.T_outflow = T_Slag;
+    outlet.slag.T_outflow = T_Slag;
+    assert(slagTemperature_calculationType==1 or slagTemperature_calculationType==2 or slagTemperature_calculationType==3 or slagTemperature_calculationType==4, "Invalid slag temperature calculation type");
+  end if;
 
   inlet.flueGas.xi_outflow  = xi_flueGas_del;
   outlet.flueGas.xi_outflow  = xi_flueGas_del;
@@ -218,9 +241,12 @@ equation
   inlet.fuel.LHV_outflow =inStream(outlet.fuel.LHV_outflow);
   outlet.fuel.LHV_calculationType = inlet.fuel.LHV_calculationType;
 
+  outlet.fuel.cp_outflow =inStream(inlet.fuel.cp_outflow);
+  inlet.fuel.cp_outflow =inStream(outlet.fuel.cp_outflow);
+
   //___________/ Dummy T_outflows \__________________________________________
   inlet.fuel.T_outflow = bulk.T;
-  outlet.slag.T_outflow = inStream(outlet.slag.T_outflow); //outlet.slag is inflowing slag
+  //outlet.slag.T_outflow = inStream(outlet.slag.T_outflow); //outlet.slag is inflowing slag
   inlet.flueGas.T_outflow  = bulk.T;
 
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-300,
@@ -228,29 +254,19 @@ equation
                       graphics), Icon(coordinateSystem(preserveAspectRatio=true,
           extent={{-300,-100},{300,100}}), graphics={
         Text(
-          extent={{34,90},{242,56}},
+          extent={{32,80},{240,46}},
           lineColor={0,0,0},
           fillColor={255,255,255},
           fillPattern=FillPattern.Solid,
-          textString=DynamicSelect("", "T_out="+realString(T_outlet,1,integer(0)) +"K")),
+          visible=showData,
+          textString=DynamicSelect("", "T_out="+String(bulk.T,format="1.0f") +" K")),
         Text(
-          extent={{34,44},{242,10}},
+          extent={{32,20},{242,-14}},
           lineColor={0,0,0},
           fillColor={255,255,255},
           fillPattern=FillPattern.Solid,
-          textString=DynamicSelect("", "lambda="+realString(min(99,lambda),1,integer(1)))),
-        Text(
-          extent={{34,-54},{242,-88}},
-          lineColor={0,0,0},
-          fillColor={255,255,255},
-          fillPattern=FillPattern.Solid,
-          textString=DynamicSelect("", "Q="+realString(-Q_combustion/1e6,1,integer(0))+"MW")),
-        Text(
-          extent={{32,-14},{240,-48}},
-          lineColor={0,0,0},
-          fillColor={255,255,255},
-          fillPattern=FillPattern.Solid,
-          textString=DynamicSelect("", "alphaA="+realString(heattransfer.effAlphaA,1,integer(0))+""))}),
+          visible=showData,
+          textString=DynamicSelect("", "Q_wall="+String(Q_flow_wall/1e6,format="1.0f")+" MW"))}),
     Documentation(info="<html>
 <p><b>Model description: </b>A nonstationary model for the hopper furnace section</p>
 <p><br/><b>Contact:</b> Lasse Nielsen, TLK-Thermo GmbH</p>

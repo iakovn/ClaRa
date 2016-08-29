@@ -1,7 +1,8 @@
 within ClaRa.SubSystems.Boiler;
-model SteamGenerator_L1 "A steam generation and reaheater model using characteristic lines and transfer functions"
+model SteamGenerator_L1
+  "A steam generation and reaheater model using characteristic lines and transfer functions"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -18,27 +19,40 @@ model SteamGenerator_L1 "A steam generation and reaheater model using characteri
   extends ClaRa.SubSystems.Boiler.CoalSupplyBoiler_base;
   extends ClaRa.Basics.Icons.ComplexityLevel(complexity="L1");
 
-  parameter Boolean calcOutletPressures= true "True, if the pressures at outlet shall be calculated"  annotation(choicesAllMatching=true, Dialog(group="Fundamental Definitions"));
+  parameter Boolean calcOutletPressures= true
+    "True, if the pressures at outlet shall be calculated"                                            annotation(choicesAllMatching=true, Dialog(group="Fundamental Definitions"));
 
 //___________________________________________________________________________________//
 //_____________Nominal Operation Point_______________________________________________//
-  parameter Modelica.SIunits.Pressure p_LS_nom= 300e5 "|Nominal Operation|Nominal values - SI units!|Nominal life steam pressure";
-  parameter Modelica.SIunits.Pressure p_RH_nom= 60e5 "|Nominal Operation|Nominal values - SI units!|Nominal reheat outlet pressure";
-  parameter Modelica.SIunits.Pressure Delta_p_nomHP = 40e5 "|Nominal Operation|Nominal values - SI units!|Nominal main pressure loss";
-  parameter Modelica.SIunits.Pressure Delta_p_nomIP = 4e5 "|Nominal Operation|Nominal values - SI units!|Nominal reheat pressure loss";
-  parameter Modelica.SIunits.MassFlowRate m_flow_nomLS = 419 "|Nominal Operation|Nominal values - SI units!|Nominal life steam flow rate";
-  input Modelica.SIunits.Temperature T_LS = 823.15 "|Nominal Operation|Nominal values - SI units!|Value of life steam temperature"
+  parameter Modelica.SIunits.Pressure p_LS_nom= 300e5
+    "|Nominal Operation|Nominal values - SI units!|Nominal life steam pressure";
+  parameter Modelica.SIunits.Pressure p_RH_nom= 60e5
+    "|Nominal Operation|Nominal values - SI units!|Nominal reheat outlet pressure";
+  parameter Modelica.SIunits.Pressure Delta_p_nomHP = 40e5
+    "|Nominal Operation|Nominal values - SI units!|Nominal main pressure loss";
+  parameter Modelica.SIunits.Pressure Delta_p_nomIP = 4e5
+    "|Nominal Operation|Nominal values - SI units!|Nominal reheat pressure loss";
+  parameter Modelica.SIunits.MassFlowRate m_flow_nomLS = 419
+    "|Nominal Operation|Nominal values - SI units!|Nominal life steam flow rate";
+  input Modelica.SIunits.Temperature T_LS = 823.15
+    "|Nominal Operation|Nominal values - SI units!|Value of life steam temperature"
                                                                                     annotation(Dialog);
-  parameter Modelica.SIunits.Temperature T_RH_nom = 833 "|Nominal Operation|Nominal values - SI units!|Nominal reheater outlet temperature";
+  parameter Modelica.SIunits.Temperature T_RH_nom = 833
+    "|Nominal Operation|Nominal values - SI units!|Nominal reheater outlet temperature";
 
 //___________________________________________________________________________________//
 //_____________Nominal Operation Point_______________________________________________//
-  parameter Real CL_mLS_QF_[:,:]=[0, 0.32; 0.34, 0.32; 1, 1] "|Part Load|Part Load Definition using p.u.!|Characteristic line live steam flow as function of thermal output";
-  parameter Real CL_pLS_QF_[:,:]=[0, 0.32; 0.34, 0.32; 1, 1] "|Part Load|Part Load Definition using p.u.!|Characteristic line live steam pressure as function of thermal output";
-  parameter Real CL_Valve_[:,:]=[0,0; 1, 1] "|Part Load|Part Load Definition using p.u.!|Characteristics of the turbine valve";
-  parameter Real CL_Delta_pHP_mLS_[:,:]=[0,0;0.1, 0.01; 0.2, 0.04; 0.3, 0.09; 0.4, 0.16; 0.5, 0.25; 0.6, 0.36; 0.7, 0.49; 0.8, 0.64; 0.9, 0.81; 1, 1] "|Part Load|Part Load Definition using p.u.!|Characteristic line of HP pressure drop as function of mass flow rate";
+  parameter Real CL_mLS_QF_[:,:]=[0, 0.32; 0.34, 0.32; 1, 1]
+    "|Part Load|Part Load Definition using p.u.!|Characteristic line live steam flow as function of thermal output";
+  parameter Real CL_pLS_QF_[:,:]=[0, 0.32; 0.34, 0.32; 1, 1]
+    "|Part Load|Part Load Definition using p.u.!|Characteristic line live steam pressure as function of thermal output";
+  parameter Real CL_Valve_[:,:]=[0,0; 1, 1]
+    "|Part Load|Part Load Definition using p.u.!|Characteristics of the turbine valve";
+  parameter Real CL_Delta_pHP_mLS_[:,:]=[0,0;0.1, 0.01; 0.2, 0.04; 0.3, 0.09; 0.4, 0.16; 0.5, 0.25; 0.6, 0.36; 0.7, 0.49; 0.8, 0.64; 0.9, 0.81; 1, 1]
+    "|Part Load|Part Load Definition using p.u.!|Characteristic line of HP pressure drop as function of mass flow rate";
 
-  parameter Real CL_Delta_pIP_mLS_[:,:]=[0,0;0.1, 0.01; 0.2, 0.04; 0.3, 0.09; 0.4, 0.16; 0.5, 0.25; 0.6, 0.36; 0.7, 0.49; 0.8, 0.64; 0.9, 0.81; 1, 1] "|Part Load|Part Load Definition using p.u.!|Characteristic line of reheat pressure drop as function of mass flow rate";
+  parameter Real CL_Delta_pIP_mLS_[:,:]=[0,0;0.1, 0.01; 0.2, 0.04; 0.3, 0.09; 0.4, 0.16; 0.5, 0.25; 0.6, 0.36; 0.7, 0.49; 0.8, 0.64; 0.9, 0.81; 1, 1]
+    "|Part Load|Part Load Definition using p.u.!|Characteristic line of reheat pressure drop as function of mass flow rate";
 
    parameter Real CL_Ip_Hp_[:,2]= {{0.2500, 0.0951},
                                         {0.3333, 0.1493},
@@ -49,23 +63,33 @@ model SteamGenerator_L1 "A steam generation and reaheater model using characteri
                                         {0.7500, 0.5885},
                                         {0.8333, 0.7129},
                                         {0.9167, 0.8500},
-                                        {1.0000, 1.0000}} "|Part Load|Part Load Definition using p.u.!|Characteristic line IP pressure over HP pressure (p.u.)";
-  parameter Real CL_Trh_Q_[:,:]=[0,    0.9004;    0.4000,    0.9604;    0.5000,    0.9784;    0.7500,    1.0000;    1.0000,    1.0000] "|Part Load|Part Load Definition using p.u.!|Temperature after reheat";
+                                        {1.0000, 1.0000}}
+    "|Part Load|Part Load Definition using p.u.!|Characteristic line IP pressure over HP pressure (p.u.)";
+  parameter Real CL_Trh_Q_[:,:]=[0,    0.9004;    0.4000,    0.9604;    0.5000,    0.9784;    0.7500,    1.0000;    1.0000,    1.0000]
+    "|Part Load|Part Load Definition using p.u.!|Temperature after reheat";
 
 //___________________________________________________________________________________//
 //_____________Nominal Operation Point_______________________________________________//
-  parameter Modelica.SIunits.Time Tau_dead = 120 "|Transients and Control Definition|Time Response Definition|Equivalent dead time of steam generation";
-  parameter Modelica.SIunits.Time Tau_bal = 200 "|Transients and Control Definition|Time Response Definition|Balancing time of steam generation";
-  parameter Modelica.SIunits.Time Tau_stor = 200 "|Transients and Control Definition|Time Response Definition|Integration time of steam storage";
-parameter Modelica.SIunits.Time Tau_IP= (10+25)/2 "|Transients and Control Definition|Time Response Definition|Time Constant for Energy Storage in IP/LP turbine";
+  parameter Modelica.SIunits.Time Tau_dead = 120
+    "|Transients and Control Definition|Time Response Definition|Equivalent dead time of steam generation";
+  parameter Modelica.SIunits.Time Tau_bal = 200
+    "|Transients and Control Definition|Time Response Definition|Balancing time of steam generation";
+  parameter Modelica.SIunits.Time Tau_stor = 200
+    "|Transients and Control Definition|Time Response Definition|Integration time of steam storage";
+parameter Modelica.SIunits.Time Tau_IP= (10+25)/2
+    "|Transients and Control Definition|Time Response Definition|Time Constant for Energy Storage in IP/LP turbine";
 
-  parameter Boolean yTInputIsActive= false "|Transients and Control Definition|Time Response Definition| True, if connector is active, else constant valve opening";
-  parameter Real y_T_const_ = 1 "|Transients and Control Definition|Time Response Definition|Constant turbine valve aperture"
+  parameter Boolean yTInputIsActive= false
+    "|Transients and Control Definition|Time Response Definition| True, if connector is active, else constant valve opening";
+  parameter Real y_T_const_ = 1
+    "|Transients and Control Definition|Time Response Definition|Constant turbine valve aperture"
                                                                                               annotation(Dialog(enable = not yTInputIsActive));
 
 //___________Summary and Visualisation_____________________________________________//
-  parameter Boolean showExpertSummary=false "|Summary and Visualisation||True, if expert summary should be applied";
-  parameter Boolean showData=true "|Summary and Visualisation||True, if a data port containing p,T,h,s,m_flow shall be shown, else false";
+  parameter Boolean showExpertSummary=false
+    "|Summary and Visualisation||True, if expert summary should be applied";
+  parameter Boolean showData=true
+    "|Summary and Visualisation||True, if a data port containing p,T,h,s,m_flow shall be shown, else false";
 
 //___________Variables____________________________________________________________//
   outer ClaRa.SimCenter simCenter;
@@ -74,16 +98,20 @@ parameter Modelica.SIunits.Time Tau_IP= (10+25)/2 "|Transients and Control Defin
                                         SteamStorage(k=1/Tau_stor,
     outMin=0,
     outMax=1.5,
-    initType=Modelica.Blocks.Types.Init.NoInit) "A simple way to model the mass storage in the boiler"
+    initType=Modelica.Blocks.Types.Init.NoInit)
+    "A simple way to model the mass storage in the boiler"
     annotation (Placement(transformation(extent={{0,80},{20,100}})));
   Modelica.Blocks.Math.Feedback feedback
     annotation (Placement(transformation(extent={{-28,-10},{-8,10}})));
   Modelica.Blocks.Continuous.TransferFunction heatRelease(a={Tau_bal*Tau_dead,(Tau_bal + Tau_dead),1},
-      initType=Modelica.Blocks.Types.Init.NoInit) "comprehends the coal supply, the heat release and the steam generation"
+      initType=Modelica.Blocks.Types.Init.NoInit)
+    "comprehends the coal supply, the heat release and the steam generation"
     annotation (Placement(transformation(extent={{-58,-10},{-38,10}})));
-  Modelica.Blocks.Math.Product turbineValveModel "Effect of steam flow throtteling"
+  Modelica.Blocks.Math.Product turbineValveModel
+    "Effect of steam flow throtteling"
     annotation (Placement(transformation(extent={{40,-40},{60,-20}})));
-  Modelica.Blocks.Interfaces.RealInput yT_(value=turbineValveCharacteristics.u[1]) if yTInputIsActive "Turbine valve position"
+  Modelica.Blocks.Interfaces.RealInput yT_(value=turbineValveCharacteristics.u[1]) if yTInputIsActive
+    "Turbine valve position"
     annotation (Placement(transformation(
         extent={{-20,-20},{20,20}},
         rotation=0,
@@ -123,8 +151,8 @@ public
   Modelica.Blocks.Tables.CombiTable1D convert2reheatMassFlow(columns={2}, table=
        CL_mLS_QF_)
     annotation (Placement(transformation(extent={{140,40},{160,60}})));
-  Modelica.Blocks.Interfaces.RealOutput h_evap "evaporator outlet specific enthalpy"
-                                          annotation (Placement(transformation(
+  Modelica.Blocks.Interfaces.RealOutput h_evap
+    "evaporator outlet specific enthalpy" annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=270,
         origin={98,-106}), iconTransformation(extent={{100,-10},{120,10}},
@@ -144,7 +172,8 @@ public
     m_flow_cRH=reheat_in.m_flow,
     p_hRH=reheat_out.p,
     h_hRH=if calcOutletPressures then reheatedSteam.h else 0,
-    m_flow_hRH=convert2reheatMassFlow.y[1]*m_flow_nomLS) "Values as defined by transfer functions"
+    m_flow_hRH=convert2reheatMassFlow.y[1]*m_flow_nomLS)
+    "Values as defined by transfer functions"
     annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
   Fundamentals.BoilerSummary        summaryReal(
     p_feed=feedwater.p,

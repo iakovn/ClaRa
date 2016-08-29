@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.FluidVolumes;
 model VolumeVLE_3_TwoZones "A volume element balancing liquid and vapour phase"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.0                        //
+  // Component of the ClaRa library, version: 1.1.1                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -25,23 +25,23 @@ model VolumeVLE_3_TwoZones "A volume element balancing liquid and vapour phase"
 
   //_____________________________________________________
   //____________loal summary definition__________________
-  record Outline
+  model Outline
     extends ClaRa.Basics.Icons.RecordIcon;
     parameter Boolean showExpertSummary=false;
-    ClaRa.Basics.Units.Volume volume_tot "Total volume";
-    ClaRa.Basics.Units.Area A_heat_tot "Heat transfer area";
-    ClaRa.Basics.Units.Volume volume[2] if showExpertSummary "Volume of liquid and steam volume";
-    ClaRa.Basics.Units.Area A_heat[2] if showExpertSummary "Heat transfer area";
-    ClaRa.Basics.Units.Length level_abs "Absolue filling level";
-    Real level_rel if showExpertSummary "relative filling level";
-    ClaRa.Basics.Units.Mass fluidMass "Total fluid mass";
-    ClaRa.Basics.Units.Enthalpy H_tot if showExpertSummary "Systems's enthalpy";
-    ClaRa.Basics.Units.HeatFlowRate Q_flow_tot "Total heat flow rate";
-    ClaRa.Basics.Units.HeatFlowRate Q_flow[2] if showExpertSummary "Zonal heat flow rate";
-    ClaRa.Basics.Units.PressureDifference Delta_p "Pressure difference p_in - p_out";
+    input ClaRa.Basics.Units.Volume volume_tot "Total volume";
+    input ClaRa.Basics.Units.Area A_heat_tot "Heat transfer area";
+    input ClaRa.Basics.Units.Volume volume[2] if showExpertSummary "Volume of liquid and steam volume";
+    input ClaRa.Basics.Units.Area A_heat[2] if showExpertSummary "Heat transfer area";
+    input ClaRa.Basics.Units.Length level_abs "Absolue filling level";
+    input Real level_rel if showExpertSummary "relative filling level";
+    input ClaRa.Basics.Units.Mass fluidMass "Total fluid mass";
+    input ClaRa.Basics.Units.Enthalpy H_tot if showExpertSummary "Systems's enthalpy";
+    input ClaRa.Basics.Units.HeatFlowRate Q_flow_tot "Total heat flow rate";
+    input ClaRa.Basics.Units.HeatFlowRate Q_flow[2] if showExpertSummary "Zonal heat flow rate";
+    input ClaRa.Basics.Units.PressureDifference Delta_p "Pressure difference p_in - p_out";
   end Outline;
 
-  record Summary
+  model Summary
     extends ClaRa.Basics.Icons.RecordIcon;
     Outline outline;
     ClaRa.Basics.Records.FlangeVLE inlet;
@@ -77,12 +77,13 @@ model VolumeVLE_3_TwoZones "A volume element balancing liquid and vapour phase"
 
   //_____________________________________________________
   //______________________parameters_____________________
-  parameter ClaRa.Basics.Units.Time Tau_cond=10 "|Phase Border|Time constant of condensation";
-  parameter ClaRa.Basics.Units.Time Tau_evap=Tau_cond/1000 "|Phase Border|Time constant of evaporation";
-  parameter ClaRa.Basics.Units.CoefficientOfHeatTransfer alpha_ph=50000 "|Phase Border|HTC of the phase border";
-  parameter ClaRa.Basics.Units.Area A_heat_ph=geo.A_hor*100 "|Phase Border|Heat transfer area at phase border";
+  parameter ClaRa.Basics.Units.Time Tau_cond=10 "Time constant of condensation" annotation(Dialog(tab="Phase Border"));
+  parameter ClaRa.Basics.Units.Time Tau_evap=Tau_cond/1000 "Time constant of evaporation" annotation(Dialog(tab="Phase Border"));
+  parameter ClaRa.Basics.Units.CoefficientOfHeatTransfer alpha_ph=50000 "HTC of the phase border" annotation(Dialog(tab="Phase Border"));
+  parameter ClaRa.Basics.Units.Area A_heat_ph=geo.A_hor*100 "Heat transfer area at phase border" annotation(Dialog(tab="Phase Border"));
   //*min(volume_liq/volume_vap, V_vap/volume_liq)
-  parameter Real expHT_phases = 0 "|Phase Border|Exponent for volume dependency on inter phase HT";
+  parameter Real expHT_phases = 0 "Exponent for volume dependency on inter phase HT" annotation(Dialog(tab="Phase Border"));
+  parameter Boolean equalPressures = true "True if pressure in liquid and vapour phase is equal" annotation(Dialog(tab="Phase Border"));
 
   inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation"
     annotation (Dialog(tab="Initialisation"));
@@ -109,11 +110,11 @@ model VolumeVLE_3_TwoZones "A volume element balancing liquid and vapour phase"
     annotation (Dialog(tab="Initialisation"));
 
   inner parameter ClaRa.Basics.Choices.Init initType=ClaRa.Basics.Choices.Init.noInit "Type of initialisation"
-    annotation (Dialog(tab="Initialisation", choicesAllMatching));
+    annotation (Dialog(tab="Initialisation"), choicesAllMatching);
   //  parameter Modelica.SIunits.Length radius_flange=0.05 "Flange radius" annotation(Dialog(group="Geometry"));
 
   parameter Boolean showExpertSummary=false "|Summary and Visualisation||True, if expert summary should be applied";
-  parameter Integer heatSurfaceAlloc=1 "Heat transfer area to be considered" annotation(dialog(group="Geometry"),choices(choice=1 "Lateral surface",
+  parameter Integer heatSurfaceAlloc=1 "Heat transfer area to be considered" annotation(Dialog(group="Geometry"),choices(choice=1 "Lateral surface",
                                                                                    choice=2 "Inner heat transfer surface"));
 
   //_____________________________________________________
@@ -137,13 +138,19 @@ public
 
   ClaRa.Basics.Units.Mass mass_liq "Liquid mass";
   ClaRa.Basics.Units.Mass mass_vap "Vapour mass";
-  inner ClaRa.Basics.Units.Pressure p(start=p_start, stateSelect=StateSelect.prefer) "System pressure";
+
+  ClaRa.Basics.Units.Pressure p_liq(start=p_start) "Liquid pressure";
+  ClaRa.Basics.Units.Pressure p_vap(start=p_start, each stateSelect=StateSelect.prefer) "Vapour pressure";
 
   SI.EnthalpyFlowRate H_flow_inliq "Enthalpy flow rate passing from inlet to liquid zone and vice versa";
   SI.EnthalpyFlowRate H_flow_invap "Enthalpy flow rate passing from inlet to vapour zone and vice versa";
   SI.EnthalpyFlowRate H_flow_outliq "Enthalpy flow rate passing from inlet to liquid zone and vice versa";
   SI.EnthalpyFlowRate H_flow_outvap "Enthalpy flow rate passing from outlet to vapour zone and vice versa";
 
+protected
+  ClaRa.Basics.Units.Pressure p_bottom "Pressure at volume bottom";
+
+public
   ClaRa.Basics.Interfaces.FluidPortIn inlet(Medium=medium) "Inlet port"
     annotation (Placement(transformation(extent={{-110,-10},{-90,10}})));
   ClaRa.Basics.Interfaces.FluidPortOut outlet(Medium=medium) "Outlet port"
@@ -176,7 +183,7 @@ protected
     h=h_liq,
     computeTransportProperties=true,
     computeVLETransportProperties=true,
-    p=p) annotation (Placement(transformation(extent={{-10,-20},{10,0}},
+    p=p_liq) annotation (Placement(transformation(extent={{-10,-20},{10,0}},
           rotation=0)));
 public
   HeatTransfer heattransfer(
@@ -192,7 +199,7 @@ public
 protected
   inner TILMedia.VLEFluid_ph vap(
     vleFluidType=medium,
-    p=p,
+    p=p_vap,
     h=h_vap,
     computeTransportProperties=true,
     computeVLETransportProperties=true) annotation (Placement(transformation(
@@ -218,7 +225,7 @@ protected
     xi_out={fluidOut.xi},
     xi={liq.xi,vap.xi},
     h_nom=1e6,
-    p={p,p},
+    p={p_liq,p_vap},
     fluidPointer_in={fluidIn.vleFluidPointer},
     fluidPointer_out={fluidOut.vleFluidPointer},
     fluidPointer= {liq.vleFluidPointer, vap.vleFluidPointer},
@@ -262,7 +269,7 @@ public
     fluid(
       showExpertSummary=showExpertSummary,
       mass={mass_liq,mass_vap},
-      p={p,p},
+      p={p_liq,p_vap},
       h=iCom.h,
       h_bub={liq.VLE.h_l,vap.VLE.h_l},
       h_dew={liq.VLE.h_v,vap.VLE.h_v},
@@ -286,12 +293,19 @@ equation
     rho_liq_nom) else volume_liq*liq.d;
   mass_vap = if useHomotopy then homotopy(volume_vap*vap.d, volume_vap*
     rho_vap_nom) else volume_vap*vap.d;
-  drho_liqdt = der(p)*liq.drhodp_hxi + der(h_liq)*liq.drhodh_pxi;
+  drho_liqdt = der(p_liq)*liq.drhodp_hxi + der(h_liq)*liq.drhodh_pxi;
   //calculating drhodt from state variables
-  drho_vapdt = der(p)*vap.drhodp_hxi + der(h_vap)*vap.drhodh_pxi;
+  drho_vapdt = der(p_vap)*vap.drhodp_hxi + der(h_vap)*vap.drhodh_pxi;
   //calculating drhodt from state variables
   volume_liq = geo.volume - volume_vap;
 
+  p_bottom = p_vap + phaseBorder.level_abs*liq.d*Modelica.Constants.g_n;
+  if equalPressures then
+    //der(p_liq) = der(p_vap);
+    p_liq = p_vap;
+  else
+    der(p_liq) = der(p_vap) + der(phaseBorder.level_abs)*liq.d*Modelica.Constants.g_n/2 +  phaseBorder.level_abs*drho_liqdt*Modelica.Constants.g_n/2;
+  end if;
   //_____________________________________________________
   //_______Mass Balances_________________________________
   drho_liqdt*volume_liq = +liq.d*der(volume_vap) + phaseBorder.m_flow_inliq[1]
@@ -302,18 +316,17 @@ equation
   //_____________________________________________________
   //______Energy Balances________________________________
   der(h_liq) = if mass_liq > 1e-6 then (H_flow_inliq + H_flow_outliq + m_flow_cond*vap.VLE.h_l - m_flow_evap*vap.VLE.h_v
-     + volume_liq*der(p) + p*der(volume_liq) - h_liq*volume_liq*drho_liqdt -
+     + volume_liq*der(p_liq) + p_liq*der(volume_liq) - h_liq*volume_liq*drho_liqdt -
     liq.d*h_liq*der(volume_liq) + Q_flow_phases + heattransfer.heat[1].Q_flow)/
     mass_liq else der(h_vap);
 
   der(h_vap) = if mass_vap > 1e-6 then (H_flow_invap + H_flow_outvap - m_flow_cond*vap.VLE.h_l + m_flow_evap*vap.VLE.h_v +
-    volume_vap*der(p) + p*der(volume_vap) - h_vap*volume_vap*drho_vapdt - vap.d
+    volume_vap*der(p_vap) + p_liq*der(volume_vap) - h_vap*volume_vap*drho_vapdt - vap.d
     *h_vap*der(volume_vap) - Q_flow_phases + heattransfer.heat[2].Q_flow)/
     mass_vap else der(h_liq);
 
 //________________________________________________________________________________
 //______Coupling of the Phases: Heat Transfer_____________________________________
-//   Q_flow_phases = noEvent(alpha_ph*A_heat_ph*(iCom.T[2] - iCom.T[1]));
   Q_flow_phases = noEvent(alpha_ph*A_heat_ph*min((1e-6+iCom.volume[1])/(1e-6+iCom.volume[2]), (1e-6+iCom.volume[2])/(1e-6+iCom.volume[1]))^expHT_phases*(iCom.T[2] - iCom.T[1]));
 
 //________________________________________________________________________________
@@ -321,21 +334,18 @@ equation
  m_flow_cond = Stepsmoother(1e-1, 1e-3, mass_vap*(1 - vap.q))*Stepsmoother(-10, +10, h_vap - vap.VLE.h_v)*(1 - noEvent(max(0, min(1, vap.q))))*max(0, mass_vap)/Tau_cond;
  m_flow_evap = Stepsmoother(1e-1, 1e-3,mass_liq*liq.q)       *Stepsmoother(-10, +10, liq.VLE.h_l - h_liq)*     noEvent(max(0, min(1, liq.q)))        *mass_liq /Tau_evap;
 
-//    m_flow_cond = Stepsmoother(1e-1,1e-3,mass_vap*(1 - vap.q))*Stepsmoother(vap.VLE.h_l, vap.VLE.h_v+100, h_vap)*mass_vap/Tau_cond;
-//    m_flow_evap = Stepsmoother(1e-1,1e-3,mass_liq*liq.q)      *Stepsmoother(liq.VLE.h_v+100, liq.VLE.h_l, h_liq)*mass_liq/Tau_evap;
-
 //____________________________________________________
 //______Boundary Conditions___________________________
   inlet.h_outflow  =  (phaseBorder.zoneAlloc_in[1]-1)*iCom.h[2] + (2-phaseBorder.zoneAlloc_in[1]) *iCom.h[1];
   outlet.h_outflow =  (phaseBorder.zoneAlloc_out[1]-1)*iCom.h[2]+ (2-phaseBorder.zoneAlloc_out[1])*iCom.h[1];
 
-   H_flow_inliq = semiLinear(phaseBorder.m_flow_inliq[1], inStream(inlet.h_outflow), h_liq);
-   H_flow_invap = semiLinear(phaseBorder.m_flow_invap[1], inStream(inlet.h_outflow), h_vap);
-   H_flow_outliq = semiLinear(phaseBorder.m_flow_outliq[1], inStream(outlet.h_outflow), h_liq);
-   H_flow_outvap = semiLinear(phaseBorder.m_flow_outvap[1], inStream(outlet.h_outflow), h_vap);
+  H_flow_inliq = phaseBorder.H_flow_inliq[1];
+  H_flow_invap = phaseBorder.H_flow_invap[1];
+  H_flow_outliq = phaseBorder.H_flow_outliq[1];
+  H_flow_outvap = phaseBorder.H_flow_outvap[1];
 
-    inlet.p =p + pressureLoss.Delta_p[1] + phaseBorder.Delta_p_geo_in[1];
-    outlet.p =p + phaseBorder.Delta_p_geo_out[1] "The friction term is lumped at the inlet side to avoid direct coupling of two flow models, this avoids aniteration of mass flow rates in some application cases";
+  inlet.p =p_vap + pressureLoss.Delta_p[1] + phaseBorder.Delta_p_geo_in[1];
+  outlet.p =p_vap + phaseBorder.Delta_p_geo_out[1] "The friction term is lumped at the inlet side to avoid direct coupling of two flow models, this avoids aniteration of mass flow rates in some application cases";
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //  In the following equations dividing the friction pressure loss into two parts located at the inlet and outlet side respectively leads
@@ -356,11 +366,11 @@ initial equation
   if initType == ClaRa.Basics.Choices.Init.steadyState then
     der(h_liq) = 0;
     der(h_vap) = 0;
-    der(p) = 0;
+    der(p_vap) = 0;
     der(volume_vap) = 0;
 
   elseif initType == ClaRa.Basics.Choices.Init.steadyPressure then
-    der(p) = 0;
+    der(p_vap) = 0;
   elseif initType == ClaRa.Basics.Choices.Init.steadyEnthalpy then
     der(h_liq) = 0;
     der(h_vap) = 0;

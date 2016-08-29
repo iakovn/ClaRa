@@ -1,7 +1,8 @@
 within ClaRa.Components.Control.PredictorModels_3508;
-model TurbinesAndReheat_02_XRG "A predictor for the generator power including the HP and IP/LP turbines aswell as the energy storage in the reheater"
+model TurbinesAndReheat_02_XRG
+  "A predictor for the generator power including the HP and IP/LP turbines aswell as the energy storage in the reheater"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -16,14 +17,14 @@ model TurbinesAndReheat_02_XRG "A predictor for the generator power including th
 //___________________________________________________________________________//
 
   extends ClaRa.Basics.Icons.ComplexityLevel(complexity="02");
-  parameter Modelica.SIunits.Pressure p_nom= 240e5 "Nominal pressure at inlet of HP turbine"
-                                                                                    annotation(Dialog(group="Nominal values"));
-  parameter Modelica.SIunits.MassFlowRate m_flow_HP= 419 "Nominal mass flow rate at inlet of HP turbine"
-                                                    annotation(Dialog(group="Nominal values"));
-  parameter Modelica.SIunits.MassFlowRate m_flow_IP= 370 "Nominal mass flow rate at inlet of IP turbine"
-                                                    annotation(Dialog(group="Nominal values"));
-  parameter Modelica.SIunits.Power P_G_nom= 804.89e6 "Nominal generator power of the block"
-                                                                                 annotation(Dialog(group="Nominal values"));
+  parameter Modelica.SIunits.Pressure p_nom= 240e5
+    "Nominal pressure at inlet of HP turbine"                                       annotation(Dialog(group="Nominal values"));
+  parameter Modelica.SIunits.MassFlowRate m_flow_HP= 419
+    "Nominal mass flow rate at inlet of HP turbine" annotation(Dialog(group="Nominal values"));
+  parameter Modelica.SIunits.MassFlowRate m_flow_IP= 370
+    "Nominal mass flow rate at inlet of IP turbine" annotation(Dialog(group="Nominal values"));
+  parameter Modelica.SIunits.Power P_G_nom= 804.89e6
+    "Nominal generator power of the block"                                       annotation(Dialog(group="Nominal values"));
 
  parameter Real CL_Ip_HP[:,2]= {{0.6000e7,    0.0267e7},
                                       {0.8000e7,    0.0419e7},
@@ -34,8 +35,8 @@ model TurbinesAndReheat_02_XRG "A predictor for the generator power including th
                                       {1.8000e7,    0.1652e7},
                                       {2.0000e7,    0.2001e7},
                                       {2.2000e7,    0.2386e7},
-                                      {2.4000e7,    0.2807e7}} "Characteristic line IP pressure over HP pressure "
-                                                        annotation(Dialog(group="Part Load Definition"));
+                                      {2.4000e7,    0.2807e7}}
+    "Characteristic line IP pressure over HP pressure " annotation(Dialog(group="Part Load Definition"));
 parameter Real CL_Deltah_HP[:,2]={{0.6000e7,    0.0822e7},
                                       {0.8000e7,    0.0782e7},
                                       {1.0000e7,    0.0746e7},
@@ -45,8 +46,8 @@ parameter Real CL_Deltah_HP[:,2]={{0.6000e7,    0.0822e7},
                                       {1.8000e7,    0.0624e7},
                                       {2.0000e7,    0.0598e7},
                                       {2.2000e7,    0.0572e7},
-                                      {2.4000e7,    0.0548e7}} "Characteristic line enthalpy difference over HP inlet pressure "
-                                                                        annotation(Dialog(group="Part Load Definition"));
+                                      {2.4000e7,    0.0548e7}}
+    "Characteristic line enthalpy difference over HP inlet pressure "   annotation(Dialog(group="Part Load Definition"));
 
  parameter Real CL_Deltah_IP[:,2]= {{0.2669e6,    1.0678e6},
                                       {0.4191e6,    1.1287e6},
@@ -57,13 +58,13 @@ parameter Real CL_Deltah_HP[:,2]={{0.6000e7,    0.0822e7},
                                       {1.6522e6,    1.3086e6},
                                       {2.0009e6,    1.3325e6},
                                       {2.3858e6,    1.3541e6},
-                                      {2.8073e6,    1.3736e6}} "Characteristic line enthalpy difference over IP inlet pressure "
-                                                                       annotation(Dialog(group="Part Load Definition"));
+                                      {2.8073e6,    1.3736e6}}
+    "Characteristic line enthalpy difference over IP inlet pressure "  annotation(Dialog(group="Part Load Definition"));
 
-parameter Modelica.SIunits.Time Tau_HP= (0.2+0.5)/2 "Time Constant for Energy Storage in HP turbine"
-                                                                                         annotation(Dialog(group="Time Response Definition"));
-parameter Modelica.SIunits.Time Tau_IP= (10+25)/2 "Time Constant for Energy Storage in IP/LP turbine"
-                                                                                            annotation(Dialog(group="Time Response Definition"));
+parameter Modelica.SIunits.Time Tau_HP= (0.2+0.5)/2
+    "Time Constant for Energy Storage in HP turbine"                                     annotation(Dialog(group="Time Response Definition"));
+parameter Modelica.SIunits.Time Tau_IP= (10+25)/2
+    "Time Constant for Energy Storage in IP/LP turbine"                                     annotation(Dialog(group="Time Response Definition"));
 
   parameter Real m_flow_start_=1 "Initial mass flow rate in p.u." annotation(Dialog(group="Initialisation"));
 

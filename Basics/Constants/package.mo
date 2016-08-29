@@ -1,7 +1,7 @@
 within ClaRa.Basics;
 package Constants 
 //___________________________________________________________________________//
-// Package of the ClaRa library, version: 1.1.0                              //
+// Package of the ClaRa library, version: 1.1.1                              //
 // Models of the ClaRa library are tested under DYMOLA v2016 FD01.           //
 // It is planned to support alternative Simulators like SimulationX in the   //
 // future                                                                    //
@@ -27,25 +27,25 @@ package Constants
 
   extends ClaRa.Basics.Icons.PackageIcons.Basics80;
 
-import ClaRa.Basics.Units;
+import ClaRa.Basics.Units.*;
 
 //__________________/ chemical Constants \_______________________
 
 // Molar Mass of Carbon
-final constant Modelica.SIunits.MolarMass M_C = 12.010701e-3;
+final constant MolarMass M_C = 12.010701e-3;
 // Molar Mass of Hydrogen
-final constant Modelica.SIunits.MolarMass M_H = 1.00794e-3;
+final constant MolarMass M_H = 1.00794e-3;
 // Molar Mass of Oxygen
-final constant Modelica.SIunits.MolarMass M_O =  15.99940e-3;
+final constant MolarMass M_O =  15.99940e-3;
 // Molar Mass of Oxygen Molecule
-final constant Modelica.SIunits.MolarMass M_O2 =  32.0e-3;
+final constant MolarMass M_O2 =  32.0e-3;
 // Molar Mass of Nitrogen
-final constant Modelica.SIunits.MolarMass M_N = 14.00670e-3;
+final constant MolarMass M_N = 14.00670e-3;
 // Molar Mass of Sulphur
-final constant Modelica.SIunits.MolarMass M_S =  32.06500e-3;
+final constant MolarMass M_S =  32.06500e-3;
 // Molar Mass of ASH (first estimation)
-final constant Modelica.SIunits.MolarMass M_Ash =  60e-3;
+final constant MolarMass M_Ash =  60e-3;
 // Molar Mass of Water
-final constant Modelica.SIunits.MolarMass M_H2O =  18.01528e-3;
+final constant MolarMass M_H2O =  18.01528e-3;
 
 end Constants;

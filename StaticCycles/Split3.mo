@@ -1,14 +1,14 @@
 within ClaRa.StaticCycles;
 model Split3 "Split || blue | green | blue"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                            //
+// Component of the ClaRa library, version: 1.1.1                            //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                              //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -17,10 +17,13 @@ model Split3 "Split || blue | green | blue"
 // Blue input:   Value of p is known in component and provided FOR neighbor component, values of m_flow and h are unknown and provided BY neighbor component.
 // Green output: Values of p, m_flow and h are known in component an provided FOR neighbor component.
 // Blue output:  Value of p is unknown and provided BY neighbor component, values of m_flow and h are known in component and provided FOR neighbor component.
-  final parameter ClaRa.Basics.Units.MassFlowRate m_flow_2 = m_flow_1-m_flow_3 "Mass flow rate of flow 1";
-  final parameter ClaRa.Basics.Units.MassFlowRate m_flow_3 = m_flow_1*(1-splitRatio) "Mass flow rate of flow 2";
+  final parameter ClaRa.Basics.Units.MassFlowRate m_flow_2 = m_flow_1*splitRatio
+    "Mass flow rate of flow 1";
+  final parameter ClaRa.Basics.Units.MassFlowRate m_flow_3 = m_flow_1-m_flow_2
+    "Mass flow rate of flow 2";
   final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h1(fixed=false);
-  final parameter ClaRa.Basics.Units.MassFlowRate m_flow_1(fixed=false) "Mixer outlet mass flow rate";
+  final parameter ClaRa.Basics.Units.MassFlowRate m_flow_1(fixed=false)
+    "Mixer outlet mass flow rate";
   final parameter ClaRa.Basics.Units.Pressure p(fixed=false) "Mixer pressure";
   parameter Real splitRatio "ratio of outlet_1.m_flow/inlet.m_flow";
 

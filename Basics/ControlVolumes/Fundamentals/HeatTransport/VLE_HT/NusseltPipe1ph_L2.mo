@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT;
 model NusseltPipe1ph_L2 "Pipe Geo || L2 || HTC || Nusselt (1ph)"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.0                        //
+  // Component of the ClaRa library, version: 1.1.1                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -27,7 +27,8 @@ model NusseltPipe1ph_L2 "Pipe Geo || L2 || HTC || Nusselt (1ph)"
   import fluidObjectFunction_eta = TILMedia.VLEFluidObjectFunctions.dynamicViscosity_phxi;
   import fluidObjectFunction_rho = TILMedia.VLEFluidObjectFunctions.density_phxi;
 
-  extends ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.HeatTransfer_L2;
+  extends
+    ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.HeatTransfer_L2;
   //extends ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.HeatTransferVLE;
   //extends ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.HeatTransferGas;
   extends ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.TubeType_L2;
@@ -44,7 +45,8 @@ protected
   parameter Modelica.SIunits.CoefficientOfHeatTransfer alpha_nom=FluidDissipation.HeatTransfer.StraightPipe.kc_overall(inCon_1ph, inVar_1ph_nom);
 
 public
-  Modelica.SIunits.CoefficientOfHeatTransfer alpha "Heat transfer coefficient used for heat trasnfer calculation";
+  Modelica.SIunits.CoefficientOfHeatTransfer alpha
+    "Heat transfer coefficient used for heat trasnfer calculation";
   Real Re "Reynolds number";
 
   parameter Real CF_alpha_tubes=1 "Correction factor due to fouling";

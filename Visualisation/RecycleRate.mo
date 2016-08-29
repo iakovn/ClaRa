@@ -1,7 +1,7 @@
 within ClaRa.Visualisation;
 model RecycleRate "Diplays fraction of input mass flows"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -29,8 +29,6 @@ Real rate "recyle rate";
         transformation(extent={{-210,-110},{-190,-90}}), iconTransformation(
           extent={{-210,-110},{-190,-90}})));
 
-//  end when;
-
   Basics.Interfaces.EyeIn      numerator "numerator of fraction"
     annotation (Placement(transformation(extent={{188,-110},{208,-90}})));
 
@@ -49,7 +47,7 @@ equation
           fillColor={215,215,215},
           fillPattern=FillPattern.Solid,
           lineColor=DynamicSelect({0, 0, 0}, if rate > 0 then {0,0,0} else {255,0,0}),
-          textString=DynamicSelect(" rate ", realString(rate, 1, integer(decimalSpaces))))}),
+          textString=DynamicSelect(" rate ", String(rate,format="1."+ String(decimalSpaces)+"f")))}),
                                             Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-200,
             -200},{200,0}},
         initialScale=0.05),  graphics));

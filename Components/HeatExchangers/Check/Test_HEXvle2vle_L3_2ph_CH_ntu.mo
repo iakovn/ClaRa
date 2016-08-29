@@ -12,7 +12,8 @@ model Test_HEXvle2vle_L3_2ph_CH_ntu
         ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.QuadraticParallelZones_L3,
     z_in_shell=10,
     redeclare model HeatTransferTubes =
-        Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L2 (                            alpha_nom=5000),
+        Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L2
+        (                                                                                                    alpha_nom=5000),
     p_start_tubes=250e5,
     initTypeWall=ClaRa.Basics.Choices.Init.steadyState,
     m_flow_nom_shell=42,
@@ -34,7 +35,8 @@ model Test_HEXvle2vle_L3_2ph_CH_ntu
         Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.InputOnly,
     N_tubes=300,
     redeclare model HeatTransfer_Shell =
-        Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.Constant_L3_ypsDependent (                   alpha_nom={1000,5000}))
+        Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.Constant_L3_ypsDependent
+        (                                                                                                    alpha_nom={1000,5000}))
                                                                                             annotation (Placement(transformation(extent={{-6,-72},{14,-52}})));
 
   Sensors.Temperature                  Temp_Shell_in
@@ -44,18 +46,21 @@ model Test_HEXvle2vle_L3_2ph_CH_ntu
   Modelica.Blocks.Sources.Ramp h_hot(
     offset=2942e3,
     duration=600,
-    startTime=10000,
-    height=80e3) annotation (Placement(transformation(extent={{100,-32},{80,-12}})));
+    height=80e3,
+    startTime=1800)
+                 annotation (Placement(transformation(extent={{100,-32},{80,-12}})));
   Modelica.Blocks.Sources.Ramp m_cold(
     duration=600,
     offset=416,
-    startTime=10000,
-    height=-166) annotation (Placement(transformation(extent={{100,-64},{80,-44}})));
+    height=-166,
+    startTime=1800)
+                 annotation (Placement(transformation(extent={{100,-64},{80,-44}})));
   Modelica.Blocks.Sources.Ramp m_hot(
-    startTime=10000,
     duration=600,
     offset=42.7,
-    height=-20) annotation (Placement(transformation(extent={{100,0},{80,20}})));
+    height=-20,
+    startTime=1800)
+                annotation (Placement(transformation(extent={{100,0},{80,20}})));
   VolumesValvesFittings.Valves.ValveVLE_L1                      valve_shell1(
     checkValve=true,
     openingInputIsActive=true,
@@ -74,9 +79,11 @@ model Test_HEXvle2vle_L3_2ph_CH_ntu
   Modelica.Blocks.Sources.Ramp h_cold(
     duration=600,
     offset=961e3,
-    startTime=10000,
-    height=-106e3) annotation (Placement(transformation(extent={{100,-94},{80,-74}})));
-  inner SimCenter simCenter(useHomotopy=true, redeclare TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1,
+    height=-106e3,
+    startTime=1800)
+                   annotation (Placement(transformation(extent={{100,-94},{80,-74}})));
+  inner SimCenter simCenter(useHomotopy=true, redeclare
+      TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater                                                   fluid1,
     showExpertSummary=true)                                                                                       annotation (Placement(transformation(extent={{40,40},{80,60}})));
   Visualisation.Hexdisplay_3 hexdisplay_3_1(
     T_o=hex.wall.summary.T_o - fill(273.15, 6),
@@ -90,14 +97,16 @@ model Test_HEXvle2vle_L3_2ph_CH_ntu
   Visualisation.Quadruple quadruple1(largeFonts=false) annotation (Placement(transformation(extent={{12,-100},{44,-84}})));
   Modelica.Blocks.Sources.Ramp p_cold(
     duration=600,
-    startTime=10000,
     offset=250e5,
-    height=-95e5) annotation (Placement(transformation(extent={{-120,-64},{-100,-44}})));
+    height=-95e5,
+    startTime=1800)
+                  annotation (Placement(transformation(extent={{-120,-64},{-100,-44}})));
   Modelica.Blocks.Sources.Ramp p_hot(
     duration=600,
-    startTime=10000,
     offset=53e5,
-    height=-20e5) annotation (Placement(transformation(extent={{-120,-92},{-100,-72}})));
+    height=-20e5,
+    startTime=1800)
+                  annotation (Placement(transformation(extent={{-120,-92},{-100,-72}})));
   Visualisation.DynamicBar            level_abs1(
     provideConnector=true,
     u=hex.shell.summary.outline.level_abs,
@@ -200,9 +209,6 @@ ________________________________________________________________________________
           fontSize=30,
           textString="TESTED -- 2014-10-16 //TH")}),
                                                  Icon(coordinateSystem(extent={{-100,-100},{100,100}})),
-    experiment(
-      StopTime=12000,
-      __Dymola_NumberOfIntervals=50000,
-      Tolerance=1e-005),
+    experiment(StopTime=3600, Tolerance=1e-005),
     __Dymola_experimentSetupOutput);
 end Test_HEXvle2vle_L3_2ph_CH_ntu;

@@ -1,7 +1,7 @@
 within ClaRa.Examples;
 model BoilerExample
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -14,7 +14,37 @@ model BoilerExample
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
-  extends ClaRa.Basics.Icons.PackageIcons.ExecutableExample100;
+  extends ClaRa.Basics.Icons.PackageIcons.ExecutableRegressiong100;
+
+  model Regression
+  extends ClaRa.Basics.Icons.RegressionSummary;
+
+  Modelica.Blocks.Interfaces.RealInput m_flow_flueGas_eco_out "Mass flow of flue gas eco outlet";
+  Modelica.Blocks.Interfaces.RealInput m_flow_coal_in_burner2 "Inlet coal mass flow burner 2";
+  Modelica.Blocks.Interfaces.RealInput T_eco_out "Outlet temperature eco";
+  Modelica.Blocks.Interfaces.RealInput Q_flow_oh2 "Heat flux at superheater wall";
+  Modelica.Blocks.Interfaces.RealInput T_flueGas_in "Inlet temperature of flue gas";
+  Modelica.Blocks.Interfaces.RealInput h_oh_out "Overhater outlet temperature";
+
+  Real y_m_flow_flueGas_eco_out_min = timeExtrema_m_flow_flueGas_eco_out.y_min;
+  Real y_m_flow_flueGas_eco_out_max = timeExtrema_m_flow_flueGas_eco_out.y_max;
+  Real y_m_flow_coal_in_burner2_int = integrator_m_flow_coal_in_burner2.y;
+  Real y_T_eco_out_min = timeExtrema_T_eco_out.y_min;
+  Real y_T_eco_out_max = timeExtrema_T_eco_out.y_max;
+  Real y_Q_flow_oh2_int = integrator_Q_flow_oh2_wall.y;
+  Real y_T_flueGas_in_max = timeExtrema_T_flueGas_in.y_max;
+  Real y_T_flueGas_in_min = timeExtrema_T_flueGas_in.y_min;
+  Real y_h_oh_out_min = timeExtrema_h_oh_out.y_min;
+  Real y_h_oh_out_max = timeExtrema_h_oh_out.y_max;
+
+  protected
+  Components.Utilities.Blocks.TimeExtrema timeExtrema_m_flow_flueGas_eco_out(startTime=5000, u=m_flow_flueGas_eco_out) annotation (Placement(transformation(extent={{-80,30},{-60,50}})));
+  Components.Utilities.Blocks.TimeExtrema timeExtrema_T_eco_out(startTime=5000, u=T_eco_out) annotation (Placement(transformation(extent={{-80,0},{-60,20}})));
+  Components.Utilities.Blocks.Integrator integrator_m_flow_coal_in_burner2(u=m_flow_coal_in_burner2) annotation (Placement(transformation(extent={{-80,60},{-60,80}})));
+  Components.Utilities.Blocks.Integrator integrator_Q_flow_oh2_wall(u=Q_flow_oh2) annotation (Placement(transformation(extent={{-80,-34},{-60,-14}})));
+  Components.Utilities.Blocks.TimeExtrema timeExtrema_T_flueGas_in(u = T_flueGas_in, startTime=5000) annotation (Placement(transformation(extent={{-80,-64},{-60,-44}})));
+  Components.Utilities.Blocks.TimeExtrema timeExtrema_h_oh_out(startTime=5000, u=h_oh_out) annotation (Placement(transformation(extent={{-80,-94},{-60,-74}})));
+  end Regression;
 
   inner SimCenter simCenter(
     redeclare ClaRa.Basics.Media.Fuel.Coal_Reference fuelModel1,
@@ -109,7 +139,8 @@ model BoilerExample
         width=10,
         length=10,
         flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical,
-        height=7.5))
+        height=7.5),
+    showData=true)
     annotation (Placement(transformation(extent={{28,-6},{88,14}})));
 
   Components.Furnace.Hopper.Hopper_L2 hopper(
@@ -128,7 +159,9 @@ model BoilerExample
     redeclare model HeatTransfer_Wall =
         ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Radiation.Radiation_gas2Wall_advanced_L2 (
                                                                                                 suspension_calculationType="Calculated", CF_fouling=0.95),
-    T_Slag=873) annotation (Placement(transformation(
+    T_Slag=873,
+    showData=true)
+                annotation (Placement(transformation(
         extent={{-30,-10},{30,10}},
         rotation=0,
         origin={58,-30})));
@@ -157,7 +190,8 @@ model BoilerExample
         height=7.5),
     redeclare model Burning_time =
         ClaRa.Components.Furnace.GeneralTransportPhenomena.BurningTime.ConstantBurningTime (
-         Tau_burn_const=1.1))
+         Tau_burn_const=1.1),
+    showData=true)
     annotation (Placement(transformation(extent={{28,24},{88,44}})));
 
   Components.BoundaryConditions.BoundaryFuel_Txim_flow coalFlowSource1(
@@ -193,7 +227,8 @@ model BoilerExample
         width=10,
         length=10,
         flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical,
-        height=5))
+        height=5),
+    showData=true)
     annotation (Placement(transformation(extent={{28,52},{88,72}})));
 
   Components.Furnace.FlameRoom.FlameRoom_L2_Dynamic flameRoom_2(
@@ -219,7 +254,8 @@ model BoilerExample
          suspension_calculationType="Calculated", CF_fouling=0.95),
     redeclare model Burning_time =
         ClaRa.Components.Furnace.GeneralTransportPhenomena.BurningTime.ConstantBurningTime (
-         Tau_burn_const=1.1))
+         Tau_burn_const=1.1),
+    showData=true)
     annotation (Placement(transformation(extent={{28,82},{88,102}})));
 
   Components.Furnace.FlameRoom.FlameRoomWithTubeBundle_L2_Dynamic
@@ -258,7 +294,8 @@ model BoilerExample
         ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Convection.ConvectionAndRadiation_tubeBank_L2 (
         CF_fouling=0.95,
         suspension_calculationType="Gas calculated, particles fixed",
-        emissivity_particle=0))
+        emissivity_particle=0),
+    showData=true)
     annotation (Placement(transformation(extent={{28,112},{88,132}})));
 
   Components.Furnace.FlameRoom.FlameRoomWithTubeBundle_L2_Dynamic
@@ -294,7 +331,8 @@ model BoilerExample
         ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Convection.ConvectionAndRadiation_tubeBank_L2 (
         CF_fouling=0.95,
         suspension_calculationType="Gas calculated, particles fixed",
-        emissivity_particle=0))
+        emissivity_particle=0),
+    showData=true)
     annotation (Placement(transformation(extent={{28,158},{88,178}})));
 
   Components.BoundaryConditions.BoundaryFuel_Txim_flow coalFlowSource2(
@@ -511,7 +549,8 @@ model BoilerExample
         height=5),
     redeclare model HeatTransfer_TubeBundle =
         ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Convection.Convection_tubeBank_L2 (
-         CF_fouling=0.95))
+         CF_fouling=0.95),
+    showData=true)
     annotation (Placement(transformation(extent={{28,204},{88,224}})));
 
   Components.VolumesValvesFittings.Pipes.PipeFlowVLE_L4_Simple eco(
@@ -700,6 +739,24 @@ model BoilerExample
   Components.Sensors.vlePressureSensor ecoOut_p annotation (Placement(transformation(extent={{286,36},{306,56}})));
   Components.Sensors.vleMassflowSensor vleMassflowSensor annotation (Placement(transformation(extent={{282,212},{302,232}})));
   Modelica.Blocks.Sources.CombiTimeTable combiTimeTable(table=[0,0.661,0.0383,0.066,0.016,0.0057,0.135; 2000,0.661,0.0383,0.066,0.016,0.0057,0.135; 2100,0.68,0.04,0.05,0.01,0.0057,0.13; 3000,0.68,0.04,0.05,0.01,0.0057,0.13]) annotation (Placement(transformation(extent={{-196,10},{-176,30}})));
+  Visualisation.QuadrupleGas quadrupleGas1(
+    value1=1,
+    value2=2,
+    value3=11,
+    value4=4) annotation (Placement(transformation(extent={{14,210},{-40,234}})));
+  Visualisation.QuadrupleGas quadrupleGas2(
+    value1=1,
+    value2=2,
+    value3=3,
+    value4=6) annotation (Placement(transformation(extent={{14,88},{-40,112}})));
+  Regression regression(
+    m_flow_flueGas_eco_out = flameRoom_eco.outlet.flueGas.m_flow,
+    m_flow_coal_in_burner2 = burner2.fuelFlueGas_inlet.fuel.m_flow,
+    T_eco_out = flameRoom_eco.outlet.flueGas.T_outflow,
+    Q_flow_oh2 = oh_2_wall.innerPhase[1].Q_flow,
+    T_flueGas_in = inStream(burner2.fuelFlueGas_inlet.flueGas.T_outflow),
+    h_oh_out = oh_1.outlet.h_outflow) annotation (Placement(transformation(extent={{442,360},
+            {462,380}})));
 equation
   connect(burner1.heat_bottom, hopper.heat_top) annotation (Line(
       points={{60,-6},{60,-20}},
@@ -862,7 +919,7 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(PID_lambda.u_m,actual_lambda. y) annotation (Line(
-      points={{-336,70},{-336,84},{-275,84}},
+      points={{-336.1,70},{-336.1,84},{-275,84}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(coalMassFlow.y, coalFlowSource1.m_flow) annotation (Line(
@@ -1137,7 +1194,7 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(PID_lambda.y, fluelGasFlowSource4.m_flow) annotation (Line(
-      points={{-346.9,58},{-360,58},{-360,206},{-296,206}},
+      points={{-347,58},{-360,58},{-360,206},{-296,206}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(ecoOut_p.port, evap.inlet) annotation (Line(
@@ -1165,6 +1222,8 @@ equation
       points={{-175,20},{-148,20},{-148,4},{-140,4}},
       color={0,0,127},
       smooth=Smooth.None));
+  connect(quadrupleGas2.eye, flameRoom_2.eyeOut) annotation (Line(points={{14,100},{21,100},{28,100}}, color={190,190,190}));
+  connect(quadrupleGas1.eye, flameRoom_eco.eyeOut) annotation (Line(points={{14,222},{14,222},{28,222}}, color={190,190,190}));
   annotation (Diagram(coordinateSystem(extent={{-400,-160},{500,400}},
           preserveAspectRatio=false),graphics={
                                 Text(
@@ -1189,7 +1248,11 @@ NOTES
           extent={{-278,440},{344,402}},
           lineColor={0,128,0},
           fontSize=34,
-          textString="TESTED -- 2014-10-08 //LN")}),                     Icon(
+          textString="TESTED -- 2014-10-08 //LN"),
+        Rectangle(
+          extent={{-400,400},{500,-162}},
+          lineColor={115,150,0},
+          lineThickness=0.5)}),                                          Icon(
         coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=true)),
     experiment(StopTime=10000, NumberOfIntervals=1001),
     __Dymola_experimentSetupOutput);

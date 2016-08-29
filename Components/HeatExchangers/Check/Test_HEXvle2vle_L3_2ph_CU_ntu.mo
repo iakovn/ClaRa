@@ -11,12 +11,14 @@ model Test_HEXvle2vle_L3_2ph_CU_ntu
         ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3,
     orientation=ClaRa.Basics.Choices.GeometryOrientation.horizontal,
     redeclare model HeatTransfer_Shell =
-        Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3 (                            alpha_nom={2500,7500}),
+        Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3
+        (                                                                                                    alpha_nom={2500,7500}),
     z_in_shell=3,
     N_passes=2,
     initTypeTubes=ClaRa.Basics.Choices.Init.steadyState,
     redeclare model HeatTransferTubes =
-        Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L2 (                            alpha_nom=5000),
+        Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L2
+        (                                                                                                    alpha_nom=5000),
     z_in_aux2=1,
     z_in_aux1=1,
     length=5,
@@ -45,17 +47,17 @@ model Test_HEXvle2vle_L3_2ph_CU_ntu
     height=100e3,
     duration=600,
     offset=2680e3,
-    startTime=10000) annotation (Placement(transformation(extent={{112,-4},{92,16}})));
+    startTime=1800)  annotation (Placement(transformation(extent={{112,-4},{92,16}})));
   Modelica.Blocks.Sources.Ramp m_cold(
     height=-170,
     duration=600,
     offset=300,
-    startTime=10000) annotation (Placement(transformation(extent={{160,-58},{140,-38}})));
+    startTime=1800)  annotation (Placement(transformation(extent={{160,-58},{140,-38}})));
   Modelica.Blocks.Sources.Ramp m_hot(
     height=-9.5,
     duration=600,
     offset=17.5,
-    startTime=10000) annotation (Placement(transformation(extent={{112,26},{92,46}})));
+    startTime=1800)  annotation (Placement(transformation(extent={{112,26},{92,46}})));
   VolumesValvesFittings.Valves.ValveVLE_L1                      valve_shell1(
     checkValve=true,
     redeclare model PressureLoss =
@@ -66,8 +68,8 @@ model Test_HEXvle2vle_L3_2ph_CU_ntu
     openingInputIsActive=false,
     checkValve=true,
     redeclare model PressureLoss =
-        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint (
-         m_flow_nom=if ((333) > 0) then (333) else 10, Delta_p_nom=if ((1000)
+        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint
+        (m_flow_nom=if ((333) > 0) then (333) else 10, Delta_p_nom=if ((1000)
              <> 0) then (1000) else 1000))
     annotation (Placement(transformation(extent={{10,6},{-10,-6}},
         rotation=180,
@@ -85,8 +87,9 @@ model Test_HEXvle2vle_L3_2ph_CU_ntu
     height=-25e3,
     duration=600,
     offset=273e3,
-    startTime=10000) annotation (Placement(transformation(extent={{160,-90},{140,-70}})));
-  inner SimCenter simCenter(useHomotopy=true, redeclare TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1,
+    startTime=1800)  annotation (Placement(transformation(extent={{160,-90},{140,-70}})));
+  inner SimCenter simCenter(useHomotopy=true, redeclare
+      TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater                                                   fluid1,
     showExpertSummary=true)                                                                                       annotation (Placement(transformation(extent={{40,40},{80,60}})));
   Visualisation.Hexdisplay_3 hexdisplay_3_1(
     T_o={hex.shell.summary.inlet[1].T,hex.shell.summary.outlet[1].T,hex.shell.summary.outlet[1].T,hex.shell.summary.outlet[1].T,hex.shell.summary.outlet[1].T,hex.shell.summary.outlet[1].T},
@@ -101,14 +104,15 @@ model Test_HEXvle2vle_L3_2ph_CU_ntu
   Visualisation.Quadruple quadruple(largeFonts=false) annotation (Placement(transformation(extent={{30,-82},{50,-72}})));
   Modelica.Blocks.Sources.Ramp p_cold(
     duration=600,
-    startTime=10000,
     height=-145e5,
-    offset=250e5) annotation (Placement(transformation(extent={{160,-20},{140,0}})));
+    offset=250e5,
+    startTime=1800)
+                  annotation (Placement(transformation(extent={{160,-20},{140,0}})));
   Modelica.Blocks.Sources.Ramp p_hot(
     duration=600,
-    startTime=10000,
     height=-0.1e5,
-    offset=0.85e5)
+    offset=0.85e5,
+    startTime=1800)
                 annotation (Placement(transformation(extent={{-100,-78},{-80,-58}})));
   Visualisation.DynamicBar            level_abs1(
     provideConnector=true,
@@ -222,9 +226,6 @@ ________________________________________________________________________________
           fontSize=31,
           textString="TESTED -- 2016-03-04 //TH")}),
                                                  Icon(coordinateSystem(extent={{-100,-100},{100,100}})),
-    experiment(
-      StopTime=12000,
-      __Dymola_NumberOfIntervals=50000,
-      Tolerance=1e-005),
+    experiment(StopTime=3600, Tolerance=1e-005),
     __Dymola_experimentSetupOutput);
 end Test_HEXvle2vle_L3_2ph_CU_ntu;

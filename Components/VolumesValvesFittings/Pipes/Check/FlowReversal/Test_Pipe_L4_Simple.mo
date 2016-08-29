@@ -1,7 +1,7 @@
 within ClaRa.Components.VolumesValvesFittings.Pipes.Check.FlowReversal;
 model Test_Pipe_L4_Simple
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.0                        //
+  // Component of the ClaRa library, version: 1.1.1                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -29,7 +29,8 @@ model Test_Pipe_L4_Simple
     m_flow_nom=0,
     variable_h=true,
     p_nom=1000) annotation (Placement(transformation(extent={{58,-53},{38,-33}})));
-  inner SimCenter simCenter(redeclare replaceable TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1, useHomotopy=true) annotation (Placement(transformation(extent={{-80,-114},{-60,-94}})));
+  inner SimCenter simCenter(redeclare replaceable
+      TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater                                             fluid1, useHomotopy=true) annotation (Placement(transformation(extent={{-80,-114},{-60,-94}})));
   PipeFlowVLE_L4_Simple tube(
     z_in=0,
     z_out=0,

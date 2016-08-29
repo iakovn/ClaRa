@@ -1,7 +1,7 @@
 within ClaRa.Components.VolumesValvesFittings.Fittings;
 model Join_L3_Y "A Y-join with non-ideal mixing"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -21,8 +21,8 @@ model Join_L3_Y "A Y-join with non-ideal mixing"
 
   outer ClaRa.SimCenter simCenter;
 
-  parameter TILMedia.VLEFluidTypes.BaseVLEFluid   medium=simCenter.fluid1 "Medium in the component"
-                               annotation(Dialog(Dialog(group="Fundamental Definitions")));
+  parameter TILMedia.VLEFluidTypes.BaseVLEFluid   medium=simCenter.fluid1
+    "Medium in the component"  annotation(Dialog(group="Fundamental Definitions"));
 
    parameter SI.Volume volume(min=1e-6)=0.1 "System Volume"                               annotation(Dialog(tab="General", group="Geometry"));
   parameter SI.MassFlowRate m_flow_nom= 10 "Nominal mass flow rates at inlet"
@@ -30,40 +30,54 @@ model Join_L3_Y "A Y-join with non-ideal mixing"
   parameter SI.Pressure p_nom=1e5 "Nominal pressure"  annotation(Dialog(group="Nominal Values"));
 //   parameter SI.EnthalpyMassSpecific h_nom=1e5 "Nominal specific enthalpy"  annotation(Dialog(group="Nominal Values"));
 
-  parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation"
-                                                              annotation(Dialog(tab="Initialisation"));
-  parameter SI.EnthalpyMassSpecific h_start= 1e5 "Start value of sytsem specific enthalpy"
+  parameter Boolean useHomotopy=simCenter.useHomotopy
+    "True, if homotopy method is used during initialisation"  annotation(Dialog(tab="Initialisation"));
+  parameter SI.EnthalpyMassSpecific h_start= 1e5
+    "Start value of sytsem specific enthalpy"
                                              annotation(Dialog(tab="Initialisation"));
   parameter SI.Pressure p_start= 1e5 "Start value of sytsem pressure"               annotation(Dialog(tab="Initialisation"));
-  parameter ClaRa.Basics.Choices.Init initType=ClaRa.Basics.Choices.Init.noInit "Type of initialisation"
-                             annotation(Dialog(tab="Initialisation", choicesAllMatching));
-    parameter Boolean showExpertSummary=simCenter.showExpertSummary "|Summary and Visualisation||True, if expert summary should be applied";
-  parameter Boolean showData=true "|Summary and Visualisation||True, if a data port containing p,T,h,s,m_flow shall be shown, else false";
+  parameter ClaRa.Basics.Choices.Init initType=ClaRa.Basics.Choices.Init.noInit
+    "Type of initialisation" annotation(Dialog(tab="Initialisation"), choicesAllMatching);
+    parameter Boolean showExpertSummary=simCenter.showExpertSummary
+    "|Summary and Visualisation||True, if expert summary should be applied";
+  parameter Boolean showData=true
+    "|Summary and Visualisation||True, if a data port containing p,T,h,s,m_flow shall be shown, else false";
 
-  parameter Real y_start=0.5 "|Initialisation|Start value for relative filling Level";
+  parameter Real y_start=0.5
+    "|Initialisation|Start value for relative filling Level";
   parameter Basics.Units.EnthalpyMassSpecific h_liq_start=-10 +
       TILMedia.VLEFluidFunctions.bubbleSpecificEnthalpy_pxi(
-      medium, p_start) "|Initialisation|Start value of sytsem specific enthalpy";
+      medium, p_start)
+    "|Initialisation|Start value of sytsem specific enthalpy";
   parameter Basics.Units.EnthalpyMassSpecific h_vap_start=+10 +
       TILMedia.VLEFluidFunctions.dewSpecificEnthalpy_pxi(
-      medium, p_start) "|Initialisation|Start value of sytsem specific enthalpy";
+      medium, p_start)
+    "|Initialisation|Start value of sytsem specific enthalpy";
 
-  parameter Basics.Units.VolumeFraction eps_mix[2]={0.2,0.8} "|Mixing Process||Volume fraction V_1/V_tot of min/max mixed outlet";
+  parameter Basics.Units.VolumeFraction eps_mix[2]={0.2,0.8}
+    "|Mixing Process||Volume fraction V_1/V_tot of min/max mixed outlet";
   replaceable model PressureLoss =
       Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3
     annotation (group="Fundamental Definitions",choicesAllMatching=true);
-  parameter Basics.Units.Time tau_cond=0.03 "|Mixing Process||Time constant of condensation";
-  parameter Basics.Units.Time tau_evap=tau_cond "|Mixing Process||Time constant of evaporation";
-  parameter Basics.Units.CoefficientOfHeatTransfer alpha_ph=5000 "|Mixing Process||HTC of the phase border";
-  parameter Basics.Units.Area A_phaseBorder=10 "|Mixing Process||Heat transfer area at phase border";
-  parameter Real expHT_phases=0 "|Mixing Process||Exponent for volume dependency on inter phase HT";
+  parameter Basics.Units.Time tau_cond=0.03
+    "|Mixing Process||Time constant of condensation";
+  parameter Basics.Units.Time tau_evap=tau_cond
+    "|Mixing Process||Time constant of evaporation";
+  parameter Basics.Units.CoefficientOfHeatTransfer alpha_ph=5000
+    "|Mixing Process||HTC of the phase border";
+  parameter Basics.Units.Area A_phaseBorder=10
+    "|Mixing Process||Heat transfer area at phase border";
+  parameter Real expHT_phases=0
+    "|Mixing Process||Exponent for volume dependency on inter phase HT";
 
 public
-  Basics.Interfaces.FluidPortIn       inlet2(each Medium=medium) "First inlet port"
+  Basics.Interfaces.FluidPortIn       inlet2(each Medium=medium)
+    "First inlet port"
     annotation (Placement(transformation(extent={{-10,70},{10,90}}),
         iconTransformation(extent={{-10,90},{10,110}})));
 public
-  Basics.Interfaces.FluidPortIn       inlet1(each Medium=medium) "First inlet port"
+  Basics.Interfaces.FluidPortIn       inlet1(each Medium=medium)
+    "First inlet port"
     annotation (Placement(transformation(extent={{-110,-10},{-90,10}})));
   Basics.Interfaces.FluidPortOut       outlet(Medium=medium) "Outlet port"
     annotation (Placement(transformation(extent={{90,-10},{110,10}})));
@@ -81,7 +95,8 @@ public
     redeclare model HeatTransfer =
         ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3,
     redeclare model PhaseBorder =
-        ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.RealMixed (                          level_rel_start=y_start, eps_mix=eps_mix),
+        ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.RealMixed
+        (                                                                                                 level_rel_start=y_start, eps_mix=eps_mix),
     redeclare model PressureLoss = PressureLoss,
     Tau_cond=tau_cond,
     Tau_evap=tau_evap,

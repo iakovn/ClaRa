@@ -1,9 +1,8 @@
 within ClaRa.Basics.Records;
-record FlangeVLE "A summary of flange flow properties"
+model FlangeVLE "A summary of flange flow properties"
   extends Icons.RecordIcon;
 
   parameter Boolean showExpertSummary= false;
-public
   input Units.MassFlowRate m_flow "Mass flow rate" annotation(Dialog);
   input Units.Temperature T "Temperature" annotation(Dialog);
   input Units.Pressure p "Pressure" annotation(Dialog);

@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.Geometry;
 model HollowCylinder "Cylindric shape || No interior"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.0                        //
+  // Component of the ClaRa library, version: 1.1.1                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -26,25 +26,31 @@ model HollowCylinder "Cylindric shape || No interior"
     final shape=if orientation == ClaRa.Basics.Choices.GeometryOrientation.vertical then [0, 1; 1, 1] else [0.0005, 0.02981; 0.0245, 0.20716; 0.1245, 0.45248; 0.2245, 0.58733; 0.3245, 0.68065; 0.4245, 0.74791; 0.5245, 0.7954; 0.6245, 0.8261; 0.7245, 0.84114; 0.8245, 0.84015; 0.9245, 0.82031; 1, 0.7854],
     final height_fill=if orientation == ClaRa.Basics.Choices.GeometryOrientation.vertical then length else diameter);
 
-  parameter ClaRa.Basics.Choices.GeometryOrientation orientation=ClaRa.Basics.Choices.GeometryOrientation.vertical "|Essential Geometry Definition|Orientation of the component";
-  parameter ClaRa.Basics.Choices.GeometryOrientation flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical "|Essential Geometry Definition|Orientation of the component";
+  parameter ClaRa.Basics.Choices.GeometryOrientation orientation=ClaRa.Basics.Choices.GeometryOrientation.vertical
+    "|Essential Geometry Definition|Orientation of the component";
+  parameter ClaRa.Basics.Choices.GeometryOrientation flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical
+    "|Essential Geometry Definition|Orientation of the component";
 
-  parameter Units.Length diameter=1 "|Essential Geometry Definition|Diameter of the component";
-  parameter Units.Length length=1 "|Essential Geometry Definition|Length of the component";
+  parameter Units.Length diameter=1
+    "|Essential Geometry Definition|Diameter of the component";
+  parameter Units.Length length=1
+    "|Essential Geometry Definition|Length of the component";
 
 equation
    for i in 1:N_inlet loop
-     assert(if height_fill <> -1 then z_in[i]<=height_fill else true, "Position of inlet flange no. " +integerString(i, 1, 1)+ "("+realString(z_in[i], 1,3)+" m) must be below max. fill height of "+ realString(height_fill, 1,3) + " m in component " +  getInstanceName() + ".");
+     assert(if height_fill <> -1 then z_in[i]<=height_fill else true, "Position of inlet flange no. " +String(i)+ "("+String(z_in[i], significantDigits=3)+" m) must be below max. fill height of "+ String(height_fill, significantDigits=3) + " m in component " +  getInstanceName() + ".");
    end for;
    for i in 1:N_outlet loop
-     assert(if height_fill <> -1 then z_out[i]<=height_fill else true, "Position of outlet flange no. " +integerString(i, 1, 1)+ "("+realString(z_out[i], 1,3)+" m) must be below max. fill height of "+ realString(height_fill, 1,3) + " m in component " +  getInstanceName() + ".");
+     assert(if height_fill <> -1 then z_out[i]<=height_fill else true, "Position of outlet flange no. " +String(i)+ "("+String(z_out[i], significantDigits=3)+" m) must be below max. fill height of "+ String(height_fill, significantDigits=3) + " m in component " +  getInstanceName() + ".");
    end for;
   for i in 1:N_inlet loop
-    assert(z_in[i]>=0, "Position of inlet flange no. " +integerString(i, 1, 1)+ "("+realString(z_in[i], 1,3)+" m) must be positive in component " +  getInstanceName() + ".");
+    assert(z_in[i]>=0, "Position of inlet flange no. " +String(i)+ "("+String(z_in[i], significantDigits=3)+" m) must be positive in component " +  getInstanceName() + ".");
   end for;
   for i in 1:N_outlet loop
-    assert(z_out[i]>=0, "Position of outlet flange no. " +integerString(i, 1, 1)+ "("+realString(z_out[i], 1,3)+" m) must be positive in component " +  getInstanceName() + ".");
+    assert(z_out[i]>=0, "Position of outlet flange no. " +String(i)+ "("+String(z_out[i], significantDigits=3)+" m) must be positive in component " +  getInstanceName() + ".");
   end for;
+  assert(A_cross>0, "The cross section of the shell side must be > 0 but is "+String(A_cross, significantDigits=3) + " in instance" + getInstanceName() + ".");
+  assert(volume>0, "The volume of the shell side must be > 0 but is "+String(volume, significantDigits=3) + " in instance" + getInstanceName() + ".");
   annotation (Icon(graphics={Bitmap(
           extent={{-100,-100},{100,100}},
           imageSource=

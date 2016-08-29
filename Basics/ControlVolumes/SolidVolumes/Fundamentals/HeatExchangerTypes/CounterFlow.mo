@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes;
 model CounterFlow "Pure counter flow heatexchanger"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,12 +15,14 @@ model CounterFlow "Pure counter flow heatexchanger"
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
 
-extends ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.GeneralHeatExchanger(
+extends
+    ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.GeneralHeatExchanger(
     final a=0,
     final b=0,
     final c=0,
     final d=0.5);
-extends ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Icons.HEX_CounterFlow_Icon;
+extends
+    ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Icons.HEX_CounterFlow_Icon;
   annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
             {100,100}}),
                    graphics),   Documentation(info="<html>

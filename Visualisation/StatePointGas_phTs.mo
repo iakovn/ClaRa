@@ -1,7 +1,8 @@
 within ClaRa.Visualisation;
-model StatePointGas_phTs "Complete state definition for visualisation in ph, TS, hs-diagrams"
+model StatePointGas_phTs
+  "Complete state definition for visualisation in ph, TS, hs-diagrams"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -17,11 +18,13 @@ model StatePointGas_phTs "Complete state definition for visualisation in ph, TS,
 
   outer SimCenter simCenter;
 
-  parameter TILMedia.GasTypes.BaseGas medium = simCenter.flueGasModel "Medium to be used" annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
+  parameter TILMedia.GasTypes.BaseGas medium = simCenter.flueGasModel
+    "Medium to be used"                                                                   annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
 
   parameter Integer stateViewerIndex=0 "Index for StateViewer" annotation(Dialog(group="StateViewer Index"));
   ClaRa.Basics.Units.Pressure p "Pressure of state";
-  ClaRa.Basics.Units.EnthalpyMassSpecific h=state.h "Specific enthalpy of state";
+  ClaRa.Basics.Units.EnthalpyMassSpecific h=state.h
+    "Specific enthalpy of state";
   ClaRa.Basics.Units.EntropyMassSpecific s=state.s "Specific enthalpy of state";
   ClaRa.Basics.Units.Temperature T "Temperature of state";
   ClaRa.Basics.Units.VolumeMassSpecific v=1/state.d "Specific volume of state";
@@ -50,28 +53,28 @@ equation
           fillColor={0,131,169},
           horizontalAlignment=TextAlignment.Left,
           fillPattern=FillPattern.Solid,
-          textString=DynamicSelect("p", realString(p/1e5,1,integer(1)) + " bar")),
+          textString=DynamicSelect("p", String(p/1e5,format="1.1f") + " bar")),
         Text(
           extent={{-92,-10},{248,-80}},
           lineColor={118,106,98},
           fillColor={0,131,169},
           fillPattern=FillPattern.Solid,
           horizontalAlignment=TextAlignment.Left,
-          textString=DynamicSelect("h", realString(h/1e3,1,integer(1)) + " kJ/kg")),
+          textString=DynamicSelect("h", String(h/1e3,format="1.1f") + " kJ/kg")),
         Text(
           extent={{-90,170},{150,100}},
           lineColor={118,106,98},
           fillColor={0,131,169},
           fillPattern=FillPattern.Solid,
           horizontalAlignment=TextAlignment.Left,
-          textString=DynamicSelect("T", realString(T-273.15,1,integer(1)) + " °C")),
+          textString=DynamicSelect("T", String(T-273.15,format="1.1f") + " °C")),
         Text(
           extent={{-90,260},{250,190}},
           lineColor={118,106,98},
           fillColor={0,131,169},
           fillPattern=FillPattern.Solid,
           horizontalAlignment=TextAlignment.Left,
-          textString=DynamicSelect("s", realString(s/1e3,1,integer(1)) + " kJ/(kgK)")),
+          textString=DynamicSelect("s", String(s/1e3,format="1.1f") + " kJ/(kgK)")),
         Line(
           points={{-100,258},{-100,-100}},
           color={118,106,98},

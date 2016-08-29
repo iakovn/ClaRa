@@ -1,7 +1,7 @@
 within ClaRa.Components.Furnace.GeneralTransportPhenomena.ParticleMigration;
 model FixedMigrationSpeed_simple "Assuming a fixed migration speed"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,7 +15,8 @@ model FixedMigrationSpeed_simple "Assuming a fixed migration speed"
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
 
-extends ClaRa.Components.Furnace.GeneralTransportPhenomena.ParticleMigration.PartialMigrationSpeed;
+extends
+    ClaRa.Components.Furnace.GeneralTransportPhenomena.ParticleMigration.PartialMigrationSpeed;
  parameter ClaRa.Basics.Units.Velocity
                                    w_fixed = 1;
 

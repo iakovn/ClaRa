@@ -1,7 +1,7 @@
 within ClaRa.Components.Utilities.Blocks.Check;
 model test_1_LimPID
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -65,11 +65,11 @@ equation
       color={0,0,127},
       smooth=Smooth.None));
   connect(PID.y, add.u2) annotation (Line(
-      points={{-17.1,-10},{52,-10},{52,-50},{34,-50}},
+      points={{-17,-10},{52,-10},{52,-50},{34,-50}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(firstOrder.y, PID.u_m) annotation (Line(
-      points={{-17,-56},{-28,-56},{-28,-22}},
+      points={{-17,-56},{-27.9,-56},{-27.9,-22}},
       color={0,0,127},
       smooth=Smooth.None));
   annotation (

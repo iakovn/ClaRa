@@ -1,7 +1,8 @@
 within ClaRa.Components.VolumesValvesFittings.Valves;
-model ThreeWayValveVLE_L1 "Three way valve for vle media, not suitable for back flows!"
+model ThreeWayValveVLE_L1
+  "Three way valve for vle media, not suitable for back flows!"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -23,8 +24,10 @@ model ThreeWayValveVLE_L1 "Three way valve for vle media, not suitable for back 
 // end Outline;
 
   replaceable model PressureLoss =
-      ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticFrictionFlowAreaSymetric_TWV  constrainedby ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.TWV_L1 "Pressure loss model"
-                                                                                            annotation(choicesAllMatching);
+      ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticFrictionFlowAreaSymetric_TWV
+                                                                                                        constrainedby
+    ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.TWV_L1
+    "Pressure loss model"                                                                   annotation(choicesAllMatching);
 
 public
   parameter SI.Area effectiveFlowArea=7.85e-3 "Effective flow area for outlets"
@@ -32,14 +35,15 @@ public
 //   parameter SI.Area effectiveFlowArea2=effectiveFlowArea1 "Effective flow area for outlet 2"
 //     annotation(Dialog(group="Valve Parameters"));
 
-  parameter SI.PressureDifference Delta_p_smooth = 100 "Below this value, root function is approximated linearly"
-                                                                                 annotation(Dialog(tab = "Expert Settings", group="Numerical Robustness"));
+  parameter SI.PressureDifference Delta_p_smooth = 100
+    "Below this value, root function is approximated linearly"                   annotation(Dialog(tab = "Expert Settings", group="Numerical Robustness"));
 
-parameter Boolean useStabilisedMassFlow=false "|Expert Settings|Numerical Robustness|";
+parameter Boolean useStabilisedMassFlow=false
+    "|Expert Settings|Numerical Robustness|";
     parameter SI.Time Tau= 0.001 "Time Constant of Stabilisation" annotation(Dialog(tab="Expert Settings", group = "Numerical Robustness", enable=useStabilisedMassFlow));
 
 public
-  record Summary
+  model Summary
     extends ClaRa.Basics.Icons.RecordIcon;
     //     Outline outline;
     ClaRa.Basics.Records.FlangeVLE           inlet;

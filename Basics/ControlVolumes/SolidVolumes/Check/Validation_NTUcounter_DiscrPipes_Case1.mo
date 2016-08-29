@@ -1,7 +1,8 @@
 within ClaRa.Basics.ControlVolumes.SolidVolumes.Check;
-model Validation_NTUcounter_DiscrPipes_Case1 "Validation: NTU method vs. discretized tube models || counter current || evaporating inner side ||H2O"
+model Validation_NTUcounter_DiscrPipes_Case1
+  "Validation: NTU method vs. discretized tube models || counter current || evaporating inner side ||H2O"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.0                        //
+  // Component of the ClaRa library, version: 1.1.1                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -25,13 +26,16 @@ model Validation_NTUcounter_DiscrPipes_Case1 "Validation: NTU method vs. discret
   parameter Units.Pressure p_i=2e5 "Pressure of cold side";
   parameter Units.Pressure p_o=300e5 "Pressure of hot side";
 
-  parameter Units.CoefficientOfHeatTransfer alpha_i=730 "Heat transfer coefficient of cold side";
-  parameter Units.CoefficientOfHeatTransfer alpha_o=7300 "Heat transfer coefficient of hot side";
+  parameter Units.CoefficientOfHeatTransfer alpha_i=730
+    "Heat transfer coefficient of cold side";
+  parameter Units.CoefficientOfHeatTransfer alpha_o=7300
+    "Heat transfer coefficient of hot side";
 
   parameter Integer N_tubes=200 "Number of parallel tubes";
   parameter Integer N_passes=1 "Number of passes";
   parameter Units.Length diameter_i=0.05*2 "Diameter of cold side tubes";
-  parameter Units.Length diameter_o=(0.05 + 1e-6)*2 "Diameter of hot side tubes";
+  parameter Units.Length diameter_o=(0.05 + 1e-6)*2
+    "Diameter of hot side tubes";
   parameter Units.Length radius_i=diameter_i/2 "Diameter of cold side tubes";
   parameter Units.Length radius_o=diameter_o/2 "Diameter of hot side tubes";
   parameter Units.Length length=4 "Length of tubes";
@@ -68,7 +72,6 @@ model Validation_NTUcounter_DiscrPipes_Case1 "Validation: NTU method vs. discret
     N_tubes=N_tubes,
     N_cv=N_cv,
     Delta_x=ones(N_cv)*length/N_cv,
-    initType=ClaRa.Basics.Choices.Init.noInit,
     h_start=linspace(
         1328.89e3,
         1080.51e3,
@@ -78,7 +81,8 @@ model Validation_NTUcounter_DiscrPipes_Case1 "Validation: NTU method vs. discret
         1080.51e3,
         N_cv),
     redeclare model PressureLoss =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4 (             Delta_p_nom(displayUnit="Pa") = 100),
+        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4
+        (                                                                                                    Delta_p_nom(displayUnit="Pa") = 100),
     diameter_i=diameter_o,
     p_start=linspace(
         p_o + 100,
@@ -90,23 +94,21 @@ model Validation_NTUcounter_DiscrPipes_Case1 "Validation: NTU method vs. discret
         N_cv),
     m_flow_nom=m_flow_o,
     redeclare model HeatTransfer =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4 (                      alpha_nom=alpha_o)) annotation (Placement(transformation(extent={{-84,-14},{-52,-26}})));
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4
+        (                                                                                                    alpha_nom=alpha_o),
+    initType=ClaRa.Basics.Choices.Init.steadyState)                                                                              annotation (Placement(transformation(extent={{-84,-14},{-52,-26}})));
   Components.VolumesValvesFittings.Pipes.PipeFlowVLE_L4_Simple pipe_InnerSide(
     length=length,
     N_tubes=N_tubes,
     N_cv=N_cv,
     Delta_x=ones(N_cv)*length/N_cv,
-    initType=ClaRa.Basics.Choices.Init.noInit,
-    h_start=linspace(
-        419240,
-        450e3,
-        N_cv),
     h_nom=linspace(
         419240,
         450e3,
         N_cv),
     redeclare model PressureLoss =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4 (             Delta_p_nom(displayUnit="Pa") = 100),
+        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4
+        (                                                                                                    Delta_p_nom(displayUnit="Pa") = 100),
     diameter_i=diameter_i,
     p_start=linspace(
         p_i + 100,
@@ -118,8 +120,14 @@ model Validation_NTUcounter_DiscrPipes_Case1 "Validation: NTU method vs. discret
         N_cv),
     m_flow_nom=m_flow_i,
     redeclare model HeatTransfer =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4 (                      alpha_nom=alpha_i),
-    frictionAtInlet=false) annotation (Placement(transformation(extent={{-52,-72},{-84,-60}})));
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4
+        (                                                                                                    alpha_nom=alpha_i),
+    frictionAtInlet=false,
+    initType=ClaRa.Basics.Choices.Init.steadyState,
+    h_start=linspace(
+        419240,
+        2895e3,
+        N_cv))             annotation (Placement(transformation(extent={{-52,-72},{-84,-60}})));
   Components.BoundaryConditions.BoundaryVLE_Txim_flow OuterSide_in(
     variable_m_flow=false,
     variable_T=false,
@@ -145,13 +153,14 @@ model Validation_NTUcounter_DiscrPipes_Case1 "Validation: NTU method vs. discret
     N_tubes=N_tubes,
     N_ax=N_cv,
     Delta_x=ones(N_cv)*length/N_cv,
-    initChoice=ClaRa.Basics.Choices.Init.noInit,
     diameter_o=diameter_o,
     diameter_i=diameter_i,
     T_start=linspace(
         T_o_in,
         T_i_in,
-        N_cv)) annotation (Placement(transformation(extent={{-78,-46},{-58,-38}})));
+        N_cv),
+    initChoice=ClaRa.Basics.Choices.Init.steadyTemperature)
+               annotation (Placement(transformation(extent={{-78,-46},{-58,-38}})));
 
   Visualisation.Hexdisplay_3 hexdisplay_3_1(
     Unit="HEX wall",
@@ -271,10 +280,9 @@ NOTE:
  values. See the Expert Settings in the parameter dialog
 ___________________________________________________________________________________________________")}),
     experiment(
-      StopTime=1500,
-      NumberOfIntervals=1500,
+      StopTime=500,
       Tolerance=1e-006,
-      Algorithm="Dassl"),
-    __Dymola_experimentSetupOutput(equdistant=false),
+      __Dymola_Algorithm="Dassl"),
+    __Dymola_experimentSetupOutput(equidistant=false),
     Icon(coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=true)));
 end Validation_NTUcounter_DiscrPipes_Case1;

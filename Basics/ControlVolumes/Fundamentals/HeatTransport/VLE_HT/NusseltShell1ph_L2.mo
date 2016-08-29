@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT;
 model NusseltShell1ph_L2 "Shell Geo || L2 || HTC || Nusselt (1ph)"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.0                        //
+  // Component of the ClaRa library, version: 1.1.1                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -40,7 +40,8 @@ model NusseltShell1ph_L2 "Shell Geo || L2 || HTC || Nusselt (1ph)"
   import fluidObjectFunction_T_dew = TILMedia.VLEFluidObjectFunctions.dewTemperature_pxi;
   import fluidObjectFunction_rho = TILMedia.VLEFluidObjectFunctions.density_phxi;
 
-  extends ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.HeatTransfer_L2;
+  extends
+    ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.HeatTransfer_L2;
   //extends ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.HeatTransferVLE;
   //extends ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.HeatTransferGas;
   extends ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.ShellType_L2;
@@ -58,7 +59,8 @@ protected
   Modelica.SIunits.CoefficientOfHeatTransfer alpha_nom=FluidDissipation.HeatTransfer.HeatExchanger.kc_tubeBundle_1ph_KC(inCon_1ph, inVar_1ph_nom);
 
 public
-  final parameter Real C=if geo.staggeredAlignment then 1 else 0.8 "Correction factor for tube arrangement: offset pattern=1| aligned pattern=0.8"
+  final parameter Real C=if geo.staggeredAlignment then 1 else 0.8
+    "Correction factor for tube arrangement: offset pattern=1| aligned pattern=0.8"
                                                                                         annotation (Dialog(tab="General", group="Geometry"));
   parameter Integer heatSurfaceAlloc=2 "To be considered heat transfer area" annotation (dialog(enable=false, tab="Expert Setting"), choices(
       choice=1 "Lateral surface",
@@ -66,7 +68,8 @@ public
       choice=3 "Selection to be extended"));
   Modelica.SIunits.CoefficientOfHeatTransfer alpha "Heat transfer coefficient";
 
-  final parameter FluidDissipation.HeatTransfer.HeatExchanger.kc_tubeBundle_1ph_IN_con inCon_1ph(
+  final parameter
+    FluidDissipation.HeatTransfer.HeatExchanger.kc_tubeBundle_1ph_IN_con               inCon_1ph(
     staggeredAlignment=geo.staggeredAlignment,
     d=geo.diameter_t,
     A_front=geo.A_front,
@@ -82,7 +85,8 @@ protected
     computeVLETransportProperties=true,
     computeVLEAdditionalProperties=true) annotation (Placement(transformation(extent={{70,70},{90,90}})));
 public
-  final parameter FluidDissipation.HeatTransfer.HeatExchanger.kc_tubeBundle_1ph_IN_var inVar_1ph_nom(
+  final parameter
+    FluidDissipation.HeatTransfer.HeatExchanger.kc_tubeBundle_1ph_IN_var               inVar_1ph_nom(
     cp_w=fluidFunction_cp(
         iCom.mediumModel,
         iCom.p_nom,

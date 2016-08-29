@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.Geometry;
 model HollowBlock "Block shape || No interior"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.0                        //
+  // Component of the ClaRa library, version: 1.1.1                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -28,26 +28,30 @@ model HollowBlock "Block shape || No interior"
 
   import SI = ClaRa.Basics.Units;
 
-  parameter Units.Length height=1 "|Essential Geometry Definition|Height of the component; Fixed flow direction in case of vertical flow orientation";
-  parameter Units.Length width=1 "|Essential Geometry Definition|Width of the component";
-  parameter Units.Length length=1 "|Essential Geometry Definition|Length of the component; Fixed flow direction in case of horizontal flow orientation";
-  parameter ClaRa.Basics.Choices.GeometryOrientation flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical "|Essential Geometry Definition|Flow orientation of the component";
+  parameter Units.Length height=1
+    "|Essential Geometry Definition|Height of the component; Fixed flow direction in case of vertical flow orientation";
+  parameter Units.Length width=1
+    "|Essential Geometry Definition|Width of the component";
+  parameter Units.Length length=1
+    "|Essential Geometry Definition|Length of the component; Fixed flow direction in case of horizontal flow orientation";
+  parameter ClaRa.Basics.Choices.GeometryOrientation flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical
+    "|Essential Geometry Definition|Flow orientation of the component";
 
 equation
    for i in 1:N_inlet loop
-     assert(if height_fill <> -1 then z_in[i]<=height_fill else true, "Position of inlet flange no. " +integerString(i, 1, 1)+ "("+realString(z_in[i], 1,3)+" m) must be below max. fill height of "+ realString(height_fill, 1,3) + " m in component " +  getInstanceName() + ".");
+     assert(if height_fill <> -1 then z_in[i]<=height_fill else true, "Position of inlet flange no. " +String(i)+ "("+String(z_in[i], significantDigits=3)+" m) must be below max. fill height of "+ String(height_fill, significantDigits=3) + " m in component " +  getInstanceName() + ".");
    end for;
    for i in 1:N_outlet loop
-     assert(if height_fill <> -1 then z_out[i]<=height_fill else true, "Position of outlet flange no. " +integerString(i, 1, 1)+ "("+realString(z_out[i], 1,3)+" m) must be below max. fill height of "+ realString(height_fill, 1,3) + " m in component " +  getInstanceName() + ".");
+     assert(if height_fill <> -1 then z_out[i]<=height_fill else true, "Position of outlet flange no. " +String(i)+ "("+String(z_out[i], significantDigits=3)+" m) must be below max. fill height of "+ String(height_fill, significantDigits=3) + " m in component " +  getInstanceName() + ".");
    end for;
   for i in 1:N_inlet loop
-    assert(z_in[i]>=0, "Position of inlet flange no. " +integerString(i, 1, 1)+ "("+realString(z_in[i], 1,3)+" m) must be positive in component " +  getInstanceName() + ".");
+    assert(z_in[i]>=0, "Position of inlet flange no. " +String(i)+ "("+String(z_in[i], significantDigits=3)+" m) must be positive in component " +  getInstanceName() + ".");
   end for;
   for i in 1:N_outlet loop
-    assert(z_out[i]>=0, "Position of outlet flange no. " +integerString(i, 1, 1)+ "("+realString(z_out[i], 1,3)+" m) must be positive in component " +  getInstanceName() + ".");
+    assert(z_out[i]>=0, "Position of outlet flange no. " +String(i)+ "("+String(z_out[i], significantDigits=3)+" m) must be positive in component " +  getInstanceName() + ".");
   end for;
-  assert(A_cross>0, "The cross section of the shell side must be > 0 but is "+realString(A_cross, 1, 3) + " in instance" + getInstanceName() + ".");
-  assert(volume>0, "The volume of the shell side must be > 0 but is "+realString(volume, 1, 3) + " in instance" + getInstanceName() + ".");
+  assert(A_cross>0, "The cross section of the shell side must be > 0 but is "+String(A_cross, significantDigits=3) + " in instance" + getInstanceName() + ".");
+  assert(volume>0, "The volume of the shell side must be > 0 but is "+String(volume, significantDigits=3) + " in instance" + getInstanceName() + ".");
   annotation (Icon(graphics={Bitmap(
           extent={{-100,-100},{100,100}},
           imageSource=

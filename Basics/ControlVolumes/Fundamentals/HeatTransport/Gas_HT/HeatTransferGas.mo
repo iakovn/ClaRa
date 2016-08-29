@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT;
 partial model HeatTransferGas "Partial heat transfer model for Gas-type models"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.0                        //
+  // Component of the ClaRa library, version: 1.1.1                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,7 +15,8 @@ partial model HeatTransferGas "Partial heat transfer model for Gas-type models"
   // XRG Simulation GmbH (Hamburg, Germany).                                   //
   //___________________________________________________________________________//
   //constant String gas= "true";
-  extends ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.HeatTransferBaseGas;
+  extends
+    ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.HeatTransferBaseGas;
 equation
 
 end HeatTransferGas;

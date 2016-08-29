@@ -1,7 +1,8 @@
 within ClaRa.Components.MechanicalSeparation;
-model FeedWaterTank_L2 "Feedwater tank : mixed volume approach | level-dependent phase separation"
+model FeedWaterTank_L2
+  "Feedwater tank : mixed volume approach | level-dependent phase separation"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -20,26 +21,27 @@ extends ClaRa.Components.MechanicalSeparation.FeedWaterTank_base;
   extends ClaRa.Basics.Icons.ComplexityLevel(complexity="L2");
   replaceable model PressureLoss =
       ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.NoFriction_L2
-    constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.ShellType_L2 "Pressure loss model"
-                          annotation(Dialog(group="Fundamental Definitions"), choicesAllMatching);
-  parameter Modelica.SIunits.SpecificEnthalpy h_start=xi_start*(TILMedia.VLEFluidFunctions.dewSpecificEnthalpy_pxi(medium, p_start) - TILMedia.VLEFluidFunctions.bubbleSpecificEnthalpy_pxi(medium, p_start)) + TILMedia.VLEFluidFunctions.bubbleSpecificEnthalpy_pxi(medium, p_start) "Start value of sytsem specific enthalpy"
-                                                                                              annotation (Dialog(tab="Initialisation"));
-  parameter Modelica.Blocks.Types.Smoothness smoothness=Modelica.Blocks.Types.Smoothness.LinearSegments "|Phase Separation|Numerical Robustness|Smoothness of table interpolation for calculation of filling level";
+    constrainedby
+    ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.ShellType_L2
+    "Pressure loss model" annotation(Dialog(group="Fundamental Definitions"), choicesAllMatching);
+  parameter Modelica.SIunits.SpecificEnthalpy h_start=xi_start*(TILMedia.VLEFluidFunctions.dewSpecificEnthalpy_pxi(medium, p_start) - TILMedia.VLEFluidFunctions.bubbleSpecificEnthalpy_pxi(medium, p_start)) + TILMedia.VLEFluidFunctions.bubbleSpecificEnthalpy_pxi(medium, p_start)
+    "Start value of sytsem specific enthalpy"                                                 annotation (Dialog(tab="Initialisation"));
+  parameter Modelica.Blocks.Types.Smoothness smoothness=Modelica.Blocks.Types.Smoothness.LinearSegments
+    "|Phase Separation|Numerical Robustness|Smoothness of table interpolation for calculation of filling level";
 
   parameter Modelica.SIunits.Length z_in=1 "Height of inlet ports" annotation(Dialog(group="Geometry"));
   parameter Modelica.SIunits.Length z_out=1 "Height of outlet ports"  annotation(Dialog(group="Geometry"));
 
 protected
- record Outline
+ model Outline
    extends ClaRa.Basics.Icons.RecordIcon;
-   Basics.Units.Length level_abs "Absolute filling level";
-   Real level_rel "relative filling level";
+   input Basics.Units.Length level_abs "Absolute filling level";
+   input Real level_rel "relative filling level";
  end Outline;
 
- record Summary
+ model Summary
    extends ClaRa.Basics.Icons.RecordIcon;
    Outline outline;
-   //ClaRa.Basics.Records.FluidVLE_L2 fluid;
    ClaRa.Basics.Records.FlangeVLE condensate;
    ClaRa.Basics.Records.FlangeVLE tapping;
    ClaRa.Basics.Records.FlangeVLE feedwater;
@@ -148,15 +150,17 @@ public
         length=length),
     final heatSurfaceAlloc=1,
     redeclare model PhaseBorder =
-        ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.IdeallySeparated (
-         level_rel_start=
+        ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.IdeallySeparated
+        (level_rel_start=
                  level_rel_start,
                           smoothness=smoothness))
     annotation (Placement(transformation(extent={{0,-30},{-20,-10}})));
 
+  Modelica.Blocks.Interfaces.RealOutput level(value = if outputAbs then summary.outline.level_abs else summary.outline.level_rel) if levelOutput annotation (Placement(transformation(extent={{204,-126},{224,-106}}), iconTransformation(
+        extent={{-10,-10},{10,10}},
+        rotation=270,
+        origin={240,-110})));
 equation
-//  Vl = max(0.000001,((1-volume.fluidOut.q)*volume.M))/noEvent(max(volume.fluidOut.VLE.d_l,
-//                                                                                 volume.fluidOut.d));
 
   eye_int.m_flow=-outlet.m_flow;
   eye_int.T=volume.fluidOut.T-273.15;
@@ -165,7 +169,7 @@ equation
   eye_int.p=volume.fluidOut.p/100000;
 
   connect(volume.inlet, condensate) annotation (Line(
-      points={{0,-20},{102,-20}},
+      points={{0,-20},{100,-20},{100,60},{200,60}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
@@ -175,13 +179,23 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(volume.outlet, outlet) annotation (Line(
-      points={{-20,-20},{-98,-20}},
+      points={{-20,-20},{-140,-20},{-140,-100},{-260,-100}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
   annotation (Icon(coordinateSystem(preserveAspectRatio=true, extent={{-300,
             -100},{300,100}}),
-                   graphics),          Diagram(coordinateSystem(
+                   graphics={
+                     Rectangle(extent={{220,-8},{260,-92}}, lineColor={27,36,42},
+                               fillColor={153,205,221},
+                               fillPattern=FillPattern.Solid,
+                               visible=showLevel),
+                     Rectangle(extent=DynamicSelect({{220,-50},{260,-92}}, {{220,summary.outline.level_rel*84-92},{260,-92}}),
+                               lineColor={27,36,42},
+                               fillColor={0,131,169},
+                               fillPattern=FillPattern.Solid,
+                               visible=showLevel)}),
+                                       Diagram(coordinateSystem(
           preserveAspectRatio=true, extent={{-240,-140},{120,100}}),
                                                graphics));
 end FeedWaterTank_L2;

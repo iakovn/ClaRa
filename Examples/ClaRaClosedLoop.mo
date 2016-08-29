@@ -1,6 +1,37 @@
 within ClaRa.Examples;
-model ClaRaClosedLoop "A closed steam cycle including single reheat, feedwater tank, LP and HP preheaters"
-  extends ClaRa.Basics.Icons.PackageIcons.ExecutableExample100;
+model ClaRaClosedLoop
+  "A closed steam cycle including single reheat, feedwater tank, LP and HP preheaters"
+  extends ClaRa.Basics.Icons.PackageIcons.ExecutableRegressiong100;
+
+model Regression
+  extends ClaRa.Basics.Icons.RegressionSummary;
+
+  Modelica.Blocks.Interfaces.RealInput V_flow_FWP "Volume flow of feedwater";
+  Modelica.Blocks.Interfaces.RealInput p_HPT_in "Inlet pressure HP turbine";
+  Modelica.Blocks.Interfaces.RealInput T_HPT_in "Inlet temperature HP turbine";
+  Modelica.Blocks.Interfaces.RealInput level_FWT "level of FW tank";
+  Modelica.Blocks.Interfaces.RealInput p_FWT "Pressure of FW tank";
+  Modelica.Blocks.Interfaces.RealInput nom_m_flow_tapFWT;
+
+  Real y_V_flow_FWP_min = timeExtrema_V_flow_FW.y_min;
+  Real y_V_flow_FWP_max = timeExtrema_V_flow_FW.y_max;
+  Real y_p_HPT_in_min = timeExtrema_p_HPTin.y_min;
+  Real y_p_HPT_in_max = timeExtrema_p_HPTin.y_max;
+  Real y_T_HPT_in_int = integratorT_HPTin.y;
+  Real y_level_FWT_max = timeExtrema_level_FWT.y_max;
+  Real y_level_FWT_min = timeExtrema_level_FWT.y_min;
+  Real y_p_FWT_int = integrator_p_FWT.y;
+  Real y_nom_m_flow_tapFWT = nom_m_flow_tapFWT;
+
+  protected
+  Components.Utilities.Blocks.TimeExtrema timeExtrema_V_flow_FW(u = V_flow_FWP, startTime=5000) annotation (Placement(transformation(extent={{-20,40},{0,60}})));
+  Components.Utilities.Blocks.TimeExtrema timeExtrema_p_HPTin(u = p_HPT_in, startTime=5000) annotation (Placement(transformation(extent={{14,18},{34,38}})));
+  Components.Utilities.Blocks.Integrator integratorT_HPTin(u = T_HPT_in) annotation (Placement(transformation(extent={{-20,-10},{0,10}})));
+  Components.Utilities.Blocks.TimeExtrema timeExtrema_level_FWT(u = level_FWT, startTime=5000)
+                                                                               annotation (Placement(transformation(extent={{-20,-40},{0,-20}})));
+  Components.Utilities.Blocks.Integrator integrator_p_FWT(u = p_FWT) annotation (Placement(transformation(extent={{-20,-76},{0,-56}})));
+
+end Regression;
   ClaRa.Components.TurboMachines.Turbines.SteamTurbineVLE_L1 turbine_HP1(
     p_nom=NOM.Turbine_HP.p_in,
     m_flow_nom=NOM.Turbine_HP.m_flow,
@@ -75,14 +106,18 @@ model ClaRaClosedLoop "A closed steam cycle including single reheat, feedwater t
     height=-0.2)
     annotation (Placement(transformation(extent={{-278,48},{-258,68}})));
   parameter Real k_PID=0.5;//1.305 "Gain of controller";
-  parameter Modelica.SIunits.Time Ti_PID=650 "Time constant of Integrator block";
+  parameter Modelica.SIunits.Time Ti_PID=650
+    "Time constant of Integrator block";
                                             //216.667
   parameter Modelica.SIunits.Time startTime=2000;
   //Real Target;
-  parameter Modelica.SIunits.Time Tu=127.469 "equivalent dead time of steam generation";
+  parameter Modelica.SIunits.Time Tu=127.469
+    "equivalent dead time of steam generation";
                                         //127.469
-  parameter Modelica.SIunits.Time Tg=204.966 "balancing time of steam generation";
-  parameter Modelica.SIunits.Time Ts=60.2459 "Integration time of steam storage";
+  parameter Modelica.SIunits.Time Tg=204.966
+    "balancing time of steam generation";
+  parameter Modelica.SIunits.Time Ts=60.2459
+    "Integration time of steam storage";
   ClaRa.Components.TurboMachines.Pumps.PumpVLE_L1_simple Pump_FW(eta_mech=0.8) annotation (Placement(transformation(extent={{-56,-128},{-76,-148}})));
   Modelica.Thermal.HeatTransfer.Sources.PrescribedHeatFlow prescribedHeatFlow
     annotation (Placement(transformation(extent={{-10,-10},{10,10}},
@@ -118,10 +153,12 @@ model ClaRaClosedLoop "A closed steam cycle including single reheat, feedwater t
     initTypeShell=ClaRa.Basics.Choices.Init.steadyDensity,
     diameter_o=0.025,
     redeclare model HeatTransfer_Shell =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3 (             alpha_nom=
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3
+        (                                                                                           alpha_nom=
                                                                                                 {10000,10000}),
     redeclare model PressureLossShell =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3 (            Delta_p_nom={100,100,100}),
+        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3
+        (                                                                                                    Delta_p_nom={100,100,100}),
     Tau_cond=0.3,
     Tau_evap=0.03,
     width_hotwell=4,
@@ -152,13 +189,14 @@ model ClaRaClosedLoop "A closed steam cycle including single reheat, feedwater t
     z_vent=4.5,
     z_condensate=4.5,
     redeclare model PressureLoss =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3 (            Delta_p_nom={1000,1000,1000}),
+        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3
+        (                                                                                                    Delta_p_nom={1000,1000,1000}),
     initType=ClaRa.Basics.Choices.Init.steadyDensity,
     m_flow_cond_nom=NOM.feedwatertank.m_flow_cond,
     p_nom=NOM.feedwatertank.p_FWT,
     h_nom=NOM.feedwatertank.h_cond_in,
-    m_flow_heat_nom=NOM.feedwatertank.m_flow_tap1 + NOM.feedwatertank.m_flow_tap2) "INIT.feedwatertank.h_cond_out"
-                                                      annotation (Placement(transformation(extent={{-12,-138},{48,-118}})));
+    m_flow_heat_nom=NOM.feedwatertank.m_flow_tap1 + NOM.feedwatertank.m_flow_tap2)
+    "INIT.feedwatertank.h_cond_out"                   annotation (Placement(transformation(extent={{-12,-138},{48,-118}})));
   ClaRa.Components.TurboMachines.Pumps.PumpVLE_L1_simple Pump_cond(eta_mech=1, showExpertSummary=true) annotation (Placement(transformation(extent={{212,-112},{192,-132}})));
   Modelica.Blocks.Sources.Constant const3(k=0.5/6)
     annotation (Placement(transformation(extent={{262,-162},{242,-142}})));
@@ -189,8 +227,10 @@ model ClaRaClosedLoop "A closed steam cycle including single reheat, feedwater t
         rotation=0,
         origin={34,38})));
 
-  ClaRa.Components.VolumesValvesFittings.Valves.ValveVLE_L1 valve_IP(redeclare model PressureLoss =
-        Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint (                            Delta_p_nom=NOM.valve_IP.Delta_p, m_flow_nom=NOM.valve_IP.m_flow))
+  ClaRa.Components.VolumesValvesFittings.Valves.ValveVLE_L1 valve_IP(redeclare
+      model PressureLoss =
+        Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint
+        (                                                                                                    Delta_p_nom=NOM.valve_IP.Delta_p, m_flow_nom=NOM.valve_IP.m_flow))
     annotation (Placement(transformation(
         extent={{-10,6},{10,-6}},
         rotation=270,
@@ -227,8 +267,10 @@ model ClaRaClosedLoop "A closed steam cycle including single reheat, feedwater t
         origin={162,22})));
 
   ClaRa.Components.TurboMachines.Pumps.PumpVLE_L1_simple Pump_preheater_LP1(eta_mech=1) annotation (Placement(transformation(extent={{102,-158},{82,-178}})));
-  ClaRa.Components.VolumesValvesFittings.Valves.ValveVLE_L1 valve_LP1(redeclare model PressureLoss =
-        Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticNominalPoint (                         Delta_p_nom=NOM.valve_LP1.Delta_p_nom, m_flow_nom=NOM.valve_LP1.m_flow))
+  ClaRa.Components.VolumesValvesFittings.Valves.ValveVLE_L1 valve_LP1(redeclare
+      model PressureLoss =
+        Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticNominalPoint
+        (                                                                                                    Delta_p_nom=NOM.valve_LP1.Delta_p_nom, m_flow_nom=NOM.valve_LP1.m_flow))
     annotation (Placement(transformation(
         extent={{-10,6},{10,-6}},
         rotation=270,
@@ -279,16 +321,20 @@ model ClaRaClosedLoop "A closed steam cycle including single reheat, feedwater t
     Tau_evap=0.03,
     alpha_ph=50000,
     redeclare model HeatTransferTubes =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2 (                      alpha_nom=3500),
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2
+        (                                                                                                    alpha_nom=3500),
     initTypeShell=ClaRa.Basics.Choices.Init.steadyDensity,
     p_nom_tubes=NOM.preheater_HP.p_cond,
     p_start_tubes(displayUnit="bar") = INIT.preheater_HP.p_cond,
     redeclare model HeatTransfer_Shell =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3 (                      alpha_nom={1650,10000}),
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3
+        (                                                                                                    alpha_nom={1650,10000}),
     redeclare model PressureLossShell =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3 (            Delta_p_nom={1000,1000,1000}),
+        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3
+        (                                                                                                    Delta_p_nom={1000,1000,1000}),
     redeclare model PressureLossTubes =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L2 (             Delta_p_nom=10))
+        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L2
+        (                                                                                                    Delta_p_nom=10))
                     annotation (Placement(transformation(
         extent={{10,10},{-10,-10}},
         rotation=90,
@@ -297,7 +343,8 @@ model ClaRaClosedLoop "A closed steam cycle including single reheat, feedwater t
     openingInputIsActive=false,
     showExpertSummary=true,
     redeclare model PressureLoss =
-        Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticNominalPoint (
+        Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticNominalPoint
+        (
         rho_in_nom=23,
         Delta_p_nom=NOM.valve1_HP.Delta_p_nom,
         m_flow_nom=NOM.valve1_HP.m_flow))
@@ -307,7 +354,8 @@ model ClaRaClosedLoop "A closed steam cycle including single reheat, feedwater t
         origin={-88,-12})));
   ClaRa.Components.VolumesValvesFittings.Valves.ValveVLE_L1 valve2_HP(
     openingInputIsActive=true, redeclare model PressureLoss =
-        Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticNominalPoint (
+        Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticNominalPoint
+        (
         Delta_p_nom=NOM.valve2_HP.Delta_p,
         m_flow_nom=NOM.valve2_HP.m_flow,
         rho_in_nom=500))
@@ -340,20 +388,24 @@ model ClaRaClosedLoop "A closed steam cycle including single reheat, feedwater t
     length=13,
     z_out_shell=0.1,
     redeclare model HeatTransferTubes =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2 (                      PL_alpha=[0,0.55; 0.5,0.65; 0.7,0.72; 0.8,0.77; 1,1], alpha_nom=3000),
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2
+        (                                                                                                    PL_alpha=[0,0.55; 0.5,0.65; 0.7,0.72; 0.8,0.77; 1,1], alpha_nom=3000),
     redeclare model PressureLossTubes =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L2 (             Delta_p_nom=1000),
+        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L2
+        (                                                                                                    Delta_p_nom=1000),
     T_w_start={300,320,340},
     initTypeWall=ClaRa.Basics.Choices.Init.steadyState,
     Tau_cond=0.3,
     Tau_evap=0.03,
     redeclare model HeatTransfer_Shell =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3 (                      alpha_nom={1500,8000}),
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3
+        (                                                                                                    alpha_nom={1500,8000}),
     redeclare model PressureLossShell =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3 (            Delta_p_nom={100,100,100}),
+        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3
+        (                                                                                                    Delta_p_nom={100,100,100}),
     p_nom_tubes=NOM.preheater_LP1.p_cond,
     p_start_tubes(displayUnit="bar") = INIT.preheater_LP1.p_cond,
-    initTypeTubes=ClaRa.Basics.Choices.Init.steadyTemperature)
+    initTypeTubes=ClaRa.Basics.Choices.Init.noInit)
                    annotation (Placement(transformation(
         extent={{10,10},{-10,-10}},
         rotation=180,
@@ -407,8 +459,10 @@ model ClaRaClosedLoop "A closed steam cycle including single reheat, feedwater t
     efficiency_Turb_LP2=NOM.efficiency_Turb_LP2,
     m_flow_nom=NOM.m_flow_nom) annotation (Placement(transformation(extent={{-312,-236},{-292,-216}})));
   ClaRa.Components.VolumesValvesFittings.Valves.ValveVLE_L1 valve_LP2(
-                                          Tau=1e-3, redeclare model PressureLoss =
-        Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint (                            m_flow_nom=NOM.valve_LP2.m_flow, Delta_p_nom=NOM.valve_LP2.Delta_p_nom))
+                                          Tau=1e-3, redeclare model
+      PressureLoss =
+        Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint
+        (                                                                                                    m_flow_nom=NOM.valve_LP2.m_flow, Delta_p_nom=NOM.valve_LP2.Delta_p_nom))
     annotation (Placement(transformation(
         extent={{-10,-6},{10,6}},
         rotation=180,
@@ -505,8 +559,16 @@ model ClaRaClosedLoop "A closed steam cycle including single reheat, feedwater t
     efficiency_Turb_IP=0.93,
     efficiency_Turb_LP1=0.94,
     efficiency_Turb_LP2=0.94) annotation (Placement(transformation(extent={{-306,-200},{-286,-180}})));
-  inner SimCenter simCenter(contributeToCycleSummary=true, redeclare TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1)
+  inner SimCenter simCenter(contributeToCycleSummary=true, redeclare
+      TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater                                                                fluid1)
                                                            annotation (Placement(transformation(extent={{-280,-220},{-240,-200}})));
+  Regression regression(
+    V_flow_FWP = Pump_FW.summary.outline.V_flow,
+    p_HPT_in = turbine_HP1.summary.inlet.p,
+    T_HPT_in = turbine_HP1.summary.inlet.T,
+    level_FWT = feedWaterTank.volume.summary.outline.level_abs,
+    p_FWT = feedWaterTank.volume.summary.fluid.p[2],
+    nom_m_flow_tapFWT = NOM.feedwatertank.tap_in2.m_flow) annotation (Placement(transformation(extent={{-320,-140},{-300,-120}})));
 equation
   connect(steamGenerator_1_XRG.reheat_out, Turbine_IP.inlet)
                                                             annotation (Line(
@@ -555,7 +617,7 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(preheater_LP1.In2, Pump_cond.outlet) annotation (Line(
-      points={{172,-122},{192,-122},{192,-122}},
+      points={{172,-122},{192,-122}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
@@ -581,7 +643,7 @@ equation
       color={0,0,127},
       smooth=Smooth.None));
   connect(measurement.y, PI_Pump_cond.u_m) annotation (Line(
-      points={{241,-182},{222,-182},{222,-164}},
+      points={{241,-182},{221.9,-182},{221.9,-164}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(join_LP1.inlet, Turbine_LP1.outlet) annotation (Line(
@@ -640,7 +702,7 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(PI_Pump_cond.y, Pump_cond.P_drive) annotation (Line(
-      points={{211.1,-152},{202,-152},{202,-134}},
+      points={{211,-152},{202,-152},{202,-134}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(PI_preheater1.u_s, const_reheater_LP1_relLevel.y) annotation (Line(
@@ -648,11 +710,11 @@ equation
       color={0,0,127},
       smooth=Smooth.None));
   connect(preheater_LP1_relLevel.y, PI_preheater1.u_m) annotation (Line(
-      points={{120,-222},{111.8,-222},{111.8,-204},{112,-204}},
+      points={{120,-222},{111.8,-222},{111.8,-204},{111.9,-204}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(PI_preheater1.y, Pump_preheater_LP1.P_drive) annotation (Line(
-      points={{101.1,-192},{92,-192},{92,-180}},
+      points={{101,-192},{92,-192},{92,-180}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(steamGenerator_1_XRG.eye_LS, quadruple2.eye) annotation (Line(
@@ -680,7 +742,7 @@ equation
       color={190,190,190},
       smooth=Smooth.None));
   connect(quadruple6.eye, feedWaterTank.eye) annotation (Line(
-      points={{-14,-162},{-14,-150},{-4,-150},{-2,-139}},
+      points={{-14,-162},{-14,-150},{-4,-150},{-4,-139}},
       color={190,190,190},
       smooth=Smooth.None));
   connect(quadruple8.eye, valve_IP.eye) annotation (Line(
@@ -782,7 +844,7 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(condenser.eye, quadruple5.eye) annotation (Line(
-      points={{244.8,-45.76},{244.8,-62},{252,-62}},
+      points={{246,-47.2},{246,-62},{252,-62}},
       color={190,190,190},
       smooth=Smooth.None));
   connect(condenser.heat, prescribedHeatFlow.port) annotation (Line(
@@ -833,7 +895,7 @@ equation
           textString="Model
 Properties"),                     Text(
           extent={{-300,210},{-102,170}},
-          lineColor={0,128,0},
+          lineColor={115,150,0},
           horizontalAlignment=TextAlignment.Left,
           fontSize=10,
           textString="______________________________________________________________________________________________
@@ -844,25 +906,29 @@ Models provide information for automatic efficiency calculation within SimCenter
 ______________________________________________________________________________________________
 "),                    Text(
           extent={{-312,234},{2,214}},
-          lineColor={0,128,0},
+          lineColor={115,150,0},
           fontSize=31,
           textString="TESTED -- 2015-01-26 //TT"),Text(
           extent={{-300,138},{-136,124}},
-          lineColor={0,128,0},
+          lineColor={115,150,0},
           horizontalAlignment=TextAlignment.Left,
+          fontSize=8,
           textString="______________________________________________________________________________________________________________
 Remarks: 
 ______________________________________________________________________________________________________________
-",        fontSize=8),Text(
+"),                   Text(
           extent={{-300,162},{-100,144}},
-          lineColor={0,128,0},
+          lineColor={115,150,0},
           horizontalAlignment=TextAlignment.Left,
           fontSize=10,
           textString="______________________________________________________________________________________________
 Scenario:  
 Reduction of the target output power of the burner by 20 percent after 10000s.
 ______________________________________________________________________________________________
-")}),                            Icon(coordinateSystem(preserveAspectRatio=true,
+"),     Rectangle(
+          extent={{-320,240},{340,-240}},
+          lineColor={115,150,0},
+          lineThickness=0.5)}),  Icon(coordinateSystem(preserveAspectRatio=true,
           extent={{-100,-100},{100,100}})),
     experiment(
       StopTime=20000,

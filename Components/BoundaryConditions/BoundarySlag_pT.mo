@@ -1,7 +1,7 @@
 within ClaRa.Components.BoundaryConditions;
 model BoundarySlag_pT "A source defining pressure and temperature"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -20,20 +20,24 @@ model BoundarySlag_pT "A source defining pressure and temperature"
     powerIn=if massFlowIsLoss then 0 else min(0, slag_inlet.m_flow*h_slag),
     powerOut=if massFlowIsLoss then 0 else max(0, slag_inlet.m_flow*h_slag),
     powerAux=0) if                                                                                                     contributeToCycleSummary;
-  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary "True if component shall contribute to automatic efficiency calculation"
-                                                                                              annotation(Dialog(tab="Summary and Visualisation"));
-  parameter Boolean massFlowIsLoss = true "True if mass flow is a loss (not a process product)" annotation(Dialog(tab="Summary and Visualisation"));
+  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary
+    "True if component shall contribute to automatic efficiency calculation"                  annotation(Dialog(tab="Summary and Visualisation"));
+  parameter Boolean massFlowIsLoss = true
+    "True if mass flow is a loss (not a process product)"                                       annotation(Dialog(tab="Summary and Visualisation"));
 
-  parameter ClaRa.Basics.Media.Fuel.PartialSlag slagType=simCenter.slagModel "Medium to be used"                      annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
+  parameter ClaRa.Basics.Media.Fuel.PartialSlag slagType=simCenter.slagModel
+    "Medium to be used"                                                                                               annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
 
-  parameter Boolean variable_p=false "True, if mass flow defined by variable input" annotation(Dialog(group="Define Variable Boundaries"));
-  parameter Boolean variable_T=false "True, if Temperature defined by variable input" annotation(Dialog(group="Define Variable Boundaries"));
+  parameter Boolean variable_p=false
+    "True, if mass flow defined by variable input"                                  annotation(Dialog(group="Define Variable Boundaries"));
+  parameter Boolean variable_T=false
+    "True, if Temperature defined by variable input"                                  annotation(Dialog(group="Define Variable Boundaries"));
 /*  parameter Boolean XInputIsActive=false 
     "True, if composition defined by variable input"                                      annotation(Dialog(group="Define Variable Boundaries"));
 */
   parameter SI.Pressure p_const=1e5 "Constant mass flow rate" annotation(Dialog(group="Constant Boundaries", enable= not mInputIsActive));
-  parameter SI.Temperature T_const=simCenter.T_amb_start "Constant specific enthalpy of source"
-                                           annotation(Dialog(group="Constant Boundaries", enable= not hInputIsActive));
+  parameter SI.Temperature T_const=simCenter.T_amb_start
+    "Constant specific enthalpy of source" annotation(Dialog(group="Constant Boundaries", enable= not hInputIsActive));
  /* parameter Modelica.SIunits.MassFraction X_const[coal.nc-1]=zeros(coal.nc-1) 
     "Constant composition" annotation(Dialog(group="Constant Boundaries", enable= not XInputIsActive));
 */
@@ -49,9 +53,11 @@ public
     annotation (Placement(transformation(extent={{90,-10},{110,10}}),
         iconTransformation(extent={{90,-12},{110,8}})));
 
-  Modelica.Blocks.Interfaces.RealInput p(value=p_in) if (variable_p) "Variable mass flow rate"
+  Modelica.Blocks.Interfaces.RealInput p(value=p_in) if (variable_p)
+    "Variable mass flow rate"
     annotation (Placement(transformation(extent={{-120,40},{-80,80}})));
-  Modelica.Blocks.Interfaces.RealInput T(value=T_in) if (variable_T) "Variable specific enthalpy"
+  Modelica.Blocks.Interfaces.RealInput T(value=T_in) if (variable_T)
+    "Variable specific enthalpy"
     annotation (Placement(transformation(extent={{-120,-20},{-80,20}})));
   /*
   Modelica.Blocks.Interfaces.RealInput X[medium.nc-1](value=X_in) if 

@@ -1,14 +1,14 @@
 within ClaRa.StaticCycles;
 model Pump_real "Real Pump || par.: efficiency || green | blue"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                            //
+// Component of the ClaRa library, version: 1.1.1                            //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                              //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -25,7 +25,7 @@ model Pump_real "Real Pump || par.: efficiency || green | blue"
   parameter Real  efficiency= 1 "|Fundamental Definitions|Pump efficiency";
   final parameter ClaRa.Basics.Units.Pressure p_in(fixed=false) "Inlet pressure";
   final parameter ClaRa.Basics.Units.Pressure p_out(fixed=false) "Outlet pressure";
-  final parameter ClaRa.Basics.Units.MassFlowRate m_flow(fixed=false) "Mass flow rate";
+  final parameter ClaRa.Basics.Units.MassFlowRate m_flow(fixed=false, start=1) "Mass flow rate";
   final parameter ClaRa.Basics.Units.DensityMassSpecific rho_in=
       TILMedia.VLEFluidFunctions.bubbleDensity_pxi(medium, p_in);
   final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_in(fixed=false);
@@ -40,6 +40,7 @@ model Pump_real "Real Pump || par.: efficiency || green | blue"
         p_in,
         h_in)) - h_in)/efficiency;
   final parameter ClaRa.Basics.Units.Power P_pump=m_flow*(h_out - h_in);
+  final parameter ClaRa.Basics.Units.PressureDifference Delta_p = p_in - p_out "Presssure differerence p_in - p_out";
 
   Fundamentals.SteamSignal_green inlet
     annotation (Placement(transformation(extent={{-114,-10},{-94,10}}), iconTransformation(extent={{-108,-10},{-100,10}})));
@@ -50,22 +51,21 @@ initial equation
   inlet.m_flow=m_flow;
   inlet.h=h_in;
   outlet.p=p_out;
-  annotation (Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,
-            -100},{100,100}}),
-                      graphics), Icon(coordinateSystem(preserveAspectRatio=true,
-          extent={{-100,-100},{100,100}}),
-                                      graphics={
+  annotation (Icon(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},{100,100}}),
+                   graphics={
         Ellipse(
           extent={{-100,100},{100,-100}},
-          lineColor={0,131,169},
+          lineColor=DynamicSelect({0,131,169}, if Delta_p <= 0 then {0,131,169} else {234,171,0}),
           fillColor={255,255,255},
-          fillPattern=FillPattern.Solid),
+          fillPattern=DynamicSelect(FillPattern.Solid, if Delta_p <= 0 then FillPattern.Solid else FillPattern.Backward)),
         Line(
           points={{-98,0},{100,0}},
-          color={0,131,169},
+          color=DynamicSelect({0,131,169}, if Delta_p <= 0 then {0,131,169} else {234,171,0}),
           smooth=Smooth.None),
         Line(
           points={{60,40},{100,0},{58,-42}},
-          color={0,131,169},
-          smooth=Smooth.None)}));
+          color=DynamicSelect({0,131,169}, if Delta_p <= 0 then {0,131,169} else {234,171,0}),
+          smooth=Smooth.None)}),
+                         Diagram(coordinateSystem(preserveAspectRatio=true,
+          extent={{-100,-100},{100,100}}), graphics));
 end Pump_real;

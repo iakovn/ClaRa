@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.Geometry;
 model PipeGeometry "Pipe bundle || Tube type "
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.0                        //
+  // Component of the ClaRa library, version: 1.1.1                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -37,8 +37,8 @@ model PipeGeometry "Pipe bundle || Tube type "
   parameter Integer N_passes=1 "Number of passes of the tubes" annotation(Dialog(group="Essential Geometry Definition", groupImage="modelica://ClaRa/figures/ParameterDialog/PipeGeometry.png"));
 
 equation
-  assert(A_cross>0, "The cross section of the shell side must be > 0 but is "+realString(A_cross, 1, 3) + " in instance" + getInstanceName() + ".");
-  assert(volume>0, "The volume of the shell side must be > 0 but is "+realString(volume, 1, 3) + " in instance" + getInstanceName() + ".");
+  assert(A_cross>0, "The cross section of the shell side must be > 0 but is "+String(A_cross, significantDigits=3) + " in instance" + getInstanceName() + ".");
+  assert(volume>0, "The volume of the shell side must be > 0 but is "+String(volume, significantDigits=3) + " in instance" + getInstanceName() + ".");
 
   annotation (Icon(graphics={Bitmap(
           extent={{-100,-100},{100,100}},

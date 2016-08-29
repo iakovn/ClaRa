@@ -1,7 +1,7 @@
 within ClaRa.Components.Sensors;
 model Temperature "Ideal one port temperature sensor"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,13 +15,15 @@ model Temperature "Ideal one port temperature sensor"
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
 
+  extends ClaRa.Basics.Icons.Sensor1;
   outer ClaRa.SimCenter simCenter;
-parameter TILMedia.VLEFluidTypes.BaseVLEFluid   medium= simCenter.fluid1 "Medium to be used"
-                         annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
-
+  parameter TILMedia.VLEFluidTypes.BaseVLEFluid   medium= simCenter.fluid1
+    "Medium to be used"                                                                        annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
+  parameter Integer unitOption = 1 "Unit of output" annotation(choicesAllMatching, Dialog( group="Fundamental Definitions"), choices(choice=1 "Kelvin", choice=2
+        "Degree Celsius",                                                                                                    choice=3
+        "Degree Fahrenheit"));
   ClaRa.Basics.Units.Temperature_DegC T_celsius "Temperatur in Degree Celsius";
-  Modelica.Blocks.Interfaces.RealOutput T(final quantity="ThermodynamicTemperature",
-                                          final unit = "K", min=0) "Temperature in port medium"
+  Modelica.Blocks.Interfaces.RealOutput T "Temperature in port medium"
     annotation (Placement(transformation(extent={{100,-10},{120,10}},
                                                                     rotation=
             0), iconTransformation(extent={{100,-10},{120,10}})));
@@ -38,8 +40,18 @@ protected
     vleFluidType=medium)
     annotation (Placement(transformation(extent={{-48,28},{-28,48}})));
 equation
-  T=fluid.T;
-  T_celsius = T - 273.15;
+  if unitOption == 1 then //Kelvin
+    T = fluid.T;
+  elseif unitOption == 2 then // Degree Celsius
+    T = Modelica.SIunits.Conversions.to_degC(fluid.T);
+  elseif unitOption == 3 then // Degree Fahrenheit
+    T = Modelica.SIunits.Conversions.to_degF(fluid.T);
+  else
+    T=-1;  //dummy
+    assert(false, "Unknown unit option in " + getInstanceName());
+  end if;
+
+  T_celsius = fluid.T - 273.15;
 
   port.m_flow = 0;
   port.h_outflow = 0;
@@ -60,24 +72,15 @@ equation
           fillColor={0,255,0},
           fillPattern=FillPattern.Solid,
           textString="TIT"),
-        Line(
-          points={{0,-40},{0,-94}},
-          color={27,36,42},
-          thickness=0.5,
-          smooth=Smooth.None),
         Text(
-          extent={{-100,60},{100,90}},
+          extent={{-100,60},{60,90}},
           fillColor={215,215,215},
           fillPattern=FillPattern.Solid,
-          lineColor=DynamicSelect({230, 230, 230},  if T > 273.15 then {0,131,169} else {167,25,48}),
-          textString=DynamicSelect(" T ", realString(T_celsius, 1,1)+" °C")),
-        Line(
-          points={{80,0},{100,0}},
-          color={27,36,42},
-          smooth=Smooth.None),
-        Polygon(
-          points={{-20,40},{-20,40},{-62,40},{-86,0},{-62,-40},{-20,-40},{20,-40},{62,-40},{86,0},{62,40},{20,40},{-20,40}},
-          lineColor={27,36,42},
-          smooth=Smooth.Bezier,
-          lineThickness=0.5)}));
+          lineColor=DynamicSelect({230, 230, 230},  if T_celsius > 0 then {0,131,169} else {167,25,48}),
+          textString=DynamicSelect(" T ", String(T, format="1.1f"))),
+        Text(
+          extent={{50,90},{90,60}},
+          lineColor=DynamicSelect({230, 230, 230},  if T_celsius>0 then {0,131,169} else {167,25,48}),
+          textString=DynamicSelect("", if unitOption==1 then "K" elseif unitOption==2 then "°C" else "°F"),
+          horizontalAlignment=TextAlignment.Left)}));
 end Temperature;

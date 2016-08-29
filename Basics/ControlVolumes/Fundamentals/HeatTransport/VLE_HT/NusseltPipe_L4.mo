@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT;
-model NusseltPipe_L4 "VLE || Nusselt"
+model NusseltPipe_L4 "Pipe || VLE || Nusselt || 1-phase"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.0                        //
+  // Component of the ClaRa library, version: 1.1.1                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,7 +15,8 @@ model NusseltPipe_L4 "VLE || Nusselt"
   // XRG Simulation GmbH (Hamburg, Germany).                                   //
   //___________________________________________________________________________//
 
-  extends ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.HeatTransfer_L4;
+  extends
+    ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.HeatTransfer_L4;
 
   import fluidObjectFunction_cp = TILMedia.VLEFluidObjectFunctions.specificIsobaricHeatCapacity_phxi;
   import fluidObjectFunction_lambda = TILMedia.VLEFluidObjectFunctions.thermalConductivity_phxi;
@@ -30,9 +31,11 @@ model NusseltPipe_L4 "VLE || Nusselt"
   Modelica.SIunits.PrandtlNumber Pr[iCom.N_cv] "Prandl number";
   Modelica.SIunits.ReynoldsNumber Re[iCom.N_cv] "Reynolds number";
   Modelica.SIunits.NusseltNumber Nu[iCom.N_cv] "Nusselt number";
-  Real failureStatus[iCom.N_cv] "0== boundary conditions fulfilled | 1== failure >> check if still meaningfull results";
+  Real failureStatus[iCom.N_cv]
+    "0== boundary conditions fulfilled | 1== failure >> check if still meaningfull results";
 
-  parameter FluidDissipation.Utilities.Types.HeatTransferBoundary boundary=FluidDissipation.Utilities.Types.HeatTransferBoundary.UWTuDFF "Choice of heat transfer boundary condition, relevant for laminar flow heat transfer";
+  parameter FluidDissipation.Utilities.Types.HeatTransferBoundary boundary=FluidDissipation.Utilities.Types.HeatTransferBoundary.UWTuDFF
+    "Choice of heat transfer boundary condition, relevant for laminar flow heat transfer";
 
 equation
   T_mean = iCom.T;
@@ -65,4 +68,5 @@ equation
       m_flow=m_flow[i]/geo.N_tubes));
   end for;
 
+  annotation (experiment, __Dymola_experimentSetupOutput);
 end NusseltPipe_L4;

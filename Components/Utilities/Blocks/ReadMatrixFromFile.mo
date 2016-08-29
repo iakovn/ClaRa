@@ -1,7 +1,8 @@
 within ClaRa.Components.Utilities.Blocks;
-model ReadMatrixFromFile "Read a 2D matrix from file  || *.csv and *.mat(-v4) are supported"
+model ReadMatrixFromFile
+  "Read a 2D matrix from file  || *.csv and *.mat(-v4) are supported"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -28,7 +29,8 @@ model ReadMatrixFromFile "Read a 2D matrix from file  || *.csv and *.mat(-v4) ar
        annotation(Dialog(group="table data definition", enable = tableOnFile,
                          __Dymola_loadSelector(filter="Text files (*.txt);;Matlab files (*.mat)",
                          caption="Open file in which table is present")));
-  parameter String matrixName="NoName" "table name on file or in function usertab (see docu)"
+  parameter String matrixName="NoName"
+    "table name on file or in function usertab (see docu)"
        annotation(Dialog(group="table data definition", enable = tableOnFile));
 
   final parameter Integer matrixSize[2]=readMatrixSize(loadResource(fileName), matrixName);
@@ -152,43 +154,47 @@ and the first row \"table2D_1[1,2:]\" contains the u[2] grid points.
 </html>
 "), Icon(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},{100,
             100}}), graphics={
+        Rectangle(
+          extent={{-100,100},{100,-100}},
+          lineColor={221,222,223},
+          fillColor={118,124,127},
+          fillPattern=FillPattern.Solid),
         Line(points={{-60,40},{-60,-40},{60,-40},{60,40},{30,40},{30,-40},{-30,
               -40},{-30,40},{-60,40},{-60,20},{60,20},{60,0},{-60,0},{-60,-20},
-              {60,-20},{60,-40},{-60,-40},{-60,40},{60,40},{60,-40}}, color={
-              0,0,0}),
-        Line(points={{0,40},{0,-40}}, color={0,0,0}),
+              {60,-20},{60,-40},{-60,-40},{-60,40},{60,40},{60,-40}}, color={221,222,223}),
+        Line(points={{0,40},{0,-40}}, color={221,222,223}),
         Rectangle(
           extent={{-60,20},{-30,0}},
-          lineColor={0,0,0},
-          fillColor={255,158,2},
+          lineColor={221,222,223},
+          fillColor={235,183,0},
           fillPattern=FillPattern.Solid),
         Rectangle(
           extent={{-60,0},{-30,-20}},
-          lineColor={0,0,0},
-          fillColor={255,158,2},
+          lineColor={221,222,223},
+          fillColor={235,183,0},
           fillPattern=FillPattern.Solid),
         Rectangle(
           extent={{-60,-20},{-30,-40}},
-          lineColor={0,0,0},
-          fillColor={255,158,2},
+          lineColor={221,222,223},
+          fillColor={235,183,0},
           fillPattern=FillPattern.Solid),
         Rectangle(
           extent={{-30,40},{0,20}},
-          lineColor={0,0,0},
-          fillColor={255,158,2},
+          lineColor={221,222,223},
+          fillColor={235,183,0},
           fillPattern=FillPattern.Solid),
         Rectangle(
           extent={{0,40},{30,20}},
-          lineColor={0,0,0},
-          fillColor={255,158,2},
+          lineColor={221,222,223},
+          fillColor={235,183,0},
           fillPattern=FillPattern.Solid),
         Rectangle(
           extent={{30,40},{60,20}},
-          lineColor={0,0,0},
-          fillColor={255,158,2},
+          lineColor={221,222,223},
+          fillColor={235,183,0},
           fillPattern=FillPattern.Solid),
-        Line(points={{-60,40},{-30,20}}, color={0,0,0}),
-        Line(points={{-30,40},{-60,20}}, color={0,0,0})}),
+        Line(points={{-60,40},{-30,20}}, color={221,222,223}),
+        Line(points={{-30,40},{-60,20}}, color={221,222,223})}),
     Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},{100,
             100}}),     graphics={
         Rectangle(

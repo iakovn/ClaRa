@@ -1,7 +1,7 @@
 within ClaRa.Basics.Functions;
 function mod "Modulus of a number"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -14,7 +14,7 @@ function mod "Modulus of a number"
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
-
+  extends ClaRa.Basics.Icons.Function;
   input Real x;
   input Real y;
   output Real z;

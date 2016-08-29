@@ -1,20 +1,22 @@
 within ClaRa.Components.Utilities.Blocks;
-block VarGain "Output the product of a variable gain value with the input signal"
+block VarGain
+  "Output the product of a variable gain value with the input signal"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                            //
+// Component of the ClaRa library, version: 1.1.1                            //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                              //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
-  input Real k(start=1, unit="1") "Variable gain value multiplied with input signal" annotation(Dialog);
+  input Real k(start=1, unit="1")
+    "Variable gain value multiplied with input signal"                               annotation(Dialog);
 public
   Modelica.Blocks.Interfaces.RealInput u "Input signal connector"
     annotation (Placement(transformation(extent={{-140,-20},{-100,20}},
@@ -42,11 +44,16 @@ input <i>u</i>:
     preserveAspectRatio=true,
     extent={{-100,-100},{100,100}},
     grid={2,2}), graphics={
+        Rectangle(
+          extent={{-100,100},{100,-100}},
+          lineColor={221,222,223},
+          fillColor={118,124,127},
+          fillPattern=FillPattern.Solid),
     Polygon(
-      points={{-100,-100},{-100,100},{100,0},{-100,-100}},
-      lineColor={0,0,127},
-      fillColor={255,255,255},
-      fillPattern=FillPattern.Solid),
+          points={{-100,-100},{-100,100},{100,0},{-100,-100}},
+          lineColor={221,222,223},
+          fillColor={118,124,127},
+          fillPattern=FillPattern.Solid),
     Text(
       extent={{-150,-140},{150,-100}},
       lineColor={0,0,0},
@@ -57,8 +64,7 @@ input <i>u</i>:
       lineColor={0,48,111}),
         Line(
           points={{-100,-60},{60,20}},
-          color={0,48,111},
-          smooth=Smooth.None)}),
+          color={221,222,223})}),
     Diagram(coordinateSystem(
     preserveAspectRatio=true,
     extent={{-100,-100},{100,100}},

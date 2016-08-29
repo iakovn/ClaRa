@@ -1,7 +1,7 @@
 within ClaRa.Components.VolumesValvesFittings.Valves.Check;
 model TestCheckValveOpenLeakage
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -18,7 +18,8 @@ model TestCheckValveOpenLeakage
 
  import SM = ClaRa.Basics.Functions.Stepsmoother;
 Real a;
-  inner SimCenter simCenter(useHomotopy=false, redeclare TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1) annotation (Placement(transformation(extent={{-92,-194},{-72,-174}})));
+  inner SimCenter simCenter(useHomotopy=false, redeclare
+      TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater                                                    fluid1) annotation (Placement(transformation(extent={{-92,-194},{-72,-174}})));
 
   Modelica.Blocks.Sources.Ramp pulse(
     height=2e5,
@@ -30,8 +31,7 @@ Real a;
       showExpertSummary=true,
     checkValve=true,
     redeclare model PressureLoss =
-        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint (
-         Delta_p_hyst=50, Delta_p_check=0.1e5),
+        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint,
     opening_leak_=0,
     openingInputIsActive=true)
     annotation (Placement(transformation(extent={{4,-64},{24,-52}})));
@@ -47,8 +47,7 @@ Real a;
       showExpertSummary=true,
     checkValve=true,
     redeclare model PressureLoss =
-        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint (
-         Delta_p_hyst=50, Delta_p_check=0.1e5),
+        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint,
     openingInputIsActive=true,
     opening_leak_=0)
     annotation (Placement(transformation(extent={{4,-6},{24,-18}})));
@@ -67,7 +66,8 @@ Real a;
     opening_leak_=1e-2,
     checkValve=false,
     redeclare model PressureLoss =
-        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.Quadratic_FlowFunction (                  Delta_p_eps=1e4))
+        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.Quadratic_FlowFunction
+        (                                                                                                    Delta_p_eps=1e4))
     annotation (Placement(transformation(extent={{4,-156},{24,-144}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi pressureSink_XRG3(p_const=3e5, h_const=150e3) annotation (Placement(transformation(extent={{-54,-160},{-34,-140}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi pressureSink_XRG4(variable_p=true) annotation (Placement(transformation(extent={{62,-160},{42,-140}})));
@@ -80,8 +80,8 @@ Real a;
       showExpertSummary=true,
     opening_leak_=1e-2,
     redeclare model PressureLoss =
-        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.Quadratic_FlowFunction (
-         Delta_p_eps=1e4),
+        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.Quadratic_FlowFunction
+        (Delta_p_eps=1e4),
     checkValve=false,
     openingInputIsActive=true)
     annotation (Placement(transformation(extent={{4,-98},{24,-110}})));

@@ -1,7 +1,7 @@
 within ClaRa.Basics;
 package Units
 //___________________________________________________________________________//
-// Package of the ClaRa library, version: 1.1.0                              //
+// Package of the ClaRa library, version: 1.1.1                              //
 // Models of the ClaRa library are tested under DYMOLA v2016 FD01.           //
 // It is planned to support alternative Simulators like SimulationX in the   //
 // future                                                                    //
@@ -78,7 +78,7 @@ package Units
   type Stress = Real ( final quantity="Stress", final unit="Pa", displayUnit="Pa", nominal=1e11);
   type SurfaceTension = Real ( final quantity="SurfaceTension", final unit="kg/s2", displayUnit="kg/s2", nominal=1e-3);
   type ThermalConductivity = Real (final quantity="ThermalConductivity", final unit="W/(m.K)");
-  type Temperature = Real(final quantity= "Temperature", final unit="K", min=0, start=293.15, displayUnit="K") "Absolute thermodynamic temperature";
+  type Temperature = Real(final quantity= "Temperature", final unit="K", min=0, displayUnit="K") "Absolute thermodynamic temperature";
   type TemperatureDifference = Real(final quantity= "TemperatureDifference", final unit="K", start=0, displayUnit="K") "Temperature diference";
   type Temperature_DegC =   Real(final quantity= "Temperature",  final unit="degC",displayUnit="degC",  min=-273.15, start=20) "Temperature in degree Celsius";
   type Torque = Real(final quantity= "Torque", final unit="N.m", displayUnit="N.m", nominal=1);

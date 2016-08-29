@@ -21,7 +21,9 @@ Connected2SimCenter
 CycleSumModel
 CycleSumPort
 EyeIn
+EyeInGas
 EyeOut
+EyeOutGas
 DataInterface
 DoubleDataInterface
 DataInterfaceVector

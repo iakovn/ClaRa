@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.VLE_PL;
 model QuadraticNominalPoint_L4 "VLE|| Quadratic PL with const. PL coeff"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.0                        //
+  // Component of the ClaRa library, version: 1.1.1                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -17,19 +17,24 @@ model QuadraticNominalPoint_L4 "VLE|| Quadratic PL with const. PL coeff"
 
   import SI = ClaRa.Basics.Units;
   import TILMedia.VLEFluidObjectFunctions.density_phxi;
-  extends ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.VLE_PL.PressureLoss_L4;
+  extends
+    ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.VLE_PL.PressureLoss_L4;
 
   parameter ClaRa.Basics.Units.DensityMassSpecific rho_nom=TILMedia.VLEFluidFunctions.density_phxi(
       iCom.mediumModel,
       iCom.p_nom,
       iCom.h_nom,
       iCom.xi_nom);
-  parameter Modelica.SIunits.Pressure Delta_p_smooth=iCom.Delta_p_nom/iCom.N_cv*0.2 "|Small Mass Flows|For pressure losses below this value the square root of the quadratic pressure loss model is regularised";
-  final parameter FluidDissipation.Utilities.Types.PressureLossCoefficient zeta_TOT=geo.A_cross_FM[1]^2*2*iCom.Delta_p_nom*rho_nom/iCom.m_flow_nom^2 "Pressure loss coefficient for total pipe";
+  parameter Modelica.SIunits.Pressure Delta_p_smooth=iCom.Delta_p_nom/iCom.N_cv*0.2
+    "|Small Mass Flows|For pressure losses below this value the square root of the quadratic pressure loss model is regularised";
+  final parameter FluidDissipation.Utilities.Types.PressureLossCoefficient zeta_TOT=geo.A_cross_FM[1]^2*2*iCom.Delta_p_nom*rho_nom/iCom.m_flow_nom^2
+    "Pressure loss coefficient for total pipe";
 
-  Basics.Units.DensityMassSpecific rho[iCom.N_cv + 1] "Density in FlowModel cells";
+  Basics.Units.DensityMassSpecific rho[iCom.N_cv + 1]
+    "Density in FlowModel cells";
 protected
-  FluidDissipation.Utilities.Types.PressureLossCoefficient zeta[iCom.N_cv + 1] "Pressure loss coefficient for total pipe";
+  FluidDissipation.Utilities.Types.PressureLossCoefficient zeta[iCom.N_cv + 1]
+    "Pressure loss coefficient for total pipe";
 
   FluidDissipation.PressureLoss.General.dp_pressureLossCoefficient_IN_con inCon[iCom.N_cv + 1](each dp_smooth=Delta_p_smooth, A_cross=geo.A_cross_FM) annotation (Placement(transformation(extent={{-60,-80},{-40,-60}})));
 

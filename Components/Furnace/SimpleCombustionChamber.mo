@@ -1,7 +1,7 @@
 within ClaRa.Components.Furnace;
 model SimpleCombustionChamber
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -197,7 +197,7 @@ equation
 
           -Q_flow_boiler = inlet.flueGas.m_flow*(gasInlet.h - flueGasOutlet.h)
 + slag_outlet.m_flow *slagType.cp *(inStream(inlet.fuel.T_outflow)-T_slag_bottom)
-+ inlet.fuel.m_flow * (1.0 - xi_coal_in[6] * xi_slag) * fuelType.cp * (inStream(inlet.fuel.T_outflow)-T_flueGas_out)
++ inlet.fuel.m_flow * (1.0 - xi_coal_in[6] * xi_slag) * inStream(inlet.fuel.cp_outflow) * (inStream(inlet.fuel.T_outflow)-T_flueGas_out)
      + inlet.fuel.m_flow * inStream(inlet.fuel.LHV_outflow);
   //________________/ Chemical reaction/flueGas composition \_______________
   // calculation of the combustible mass flow rate
@@ -221,13 +221,11 @@ equation
     Basics.Constants.M_N;
   // Molar mass of products
 
-  /************** To Be Fixed In TILMedia *********************/
-
-  M_CO2 =flueGasOutlet.M_i[3]*1e-3;
-  M_H2O =flueGasOutlet.M_i[8]*1e-3;
-  M_SO2 =flueGasOutlet.M_i[4]*1e-3;
-  M_N2 =flueGasOutlet.M_i[5]*1e-3;
-  M_NO =flueGasOutlet.M_i[7]*1e-3;
+  M_CO2 =flueGasOutlet.M_i[3];
+  M_H2O =flueGasOutlet.M_i[8];
+  M_SO2 =flueGasOutlet.M_i[4];
+  M_N2 =flueGasOutlet.M_i[5];
+  M_NO =flueGasOutlet.M_i[7];
 
   // required mass flow rates for stochometric combustion
   //m_flow_oxygen_req = (n_flow_C + n_flow_H/4.0 + n_flow_S  - n_flow_O/2.)*coal.M_O*2.0;  // hier Anteil von N abzeihen, der für überschüssige NO Bildung benötigt wird
@@ -280,7 +278,7 @@ equation
   flueGas_outlet.xi_outflow[9]*flueGas_outlet.m_flow = -(inlet.flueGas.m_flow*
     xi_gas_in[9]);
     sum_xi =sum({flueGas_outlet.xi_outflow[i] for i in 1:medium.nc - 1});
-
+inlet.fuel.cp_outflow = inStream(inlet.fuel.cp_outflow);
   inlet.fuel.LHV_outflow =inStream(inlet.fuel.LHV_outflow)
   annotation (Diagram(graphics), Icon(graphics={Bitmap(
           extent={{-102,-102},{102,100}},

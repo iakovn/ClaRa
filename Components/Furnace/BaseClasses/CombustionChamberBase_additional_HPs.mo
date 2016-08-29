@@ -13,14 +13,18 @@ partial model CombustionChamberBase_additional_HPs
  //________________________/ replacable modells for heat transfer, pressure loss and geometry \________________________
   replaceable model HeatTransfer_CarrierTubes =
       ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Convection.Convection_carrierTubes_L2
-  constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.HeatTransferBaseGas "1st: choose geometry definition | 2nd: edit corresponding record"
-    annotation (Dialog(group="Heat transfer correlations"), choicesAllMatching=
+  constrainedby
+    ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.HeatTransferBaseGas
+    "1st: choose geometry definition | 2nd: edit corresponding record"
+    annotation (Dialog(group="Heat Transfer"), choicesAllMatching=
         true);
 
   replaceable model HeatTransfer_TubeBundle =
       ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Convection.Convection_tubeBank_L2
-  constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.HeatTransferBaseGas "1st: choose geometry definition | 2nd: edit corresponding record"
-    annotation (Dialog(group="Heat transfer correlations"), choicesAllMatching=
+  constrainedby
+    ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.HeatTransferBaseGas
+    "1st: choose geometry definition | 2nd: edit corresponding record"
+    annotation (Dialog(group="Heat Transfer"), choicesAllMatching=
         true);
 
     inner HeatTransfer_CarrierTubes  heattransfer_CarrierTubes(heatSurfaceAlloc=3) annotation(Placement(transformation(extent={{10,-10},
@@ -32,8 +36,10 @@ partial model CombustionChamberBase_additional_HPs
         rotation=180,
         origin={162,-60})));
 
-  ClaRa.Basics.Units.HeatFlowRate Q_flow_CarrierTubes "Heat flow from carrier tubes";
-  ClaRa.Basics.Units.HeatFlowRate Q_flow_TubeBundle "Heat flow from tube bundle";
+  ClaRa.Basics.Units.HeatFlowRate Q_flow_CarrierTubes
+    "Heat flow from carrier tubes";
+  ClaRa.Basics.Units.HeatFlowRate Q_flow_TubeBundle
+    "Heat flow from tube bundle";
 
 equation
   //____________/ Heat port temperatures and Q_flows \____________________________

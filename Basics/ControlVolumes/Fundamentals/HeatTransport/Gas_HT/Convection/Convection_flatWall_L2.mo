@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Convection;
 model Convection_flatWall_L2 "All Geo || L2 || Convection Flat Wall"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.0                        //
+  // Component of the ClaRa library, version: 1.1.1                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,7 +15,8 @@ model Convection_flatWall_L2 "All Geo || L2 || Convection Flat Wall"
   // XRG Simulation GmbH (Hamburg, Germany).                                   //
   //___________________________________________________________________________//
 
-  extends ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Convection.HeatTransfer_L2;
+  extends
+    ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Convection.HeatTransfer_L2;
   outer ClaRa.Basics.Records.IComGas_L2 iCom;
 
   //Equations according to VDI-Waermeatlas
@@ -23,13 +24,15 @@ model Convection_flatWall_L2 "All Geo || L2 || Convection Flat Wall"
       choice=1 "Lateral surface",
       choice=2 "Inner heat transfer surface",
       choice=3 "Selection to be extended"));
-  parameter String temperatureDifference="Logarithmic mean" "Temperature Difference" annotation (Dialog(group="Heat Transfer"), choices(
+  parameter String temperatureDifference="Logarithmic mean"
+    "Temperature Difference"                                                         annotation (Dialog(group="Heat Transfer"), choices(
       choice="Arithmetic mean",
       choice="Logarithmic mean",
       choice="Inlet",
       choice="Outlet"));
 
-  parameter Real CF_fouling=0.8 "Scaling factor accounting for the fouling of the wall";
+  parameter Real CF_fouling=0.8
+    "Scaling factor accounting for the fouling of the wall";
   ClaRa.Basics.Units.CoefficientOfHeatTransfer alpha;
   ClaRa.Basics.Units.Velocity w "Flue gas velocity";
   ClaRa.Basics.Units.Length length_char "Characteristic length";
@@ -38,18 +41,21 @@ model Convection_flatWall_L2 "All Geo || L2 || Convection Flat Wall"
   Real Nu_turb "Nusselt number turbulent";
   Real Nu_l0 "Nusselt number";
   Real Re "Reynolds number";
-  Real nu "Kinematic viscosity";
 
-  Units.Temperature Delta_T_wi "Temperature difference between wall and fluid inlet temperature";
-  Units.Temperature Delta_T_wo "Temperature difference between wall and fluid outlet temperature";
+  Units.Temperature Delta_T_wi
+    "Temperature difference between wall and fluid inlet temperature";
+  Units.Temperature Delta_T_wo
+    "Temperature difference between wall and fluid outlet temperature";
   Units.Temperature Delta_T_mean "Mean temperature";
   Units.Temperature Delta_T_U "Upper temperature difference";
   Units.Temperature Delta_T_L "Lower temperature difference";
 
 protected
-  ClaRa.Basics.Units.Temperature T_prop_am "Arithmetic mean for calculation of substance properties";
+  ClaRa.Basics.Units.Temperature T_prop_am
+    "Arithmetic mean for calculation of substance properties";
   outer ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlockWithTubes geo;
-  ClaRa.Basics.Units.MassFraction xi_mean[iCom.mediumModel.nc - 1] "Mean medium composition";
+  ClaRa.Basics.Units.MassFraction xi_mean[iCom.mediumModel.nc - 1]
+    "Mean medium composition";
 
   TILMedia.Gas_pT properties(
     p=(iCom.p_in + iCom.p_out)/2,
@@ -74,16 +80,17 @@ equation
     Delta_T_mean = heat.T - (iCom.T_in + iCom.T_out)/2;
   elseif temperatureDifference == "Inlet" then
     Delta_T_mean = heat.T - iCom.T_in;
-  else
+  elseif temperatureDifference == "Outlet" then
     Delta_T_mean = heat.T - iCom.T_out;
+  else
+    Delta_T_mean = -1;
+    assert(true, "Unknown temperature difference option in HT model");
   end if;
 
   zeros(iCom.mediumModel.nc - 1) = -xi_mean*(iCom.m_flow_in - iCom.m_flow_out) + (iCom.m_flow_in*iCom.xi_in - iCom.m_flow_out*iCom.xi_out);
 
   w = (iCom.V_flow_in - iCom.V_flow_out)/(2*(geo.A_cross + geo.A_front)/2);
   //mean velocity
-  nu = properties.transp.eta/properties.d;
-  //Re = w * geo.L/nu;
   Re = properties.d*w*length_char/(properties.transp.eta);
 
   Nu_lam = 0.664*sqrt(Re)*(properties.transp.Pr)^(1/3);

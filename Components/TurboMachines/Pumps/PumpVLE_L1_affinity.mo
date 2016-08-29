@@ -2,7 +2,7 @@ within ClaRa.Components.TurboMachines.Pumps;
 model PumpVLE_L1_affinity "A pump for VLE mitures based on affinity laws"
   import ClaRa;
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -16,47 +16,57 @@ model PumpVLE_L1_affinity "A pump for VLE mitures based on affinity laws"
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
 
-  import SI = ClaRa.Basics.Units;
   import pow = FluidDissipation.Utilities.Functions.General.SmoothPower;
   import SM = ClaRa.Basics.Functions.Stepsmoother;
   import Modelica.Constants.pi;
   import TILMedia.VLEFluidObjectFunctions.specificEnthalpy_psxi;
   extends ClaRa.Components.TurboMachines.Pumps.Pump_Base(V_flow(start=V_flow_max*V_flow_opt_));
   extends ClaRa.Basics.Icons.ComplexityLevel(complexity="L1");
-  //extends Modelica.Icons.UnderConstruction;
-  parameter Boolean useMechanicalPort=false "|Fundamental Definitions|True, if a mechenical flange should be used";
-  parameter Boolean steadyStateTorque=false "|Fundamental Definitions|True, if steady state mechanical momentum shall be used";
-  parameter SI.RPM rpm_fixed = 60 "Constant rotational speed of pump"
-                                        annotation (Dialog( group = "Fundamental Definitions", enable = not useMechanicalPort));
 
-  parameter SI.RPM rpm_nom "|Characteristic field|Nomial rotational speed"
-                                                                          annotation(Dialog(groupImage="modelica://ClaRa/figures/ParameterDialog/PumpCharField1.png"));
-  parameter SI.VolumeFlowRate V_flow_max "|Characteristic field|Maximum volume flow rate at nominal speed";
-  parameter SI.Pressure Delta_p_max "|Characteristic field|Maximum pressure difference at nominal speed";
-  parameter Real exp_hyd= 0.5 "|Characteristic field|Exponent for affinity law";
-  parameter Real drp_exp= 0 "|Characteristic field|droop of exp_hyd w.r.t. rpm";
-  parameter Real eta_hyd_nom=0.8 "|Expert Settings|Hydraulic losses - refer to documentation for details|Max. hydraulic efficiency at nominal speed";
-  parameter Real exp_rpm=2 "|Expert Settings|Hydraulic losses - refer to documentation for details|Loss exponent w.r.t. rpm";
-  parameter Real V_flow_opt_(min=0.0, max=1) = 0.6 "|Expert Settings|Hydraulic losses - refer to documentation for details|Relative position of nest point at V_flow axis in p.u.";
-  parameter Real exp_flow=2 "|Expert Settings|Hydraulic losses - refer to documentation for details|Loss exponent w.r.t. volume flow";
-  parameter SI.RPM rpm_stirrS = rpm_nom/4 "|Expert Settings|Hydraulic losses - refer to documentation for details|RPM at which rotor starts to act like a stirrer";
-  parameter SI.RPM rpm_stirrE= rpm_nom/5 "|Expert Settings|Hydraulic losses - refer to documentation for details|RPM at which rotor acta like a stirrer";
-  parameter SI.Area clearSection= 1 "|Expert Settings|Non-Design operation - refer to documentation for details|Effective clear section of pump";
+  parameter Boolean useMechanicalPort=false
+    "True, if a mechenical flange should be used"                                         annotation(Dialog(group="Fundamental Definitions"));
+  parameter Boolean steadyStateTorque=false
+    "True, if steady state mechanical momentum shall be used"                                         annotation(Dialog(group="Fundamental Definitions"));
+  parameter SI.RPM rpm_fixed = 60 "Constant rotational speed of pump"  annotation (Dialog( group = "Fundamental Definitions", enable = not useMechanicalPort));
+  parameter Modelica.SIunits.Inertia J "Moment of Inertia" annotation(Dialog(group="Fundamental Definitions", enable= not steadyStateTorque));
 
-  parameter SI.VolumeFlowRate V_flow_leak = 0.00002 "|Expert Settings|Non-Design operation - refer to documentation for details|Leakage mass flow";
-  parameter SI.Pressure Delta_p_eps= 100 "|Expert Settings|Numerical Robustness|Small pressure difference for linearisation around zero mass flow";
-  parameter Boolean stabiliseDelta_p=false "|Expert Settings|Numerical Robustness|Avoid chattering due to small pressure differences between inlet and outlet at small mass flows";
-  parameter SI.Time Tau_stab=1 "Stabiliser state time constant - refer to documentation for details."
-                                                                                            annotation(Dialog(tab="Expert Settings",group="Numerical Robustness",enable=stabiliseDelta_p));
+  parameter SI.RPM rpm_nom "Nomial rotational speed"
+                                                    annotation(Dialog(group = "Characteristic Field",groupImage="modelica://ClaRa/figures/ParameterDialog/PumpCharField1.png"));
+  parameter SI.VolumeFlowRate V_flow_max
+    "Maximum volume flow rate at nominal speed"                                      annotation(Dialog(group = "Characteristic Field"));
+  parameter SI.Pressure Delta_p_max
+    "Maximum pressure difference at nominal speed"                                 annotation(Dialog(group = "Characteristic Field"));
+  parameter Real exp_hyd= 0.5 "Exponent for affinity law"
+                                                         annotation(Dialog(group = "Characteristic Field"));
+  parameter Real drp_exp= 0 "droop of exp_hyd w.r.t. rpm" annotation(Dialog(group = "Characteristic Field"));
+  parameter Real eta_hyd_nom=0.8 "Max. hydraulic efficiency at nominal speed" annotation(Dialog(group = "Characteristic Field"));
+  parameter Real exp_rpm=2 "Loss exponent w.r.t. rpm" annotation(Dialog(tab = "Expert Settings", group="Hydraulic Losses - refer to documentation for details"));
+  parameter Real V_flow_opt_(min=0.0, max=1) = 0.6
+    "Relative position of nest point at V_flow axis in p.u."                                                annotation(Dialog(tab = "Expert Settings", group="Hydraulic Losses - refer to documentation for details"));
+  parameter Real exp_flow=2 "Loss exponent w.r.t. volume flow" annotation(Dialog(tab = "Expert Settings", group="Hydraulic Losses - refer to documentation for details"));
+  parameter SI.RPM rpm_stirrS = rpm_nom/4
+    "RPM at which rotor starts to act like a stirrer"                                       annotation(Dialog(tab = "Expert Settings", group="Hydraulic Losses - refer to documentation for details"));
+  parameter SI.RPM rpm_stirrE= rpm_nom/5
+    "RPM at which rotor acts like a stirrer"                                      annotation(Dialog(tab = "Expert Settings", group="Hydraulic Losses - refer to documentation for details"));
 
-  parameter Modelica.SIunits.Inertia J "Moment of Inertia" annotation(Dialog(group="Time Response Definitions", enable= not steadyStateTorque));
+  parameter SI.Area clearSection= 1 "Effective clear section of pump"
+                                                                     annotation(Dialog(tab = "Expert Settings", group="Non-Design Operation - refer to documentation for details"));
+  parameter SI.VolumeFlowRate V_flow_leak = 0.00002 "Leakage mass flow" annotation(Dialog(tab = "Expert Settings", group="Non-Design Operation - refer to documentation for details"));
 
-record Outline
+  parameter SI.Pressure Delta_p_eps= 100
+    "Small pressure difference for linearisation around zero mass flow"                                 annotation(Dialog(tab = "Expert Settings", group="Numerical Robustness"));
+  parameter Boolean stabiliseDelta_p=false
+    "Avoid chattering due to small pressure differences between inlet and outlet at small mass flows"
+                                                                                                        annotation(Dialog(tab = "Expert Settings", group="Numerical Robustness"));
+  parameter SI.Time Tau_stab=1
+    "Stabiliser state time constant - refer to documentation for details."                  annotation(Dialog(tab="Expert Settings",group="Numerical Robustness",enable=stabiliseDelta_p));
+
+model Outline
   extends ClaRa.Components.TurboMachines.Pumps.Fundamentals.Outline;
   input ClaRa.Basics.Units.RPM rpm "Pump revolutions per minute";
 end Outline;
 
-record Summary
+model Summary
   extends ClaRa.Basics.Icons.RecordIcon;
   Outline outline;
   ClaRa.Basics.Records.FlangeVLE           inlet;
@@ -70,7 +80,8 @@ protected
       medium.mixingRatio_propertyCalculation[1:end - 1]/sum(medium.mixingRatio_propertyCalculation),
       medium.nc_propertyCalculation,
       medium.nc,
-      TILMedia.Internals.redirectModelicaFormatMessage()) "Pointer to external medium memory for isentropic expansion state";
+      TILMedia.Internals.redirectModelicaFormatMessage())
+    "Pointer to external medium memory for isentropic expansion state";
 public
   SI.VolumeFlowRate V_flow_maxrpm "Volume flow due to affinity law";
   SI.Pressure Delta_p_maxrpm "Maximum pressure difference at constant speed";
@@ -128,7 +139,8 @@ equation
 //____________________ Mechanics ___________________________
   if useMechanicalPort then
     der(getInputsRotary.rotatoryFlange.phi) = (2*pi*rpm/60);
-    J*a*rpm = - tau_fluid*2*pi*rpm/60 + getInputsRotary.rotatoryFlange.tau*2*pi*rpm/60 "Mechanical momentum balance";
+    J*a*rpm = - tau_fluid*2*pi*rpm/60 + getInputsRotary.rotatoryFlange.tau*2*pi*rpm/60
+      "Mechanical momentum balance";
   else
     rpm = rpm_fixed;
     getInputsRotary.rotatoryFlange.phi = 0.0;
@@ -200,7 +212,8 @@ equation
 
   inlet.m_flow + outlet.m_flow = 0.0 "Mass balance";
   Delta_p= outlet.p - inlet.p "Momentum balance";
-  outlet.h_outflow = SM(2*Delta_p_eps,Delta_p_eps, Delta_p_ps)* SM(Delta_p_maxrpm-Delta_p_eps, Delta_p_maxrpm, Delta_p_ps)*(h_iso - inStream(inlet.h_outflow))/eta_hyd +  inStream(inlet.h_outflow) "Application of eta_hyd's definition";
+  outlet.h_outflow = SM(2*Delta_p_eps,Delta_p_eps, Delta_p_ps)* SM(Delta_p_maxrpm-Delta_p_eps, Delta_p_maxrpm, Delta_p_ps)*(h_iso - inStream(inlet.h_outflow))/eta_hyd +  inStream(inlet.h_outflow)
+    "Application of eta_hyd's definition";
   //outlet.h_outflow = inStream(inlet.h_outflow) + max(0,P_hyd)/max(1e-5,inlet.m_flow);
 //___________________ Boundary definition __________________
   inlet.h_outflow = SM(0,Delta_p_eps, Delta_p_ps)* SM(Delta_p_maxrpm-Delta_p_eps, Delta_p_maxrpm, Delta_p_ps)*(h_iso - inStream(outlet.h_outflow))/eta_hyd +  inStream(outlet.h_outflow);

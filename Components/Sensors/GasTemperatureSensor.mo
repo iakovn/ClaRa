@@ -1,7 +1,7 @@
 within ClaRa.Components.Sensors;
 model GasTemperatureSensor "Ideal two port temperature sensor"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -17,27 +17,35 @@ model GasTemperatureSensor "Ideal two port temperature sensor"
 
 extends ClaRa.Components.Sensors.GasSensorBase;
   outer ClaRa.SimCenter simCenter;
-  Modelica.Blocks.Interfaces.RealOutput temperature(
-    final quantity="temperature",
-    final unit="K",
-    displayUnit="°C") "temperature in port"
+    parameter Integer unitOption = 1 "Unit of output" annotation(choicesAllMatching, Dialog( group="Fundamental Definitions"), choices(choice=1 "Kelvin", choice=2 "Degree Celsius",
+                                                                                                    choice=3 "Degree Fahrenheit"));
+  Modelica.Blocks.Interfaces.RealOutput temperature "temperature in port"
     annotation (Placement(transformation(extent={{100,-10},{120,10}},
                                                                     rotation=
             0), iconTransformation(extent={{100,-10},{120,10}})));
 
+protected
+  ClaRa.Basics.Units.Temperature T;
+
 equation
-  if outlet.m_flow < 0.0 then
-    temperature = outlet.T_outflow;
+  if unitOption == 1 then //Kelvin
+    temperature = T;
+  elseif unitOption == 2 then // Degree Celsius
+    temperature = Modelica.SIunits.Conversions.to_degC(T);
+  elseif unitOption == 3 then // Degree Fahrenheit
+    temperature = Modelica.SIunits.Conversions.to_degF(T);
   else
-    temperature = inlet.T_outflow;
+    temperature=-1;  //dummy
+    assert(false, "Unknown unit option in " + getInstanceName());
+  end if;
+
+  if outlet.m_flow < 0.0 then
+    T = outlet.T_outflow;
+  else
+    T = inlet.T_outflow;
   end if;
   annotation (Diagram(graphics), Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}),
                                       graphics={
-        Polygon(
-          points={{-20,40},{-20,40},{-62,40},{-86,0},{-62,-40},{-20,-40},{20,-40},{62,-40},{86,0},{62,40},{20,40},{-20,40}},
-          lineColor={27,36,42},
-          smooth=Smooth.Bezier,
-          lineThickness=0.5),
         Text(
           extent={{-100,40},{100,0}},
           lineColor={27,36,42},
@@ -51,15 +59,6 @@ equation
           fillPattern=FillPattern.Solid,
           textString="%name"),
         Line(
-          points={{0,-40},{0,-100}},
-          color={27,36,42},
-          thickness=0.5,
-          smooth=Smooth.None),
-        Line(
-          points={{80,0},{100,0}},
-          color={27,36,42},
-          smooth=Smooth.None),
-        Line(
           points={{-96,-100},{100,-100}},
           color={118,106,98},
           thickness=0.5,
@@ -69,5 +68,5 @@ equation
           fillColor={215,215,215},
           fillPattern=FillPattern.Solid,
           lineColor=DynamicSelect({230, 230, 230},  if temperature > 0 then {0,131,169} else {167,25,48}),
-          textString=DynamicSelect(" T ", realString(temperature-273.15, 1,1)+" °C"))}));
+          textString=DynamicSelect(" T ", String(temperature-273.15, significantDigits=integer(1))+" °C"))}));
 end GasTemperatureSensor;

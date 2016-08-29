@@ -1,7 +1,7 @@
 within ClaRa.Examples;
 model ClosedLoopBoilerExample
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -14,7 +14,59 @@ model ClosedLoopBoilerExample
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
-  extends ClaRa.Basics.Icons.PackageIcons.ExecutableExample100;
+  extends ClaRa.Basics.Icons.PackageIcons.ExecutableRegressiong100;
+
+  model Regression
+  extends ClaRa.Basics.Icons.RegressionSummary;
+
+  Modelica.Blocks.Interfaces.RealInput m_flow_flueGas_eco_out "Mass flow of flue gas eco outlet";
+  Modelica.Blocks.Interfaces.RealInput m_flow_coal_in_burner2 "Inlet coal mass flow burner 2";
+  Modelica.Blocks.Interfaces.RealInput T_eco_out "Outlet temperature eco";
+  Modelica.Blocks.Interfaces.RealInput Q_flow_oh2 "Heat flux at superheater wall";
+  Modelica.Blocks.Interfaces.RealInput T_flueGas_in "Inlet temperature of flue gas";
+  Modelica.Blocks.Interfaces.RealInput h_oh_out "Overhater outlet temperature";
+
+  Modelica.Blocks.Interfaces.RealInput V_flow_pump "Volume flow of feedwater";
+  Modelica.Blocks.Interfaces.RealInput p_turbine_in "Inlet pressure turbine";
+  Modelica.Blocks.Interfaces.RealInput T_turbine_in "Inlet temperature turbine";
+  Modelica.Blocks.Interfaces.RealInput level_condenser "level of condenser";
+  Modelica.Blocks.Interfaces.RealInput m_flow_eco_out "Water mass flow out of eco";
+
+  Real y_m_flow_flueGas_eco_out_min = timeExtrema_m_flow_flueGas_eco_out.y_min;
+  Real y_m_flow_flueGas_eco_out_max = timeExtrema_m_flow_flueGas_eco_out.y_max;
+  Real y_m_flow_coal_in_burner2_int = integrator_m_flow_coal_in_burner2.y;
+  Real y_T_eco_out_min = timeExtrema_T_eco_out.y_min;
+  Real y_T_eco_out_max = timeExtrema_T_eco_out.y_max;
+  Real y_Q_flow_oh2_int = integrator_Q_flow_oh2_wall.y;
+  Real y_T_flueGas_in_max = timeExtrema_T_flueGas_in.y_max;
+  Real y_T_flueGas_in_min = timeExtrema_T_flueGas_in.y_min;
+  Real y_h_oh_out_min = timeExtrema_h_oh_out.y_min;
+  Real y_h_oh_out_max = timeExtrema_h_oh_out.y_max;
+
+  Real y_V_flow_pump_min = timeExtrema_V_flow_pump.y_min;
+  Real y_V_flow_pump_max = timeExtrema_V_flow_pump.y_max;
+  Real y_p_turbine_in_min = timeExtrema_p_turbine_in.y_min;
+  Real y_p_turbine_in_max = timeExtrema_p_turbine_in.y_max;
+  Real y_T_turbine_in_int = integrator_T_turbine_in.y;
+  Real y_level_condenser_max = timeExtrema_level_condenser.y_max;
+  Real y_level_condenser_min = timeExtrema_level_condenser.y_min;
+  Real y_m_flow_eco_out_min = timeExtrema_m_flow_eco.y_min;
+  Real y_m_flow_eco_out_max = timeExtrema_m_flow_eco.y_max;
+
+  protected
+  Components.Utilities.Blocks.TimeExtrema timeExtrema_m_flow_flueGas_eco_out(startTime=5000, u=m_flow_flueGas_eco_out) annotation (Placement(transformation(extent={{-80,30},{-60,50}})));
+  Components.Utilities.Blocks.TimeExtrema timeExtrema_T_eco_out(startTime=5000, u=T_eco_out) annotation (Placement(transformation(extent={{-80,0},{-60,20}})));
+  Components.Utilities.Blocks.Integrator integrator_m_flow_coal_in_burner2(u=m_flow_coal_in_burner2) annotation (Placement(transformation(extent={{-80,60},{-60,80}})));
+  Components.Utilities.Blocks.Integrator integrator_Q_flow_oh2_wall(u=Q_flow_oh2) annotation (Placement(transformation(extent={{-80,-34},{-60,-14}})));
+  Components.Utilities.Blocks.TimeExtrema timeExtrema_T_flueGas_in(u = T_flueGas_in, startTime=5000) annotation (Placement(transformation(extent={{-80,-64},{-60,-44}})));
+  Components.Utilities.Blocks.TimeExtrema timeExtrema_h_oh_out(startTime=5000, u=h_oh_out) annotation (Placement(transformation(extent={{-80,-94},{-60,-74}})));
+
+  Components.Utilities.Blocks.TimeExtrema timeExtrema_V_flow_pump(u = V_flow_pump, startTime=5000) annotation (Placement(transformation(extent={{-20,40},{0,60}})));
+  Components.Utilities.Blocks.TimeExtrema timeExtrema_p_turbine_in(u = p_turbine_in, startTime=5000) annotation (Placement(transformation(extent={{14,18},{34,38}})));
+  Components.Utilities.Blocks.Integrator integrator_T_turbine_in(u = T_turbine_in) annotation (Placement(transformation(extent={{-20,-10},{0,10}})));
+  Components.Utilities.Blocks.TimeExtrema timeExtrema_level_condenser(u = level_condenser, startTime=5000) annotation (Placement(transformation(extent={{-20,-40},{0,-20}})));
+  Components.Utilities.Blocks.TimeExtrema timeExtrema_m_flow_eco(u = m_flow_eco_out) annotation (Placement(transformation(extent={{-20,-76},{0,-56}})));
+  end Regression;
 
   inner SimCenter simCenter(
     redeclare ClaRa.Basics.Media.Fuel.Coal_Reference fuelModel1,
@@ -765,6 +817,30 @@ model ClosedLoopBoilerExample
   Visualisation.StatePoint_phTs statePoint_phTs2(stateViewerIndex=3) annotation (Placement(transformation(extent={{266,226},{306,270}})));
   Visualisation.StatePoint_phTs statePoint_phTs3(stateViewerIndex=4) annotation (Placement(transformation(extent={{398,224},{438,268}})));
   Visualisation.StatePoint_phTs statePoint_phTs4(stateViewerIndex=5) annotation (Placement(transformation(extent={{460,72},{500,116}})));
+  Visualisation.QuadrupleGas quadrupleGas1(
+    value1=1,
+    value2=2,
+    value3=11,
+    value4=4) annotation (Placement(transformation(extent={{16,210},{-38,234}})));
+  Visualisation.QuadrupleGas quadrupleGas2(
+    value1=1,
+    value2=2,
+    value3=3,
+    value4=6) annotation (Placement(transformation(extent={{14,118},{-40,142}})));
+  Regression regression(
+    m_flow_flueGas_eco_out = flameRoom_eco.outlet.flueGas.m_flow,
+    m_flow_coal_in_burner2 = burner2.fuelFlueGas_inlet.fuel.m_flow,
+    T_eco_out = flameRoom_eco.outlet.flueGas.T_outflow,
+    Q_flow_oh2 = oh_2_wall.innerPhase[1].Q_flow,
+    T_flueGas_in = inStream(burner2.fuelFlueGas_inlet.flueGas.T_outflow),
+    h_oh_out = oh_1.outlet.h_outflow,
+    V_flow_pump = pump.summary.outline.V_flow,
+    p_turbine_in = turbine.summary.inlet.p,
+    T_turbine_in = turbine.summary.inlet.T,
+    level_condenser = condenser.summary.outline.absLevel,
+    m_flow_eco_out = eco.outlet.m_flow) annotation (Placement(transformation(extent={{442,360},
+            {462,380}})));
+
 equation
   connect(burner1.heat_bottom, hopper.heat_top) annotation (Line(
       points={{60,-6},{60,-20}},
@@ -927,7 +1003,7 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(PID_lambda.u_m,actual_lambda. y) annotation (Line(
-      points={{-304,188},{-304,206},{-345,206}},
+      points={{-303.9,188},{-303.9,206},{-345,206}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(flameRoom_eco.heat_CarrierTubes, ct_wall.outerPhase[1]) annotation (
@@ -1131,7 +1207,7 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(regenerativeAirPreheater.flueGasInlet, coalSlagFlueGas_split_top.flueGas_outlet) annotation (Line(
-      points={{-206,158},{-18,158},{-18,342},{64,342},{64,282},{48,282},{48,256}},
+      points={{-206,158},{-48,158},{-48,342},{64,342},{64,282},{48,282},{48,256}},
       color={118,106,98},
       thickness=0.5,
       smooth=Smooth.None));
@@ -1142,11 +1218,11 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(PID_lambda.y, fluelGasFlowSource4.m_flow) annotation (Line(
-      points={{-293.1,176},{-264,176}},
+      points={{-293,176},{-264,176}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(vlePressureSensor.p,PI_CondPressure. u_m) annotation (Line(
-      points={{551,92},{590,92},{590,112}},
+      points={{551,92},{590.1,92},{590.1,112}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(const500degC2.y,PI_CondPressure. u_s) annotation (Line(
@@ -1186,7 +1262,7 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(prescribedHeatFlow.Q_flow, PI_CondPressure.y) annotation (Line(
-      points={{566,42},{616,42},{616,124},{600.9,124}},
+      points={{566,42},{616,42},{616,124},{601,124}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(oh_2.outlet, oh_T.port) annotation (Line(
@@ -1196,7 +1272,7 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(PI_Pump_FW.u_m, oh_T.T) annotation (Line(
-      points={{446,34},{446,191},{425,191}},
+      points={{445.9,34},{445.9,191},{425,191}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(classifierSpeed1.y, mill1.classifierSpeed) annotation (Line(
@@ -1213,7 +1289,7 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(PI_Pump_FW.y, firstOrder.u) annotation (Line(
-      points={{435.1,22},{424,22}},
+      points={{435,22},{424,22}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(firstOrder.y, pump.P_drive) annotation (Line(
@@ -1262,10 +1338,12 @@ equation
       points={{460,72},{516,72},{516,74},{516,110}},
       color={0,131,169},
       thickness=0.5));
+  connect(quadrupleGas1.eye, flameRoom_eco.eyeOut) annotation (Line(points={{16,222},{28,222},{28,222}}, color={190,190,190}));
+  connect(quadrupleGas2.eye, flameRoom_2.eyeOut) annotation (Line(points={{14,130},{14,130},{20,130},{20,100},{28,100}}, color={190,190,190}));
   annotation (Diagram(coordinateSystem(extent={{-400,-160},{640,400}},
           preserveAspectRatio=false),graphics={
                                 Text(
-          extent={{-396,360},{-38,212}},
+          extent={{-396,402},{-38,254}},
           lineColor={0,128,0},
           horizontalAlignment=TextAlignment.Left,
           fontSize=11,
@@ -1285,7 +1363,11 @@ NOTES
           extent={{-378,440},{280,400}},
           lineColor={0,128,0},
           fontSize=34,
-          textString="TESTED -- 2015-01-27 //LN")}),                     Icon(
+          textString="TESTED -- 2015-01-27 //LN"),
+        Rectangle(
+          extent={{-400,400},{640,-162}},
+          lineColor={115,150,0},
+          lineThickness=0.5)}),                                          Icon(
         coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=true)),
     experiment(StopTime=10000, NumberOfIntervals=1001),
     __Dymola_experimentSetupOutput);

@@ -1,7 +1,8 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution;
-model IdeallySeparated "Separation | Ideal | outlet states depending on filling Level | All geometries"
+model IdeallySeparated
+  "Separation | Ideal | outlet states depending on filling Level | All geometries"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.0                        //
+  // Component of the ClaRa library, version: 1.1.1                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,7 +16,8 @@ model IdeallySeparated "Separation | Ideal | outlet states depending on filling 
   // XRG Simulation GmbH (Hamburg, Germany).                                   //
   //___________________________________________________________________________//
 
-  extends ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.IdealPhases;
+  extends
+    ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.IdealPhases;
   extends ClaRa.Basics.Icons.IdealSeparation;
 
   import ClaRa.Basics.Functions.Stepsmoother;
@@ -27,15 +29,20 @@ model IdeallySeparated "Separation | Ideal | outlet states depending on filling 
   outer parameter Boolean useHomotopy;
 
   parameter SI.Length radius_flange=0.05 "Flange radius";
-  parameter Modelica.Blocks.Types.Smoothness smoothness=Modelica.Blocks.Types.Smoothness.LinearSegments "|Expert Settings|Shape interpretation|Smoothness of table interpolation";
+  parameter Modelica.Blocks.Types.Smoothness smoothness=Modelica.Blocks.Types.Smoothness.LinearSegments
+    "|Expert Settings|Shape interpretation|Smoothness of table interpolation";
 
   constant SI.Length level_abs_min=1e-6;
-  final parameter SI.Length z_max_in=min(geo.z_in[1] + radius_flange, geo.height_fill) "Upper edge of inlet flange";
-  final parameter SI.Length z_min_in=max(1e-3, geo.z_in[1] - radius_flange) "Lower edge of inlet flange";
-  final parameter SI.Length z_max_out=min(geo.z_out[1] + radius_flange, geo.height_fill) "Upper edge of outlet flange";
-  final parameter SI.Length z_min_out=max(1e-3, geo.z_out[1] - radius_flange) "Lower edge of outlet flange";
+  final parameter SI.Length z_max_in=min(geo.z_in[1] + radius_flange, geo.height_fill)
+    "Upper edge of inlet flange";
+  final parameter SI.Length z_min_in=max(1e-3, geo.z_in[1] - radius_flange)
+    "Lower edge of inlet flange";
+  final parameter SI.Length z_max_out=min(geo.z_out[1] + radius_flange, geo.height_fill)
+    "Upper edge of outlet flange";
+  final parameter SI.Length z_min_out=max(1e-3, geo.z_out[1] - radius_flange)
+    "Lower edge of outlet flange";
 
-  Modelica.Blocks.Tables.CombiTable1D table(table=geo.shape, columns={2}, smoothness=smoothness);
+  ClaRa.Components.Utilities.Blocks.ParameterizableTable1D table(table=geo.shape, columns={2}, smoothness=smoothness);
 
   SI.Volume volume_liq "Liquid volume";
   SI.Area A_hor_act "Actual horizontal surface size";

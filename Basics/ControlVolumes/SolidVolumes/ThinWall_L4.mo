@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.SolidVolumes;
 model ThinWall_L4 "A thin cylindric wall with axial discretisation"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.0                        //
+  // Component of the ClaRa library, version: 1.1.1                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -17,8 +17,10 @@ model ThinWall_L4 "A thin cylindric wall with axial discretisation"
 
   extends ClaRa.Basics.Icons.WallThinLarge;
   extends ClaRa.Basics.Icons.ComplexityLevel(complexity="L4");
-  replaceable model Material = TILMedia.SolidTypes.TILMedia_Aluminum constrainedby TILMedia.SolidTypes.BaseSolid "Material of the cylinder" annotation (choicesAllMatching, Dialog(group="Fundamental Definitions"));
-  input Real CF_lambda=1 "Time-dependent correction factor for thermal conductivity" annotation (Dialog(group="Fundamental Definitions"));
+  replaceable model Material = TILMedia.SolidTypes.TILMedia_Aluminum constrainedby
+    TILMedia.SolidTypes.BaseSolid "Material of the cylinder"                                                                                annotation (choicesAllMatching, Dialog(group="Fundamental Definitions"));
+  input Real CF_lambda=1
+    "Time-dependent correction factor for thermal conductivity"                      annotation (Dialog(group="Fundamental Definitions"));
 
   import SI = ClaRa.Basics.Units;
 public
@@ -31,55 +33,65 @@ public
   parameter Units.Length diameter_i "Inner diameter" annotation (Dialog(group="Geometry"));
   parameter Units.Length length "Length of cylinder" annotation (Dialog(group="Geometry"));
   parameter Integer N_tubes=1 "Number of tubes in parallel" annotation (Dialog(group="Geometry"));
-  parameter Units.Temperature T_start[N_ax]=ones(N_ax)*293.15 "Start values of wall temperature" annotation (Dialog(group="Initialisation"));
-  parameter ClaRa.Basics.Choices.Init initChoice=ClaRa.Basics.Choices.Init.noInit "Initialisation option" annotation (Dialog(group="Initialisation"));
+  parameter Units.Temperature T_start[N_ax]=ones(N_ax)*293.15
+    "Start values of wall temperature"                                                           annotation (Dialog(group="Initialisation"));
+  parameter ClaRa.Basics.Choices.Init initChoice=ClaRa.Basics.Choices.Init.noInit
+    "Initialisation option"                                                                               annotation (Dialog(group="Initialisation"));
   parameter Integer stateLocation=2 "Location of states" annotation (Dialog(group="Numerical Efficiency"), choices(
       choice=1 "Inner location of states",
       choice=2 "Central location of states",
       choice=3 "Outer location of states"));
-  parameter String suppressChattering="True" "Enable to suppress possible chattering" annotation (Dialog(group="Numerical Efficiency"), choices(choice="False" "False (faster if no chattering occurs)",
-                                                                                            choice="True" "True (faster if chattering occurs)"));
-  final parameter Units.Mass mass_nominal=sum(solid.d .* (Modelica.Constants.pi/4*(diameter_o^2 - diameter_i^2)*Delta_x*N_tubes));
+  parameter String suppressChattering="True"
+    "Enable to suppress possible chattering"                                          annotation (Dialog(group="Numerical Efficiency"), choices(choice="False"
+        "False (faster if no chattering occurs)",                                           choice="True"
+        "True (faster if chattering occurs)"));
+  final parameter Units.Mass mass_nominal=sum(solid.d .* (Modelica.Constants.pi/4*(diameter_o^2 - diameter_i^2)*Delta_x*N_tubes))
+    "Mass of wall (deprecated)";
+  final parameter Units.Mass mass=sum(solid.d .* (Modelica.Constants.pi/4*(diameter_o^2 - diameter_i^2)*Delta_x*N_tubes))
+    "Mass of wall";
 protected
   final parameter Units.HeatFlowRate Q_flow_nom=1;
   constant Real Q_flow_eps=1e-9;
 
 public
-  Units.Temperature T[N_ax](start=T_start, each nominal=500);
-  Units.Mass mass;
+  Units.Temperature T[N_ax](start=T_start, each nominal=500)
+    "Axial temperatures";
+
 protected
   Units.HeatFlowRate Delta_Q_flow[N_ax](each nominal=1e5);
   Units.InternalEnergy U[N_ax](each nominal=4e6);
 
 public
-  ClaRa.Basics.Interfaces.HeatPort_a outerPhase[N_ax](T(start=T_start)) "outer side of the cylinder" annotation (Placement(transformation(extent={{-10,40},{10,60}}), iconTransformation(extent={{-10,40},{10,60}})));
-  TILMedia.Solid solid[N_ax](T(start=T_start) = T, redeclare each replaceable model SolidType = Material) annotation (Placement(transformation(extent={{48,8},{68,28}})));
-  ClaRa.Basics.Interfaces.HeatPort_b innerPhase[N_ax](T(start=T_start)) "Inner sider of the cylinder" annotation (Placement(transformation(extent={{-10,-60},{10,-40}}), iconTransformation(extent={{-10,-60},{10,-40}})));
+  ClaRa.Basics.Interfaces.HeatPort_a outerPhase[N_ax](T(start=T_start))
+    "outer side of the cylinder"                                                                     annotation (Placement(transformation(extent={{-10,40},{10,60}}), iconTransformation(extent={{-10,40},{10,60}})));
+  TILMedia.Solid solid[N_ax](T(start=T_start) = T, redeclare each replaceable
+      model SolidType =                                                                         Material) annotation (Placement(transformation(extent={{48,8},{68,28}})));
+  ClaRa.Basics.Interfaces.HeatPort_b innerPhase[N_ax](T(start=T_start))
+    "Inner sider of the cylinder"                                                                     annotation (Placement(transformation(extent={{-10,-60},{10,-40}}), iconTransformation(extent={{-10,-60},{10,-40}})));
 
-  record Summary
-  extends ClaRa.Basics.Icons.RecordIcon;
-  input ClaRa.Basics.Units.Length diameter_o "Outer diameter";
-  input ClaRa.Basics.Units.Length diameter_i "Inner diameter";
-  input Units.Length length "Length of cylinder";
-  input Integer N_tubes "Number of tubes in parallel";
-  input ClaRa.Basics.Units.Mass mass "Wall mass";
-  parameter Integer N_ax "Number of axial elements";
-  input ClaRa.Basics.Units.InternalEnergy U[N_ax] "Inner energy of wall";
-  input Units.Temperature T_i[N_ax] "Inner phase temperature";
-  input Units.Temperature T_o[N_ax] "Outer phase temperature";
-  input ClaRa.Basics.Units.Temperature T[N_ax] "Wall temperature";
-  input Real lambda[N_ax] "Heat conductivity";
-  input Units.HeatFlowRate Q_flow_i[N_ax] "Heat flow rate to inner phase";
-  input Units.HeatFlowRate Q_flow_o[N_ax] "Heat flow rate to outer phase";
-  input Units.HeatCapacityMassSpecific cp[N_ax] "Specific heat capacity";
-  input Units.DensityMassSpecific d[N_ax] "Material density";
+  model Summary
+    extends ClaRa.Basics.Icons.RecordIcon;
+    input ClaRa.Basics.Units.Length diameter_o "Outer diameter";
+    input ClaRa.Basics.Units.Length diameter_i "Inner diameter";
+    input Units.Length length "Length of cylinder";
+    input Integer N_tubes "Number of tubes in parallel";
+    input ClaRa.Basics.Units.Mass mass "Wall mass";
+    parameter Integer N_ax "Number of axial elements";
+    input ClaRa.Basics.Units.InternalEnergy U[N_ax] "Inner energy of wall";
+    input Units.Temperature T_i[N_ax] "Inner phase temperature";
+    input Units.Temperature T_o[N_ax] "Outer phase temperature";
+    input ClaRa.Basics.Units.Temperature T[N_ax] "Wall temperature";
+    input Real lambda[N_ax] "Heat conductivity";
+    input Units.HeatFlowRate Q_flow_i[N_ax] "Heat flow rate to inner phase";
+    input Units.HeatFlowRate Q_flow_o[N_ax] "Heat flow rate to outer phase";
+    input Units.HeatCapacityMassSpecific cp[N_ax] "Specific heat capacity";
+    input Units.DensityMassSpecific d[N_ax] "Material density";
   end Summary;
 
 Summary summary(diameter_o=diameter_o, diameter_i=diameter_i, length=length, N_tubes=N_tubes, mass=mass, N_ax=N_ax, U=U, T_i=innerPhase.T, T_o=outerPhase.T,T=T, lambda=solid.lambda, Q_flow_i=innerPhase.Q_flow, Q_flow_o=outerPhase.Q_flow, cp=solid.cp, d=solid.d);
 
 equation
   assert(diameter_o > diameter_i, "The outer diameter has to be greater then the inner diameter!");
-  mass = sum(solid.d .* (Modelica.Constants.pi/4*(diameter_o^2 - diameter_i^2)*Delta_x*N_tubes));
   for i in 1:N_ax loop
     U[i] = T[i]*solid[i].d*(Modelica.Constants.pi/4*(diameter_o^2 - diameter_i^2)*Delta_x[i]*N_tubes)*solid[i].cp;
     if suppressChattering == "True" then

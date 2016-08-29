@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.Geometry;
 model PipeGeometry_N_cv "Discretized pipe bundle || Tube type "
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.0                        //
+  // Component of the ClaRa library, version: 1.1.1                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -16,7 +16,8 @@ model PipeGeometry_N_cv "Discretized pipe bundle || Tube type "
   //___________________________________________________________________________//
 
   extends ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.TubeType;
-  extends ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry_N_cv(
+  extends
+    ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry_N_cv(
     final volume=Modelica.Constants.pi/4*diameter^2*Delta_x*N_tubes,
     final A_heat=[N_tubes*Modelica.Constants.pi*diameter*Delta_x],
     final A_cross=ones(N_cv)*Modelica.Constants.pi*diameter^2/4*N_tubes,

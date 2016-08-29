@@ -1,7 +1,8 @@
 within ClaRa.Components.Mills.HardCoalMills.Check;
-model ValidateRollerBowlMill_3 "A test scenario derived from the paper Niemczyk: 'Derivation and validation of a coal mill model for control'"
+model ValidateRollerBowlMill_3
+  "A test scenario derived from the paper Niemczyk: 'Derivation and validation of a coal mill model for control'"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -14,7 +15,7 @@ model ValidateRollerBowlMill_3 "A test scenario derived from the paper Niemczyk:
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
-  extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
+ extends ClaRa.Basics.Icons.PackageIcons.ExecutableRegressiong100;
   import ModelicaServices.ExternalReferences.loadResource;
 //   parameter Real K_10 = 1459.98;//1507.9;
 //   parameter Real K_11 = 1.75388e7;//8.4736e6;
@@ -23,6 +24,29 @@ model ValidateRollerBowlMill_3 "A test scenario derived from the paper Niemczyk:
   Real Omega;
   Real Dev1;
   Real Dev2;
+
+model Regression
+  extends ClaRa.Basics.Icons.RegressionSummary;
+  Modelica.Blocks.Interfaces.RealInput Delta_T_meas_int "Temperature deviation sim vs meas.";
+  Modelica.Blocks.Interfaces.RealInput T_out "Outlet temperature";
+  Modelica.Blocks.Interfaces.RealInput xi_h2o_out "H2O mass fraction at air outlet";
+  Modelica.Blocks.Interfaces.RealInput m_flow_coal_out "Total coal outlet flow";
+
+  Real y_Delta_T_meas_int = Delta_T_meas_int;
+
+  Real y_xi_h2o_out_int = integrator2.y;
+
+  Real y_T_out_int = integrator3.y;
+
+  Real y_m_flow_coal_out_max = timeExtrema4.y_max;
+  Real y_m_flow_coal_out_min = timeExtrema4.y_min;
+
+  protected
+  Components.Utilities.Blocks.Integrator integrator2(u = xi_h2o_out);
+  Components.Utilities.Blocks.Integrator integrator3(u = T_out);
+  Components.Utilities.Blocks.TimeExtrema timeExtrema4(u = m_flow_coal_out);
+end Regression;
+
   ClaRa.Components.Mills.HardCoalMills.VerticalMill_L3    Mill2(
     M_c_0=3000,
     initChoice=ClaRa.Basics.Choices.Init.steadyDensity,
@@ -127,10 +151,15 @@ model ValidateRollerBowlMill_3 "A test scenario derived from the paper Niemczyk:
         extent={{-10,-10},{10,10}},
         rotation=90,
         origin={20,-70})));
+  Regression regression(T_out = Mill2.summary.T_out,
+    m_flow_coal_out = Mill2.summary.m_flow_tot_out,
+    xi_h2o_out = Mill2.summary.xi_air_h2o_out,
+    Delta_T_meas_int = Dev1) annotation (Placement(transformation(extent={{-100,20},{-80,40}})));
 equation
   der(Dev1)=(Mill2.T_out-(T_out_meas.y[1]+273.15))^2;
   der(Dev2)=((Mill2.P_grind - E_meas.y[1])^2)*1e4;
   Omega=Dev1+Dev2;
+
   connect(omega.y[1], Mill2.classifierSpeed) annotation (Line(
       points={{-79,2},{2,2},{2,-39.2}},
       color={0,0,127},
@@ -180,7 +209,10 @@ equation
           extent={{-96,80},{76,72}},
           lineColor={0,0,255},
           textString=
-              "Note, that the Niemczyk model description does not handle coal drying while the model does!")}),
+              "Note, that the Niemczyk model description does not handle coal drying while the model does!"), Rectangle(
+          extent={{-100,100},{100,-100}},
+          lineColor={115,150,0},
+          lineThickness=0.5)}),
     experiment(StopTime=5960),
     __Dymola_experimentSetupOutput);
 end ValidateRollerBowlMill_3;

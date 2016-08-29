@@ -1,7 +1,7 @@
 within ClaRa.Components.VolumesValvesFittings.Valves;
 model ValveVLE_L1 "Valve for VLE fluid flows with replaceable flow models"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -19,38 +19,39 @@ model ValveVLE_L1 "Valve for VLE fluid flows with replaceable flow models"
   extends ClaRa.Basics.Icons.ComplexityLevel(complexity="L1");
 
   import SI = ClaRa.Basics.Units;
-  record Outline
+  model Outline
     extends ClaRa.Basics.Icons.RecordIcon;
     parameter Boolean showExpertSummary;
-    SI.VolumeFlowRate V_flow "Volume flow rate";
-    SI.PressureDifference Delta_p "Pressure difference p_out - p_in";
-    Real PR if  showExpertSummary "Pressure ration p_out/p_in";
-    Real PR_crit if   showExpertSummary "Critical pressure ratio";
-    Real opening_ "Valve opening in p.u.";
-  //     Real Psi;
-    //     Real Psi_max;
-    Boolean isSuperCritical;
-    //Real Ma "Mach Number";
+    input SI.VolumeFlowRate V_flow "Volume flow rate";
+    input SI.PressureDifference Delta_p "Pressure difference p_out - p_in";
+    input Real PR if  showExpertSummary "Pressure ration p_out/p_in";
+    input Real PR_crit if   showExpertSummary "Critical pressure ratio";
+    input Real opening_ "Valve opening in p.u.";
+    input Boolean isSuperCritical;
   end Outline;
 
-  record Summary
+  model Summary
     extends ClaRa.Basics.Icons.RecordIcon;
     Outline outline;
     ClaRa.Basics.Records.FlangeVLE           inlet;
     ClaRa.Basics.Records.FlangeVLE           outlet;
   end Summary;
-  parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium=simCenter.fluid1 "Medium in the component"
+  parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium=simCenter.fluid1
+    "Medium in the component"
     annotation (choicesAllMatching, Dialog(group="Fundamental Definitions"));
 
   replaceable model PressureLoss =
       ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticKV
-    constrainedby ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.GenericPressureLoss "Pressure loss model at the tubes side"
-                                            annotation (Dialog(group=
+    constrainedby
+    ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.GenericPressureLoss
+    "Pressure loss model at the tubes side" annotation (Dialog(group=
           "Fundamental Definitions"), choicesAllMatching);
-  inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation"
+  inner parameter Boolean useHomotopy=simCenter.useHomotopy
+    "True, if homotopy method is used during initialisation"
     annotation (Dialog(group="Fundamental Definitions"));
 
-  parameter Boolean openingInputIsActive=false "True, if  a variable opening is used"
+  parameter Boolean openingInputIsActive=false
+    "True, if  a variable opening is used"
     annotation (Dialog(group="Control Signals"));
   parameter Real opening_const_=1 "A constant opening: =1: open, =0: closed"
     annotation (Dialog(group="Control Signals", enable=not openingInputIsActive));
@@ -58,9 +59,12 @@ model ValveVLE_L1 "Valve for VLE fluid flows with replaceable flow models"
   inner parameter Boolean checkValve=false "True, if valve is check valve"
     annotation (Evaluate=true, Dialog(group="Fundamental Definitions"));
 
-  parameter Boolean showExpertSummary=simCenter.showExpertSummary "|Summary and Visualisation||True, if expert summary should be applied";
-  parameter Boolean showData=true "|Summary and Visualisation||True, if a data port containing p,T,h,s,m_flow shall be shown, else false";
-  parameter Boolean useStabilisedMassFlow=false "|Expert Settings|Numerical Robustness|";
+  parameter Boolean showExpertSummary=simCenter.showExpertSummary
+    "|Summary and Visualisation||True, if expert summary should be applied";
+  parameter Boolean showData=true
+    "|Summary and Visualisation||True, if a data port containing p,T,h,s,m_flow shall be shown, else false";
+  parameter Boolean useStabilisedMassFlow=false
+    "|Expert Settings|Numerical Robustness|";
   input SI.Time Tau= 0.1 "Time Constant of Stabilisation" annotation(Dialog(tab="Expert Settings", group = "Numerical Robustness", enable=useStabilisedMassFlow));
 
   input Real opening_leak_ = 0 "Leakage valve opening in p.u." annotation(Dialog(tab="Expert Settings", group = "Numerical Robustness"));
@@ -72,8 +76,8 @@ protected
   SI.MassFlowRate m_flow_ "stabilised mass flow rate";
 
 public
-  Modelica.Blocks.Interfaces.RealInput opening_in(value=opening_) if (openingInputIsActive) "=1: completely open, =0: completely closed"
-                                                 annotation (Placement(
+  Modelica.Blocks.Interfaces.RealInput opening_in(value=opening_) if (openingInputIsActive)
+    "=1: completely open, =0: completely closed" annotation (Placement(
         transformation(
         origin={0,80},
         extent={{-20,-20},{20,20}},
@@ -161,7 +165,8 @@ protected
         pressureLoss.Delta_p)*fluidOut.d),
         gamma_in=fluidIn.gamma,
     gamma_out=fluidOut.gamma,
-    opening_=opening_) "if (checkValve == true and opening_leak_<=0) or opening_<opening_leak_ then fluidIn.d else (if useHomotopy then homotopy(ClaRa.Basics.Functions.Stepsmoother(1e-5, -1e-5, inlet.m_flow)*fluidIn.d + ClaRa.Basics.Functions.Stepsmoother(-1e-5, 1e-5, inlet.m_flow)*fluidOut.d, fluidIn.d) else ClaRa.Basics.Functions.Stepsmoother(1e-5, -1e-5, inlet.m_flow)*fluidIn.d + ClaRa.Basics.Functions.Stepsmoother(-1e-5, 1e-5, inlet.m_flow)*fluidOut.d)"
+    opening_=opening_)
+    "if (checkValve == true and opening_leak_<=0) or opening_<opening_leak_ then fluidIn.d else (if useHomotopy then homotopy(ClaRa.Basics.Functions.Stepsmoother(1e-5, -1e-5, inlet.m_flow)*fluidIn.d + ClaRa.Basics.Functions.Stepsmoother(-1e-5, 1e-5, inlet.m_flow)*fluidOut.d, fluidIn.d) else ClaRa.Basics.Functions.Stepsmoother(1e-5, -1e-5, inlet.m_flow)*fluidIn.d + ClaRa.Basics.Functions.Stepsmoother(-1e-5, 1e-5, inlet.m_flow)*fluidOut.d)"
     annotation (Placement(transformation(extent={{-60,-52},{-40,-32}})));
 public
   Basics.Interfaces.EyeOut eye if showData

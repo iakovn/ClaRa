@@ -1,14 +1,14 @@
 within ClaRa.Components.Utilities.Blocks;
 block SlidingMean "Sliding  mean value"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                            //
+// Component of the ClaRa library, version: 1.1.1                            //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                              //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -34,17 +34,20 @@ initial equation
   integral=0;
   u_start=u;
   annotation (Icon(graphics={
+        Rectangle(
+          extent={{-100,100},{100,-100}},
+          lineColor={221,222,223},
+          fillColor={118,124,127},
+          fillPattern=FillPattern.Solid),
         Line(
           points={{-78,0},{-56,-4},{-30,0},{-4,-10},{26,4},{76,-4}},
-          color={155,25,48},
+          color={27,36,42},
           smooth=Smooth.Bezier),
         Line(
-          points={{-78,0},{-60,-20},{-42,30},{-32,-14},{-20,-14},{-4,-64},{4,24},
-              {8,-28},{24,76},{36,-16},{38,-54},{69.9688,33.9141},{72,-12}},
-          color={0,0,0},
+          points={{-78,0},{-60,-20},{-42,30},{-32,-14},{-20,-14},{-4,-64},{4,24},{8,-28},{24,76},{36,-16},{38,-54},{69.9688,33.9141},{72,-12}},
+          color={221,222,223},
           smooth=Smooth.Bezier),
         Line(
           points={{-78,80},{-78,-78},{78,-78}},
-          color={0,0,0},
-          smooth=Smooth.None)}));
+          color={221,222,223})}));
 end SlidingMean;

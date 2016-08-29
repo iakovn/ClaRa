@@ -2,7 +2,7 @@ within ClaRa.StaticCycles;
 model Boundary_blue "Blue boundary"
   // Blue output:  Value of p is unknown and provided BY neighbor component, values of m_flow and h are known in component and provided FOR neighbor component.
 
-  parameter Boolean source = true;
+  parameter Boolean source = true "True if boundary is source else sink";
   parameter ClaRa.Basics.Units.MassFlowRate  m_flow(fixed = source) annotation(Dialog(enable = source));
   parameter ClaRa.Basics.Units.EnthalpyMassSpecific h(fixed = source) annotation(Dialog(enable = source));
   parameter ClaRa.Basics.Units.Pressure p(fixed = not source) annotation(Dialog(enable = not source));

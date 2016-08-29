@@ -1,7 +1,7 @@
 within ClaRa.Components.BoundaryConditions.Check;
 model TestFlueGasComposition
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,7 +15,7 @@ model TestFlueGasComposition
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
   extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb60;
-  GasCompositionByMassFractionsWithArgon                            flueGasComposition(
+  GasCompositionByMassFractions flueGasComposition(
     xi_ASH=0.05,
     xi_CO=0.05,
     xi_CO2=0.5,
@@ -24,7 +24,8 @@ model TestFlueGasComposition
     xi_O2=0.1,
     xi_NO=0.0,
     xi_H2O=0.2,
-    xi_NH3=0)   annotation (Placement(transformation(extent={{-100,14},{-80,34}})));
+    xi_NH3=0)
+    annotation (Placement(transformation(extent={{-100,14},{-80,34}})));
   BoundaryGas_Txim_flow idealGasFlowSource_XRG(
     variable_xi=true,
     medium=simCenter.flueGasModel,

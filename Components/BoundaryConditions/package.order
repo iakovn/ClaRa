@@ -5,8 +5,8 @@ BoundaryVLE_phxi
 BoundaryVLE_pTxi
 BoundaryGas_Txim_flow
 BoundaryGas_pTxi
-BoundaryCoal_Txim_flow
-BoundaryCoal_pTxi
+BoundaryFuel_Txim_flow
+BoundaryFuel_pTxi
 BoundarySlag_Tm_flow
 BoundarySlag_pT
 PrescribedMassFlowVLE
@@ -14,4 +14,3 @@ PrescribedHeatFlow
 PrescribedHeatFlowScalar
 GasCompositionByMassFractions
 GasCompositionByVolFractions
-GasCompositionByMassFractionsWithArgon

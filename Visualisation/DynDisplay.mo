@@ -1,7 +1,7 @@
 within ClaRa.Visualisation;
 model DynDisplay "Dynamic Display of one variable"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -19,8 +19,10 @@ model DynDisplay "Dynamic Display of one variable"
   input Real x1=1 "Variable value" annotation (Dialog);
   parameter String unit="°C" "Variable unit";
   parameter Integer decimalSpaces=1 "Accuracy to be displayed";
-  parameter Boolean largeFonts= simCenter.largeFonts "True if visualisers shall be displayed as large as posible";
-  parameter Boolean provideConnector= false "If true a real output connector is provided";
+  parameter Boolean largeFonts= simCenter.largeFonts
+    "True if visualisers shall be displayed as large as posible";
+  parameter Boolean provideConnector= false
+    "If true a real output connector is provided";
   outer ClaRa.SimCenter simCenter;
 
   Modelica.Blocks.Interfaces.RealOutput y(value=x1) if provideConnector annotation (Placement(transformation(extent={{100,-10},{120,10}}), iconTransformation(extent={{100,-10},{120,10}})));
@@ -43,7 +45,7 @@ model DynDisplay "Dynamic Display of one variable"
           fillColor={215,215,215},
           fillPattern=FillPattern.Solid,
           lineColor=DynamicSelect({118,124,127}, if x1 > 0 then {0,131,169} else {167,25,48}),
-          textString=DynamicSelect(" x ", realString(x1,1,integer(decimalSpaces)) + " %unit")),
+          textString=DynamicSelect(" x ", String(x1,format=  "1."+String(decimalSpaces)+"f") + " %unit")),
         Text(
           extent={{-100,100},{100,0}},
           fillColor={135,135,135},

@@ -1,11 +1,11 @@
 within ClaRa.Components.Utilities.Blocks.Fundamentals;
-function normalvariate "normally distributed random
-variable"
-input Real mu "mean value";
-input Real sigma "standard deviation";
-input Real si[3] "input random seed";
-output Real x "gaussian random variate";
-output Real so[3] "output random seed";
+function normalvariate "Normally distributed random variable"
+  extends ClaRa.Basics.Icons.Function;
+  input Real mu "Mean value";
+  input Real sigma "Standard deviation";
+  input Real si[3] "Input random seed";
+  output Real x "Gaussian random variate";
+  output Real so[3] "Output random seed";
 protected
   constant Real NV_MAGICCONST=4*exp(-0.5)/sqrt(2.0);
   Real s1[3];

@@ -1,14 +1,15 @@
 within ClaRa.Components.Utilities.Blocks;
-block FirstOrderClaRa "First order transfer function block (= 1 pole)"
+block FirstOrderClaRa
+  "First order transfer function block (= 1 pole, allows Tau = 0)"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                            //
+// Component of the ClaRa library, version: 1.1.1                            //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                              //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -16,11 +17,26 @@ block FirstOrderClaRa "First order transfer function block (= 1 pole)"
 //___________________________________________________________________________//
   extends Modelica.Blocks.Interfaces.SISO;
 
-  parameter Modelica.SIunits.Time Tau=0 "Time Constant, set Tau=0 for no signal smoothing";
+  parameter Modelica.SIunits.Time Tau=0
+    "Time Constant, set Tau=0 for no signal smoothing";
+  parameter Integer initOption = 1 "Initialisation option" annotation(choices(choice=1 "y = u", choice=2
+        "y = y_start",                                                                                                  choice=3
+        "der(y) = 0",                                                                                                    choice=4 "no init"));
+  parameter Real y_start=1 "Start value at output" annotation(Dialog(enable = Tau>0 and initOption==2));
 protected
   Real y_aux;
 initial equation
-  y_aux=u;
+  if initOption == 1 then // y= u
+    y_aux = u;
+  elseif initOption == 2 then // y = y_start
+    y_aux=y_start;
+  elseif initOption == 3 and Tau>0 then // der(y) = 0
+    der(y_aux)=0;
+  elseif initOption == 4 then // no init
+     // do nothing
+  else
+    assert(false, "Unknown init option in component " + getInstanceName());
+   end if;
 equation
   if Tau==0 then
     y=u;
@@ -38,25 +54,30 @@ equation
         preserveAspectRatio=true,
         extent={{-100,-100},{100,100}},
         grid={2,2}), graphics={
-        Line(points={{-80,78},{-80,-90}}, color={192,192,192}),
+        Rectangle(
+          extent={{-100,100},{100,-100}},
+          lineColor={221,222,223},
+          fillColor={118,124,127},
+          fillPattern=FillPattern.Solid),
+        Line(points={{-80,78},{-80,-90}}, color={221,222,223}),
         Polygon(
           points={{-80,90},{-88,68},{-72,68},{-80,88},{-80,90}},
-          lineColor={192,192,192},
-          fillColor={192,192,192},
+          lineColor={221,222,223},
+          fillColor={221,222,223},
           fillPattern=FillPattern.Solid),
-        Line(points={{-90,-80},{82,-80}}, color={192,192,192}),
+        Line(points={{-90,-80},{82,-80}}, color={221,222,223}),
         Polygon(
           points={{90,-80},{68,-72},{68,-88},{90,-80}},
-          lineColor={192,192,192},
-          fillColor={192,192,192},
+          lineColor={221,222,223},
+          fillColor={221,222,223},
           fillPattern=FillPattern.Solid),
         Line(points={{-80,-80},{-70,-45.11},{-60,-19.58},{-50,-0.9087},{-40,
               12.75},{-30,22.75},{-20,30.06},{-10,35.41},{0,39.33},{10,42.19},
               {20,44.29},{30,45.82},{40,46.94},{50,47.76},{60,48.36},{70,48.8},
-              {80,49.12}}, color={0,0,127}),
+              {80,49.12}}, color={27,36,42}),
         Text(
           extent={{0,0},{60,-60}},
-          lineColor={192,192,192},
+          lineColor={221,222,223},
           textString="PT1"),
         Text(
           extent={{-150,-150},{150,-110}},

@@ -1,7 +1,7 @@
 within ClaRa.Components.VolumesValvesFittings.Valves.Check;
 model TestValves
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -17,13 +17,13 @@ model TestValves
   extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb60;
   ValveVLE_L1                                                   valve1(
     showExpertSummary=true, redeclare model PressureLoss =
-        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticNominalPoint (
-         rho_in_nom=1000, m_flow_nom=1000/3600))
+        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticNominalPoint
+        (rho_in_nom=1000, m_flow_nom=1000/3600))
     annotation (Placement(transformation(extent={{-4,0},{16,12}})));
   ValveVLE_L1                                                      valve2(
       showExpertSummary=true, redeclare model PressureLoss =
-        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticKV (
-         Kvs=1))
+        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticKV
+        (Kvs=1))
     annotation (Placement(transformation(extent={{-4,-26},{16,-14}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi pressureSink_XRG(p_const=3e5, h_const=150e3) annotation (Placement(transformation(extent={{-64,-30},{-44,-10}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi pressureSink_XRG1(p_const=3e5, h_const=150e3) annotation (Placement(transformation(extent={{-64,-4},{-44,16}})));
@@ -38,15 +38,15 @@ model TestValves
 
   ValveVLE_L1                                                      valve3(
       showExpertSummary=true, redeclare model PressureLoss =
-        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint (
-         m_flow_nom=0.2786))
+        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint
+        (m_flow_nom=0.2786))
     annotation (Placement(transformation(extent={{-4,-54},{16,-42}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi pressureSink_XRG4(p_const=3e5, h_const=150e3) annotation (Placement(transformation(extent={{-64,-58},{-44,-38}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi pressureSink_XRG5(variable_p=true) annotation (Placement(transformation(extent={{52,-58},{32,-38}})));
   ValveVLE_L1                                                      valve4(
       showExpertSummary=true, redeclare model PressureLoss =
-        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticZeta (
-         A_cross=
+        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticZeta
+        (A_cross=
            1, zeta=36000^2*2))
     annotation (Placement(transformation(extent={{-4,-80},{16,-68}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi pressureSink_XRG6(p_const=3e5, h_const=150e3) annotation (Placement(transformation(extent={{-64,-84},{-44,-64}})));
@@ -59,8 +59,8 @@ model TestValves
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi pressureSink_XRG9(variable_p=true) annotation (Placement(transformation(extent={{50,-108},{30,-88}})));
   ValveVLE_L1                                                      valve6(
       showExpertSummary=true, redeclare model PressureLoss =
-        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.Quadratic_FlowFunction (
-         zeta=36000^2*2))
+        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.Quadratic_FlowFunction
+        (zeta=36000^2*2))
     annotation (Placement(transformation(extent={{-4,-130},{16,-118}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi pressureSink_XRG10(p_const=3e5, h_const=150e3) annotation (Placement(transformation(extent={{-64,-134},{-44,-114}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi pressureSink_XRG11(variable_p=true) annotation (Placement(transformation(extent={{52,-134},{32,-114}})));

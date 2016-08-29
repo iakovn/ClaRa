@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.FluidVolumes;
 model VolumeVLE_2 "A lumped control volume for vapour/liquid equilibrium"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -24,20 +24,20 @@ model VolumeVLE_2 "A lumped control volume for vapour/liquid equilibrium"
   import Modelica.Constants.eps;
   import ClaRa;
 
-record Outline
+model Outline
   extends ClaRa.Basics.Icons.RecordIcon;
   parameter Boolean showExpertSummary = false;
-  ClaRa.Basics.Units.Volume
+  input ClaRa.Basics.Units.Volume
                         volume_tot "Total volume";
-  ClaRa.Basics.Units.Area
+  input ClaRa.Basics.Units.Area
                       A_heat "Heat transfer area";
-  ClaRa.Basics.Units.HeatFlowRate
+  input ClaRa.Basics.Units.HeatFlowRate
                               Q_flow_tot "Total heat flow rate";
-  ClaRa.Basics.Units.PressureDifference
+  input ClaRa.Basics.Units.PressureDifference
                                     Delta_p "Pressure difference p_in - p_out";
 end Outline;
 
-record Summary
+model Summary
   extends ClaRa.Basics.Icons.RecordIcon;
   Outline outline;
   ClaRa.Basics.Records.FlangeVLE                inlet;
@@ -83,10 +83,10 @@ end Summary;
                                              annotation(Dialog(tab="Initialisation"));
   parameter ClaRa.Basics.Units.Pressure p_start= 1e5 "Start value of sytsem pressure" annotation(Dialog(tab="Initialisation"));
   inner parameter ClaRa.Basics.Choices.Init      initType=ClaRa.Basics.Choices.Init.noInit "Type of initialisation"
-                             annotation(Dialog(tab="Initialisation", choicesAllMatching));
+                             annotation(Dialog(tab="Initialisation"), choicesAllMatching);
   parameter ClaRa.Basics.Units.MassFraction xi_start[medium.nc-1] = medium.xi_default "Start value for mass fraction" annotation(Dialog(tab="Initialisation"));
   parameter Boolean showExpertSummary = simCenter.showExpertSummary "True, if expert summary should be applied" annotation(Dialog(tab="Summary and Visualisation"));
-  parameter Integer heatSurfaceAlloc=1 "Heat transfer area to be considered"          annotation(dialog(group="Geometry"),choices(choice=1 "Lateral surface",
+  parameter Integer heatSurfaceAlloc=1 "Heat transfer area to be considered"          annotation(Dialog(group="Geometry"),choices(choice=1 "Lateral surface",
                                                                                    choice=2 "Inner heat transfer surface"));
 
 protected
@@ -121,7 +121,7 @@ public
          origin={0,100})));
 
    Summary summary(inlet(showExpertSummary = showExpertSummary,m_flow=inlet.m_flow,  T=fluidIn.T, p=inlet.p, h=fluidIn.h,s=fluidIn.s, steamQuality=fluidIn.q, H_flow=fluidIn.h*inlet.m_flow, rho=fluidIn.d),
-                   fluid(showExpertSummary = showExpertSummary, mass=mass, p=p, h=h, T=bulk.T,s=bulk.s, steamQuality=bulk.q, H=h*mass, rho=bulk.d),
+                   fluid(showExpertSummary = showExpertSummary, mass=mass, p=p, h=h, T=bulk.T,s=bulk.s, steamQuality=bulk.q, H=h*mass, rho=bulk.d, T_sat=bulk.VLE.T_l, h_dew=bulk.VLE.h_v, h_bub=bulk.VLE.h_l),
                    outlet(showExpertSummary = showExpertSummary,m_flow = -outlet.m_flow, T=fluidOut.T, p=outlet.p, h=fluidOut.h, s=fluidOut.s, steamQuality=fluidOut.q, H_flow=-fluidOut.h*outlet.m_flow, rho=fluidOut.d),
     outline(
       volume_tot=geo.volume,
@@ -229,9 +229,6 @@ equation
   outlet.xi_outflow  = inStream(inlet.xi_outflow);
 
 initial equation
-//  vleFluid.h=(vleFluid.VLE.h_v + 1 - initialFillingLevel*(vleFluid.VLE.h_v + 1 - vleFluid.VLE.h_l*vleFluid.VLE.d_l/vleFluid.VLE.d_v))/(initialFillingLevel*(vleFluid.VLE.d_l/vleFluid.VLE.d_v - 1) + 1);
-  //INIT.feedwatertank.h_cond_out
- // mass=geo.V*bulk.d;
   if initType==ClaRa.Basics.Choices.Init.steadyState then
     der(h)=0;
     der(p)=0;
@@ -240,6 +237,10 @@ initial equation
     der(p)=0;
   elseif initType==ClaRa.Basics.Choices.Init.steadyEnthalpy then
     der(h)=0;
+  elseif initType==ClaRa.Basics.Choices.Init.noInit then
+    // do nothing
+  else
+    // assert(false, "unsipported initial condition");
   end if;
 
 equation

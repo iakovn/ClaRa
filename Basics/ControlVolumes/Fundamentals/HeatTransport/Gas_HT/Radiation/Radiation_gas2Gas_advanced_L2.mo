@@ -1,7 +1,8 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Radiation;
-model Radiation_gas2Gas_advanced_L2 "All Geo || L2 || Radiation Between Gas Volumes (Advanced)"
+model Radiation_gas2Gas_advanced_L2
+  "All Geo || L2 || Radiation Between Gas Volumes (Advanced)"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.0                        //
+  // Component of the ClaRa library, version: 1.1.1                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,7 +16,8 @@ model Radiation_gas2Gas_advanced_L2 "All Geo || L2 || Radiation Between Gas Volu
   // XRG Simulation GmbH (Hamburg, Germany).                                   //
   //___________________________________________________________________________//
 
-  extends ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Radiation.HeatTransfer_L2;
+  extends
+    ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Radiation.HeatTransfer_L2;
   outer ClaRa.Basics.Records.IComGas_L2 iCom;
   extends ClaRa.Basics.Icons.Epsilon;
 
@@ -23,44 +25,55 @@ model Radiation_gas2Gas_advanced_L2 "All Geo || L2 || Radiation Between Gas Volu
 
   parameter String suspension_calculationType="Fixed" "Calculation type" annotation (Dialog(group="Emissivity and absorbance factor calculation of the suspension volume"), choices(
       choice="Fixed" "Use fixed value for gas emissivity",
-      choice="Calculated" "Calculate suspension emissivity according to VDI Waermeatlas",
-      choice="Gas calculated, particles fixed" "Gas emissivity calculated, particle emissivity fixed"));
+      choice="Calculated"
+        "Calculate suspension emissivity according to VDI Waermeatlas",
+      choice="Gas calculated, particles fixed"
+        "Gas emissivity calculated, particle emissivity fixed"));
 
-  parameter Real emissivity_source_fixed=0.9 "Fixed value for source emissivity" annotation (Dialog(enable=(suspension_calculationType == "Fixed"), group="Emissivity and absorbance factor calculation of the suspension volume"));
+  parameter Real emissivity_source_fixed=0.9
+    "Fixed value for source emissivity"                                          annotation (Dialog(enable=(suspension_calculationType == "Fixed"), group="Emissivity and absorbance factor calculation of the suspension volume"));
 
   parameter Real emissivity_sink_fixed=0.9 "Fixed value for sink emissivity" annotation (Dialog(enable=(suspension_calculationType == "Fixed"), group="Emissivity and absorbance factor calculation of the suspension volume"));
 
-  parameter Real absorbance_source_fixed=0.9 "Fixed value for source absorbance" annotation (Dialog(enable=(suspension_calculationType == "Fixed"), group="Emissivity and absorbance factor calculation of the suspension volume"));
+  parameter Real absorbance_source_fixed=0.9
+    "Fixed value for source absorbance"                                          annotation (Dialog(enable=(suspension_calculationType == "Fixed"), group="Emissivity and absorbance factor calculation of the suspension volume"));
 
-  parameter Real emissivity_particle_source=0.2 "Value considering dust particles if emissivity and absorbance are calculated"
+  parameter Real emissivity_particle_source=0.2
+    "Value considering dust particles if emissivity and absorbance are calculated"
                                                                                       annotation (Dialog(enable=(suspension_calculationType == "Gas calculated, particles fixed"), group="Emissivity and absorbance factor calculation of the suspension volume"));
-  parameter Real emissivity_particle_sink=0.2 "Value considering dust particles if emissivity and absorbance are calculated"
+  parameter Real emissivity_particle_sink=0.2
+    "Value considering dust particles if emissivity and absorbance are calculated"
                                                                                       annotation (Dialog(enable=(suspension_calculationType == "Gas calculated, particles fixed"), group="Emissivity and absorbance factor calculation of the suspension volume"));
 
-  parameter ClaRa.Basics.Units.DensityMassSpecific soot_load_n=163.5e-6 "Amount of soot inside the products at standard temperature and pressure"
-                                                                                      annotation (Dialog(enable=(suspension_calculationType == "Calculated"), group="Soot particle properties"));
+  parameter ClaRa.Basics.Units.DensityMassSpecific soot_load_n=163.5e-6
+    "Amount of soot inside the products at standard temperature and pressure"         annotation (Dialog(enable=(suspension_calculationType == "Calculated"), group="Soot particle properties"));
 
-  parameter ClaRa.Basics.Units.MassFraction x_coke=0.1 "Coke fraction of used coal" annotation (Dialog(enable=(suspension_calculationType == "Calculated"), group="Coal particle properties"));
+  parameter ClaRa.Basics.Units.MassFraction x_coke=0.1
+    "Coke fraction of used coal"                                                    annotation (Dialog(enable=(suspension_calculationType == "Calculated"), group="Coal particle properties"));
 
   parameter ClaRa.Basics.Units.DensityMassSpecific d_coke=850 "Coke density" annotation (Dialog(enable=(suspension_calculationType == "Calculated"), group="Coal particle properties"));
 
-  parameter ClaRa.Basics.Units.Length diameter_mean_coke=65e-6 "Mean weighted diameter of coke particles (Rosin-Rammler-Distribution)"
+  parameter ClaRa.Basics.Units.Length diameter_mean_coke=65e-6
+    "Mean weighted diameter of coke particles (Rosin-Rammler-Distribution)"           annotation (Dialog(enable=(suspension_calculationType == "Calculated"), group="Coal particle properties"));
+
+  parameter Real n_var_coke=1.5
+    "Variance parameter of coke particle distribution (Rosin-Rammler-Distribution)"
                                                                                       annotation (Dialog(enable=(suspension_calculationType == "Calculated"), group="Coal particle properties"));
 
-  parameter Real n_var_coke=1.5 "Variance parameter of coke particle distribution (Rosin-Rammler-Distribution)"
-                                                                                      annotation (Dialog(enable=(suspension_calculationType == "Calculated"), group="Coal particle properties"));
-
-  parameter Real Q_mean_abs_coke=0.85 "Mean relative cross section for absorption of coke particles" annotation (Dialog(enable=(suspension_calculationType == "Calculated"), group="Coal particle properties"));
+  parameter Real Q_mean_abs_coke=0.85
+    "Mean relative cross section for absorption of coke particles"                                   annotation (Dialog(enable=(suspension_calculationType == "Calculated"), group="Coal particle properties"));
 
   parameter ClaRa.Basics.Units.DensityMassSpecific d_ash=2200 "Ash density" annotation (Dialog(enable=(suspension_calculationType == "Calculated"), group="Ash particle properties"));
 
-  parameter ClaRa.Basics.Units.Length diameter_mean_ash=16.8e-6 "Mean weighted diameter of ash particles (Rosin-Rammler-Distribution)"
+  parameter ClaRa.Basics.Units.Length diameter_mean_ash=16.8e-6
+    "Mean weighted diameter of ash particles (Rosin-Rammler-Distribution)"            annotation (Dialog(enable=(suspension_calculationType == "Calculated"), group="Ash particle properties"));
+
+  parameter Real n_var_ash=1.5
+    "Variance parameter of ash particle distribution (Rosin-Rammler-Distribution)"
                                                                                       annotation (Dialog(enable=(suspension_calculationType == "Calculated"), group="Ash particle properties"));
 
-  parameter Real n_var_ash=1.5 "Variance parameter of ash particle distribution (Rosin-Rammler-Distribution)"
-                                                                                      annotation (Dialog(enable=(suspension_calculationType == "Calculated"), group="Ash particle properties"));
-
-  parameter Real Q_m_abs_ash=0.2 "Mean relative cross section for absorption of ash particles" annotation (Dialog(enable=(suspension_calculationType == "Calculated"), group="Ash particle properties"));
+  parameter Real Q_m_abs_ash=0.2
+    "Mean relative cross section for absorption of ash particles"                              annotation (Dialog(enable=(suspension_calculationType == "Calculated"), group="Ash particle properties"));
 
 public
   Units.Temperature T_mean "Mean temperature";
@@ -81,7 +94,8 @@ protected
   Real a1_sink "Weighting factor with radiation sink temperature";
   Real a2_sink "Weighting factor with radiation sink temperature";
   Real a3_sink "Weighting factor with radiation sink temperature";
-  Real emissivity_H2O_CO2_source "Emissivity of H2O and CO2 of radiation source";
+  Real emissivity_H2O_CO2_source
+    "Emissivity of H2O and CO2 of radiation source";
   Real emissivity_H2O_CO2_sink "Emissivity of H2O and CO2 of radiation sink";
   Real absorbance_H2O_CO2_source "Asorbance of H2O and CO2 of radiation source";
   Real emissivity_S_1 "Suspension emissivity factor";
@@ -94,7 +108,8 @@ protected
   Real soot_load "Soot load";
   Real smooth "Smoothing factor";
 
-  ClaRa.Basics.Units.MassFraction xi_mean[iCom.mediumModel.nc - 1] "Mean flue gas composition";
+  ClaRa.Basics.Units.MassFraction xi_mean[iCom.mediumModel.nc - 1]
+    "Mean flue gas composition";
   outer ClaRa.Basics.Units.MassFraction xi_fuel "Mean fuel composition";
 
   outer ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlock geo;
@@ -149,13 +164,10 @@ equation
     ash_load = 0;
     soot_load = 0;
 
-    heat.Q_flow = smooth*(geo.A_front*view_factor*Modelica.Constants.sigma*emissivity_sink/(absorbance_source + emissivity_sink - absorbance_source*emissivity_sink)*(emissivity_source*T_source^4 - absorbance_source*T_sink^4)) + (1 - smooth)*(geo.A_front*view_factor*Modelica.Constants.sigma*emissivity_sink/(absorbance_source + emissivity_sink - absorbance_source*emissivity_sink)*(emissivity_source*T_source^4 - absorbance_source*T_sink^4));
+    heat.Q_flow = smooth*(geo.A_front*view_factor*Modelica.Constants.sigma*emissivity_sink/(absorbance_source + emissivity_sink - absorbance_source*emissivity_sink)*(emissivity_source*T_source^4 - absorbance_source*T_sink^4)) + (1 - smooth)*(-geo.A_front*view_factor*Modelica.Constants.sigma*emissivity_sink/(absorbance_source + emissivity_sink - absorbance_source*emissivity_sink)*(emissivity_source*T_source^4 - absorbance_source*T_sink^4));
 
   elseif suspension_calculationType == "Gas calculated, particles fixed" then
 
-    emissivity_S_1 = 0;
-    emissivity_S_2 = 0;
-    emissivity_S_3 = 0;
     k_coke = 0;
     k_ash = 0;
     coke_load = 0;
@@ -170,17 +182,21 @@ equation
     a2_sink = 0.595 - 0.15*(T_sink/1000);
     a3_sink = 0.275 - 0.115*(T_sink/1000);
 
-    emissivity_H2O_CO2_source = a1_source*(1 - exp(0*(properties.p_i[3] + properties.p_i[8])/1e5*s_gl)) + a2_source*(1 - exp(-0.824*(properties.p_i[3] + properties.p_i[8])/1e5*s_gl)) + a3_source*(1 - exp(-25.91*(properties.p_i[3] + properties.p_i[8])/1e5*s_gl));
+    emissivity_S_1 = (1 - exp(0*(properties.p_i[3] + properties.p_i[8])/1e5*s_gl));
+    emissivity_S_2 = (1 - exp(-0.824*(properties.p_i[3] + properties.p_i[8])/1e5*s_gl));
+    emissivity_S_3 = (1 - exp(-25.91*(properties.p_i[3] + properties.p_i[8])/1e5*s_gl));
+
+    emissivity_H2O_CO2_source = a1_source*emissivity_S_1 + a2_source*emissivity_S_2 + a3_source*emissivity_S_3;
 
     emissivity_source = emissivity_H2O_CO2_source + emissivity_particle_source - emissivity_H2O_CO2_source*emissivity_particle_source;
 
     //___________/ Absorbance of source volume is calculated with sink temperature (see VDI Waermeatlas)\___________________
-    absorbance_H2O_CO2_source = a1_sink*(1 - exp(0*(properties.p_i[3] + properties.p_i[8])/1e5*s_gl)) + a2_sink*(1 - exp(-0.824*(properties.p_i[3] + properties.p_i[8])/1e5*s_gl)) + a3_sink*(1 - exp(-25.91*(properties.p_i[3] + properties.p_i[8])/1e5*s_gl));
+    absorbance_H2O_CO2_source = a1_sink*emissivity_S_1 + a2_sink*emissivity_S_2 + a3_sink*emissivity_S_3;
 
     absorbance_source = absorbance_H2O_CO2_source + emissivity_particle_source - absorbance_H2O_CO2_source*emissivity_particle_source;
 
     //________________________/ Calculation of sink emissivity \_____________________
-    emissivity_H2O_CO2_sink = a1_sink*(1 - exp(0*(properties.p_i[3] + properties.p_i[8])/1e5*s_gl)) + a2_sink*(1 - exp(-0.824*(properties.p_i[3] + properties.p_i[8])/1e5*s_gl)) + a3_sink*(1 - exp(-25.91*(properties.p_i[3] + properties.p_i[8])/1e5*s_gl));
+    emissivity_H2O_CO2_sink = a1_sink*emissivity_S_1 + a2_sink*emissivity_S_2 + a3_sink*emissivity_S_3;
 
     emissivity_sink = emissivity_H2O_CO2_sink + emissivity_particle_sink - emissivity_H2O_CO2_sink*emissivity_particle_sink;
 

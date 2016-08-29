@@ -1,7 +1,7 @@
 within ClaRa.Components.Utilities.Blocks.Check;
 model TestMinMax
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -46,6 +46,5 @@ equation
       points={{1,16},{18,16}},
       color={0,0,127},
       smooth=Smooth.None));
-  annotation (experiment(StopTime=300), experimentSetupOutput,
-    Diagram(graphics));
+  annotation (experiment(StopTime=300), experimentSetupOutput);
 end TestMinMax;

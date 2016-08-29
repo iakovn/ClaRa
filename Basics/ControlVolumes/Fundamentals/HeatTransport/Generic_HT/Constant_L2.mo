@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT;
 model Constant_L2 "All Geo || L2 || HTC || Constant"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.0                        //
+  // Component of the ClaRa library, version: 1.1.1                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,7 +15,8 @@ model Constant_L2 "All Geo || L2 || HTC || Constant"
   // XRG Simulation GmbH (Hamburg, Germany).                                   //
   //___________________________________________________________________________//
 
-  extends ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.HeatTransfer_L2;
+  extends
+    ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.HeatTransfer_L2;
   //   extends
   //     ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.HeatTransfer_L2;
   //   extends
@@ -34,28 +35,35 @@ model Constant_L2 "All Geo || L2 || HTC || Constant"
   outer ClaRa.Basics.Records.IComBase_L2 iCom;
   outer ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry geo;
 
-  parameter Modelica.SIunits.CoefficientOfHeatTransfer alpha_nom=10 "Constant heat transfer coefficient" annotation (Dialog(group="Heat Transfer"));
+  parameter Modelica.SIunits.CoefficientOfHeatTransfer alpha_nom=10
+    "Constant heat transfer coefficient"                                                                 annotation (Dialog(group="Heat Transfer"));
   parameter Integer heatSurfaceAlloc=2 "To be considered heat transfer area" annotation (dialog(enable=false, tab="Expert Setting"), choices(
       choice=1 "Lateral surface",
       choice=2 "Inner heat transfer surface",
       choice=3 "Selection to be extended"));
-  parameter Real CF_fouling=1 "Scaling factor accounting for the fouling of the wall" annotation (Dialog(group="Heat Transfer"));
+  parameter Real CF_fouling=1
+    "Scaling factor accounting for the fouling of the wall"                           annotation (Dialog(group="Heat Transfer"));
 
-  parameter String temperatureDifference="Logarithmic mean" "Temperature Difference" annotation (Dialog(group="Heat Transfer"), choices(
+  parameter String temperatureDifference="Logarithmic mean"
+    "Temperature Difference"                                                         annotation (Dialog(group="Heat Transfer"), choices(
       choice = "Arithmetic mean",
       choice = "Logarithmic mean",
       choice = "Logarithmic mean - smoothed",
       choice = "Inlet",
       choice = "Outlet"));
 
-  Units.Temperature Delta_T_wi "Temperature difference between wall and fluid inlet temperature";
-  Units.Temperature Delta_T_wo "Temperature difference between wall and fluid outlet temperature";
-  Units.Temperature Delta_T_mean "Mean temperature difference used for heat transfer calculation";
+  Units.Temperature Delta_T_wi
+    "Temperature difference between wall and fluid inlet temperature";
+  Units.Temperature Delta_T_wo
+    "Temperature difference between wall and fluid outlet temperature";
+  Units.Temperature Delta_T_mean
+    "Mean temperature difference used for heat transfer calculation";
 
   Units.Temperature Delta_T_U "Upper temperature difference";
   Units.Temperature Delta_T_L "Lower temperature difference";
 
-  Modelica.SIunits.CoefficientOfHeatTransfer alpha "Heat transfer coefficient used for heat trasnfer calculation";
+  Modelica.SIunits.CoefficientOfHeatTransfer alpha
+    "Heat transfer coefficient used for heat trasnfer calculation";
 
 equation
   Delta_T_wi = heat.T - iCom.T_in;

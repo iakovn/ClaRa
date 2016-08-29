@@ -1,7 +1,8 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT;
-model NominalPoint_L4 "Medium independent || Nominal HTC with simple m_flow dependency"
+model NominalPoint_L4
+  "Medium independent || Nominal HTC with simple m_flow dependency"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.0                        //
+  // Component of the ClaRa library, version: 1.1.1                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,9 +16,11 @@ model NominalPoint_L4 "Medium independent || Nominal HTC with simple m_flow depe
   // XRG Simulation GmbH (Hamburg, Germany).                                   //
   //___________________________________________________________________________//
 
-  extends ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.HeatTransfer_L4;
+  extends
+    ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.HeatTransfer_L4;
 
-  parameter Modelica.SIunits.CoefficientOfHeatTransfer alpha_nom=10 "Constant heat transfer coefficient" annotation (Dialog(group="Heat Transfer"));
+  parameter Modelica.SIunits.CoefficientOfHeatTransfer alpha_nom=10
+    "Constant heat transfer coefficient"                                                                 annotation (Dialog(group="Heat Transfer"));
 
   Modelica.SIunits.CoefficientOfHeatTransfer alpha[iCom.N_cv];
 equation

@@ -1,7 +1,8 @@
 within ClaRa.Components.HeatExchangers.Check;
-model Test_HEXvle2gas_L3_1ph_BU "Example 1 at page Ca 15 in VDI Waermeatlas, 9th edition "
+model Test_HEXvle2gas_L3_1ph_BU
+  "Example 1 at page Ca 15 in VDI Waermeatlas, 9th edition "
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.0                        //
+  // Component of the ClaRa library, version: 1.1.1                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -37,12 +38,12 @@ model Test_HEXvle2gas_L3_1ph_BU "Example 1 at page Ca 15 in VDI Waermeatlas, 9th
     m_flow_const=2*TILMedia.GasFunctions.density_pTxi(
         flueGasFlowSource.medium,
         1e5,
-        273.15 + 20)) annotation (Placement(transformation(extent={{-60,0},{-40,20}})));
+        273.15 + 20),
+    variable_xi=true) annotation (Placement(transformation(extent={{-60,0},{-40,20}})));
   inner SimCenter simCenter(
     useHomotopy=false,
     redeclare replaceable TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1,
-    showExpertSummary=true,
-    redeclare TILMedia.GasTypes.TILMedia_DryAir flueGasModel)                       annotation (Placement(transformation(extent={{-100,-180},{-60,-160}})));
+    showExpertSummary=true)                                                         annotation (Placement(transformation(extent={{-100,-180},{-60,-160}})));
   HEXvle2gas_L3_1ph_BU_ntu hex_ntu(
     length=1,
     height=1,
@@ -64,9 +65,11 @@ model Test_HEXvle2gas_L3_1ph_BU "Example 1 at page Ca 15 in VDI Waermeatlas, 9th
     redeclare model PressureLossTubes =
         ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L2,
     redeclare model HeatTransfer_Shell =
-        Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2 (                            alpha_nom=48.7, PL_alpha=[0,1; 1,1]),
+        Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2
+        (                                                                                                    alpha_nom=48.7, PL_alpha=[0,1; 1,1]),
     redeclare model HeatExchangerType =
-        Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.CrossCounterFlow (                N_rp=6),
+        Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.CrossCounterFlow
+        (                                                                                                    N_rp=6),
     h_nom2=500e3,
     T_start_shell=20 + 273.15,
     initTypeShell=ClaRa.Basics.Choices.Init.noInit,
@@ -77,7 +80,8 @@ model Test_HEXvle2gas_L3_1ph_BU "Example 1 at page Ca 15 in VDI Waermeatlas, 9th
     T_w_i_start=343,
     T_w_a_start=343,
     redeclare model HeatTransferTubes =
-        Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L2 (                            alpha_nom=1000),
+        Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L2
+        (                                                                                                    alpha_nom=1000),
     CF_geo=3) annotation (Placement(transformation(
         extent={{10,10},{-10,-10}},
         rotation=180,
@@ -104,7 +108,8 @@ model Test_HEXvle2gas_L3_1ph_BU "Example 1 at page Ca 15 in VDI Waermeatlas, 9th
     m_flow_const=2*TILMedia.GasFunctions.density_pTxi(
         flueGasFlowSource1.medium,
         1e5,
-        273.15 + 20)) annotation (Placement(transformation(extent={{-60,-60},{-40,-40}})));
+        273.15 + 20),
+    variable_xi=true) annotation (Placement(transformation(extent={{-60,-60},{-40,-40}})));
   HEXvle2gas_L3_1ph_BU_simple hex_simple(
     length=1,
     height=1,
@@ -125,7 +130,8 @@ model Test_HEXvle2gas_L3_1ph_BU "Example 1 at page Ca 15 in VDI Waermeatlas, 9th
     p_nom2=1000000,
     initTypeShell=ClaRa.Basics.Choices.Init.noInit,
     redeclare model HeatTransfer_Shell =
-        Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2 (                            alpha_nom=48.7, PL_alpha=[0,1; 1,1]),
+        Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2
+        (                                                                                                    alpha_nom=48.7, PL_alpha=[0,1; 1,1]),
     p_start_tubes=10e5,
     initWall=ClaRa.Basics.Choices.Init.noInit,
     initTypeTubes=ClaRa.Basics.Choices.Init.steadyState,
@@ -135,7 +141,8 @@ model Test_HEXvle2gas_L3_1ph_BU "Example 1 at page Ca 15 in VDI Waermeatlas, 9th
     T_start_shell=273.15 + 20,
     h_start_tubes=400e3,
     redeclare model HeatTransferTubes =
-        Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L2 (                            alpha_nom=1000),
+        Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L2
+        (                                                                                                    alpha_nom=1000),
     redeclare model PressureLossTubes =
         Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.NoFriction_L2)
                                                          annotation (Placement(transformation(
@@ -164,7 +171,8 @@ model Test_HEXvle2gas_L3_1ph_BU "Example 1 at page Ca 15 in VDI Waermeatlas, 9th
     redeclare model PressureLossTubes =
         Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.NoFriction_L3,
     redeclare model HeatTransfer_Shell =
-        Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2 (                            alpha_nom=48.7, PL_alpha=[0,1; 1,1]),
+        Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2
+        (                                                                                                    alpha_nom=48.7, PL_alpha=[0,1; 1,1]),
     redeclare model PressureLossShell =
         Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.QuadraticNominalPoint_L2,
     m_nom1=2,
@@ -175,7 +183,8 @@ model Test_HEXvle2gas_L3_1ph_BU "Example 1 at page Ca 15 in VDI Waermeatlas, 9th
     T_w_a_start=273.15 + 50,
     tubes(Tau_cond=0.3, Tau_evap=0.03),
     redeclare model HeatTransferTubes =
-        Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3 (                            alpha_nom={1000,1000}),
+        Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3
+        (                                                                                                    alpha_nom={1000,1000}),
     z_out_tubes=0,
     level_rel_start=0.95)
                    annotation (Placement(transformation(extent={{0,-140},{20,-120}})));
@@ -191,7 +200,8 @@ model Test_HEXvle2gas_L3_1ph_BU "Example 1 at page Ca 15 in VDI Waermeatlas, 9th
     m_flow_const=2*TILMedia.GasFunctions.density_pTxi(
         flueGasFlowSource1.medium,
         1e5,
-        273.15 + 20)) annotation (Placement(transformation(extent={{-60,-120},{-40,-100}})));
+        273.15 + 20),
+    variable_xi=true) annotation (Placement(transformation(extent={{-60,-120},{-40,-100}})));
   BoundaryConditions.BoundaryVLE_pTxi pressureSink_pT2(
                                                       T_const=303.15, p_const=10e5) annotation (Placement(transformation(extent={{100,-120},{80,-100}})));
   BoundaryConditions.BoundaryVLE_Txim_flow massFlowSource_T2(
@@ -202,15 +212,28 @@ model Test_HEXvle2gas_L3_1ph_BU "Example 1 at page Ca 15 in VDI Waermeatlas, 9th
         rotation=180,
         origin={70,-134})));
   Visualisation.Quadruple quadruple3(largeFonts=false) annotation (Placement(transformation(extent={{24,-122},{46,-110}})));
-  VolumesValvesFittings.Valves.ValveVLE_L1 valveVLE_L1_1(redeclare model PressureLoss =
+  VolumesValvesFittings.Valves.ValveVLE_L1 valveVLE_L1_1(redeclare model
+      PressureLoss =
         VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint (                                                                                m_flow_nom=10, Delta_p_nom=100))
                                                          annotation (Placement(transformation(extent={{56,-116},{76,-104}})));
   Sensors.GasTemperatureSensor gasTemperatureSensor_hex_ntu annotation (Placement(transformation(extent={{-10,-30},{-30,-8}})));
   Sensors.GasTemperatureSensor gasTemperatureSensor_hex_2ph annotation (Placement(transformation(extent={{-10,-150},{-30,-128}})));
   Sensors.GasTemperatureSensor gasTemperatureSensor_hex_simple annotation (Placement(transformation(extent={{-10,-90},{-30,-68}})));
-  VolumesValvesFittings.Valves.ValveVLE_L1 valveVLE_L1_2(redeclare model PressureLoss =
+  VolumesValvesFittings.Valves.ValveVLE_L1 valveVLE_L1_2(redeclare model
+      PressureLoss =
         VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint (                                                                                m_flow_nom=10))
                                                          annotation (Placement(transformation(extent={{56,4},{76,16}})));
+  BoundaryConditions.GasCompositionByMassFractions
+    gasCompositionByMassFractions(
+    xi_ASH=0,
+    xi_CO=0,
+    xi_CO2=0,
+    xi_SO2=0,
+    xi_N2=0.79,
+    xi_O2=0.21,
+    xi_NO=0,
+    xi_H2O=0,
+    xi_NH3=0) annotation (Placement(transformation(extent={{-94,-6},{-74,14}})));
 equation
   connect(hex_ntu.In2, massFlowSource_T.steam_a) annotation (Line(
       points={{18,-14},{58,-14}},
@@ -290,6 +313,9 @@ equation
       color={0,131,169},
       pattern=LinePattern.Solid,
       thickness=0.5));
+  connect(gasCompositionByMassFractions.X, flueGasFlowSource.xi) annotation (Line(points={{-72,4},{-64,4},{-60,4}}, color={0,0,127}));
+  connect(gasCompositionByMassFractions.X, flueGasFlowSource1.xi) annotation (Line(points={{-72,4},{-70,4},{-70,2},{-68,2},{-68,-56},{-60,-56}}, color={0,0,127}));
+  connect(gasCompositionByMassFractions.X, flueGasFlowSource2.xi) annotation (Line(points={{-72,4},{-68,4},{-68,-116},{-60,-116}}, color={0,0,127}));
   annotation (
     Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-180},{100,100}}),
             graphics={                               Text(
@@ -316,8 +342,7 @@ ________________________________________________________________________________
     Icon(coordinateSystem(initialScale=0.1),
          graphics),
     experiment(
-      StopTime=10000,
-      __Dymola_NumberOfIntervals=50000,
+      StopTime=5000,
       Tolerance=1e-005,
       __Dymola_Algorithm="Dassl"),
     __Dymola_experimentSetupOutput);

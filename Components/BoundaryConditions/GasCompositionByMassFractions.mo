@@ -1,7 +1,7 @@
 within ClaRa.Components.BoundaryConditions;
 model GasCompositionByMassFractions "set (flue) gas composition graphically"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -14,20 +14,20 @@ model GasCompositionByMassFractions "set (flue) gas composition graphically"
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
-extends ClaRa.Basics.Icons.MassComposition;
 
+  extends ClaRa.Basics.Icons.MassComposition;
   Modelica.Blocks.Interfaces.RealOutput X[medium.nc - 1] "composition of gas to be set"
     annotation (Placement(transformation(extent={{120,0},{140,20}}),
         iconTransformation(extent={{100,-20},{140,20}})));
-  parameter Real xi_ASH "mass fraction of ash";
-  parameter Real xi_CO "mass fraction of carbon monoxide";
-  parameter Real xi_CO2 "mass fraction of carbon dioxide";
-  parameter Real xi_SO2 "mass fraction of sulphur dioxide";
-  parameter Real xi_N2 "mass fraction of nitrogen (N2)";
-  parameter Real xi_O2 "mass fraction of oxygen (O2)";
-  parameter Real xi_NO "mass fraction of nitrogen oxide";
-  parameter Real xi_H2O "mass fraction of water";
-  //parameter Real NH3;
+  parameter Real xi_ASH "Mass fraction of ash";
+  parameter Real xi_CO "Mass fraction of carbon monoxide (CO)";
+  parameter Real xi_CO2 "Mass fraction of carbon dioxide (CO2)";
+  parameter Real xi_SO2 "Mass fraction of sulphur dioxide (SO2)";
+  parameter Real xi_N2 "Mass fraction of nitrogen (N2)";
+  parameter Real xi_O2 "Mass fraction of oxygen (O2)";
+  parameter Real xi_NO "Mass fraction of nitrogen oxide (NO)";
+  parameter Real xi_H2O "Mass fraction of water (H2O)";
+  parameter Real xi_NH3 "Mass fraction of ammonia (NH3)";
   Real sumXi "control sum of set mass fractions";
 
 protected
@@ -44,7 +44,7 @@ equation
   xi_in[6] = xi_O2;
   xi_in[7] = xi_NO;
   xi_in[8] = xi_H2O;
-  //xi_in[9] = NH3;
+  xi_in[9] = xi_NH3;
 
   X = xi_in;
 algorithm

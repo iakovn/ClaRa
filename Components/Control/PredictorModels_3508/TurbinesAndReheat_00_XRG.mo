@@ -1,7 +1,8 @@
 within ClaRa.Components.Control.PredictorModels_3508;
-model TurbinesAndReheat_00_XRG "A predictor for the generator power including the HP and IP/LP turbines as well as the energy storage in the reheater - unmodified"
+model TurbinesAndReheat_00_XRG
+  "A predictor for the generator power including the HP and IP/LP turbines as well as the energy storage in the reheater - unmodified"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -18,12 +19,12 @@ model TurbinesAndReheat_00_XRG "A predictor for the generator power including th
   extends ClaRa.Basics.Icons.ComplexityLevel(complexity="00");
 
  parameter Real eta_Gen= 0.98 "Generator efficiency" annotation(Dialog(group="Nominal Values"));
- parameter Real turbineRatio= 0.33 "Aspect ratio of HP turbine output to total power output"
-                                                                annotation(Dialog(group="Nominal Values"));
-parameter Modelica.SIunits.Time Tau_HP= (0.2+0.5)/2 "Time Constant for Energy Storage in HP turbine"
-                                                                                         annotation(Dialog(group="Time Response Definition"));
-parameter Modelica.SIunits.Time Tau_IP= (10+25)/2 "Time Constant for Energy Storage in IP/LP turbine"
-                                                                                            annotation(Dialog(group="Time Response Definition"));
+ parameter Real turbineRatio= 0.33
+    "Aspect ratio of HP turbine output to total power output"   annotation(Dialog(group="Nominal Values"));
+parameter Modelica.SIunits.Time Tau_HP= (0.2+0.5)/2
+    "Time Constant for Energy Storage in HP turbine"                                     annotation(Dialog(group="Time Response Definition"));
+parameter Modelica.SIunits.Time Tau_IP= (10+25)/2
+    "Time Constant for Energy Storage in IP/LP turbine"                                     annotation(Dialog(group="Time Response Definition"));
 
   parameter Real m_flow_start_=1 "Initial mass flow rate in p.u." annotation(Dialog(group="Initialisation"));
   Modelica.Blocks.Continuous.FirstOrder energyStorage_HP_turbine(        T=Tau_HP,
@@ -48,7 +49,7 @@ parameter Modelica.SIunits.Time Tau_IP= (10+25)/2 "Time Constant for Energy Stor
         rotation=90,
         origin={-98,80})));
   Modelica.Blocks.Interfaces.RealOutput P_gen_ "Generator power in p.u."
-    annotation (Placement(transformation(extent={{90,-10},{110,10}})));
+    annotation (Placement(transformation(extent={{100,-10},{120,10}}), iconTransformation(extent={{100,-10},{120,10}})));
   Modelica.Blocks.Math.Gain gain2(k=eta_Gen)
     annotation (Placement(transformation(extent={{48,-10},{68,10}})));
 equation
@@ -63,11 +64,11 @@ assert(Tau_HP>0 and Tau_IP>0, "Time constants must be greater than zero!");
       color={0,0,127},
       smooth=Smooth.None));
   connect(gain2.y, P_gen_) annotation (Line(
-      points={{69,0},{100,0}},
+      points={{69,0},{110,0}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(inlet.m_flow_, energyStroage_RH_IPLP_turbine.u) annotation (Line(
-      points={{-98,0},{-78,0},{-78,-26},{-64,-26}},
+      points={{-98.1,0.1},{-78,0.1},{-78,-26},{-64,-26}},
       color={255,204,51},
       thickness=0.5,
       smooth=Smooth.None), Text(
@@ -75,7 +76,7 @@ assert(Tau_HP>0 and Tau_IP>0, "Time constants must be greater than zero!");
       index=-1,
       extent={{-6,3},{-6,3}}));
   connect(inlet.m_flow_, energyStorage_HP_turbine.u) annotation (Line(
-      points={{-98,0},{-78,0},{-78,34},{-64,34}},
+      points={{-98.1,0.1},{-78,0.1},{-78,34},{-64,34}},
       color={255,204,51},
       thickness=0.5,
       smooth=Smooth.None), Text(

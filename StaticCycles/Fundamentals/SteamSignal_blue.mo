@@ -6,6 +6,6 @@ connector SteamSignal_blue "Signal-based steam connector"
   annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-40,-100},{40,100}}),   graphics={Rectangle(
           extent={{-40,100},{40,-100}},
           lineColor={0,131,169},
-          fillColor={170,213,255},
+          fillColor={153,205,221},
           fillPattern=FillPattern.Solid)}), Diagram(coordinateSystem(extent={{-40,-100},{40,100}})));
 end SteamSignal_blue;

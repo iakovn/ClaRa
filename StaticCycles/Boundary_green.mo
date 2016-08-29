@@ -1,7 +1,7 @@
 within ClaRa.StaticCycles;
 model Boundary_green "Green boundary"
 
-  parameter Boolean source = true;
+  parameter Boolean source = true "True if boundary is source else sink";
   parameter ClaRa.Basics.Units.MassFlowRate  m_flow(fixed= source) annotation(Dialog(enable = source));
   parameter ClaRa.Basics.Units.EnthalpyMassSpecific h(fixed=source) annotation(Dialog(enable = source));
   parameter ClaRa.Basics.Units.Pressure p(fixed= source) annotation(Dialog(enable = source));
@@ -36,17 +36,20 @@ initial equation
           lineColor={115,150,0},
           fillColor={255,255,255},
           fillPattern=FillPattern.Solid,
-          textString="%p"),
+          textString="%p",
+          visible=source),
         Text(
           extent={{-60,20},{60,-20}},
           lineColor={115,150,0},
           fillColor={255,255,255},
           fillPattern=FillPattern.Solid,
-          textString="%m_flow"),
+          textString="%m_flow",
+          visible=source),
         Text(
           extent={{-60,-20},{60,-60}},
           lineColor={115,150,0},
           fillColor={255,255,255},
           fillPattern=FillPattern.Solid,
-          textString="%h")}),               Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}), graphics));
+          textString="%h",
+          visible=source)}),               Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}), graphics));
 end Boundary_green;

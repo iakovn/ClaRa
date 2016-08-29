@@ -1,7 +1,8 @@
 within ClaRa.Components.MechanicalSeparation;
-model FeedWaterTank_L3 "Feedwater tank : separated volume approach | level-dependent phase separation"
+model FeedWaterTank_L3
+  "Feedwater tank : separated volume approach | level-dependent phase separation"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -16,47 +17,59 @@ model FeedWaterTank_L3 "Feedwater tank : separated volume approach | level-depen
 //___________________________________________________________________________//
 
 extends ClaRa.Components.MechanicalSeparation.FeedWaterTank_base;
-  parameter ClaRa.Basics.Units.Length thickness_wall=0.005*diameter "Thickness of the cylinder wall"  annotation(Dialog(group="Geometry"));
-  replaceable model material = TILMedia.SolidTypes.TILMedia_Steel constrainedby TILMedia.SolidTypes.TILMedia_Aluminum "Material of the walls"  annotation (Dialog(group="Fundamental Definitions"),choicesAllMatching);
+  parameter ClaRa.Basics.Units.Length thickness_wall=0.005*diameter
+    "Thickness of the cylinder wall"                                                                  annotation(Dialog(group="Geometry"));
+  replaceable model material = TILMedia.SolidTypes.TILMedia_Steel constrainedby
+    TILMedia.SolidTypes.TILMedia_Aluminum "Material of the walls"                                                                              annotation (Dialog(group="Fundamental Definitions"),choicesAllMatching);
   extends ClaRa.Basics.Icons.ComplexityLevel(complexity="L3");
   parameter Modelica.SIunits.Length radius_flange=0.05 "Flange radius" annotation(Dialog(group="Geometry"));
-  parameter SI.Time Tau_cond=10 "|Phase Separation|Mass Transfer Between Phases|Time constant of condensation";
-  parameter SI.Time tau_evap=Tau_cond*1000 "|Phase Separation|Mass Transfer Between Phases|Time constant of evaporation";
-  parameter Real absorbInflow=1 "|Phase Separation|Mass Transfer Between Phases|absorption of incoming mass flow to the zones 1: perfect in the allocated zone, 0: perfect according to steam quality";
-  parameter SI.Area A_phaseBorder=volume.geo.A_hor*100 "|Phase Separation|Heat Transfer Between Phases|Heat transfer area at phase border";
-  parameter SI.CoefficientOfHeatTransfer alpha_ph=500 "|Phase Separation|Heat Transfer Between Phases|HTC of the phase border";
-//  parameter Real expHT_phases=0 "|Phase Separation|Heat Transfer Between Phases|Exponent for volume dependency on inter phase HT";
-  parameter Modelica.Blocks.Types.Smoothness smoothness=Modelica.Blocks.Types.Smoothness.LinearSegments "|Phase Separation|Numerical Robustness|Smoothness of table interpolation for calculation of filling level";
+  parameter SI.Time Tau_cond=10 "Time constant of condensation" annotation (Dialog(tab="Phase Separation", group="Mass Transfer Between Phases"));
+  parameter SI.Time tau_evap=Tau_cond*1000 "Time constant of evaporation" annotation (Dialog(tab="Phase Separation", group="Mass Transfer Between Phases"));
+  parameter Real absorbInflow=1
+    "Absorption of incoming mass flow to the zones 1: perfect in the allocated zone, 0: perfect according to steam quality"
+                                                                                                        annotation (Dialog(tab="Phase Separation", group="Mass Transfer Between Phases"));
+  parameter SI.Area A_phaseBorder=volume.geo.A_hor*100
+    "Heat transfer area at phase border"                                                    annotation (Dialog(tab="Phase Separation", group="Heat Transfer Between Phases"));
+  parameter SI.CoefficientOfHeatTransfer alpha_ph=500 "HTC of the phase border"
+                                                                                annotation (Dialog(tab="Phase Separation", group="Heat Transfer Between Phases"));
+  //  parameter Real expHT_phases=0 "Exponent for volume dependency on inter phase HT" annotation (Dialog(tab="Phase Separation", group="Heat Transfer Between Phases"));
+  parameter Boolean equalPressures=true
+    "True if pressure in liquid and vapour phase is equal"                                     annotation (Dialog(tab="Phase Separation", group="Mass Transfer Between Phases"));
 
+  parameter Modelica.Blocks.Types.Smoothness smoothness=Modelica.Blocks.Types.Smoothness.LinearSegments
+    "Smoothness of table interpolation for calculation of filling level"                                                                                                     annotation(Dialog(tab="Phase Separation", group="Numerical Robustness"));
   parameter Modelica.SIunits.Length z_in=1 "Height of inlet ports" annotation(Dialog(group="Geometry"));
   parameter Modelica.SIunits.Length z_out=1 "Height of outlet ports"  annotation(Dialog(group="Geometry"));
-  parameter Modelica.SIunits.SpecificEnthalpy h_liq_start= TILMedia.VLEFluidFunctions.bubbleSpecificEnthalpy_pxi(medium, p_start) "|Initialisation||Initial liquid specific enthalpy";
-  parameter Modelica.SIunits.SpecificEnthalpy h_vap_start= TILMedia.VLEFluidFunctions.dewSpecificEnthalpy_pxi(medium, p_start) "|Initialisation||Initial vapour specific enthalpy";
+  parameter Modelica.SIunits.SpecificEnthalpy h_liq_start= TILMedia.VLEFluidFunctions.bubbleSpecificEnthalpy_pxi(medium, p_start)
+    "|Initialisation||Initial liquid specific enthalpy";
+  parameter Modelica.SIunits.SpecificEnthalpy h_vap_start= TILMedia.VLEFluidFunctions.dewSpecificEnthalpy_pxi(medium, p_start)
+    "|Initialisation||Initial vapour specific enthalpy";
   replaceable model PressureLoss =
       ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.NoFriction_L3
-    constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.PressureLoss_L3 "Pressure loss model"
-                          annotation(Dialog(group="Fundamental Definitions"), choicesAllMatching);
+    constrainedby
+    ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.PressureLoss_L3
+    "Pressure loss model" annotation(Dialog(group="Fundamental Definitions"), choicesAllMatching);
   replaceable model HeatTransfer =
-      ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3 (                      alpha_nom={3000,3000})                              constrainedby Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.HeatTransfer_L3 "Heat transfer to the walls"
-                                                                                              annotation (Dialog(group="Fundamental Definitions"),choicesAllMatching=true);
+      ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3
+      (                                                                                                    alpha_nom={3000,3000})                              constrainedby
+    Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.HeatTransfer_L3
+    "Heat transfer to the walls"                                                              annotation (Dialog(group="Fundamental Definitions"),choicesAllMatching=true);
 
- record Outline
+ model Outline
    extends ClaRa.Basics.Icons.RecordIcon;
-   Basics.Units.Length
-             level_abs;
-   Real level_rel;
+   input Basics.Units.Length level_abs "Absolute filling level";
+   input Real level_rel "Relative filling level";
  end Outline;
 
- record Wall
+ model Wall
    extends ClaRa.Basics.Icons.RecordIcon;
-   Basics.Units.Temperature
-                  T_wall[3];
+   input Basics.Units.Temperature T_wall[3] "Temperatures";
  end Wall;
 
- record Summary
-  extends ClaRa.Basics.Icons.RecordIcon;
-  Outline outline;
-  Wall wall;
+ model Summary
+   extends ClaRa.Basics.Icons.RecordIcon;
+   Outline outline;
+   Wall wall;
    ClaRa.Basics.Records.FlangeVLE condensate;
    ClaRa.Basics.Records.FlangeVLE tapping;
    ClaRa.Basics.Records.FlangeVLE feedwater;
@@ -162,7 +175,8 @@ extends ClaRa.Components.MechanicalSeparation.FeedWaterTank_base;
     alpha_ph=alpha_ph,
     A_heat_ph=A_phaseBorder,
     redeclare model PhaseBorder =
-        ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.RealSeparated (
+        ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.RealSeparated
+        (
         level_rel_start=level_rel_start,
         smoothness=smoothness,
         radius_flange=
@@ -174,7 +188,8 @@ extends ClaRa.Components.MechanicalSeparation.FeedWaterTank_base;
         diameter=diameter,
         length=length,
         z_in={z_in},
-        z_out={z_out}))             annotation (Placement(transformation(extent={{12,-30},{-8,-10}})));
+        z_out={z_out}),
+    equalPressures=equalPressures)  annotation (Placement(transformation(extent={{12,-30},{-8,-10}})));
 
   ClaRa.Basics.ControlVolumes.SolidVolumes.ThickWall_L4 wall(
     sizefunc=+1,
@@ -187,6 +202,10 @@ extends ClaRa.Components.MechanicalSeparation.FeedWaterTank_base;
     diameter_o=diameter + 2*thickness_wall)
              annotation (Placement(transformation(extent={{-8,6},{12,26}})));
 
+  Modelica.Blocks.Interfaces.RealOutput level(value = if outputAbs then summary.outline.level_abs else summary.outline.level_rel) if levelOutput annotation (Placement(transformation(extent={{204,-126},{224,-106}}), iconTransformation(
+        extent={{-10,-10},{10,10}},
+        rotation=270,
+        origin={240,-110})));
 equation
   eye_int.m_flow=-outlet.m_flow;
   eye_int.T=volume.summary.outlet.T-273.15;
@@ -195,7 +214,7 @@ equation
   eye_int.p=volume.summary.outlet.p/100000;
 
   connect(volume.inlet, condensate) annotation (Line(
-      points={{12,-20},{102,-20}},
+      points={{12,-20},{106,-20},{106,60},{200,60}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
@@ -205,7 +224,7 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(volume.outlet, outlet) annotation (Line(
-      points={{-8,-20},{-98,-20}},
+      points={{-8,-20},{-134,-20},{-134,-100},{-260,-100}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
@@ -215,6 +234,15 @@ equation
       smooth=Smooth.None));
   annotation (Icon(coordinateSystem(preserveAspectRatio=true, extent={{-300,
             -100},{300,100}}),
-                   graphics),          Diagram(coordinateSystem(
+                   graphics={
+                     Rectangle(extent={{220,-8},{260,-92}}, lineColor={27,36,42},
+                               fillColor={153,205,221},
+                               fillPattern=FillPattern.Solid,
+                               visible=showLevel),
+                     Rectangle(extent=DynamicSelect({{220,-50},{260,-92}}, {{220,summary.outline.level_rel*84-92},{260,-92}}),
+                               lineColor={27,36,42},
+                               fillColor={0,131,169},
+                               fillPattern=FillPattern.Solid,
+                               visible=showLevel)}),          Diagram(coordinateSystem(
           preserveAspectRatio=true, extent={{-220,-120},{120,100}})));
 end FeedWaterTank_L3;

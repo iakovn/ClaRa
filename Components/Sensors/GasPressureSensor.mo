@@ -1,7 +1,7 @@
 within ClaRa.Components.Sensors;
 model GasPressureSensor "Ideal one port pressure sensor"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -14,8 +14,10 @@ model GasPressureSensor "Ideal one port pressure sensor"
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
-
+  extends ClaRa.Basics.Icons.Sensor1;
   outer ClaRa.SimCenter simCenter;
+
+  parameter Integer unitOption = 1 "Unit of output" annotation(choicesAllMatching,  Dialog(group="Fundamental Definitions"), choices(choice=1 "Pa", choice=2 "bar", choice=3 "mbar", choice=4 "MPa"));
 
   Modelica.Blocks.Interfaces.RealOutput p(final quantity="Pressure",
                                                             displayUnit = "bar",
@@ -31,7 +33,19 @@ model GasPressureSensor "Ideal one port pressure sensor"
    parameter TILMedia.GasTypes.BaseGas medium = simCenter.flueGasModel
     annotation (Placement(transformation(extent={{42,-2},{62,18}})));
 equation
-p= port.p;
+
+  if unitOption==1 then
+    p = port.p;
+  elseif unitOption==2 then
+    p=port.p/1e5;
+  elseif unitOption==3 then
+    p=port.p/100;
+  elseif unitOption==4 then
+    p=port.p/1e6;
+  else
+    p=-1; //dummy
+    assert(false, "Unknown unit option in " + getInstanceName());
+  end if;
 
   port.m_flow = 0;
   port.T_outflow = 0;
@@ -40,35 +54,21 @@ p= port.p;
   annotation (Diagram(graphics), Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}),
                                       graphics={
         Text(
+          extent={{-100,0},{100,-40}},
+          lineColor={27,36,42},
+          fillColor={0,255,0},
+          fillPattern=FillPattern.Solid,
+          textString="%name"),
+        Text(
           extent={{-100,60},{100,90}},
           fillColor={215,215,215},
           fillPattern=FillPattern.Solid,
           lineColor=DynamicSelect({230, 230, 230},  if p > 0 then {0,131,169} else {167,25,48}),
-          textString=DynamicSelect(" p ", realString(p/1e5, 1,1)+" bar")),
-        Polygon(
-          points={{-20,40},{-20,40},{-62,40},{-86,0},{-62,-40},{-20,-40},{20,-40},{62,-40},{86,0},{62,40},{20,40},{-20,40}},
-          lineColor={27,36,42},
-          smooth=Smooth.Bezier,
-          lineThickness=0.5),
+          textString=DynamicSelect(" p ", String(p/1e5, significantDigits=integer(1))+" bar")),
         Text(
           extent={{-98,36},{102,-4}},
           lineColor={27,36,42},
           fillColor={0,255,0},
           fillPattern=FillPattern.Solid,
-          textString="PIT"),
-        Line(
-          points={{0,-40},{0,-96}},
-          color={27,36,42},
-          thickness=0.5,
-          smooth=Smooth.None),
-        Line(
-          points={{80,0},{100,0}},
-          color={27,36,42},
-          smooth=Smooth.None),
-        Text(
-          extent={{-100,0},{100,-40}},
-          lineColor={27,36,42},
-          fillColor={0,255,0},
-          fillPattern=FillPattern.Solid,
-          textString="%name")}));
+          textString="PIT")}));
 end GasPressureSensor;

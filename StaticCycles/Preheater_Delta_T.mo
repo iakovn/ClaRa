@@ -1,14 +1,15 @@
 within ClaRa.StaticCycles;
-model Preheater_Delta_T "1ph preheater || par.: shell pressure, shell m_flow, Delta_T"
+model Preheater_Delta_T
+  "1ph preheater || par.: shell pressure, shell m_flow, Delta_T"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                            //
+// Component of the ClaRa library, version: 1.1.1                            //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                              //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -19,14 +20,20 @@ model Preheater_Delta_T "1ph preheater || par.: shell pressure, shell m_flow, De
   // Blue output:  Value of p is unknown and provided BY neighbor component, values of m_flow and h are known in component and provided FOR neighbor component.
   // Green output: Values of p, m_flow and h are known in component an provided FOR neighbor component.
   outer ClaRa.SimCenter simCenter;
-  parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium = simCenter.fluid1 "Medium in the component"  annotation(choices(choice=simCenter.fluid1 "First fluid defined in global simCenter",
-                       choice=simCenter.fluid2 "Second fluid defined in global simCenter",
-                       choice=simCenter.fluid3 "Third fluid defined in global simCenter"),
-                                                          Dialog(group="Fundamental Definitions"));
+  parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium = simCenter.fluid1
+    "Medium in the component"                                                                        annotation(choices(choice=simCenter.fluid1
+        "First fluid defined in global simCenter",
+                       choice=simCenter.fluid2
+        "Second fluid defined in global simCenter",
+                       choice=simCenter.fluid3
+        "Third fluid defined in global simCenter"),       Dialog(group="Fundamental Definitions"));
 
-  parameter ClaRa.Basics.Units.TemperatureDifference Delta_T "|Fundamental Definitions|Upper temperature difference (T_tap_in - T_cond_out)";
-  parameter ClaRa.Basics.Units.Pressure p_tap=1e5 "|Fundamental Definitions|Pressure of heating steam";
-  parameter ClaRa.Basics.Units.MassFlowRate m_flow_tap "|Fundamental Definitions|Mass flow rate of the heating steam";
+  parameter ClaRa.Basics.Units.TemperatureDifference Delta_T
+    "|Fundamental Definitions|Upper temperature difference (T_tap_in - T_cond_out)";
+  parameter ClaRa.Basics.Units.Pressure p_tap=1e5
+    "|Fundamental Definitions|Pressure of heating steam";
+  parameter ClaRa.Basics.Units.MassFlowRate m_flow_tap
+    "|Fundamental Definitions|Mass flow rate of the heating steam";
   final parameter ClaRa.Basics.Units.Temperature T_tap_in = TILMedia.VLEFluidFunctions.temperature_phxi(medium, p_tap, h_tap_in);
   final parameter ClaRa.Basics.Units.Temperature T_cond_in = TILMedia.VLEFluidFunctions.temperature_phxi(medium, p_cond, h_cond_in);
   final parameter ClaRa.Basics.Units.Temperature T_cond_out = T_tap_in - Delta_T;
@@ -34,7 +41,8 @@ model Preheater_Delta_T "1ph preheater || par.: shell pressure, shell m_flow, De
 
   final parameter ClaRa.Basics.Units.Pressure p_cond(fixed=false);
 
-  final parameter ClaRa.Basics.Units.MassFlowRate  m_flow_cond(fixed=false) "Mass flow of the condensate";
+  final parameter ClaRa.Basics.Units.MassFlowRate  m_flow_cond(fixed=false)
+    "Mass flow of the condensate";
   final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_tap_in(fixed=false);
   final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_cond_in(fixed=false);
   final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_tap_out = TILMedia.VLEFluidFunctions.specificEnthalpy_pTxi(medium,p_tap,T_tap_out);

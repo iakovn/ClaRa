@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes;
 model CounterFlow_L3 "Pure counter flow heatexchanger L3"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -17,12 +17,15 @@ model CounterFlow_L3 "Pure counter flow heatexchanger L3"
 
 //VDI-Waermeatlas Chapter Ca5, 9th edition, VDI-Verlag,2006
 
-extends ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.GeneralHeatExchanger_L3(
+extends
+    ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.GeneralHeatExchanger_L3
+    (
     final a=0,
     final b=0,
     final c=0,
     final d=0.5);
-extends ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Icons.HEX_CounterFlow_Icon;
+extends
+    ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Icons.HEX_CounterFlow_Icon;
 equation
   h_o_in[1] = iCom.h_o_inlet;
   h_o_in[2] = iCom.h_o_out[1];

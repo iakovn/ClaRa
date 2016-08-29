@@ -1,7 +1,7 @@
 within ClaRa.Visualisation.Check;
 model TestHEXdisplay "Illustrates the capabilities of the HEXdisplay"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -25,8 +25,10 @@ extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb80;
   parameter SI.Pressure p_i=2e5 "Pressure of cold side";
   parameter SI.Pressure p_o=300e5 "Pressure of hot side";
 
-  parameter SI.CoefficientOfHeatTransfer alpha_i=730 "Heat transfer coefficient of cold side";
-  parameter SI.CoefficientOfHeatTransfer alpha_o=7300 "Heat transfer coefficient of hot side";
+  parameter SI.CoefficientOfHeatTransfer alpha_i=730
+    "Heat transfer coefficient of cold side";
+  parameter SI.CoefficientOfHeatTransfer alpha_o=7300
+    "Heat transfer coefficient of hot side";
 
   parameter Integer N_tubes = 200 "Number of parallel tubes";
   parameter Integer N_passes = 1 "Number of passes";

@@ -1,7 +1,8 @@
 within ClaRa.Components.Control.PredictorModels_3508;
-model CoalSupplyBoiler_01_XRG "A simple coal supply and boiler model using characteristic lines and transfer functions"
+model CoalSupplyBoiler_01_XRG
+  "A simple coal supply and boiler model using characteristic lines and transfer functions"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -19,43 +20,55 @@ model CoalSupplyBoiler_01_XRG "A simple coal supply and boiler model using chara
   extends ClaRa.Basics.Icons.ComplexityLevel(complexity="01");
 
   outer ClaRa.SimCenter simCenter;
-  parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium = simCenter.fluid1 "Medium in the component"
-    annotation(choices(choice=simCenter.fluid1 "First fluid defined in global simCenter",
-                       choice=simCenter.fluid2 "Second fluid defined in global simCenter",
-                       choice=simCenter.fluid3 "Third fluid defined in global simCenter"), Dialog(group="Fundamental Definitions"));
+  parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium = simCenter.fluid1
+    "Medium in the component"
+    annotation(choices(choice=simCenter.fluid1
+        "First fluid defined in global simCenter",
+                       choice=simCenter.fluid2
+        "Second fluid defined in global simCenter",
+                       choice=simCenter.fluid3
+        "Third fluid defined in global simCenter"),                                        Dialog(group="Fundamental Definitions"));
 
-  parameter Modelica.SIunits.Pressure p_LS_nom= 300e5 "Nominal life steam pressure"
-                                                                                  annotation(Dialog(group="Nominal values"));
-  parameter Modelica.SIunits.Pressure Delta_p_nom = 40e5 "Nominal life steam pressure loss"       annotation(Dialog(group="Nominal values"));
-  parameter Modelica.SIunits.SpecificEnthalpy h_LS_nom = 3279e3 "Nominal life steam specific enthalpy"
-                                                                                            annotation(Dialog(group="Nominal values"));
-  parameter Modelica.SIunits.MassFlowRate m_flow_LS_nom = 419 "Nominal life steam flow rate" annotation(Dialog(group="Nominal values"));
+  parameter Modelica.SIunits.Pressure p_LS_nom= 300e5
+    "Nominal life steam pressure"                                                 annotation(Dialog(group="Nominal values"));
+  parameter Modelica.SIunits.Pressure Delta_p_nom = 40e5
+    "Nominal life steam pressure loss"                                                            annotation(Dialog(group="Nominal values"));
+  parameter Modelica.SIunits.SpecificEnthalpy h_LS_nom = 3279e3
+    "Nominal life steam specific enthalpy"                                                  annotation(Dialog(group="Nominal values"));
+  parameter Modelica.SIunits.MassFlowRate m_flow_LS_nom = 419
+    "Nominal life steam flow rate"                                                           annotation(Dialog(group="Nominal values"));
 
-  parameter Real CL_mflowLS_QF_[:,:]=[0, 0.32; 0.34, 0.32; 1, 1] "Characteristic line life steam flow as function of thermal output"
-                                                                        annotation(Dialog(group="Part Load Definition"));
-  parameter Real CL_pLS_QF_[:,:]=[0, 0.32; 0.34, 0.32; 1, 1] "Characteristic line life steam pressure as function of thermal output"
-                                                                            annotation(Dialog(group="Part Load Definition"));
-  parameter Real CL_Valve_[:,:]=[0,0; 1, 1] "Characteristics of the turbine valve"
-                                           annotation(Dialog(group="Part Load Definition"));
-  parameter Real CL_Deltap_mflowLS_[:,:]=[0,0;0.1, 0.01; 0.2, 0.04; 0.3, 0.09; 0.4, 0.16; 0.5, 0.25; 0.6, 0.36; 0.7, 0.49; 0.8, 0.64; 0.9, 0.81; 1, 1] "Characteristic line of life steam pressure drop as function of mass flow rate"
+  parameter Real CL_mflowLS_QF_[:,:]=[0, 0.32; 0.34, 0.32; 1, 1]
+    "Characteristic line life steam flow as function of thermal output" annotation(Dialog(group="Part Load Definition"));
+  parameter Real CL_pLS_QF_[:,:]=[0, 0.32; 0.34, 0.32; 1, 1]
+    "Characteristic line life steam pressure as function of thermal output" annotation(Dialog(group="Part Load Definition"));
+  parameter Real CL_Valve_[:,:]=[0,0; 1, 1]
+    "Characteristics of the turbine valve" annotation(Dialog(group="Part Load Definition"));
+  parameter Real CL_Deltap_mflowLS_[:,:]=[0,0;0.1, 0.01; 0.2, 0.04; 0.3, 0.09; 0.4, 0.16; 0.5, 0.25; 0.6, 0.36; 0.7, 0.49; 0.8, 0.64; 0.9, 0.81; 1, 1]
+    "Characteristic line of life steam pressure drop as function of mass flow rate"
                                                                                     annotation(Dialog(group="Part Load Definition"));
-  parameter Real CL_hEvap_pD_[:,:] = [0.34, 2806e3; 0.55, 2708e3; 0.75, 2559e3; 1, 2200e3] "Characteristic line evap outlet enthalpy over pressure"
-                                                             annotation(Dialog(group="Part Load Definition"));
+  parameter Real CL_hEvap_pD_[:,:] = [0.34, 2806e3; 0.55, 2708e3; 0.75, 2559e3; 1, 2200e3]
+    "Characteristic line evap outlet enthalpy over pressure" annotation(Dialog(group="Part Load Definition"));
 
-  parameter Modelica.SIunits.Time tau_u = 120 "equivalent dead time of steam generation" annotation(Dialog(group="Time Response Definition"));
-  parameter Modelica.SIunits.Time Tau_g = 200 "balancing time of steam generation" annotation(Dialog(group="Time Response Definition"));
-  parameter Modelica.SIunits.Time Tau_s = 200 "Integration time of steam storage"  annotation(Dialog(group="Time Response Definition"));
-  parameter Modelica.SIunits.Time Tau_evap=5 "Time constant for energy storage in evaporator"
+  parameter Modelica.SIunits.Time tau_u = 120
+    "equivalent dead time of steam generation"                                           annotation(Dialog(group="Time Response Definition"));
+  parameter Modelica.SIunits.Time Tau_g = 200
+    "balancing time of steam generation"                                           annotation(Dialog(group="Time Response Definition"));
+  parameter Modelica.SIunits.Time Tau_s = 200
+    "Integration time of steam storage"                                            annotation(Dialog(group="Time Response Definition"));
+  parameter Modelica.SIunits.Time Tau_evap=5
+    "Time constant for energy storage in evaporator"
                                                     annotation(Dialog(group="Time Response Definition"));
 
   parameter Real y_T_const = 1 "Constant turbine valve aperture" annotation(Dialog(group="Control Definition"));
-  input Modelica.SIunits.Temperature T_LS = 823.15 "Value of life steam temperature" annotation(Dialog(group="Control Definition"));
+  input Modelica.SIunits.Temperature T_LS = 823.15
+    "Value of life steam temperature"                                                annotation(Dialog(group="Control Definition"));
   Modelica.SIunits.Pressure p_LS "Life steam pressure";
   parameter Real p_LS_0=1 "Initial value of life steam pressure in p.u." annotation(Dialog(group="Initialisation"));
 
 protected
-  Modelica.Blocks.Sources.RealExpression h(y=TILMedia.VLEFluidFunctions.specificEnthalpy_pTxi(medium, p_LS, T_LS)/h_LS_nom) "Life Steam specific enthalpy"
-                                   annotation (Placement(transformation(extent={{-8,54},
+  Modelica.Blocks.Sources.RealExpression h(y=TILMedia.VLEFluidFunctions.specificEnthalpy_pTxi(medium, p_LS, T_LS)/h_LS_nom)
+    "Life Steam specific enthalpy" annotation (Placement(transformation(extent={{-8,54},
             {12,74}})));
 
 public
@@ -70,7 +83,8 @@ public
     annotation (Placement(transformation(extent={{-36,-24},{-16,-4}})));
   Modelica.Blocks.Continuous.TransferFunction heatRelease(a={Tau_g*tau_u,(Tau_g + tau_u),1},
     initType=Modelica.Blocks.Types.Init.InitialOutput,
-    y_start=p_LS_0) "comprehends the coal supply, the heat release and the steam generation"
+    y_start=p_LS_0)
+    "comprehends the coal supply, the heat release and the steam generation"
     annotation (Placement(transformation(extent={{-66,-24},{-46,-4}})));
   Modelica.Blocks.Math.Product turbineValve "Effect of steam flow throtteling"
     annotation (Placement(transformation(extent={{38,-30},{58,-10}})));
@@ -94,24 +108,31 @@ public
   Modelica.Blocks.Tables.CombiTable1D convert2PressureDrop(columns={2}, table=
         CL_Deltap_mflowLS_)
     annotation (Placement(transformation(extent={{102,36},{122,56}})));
-  Modelica.Blocks.Interfaces.RealInput QF_setl_ "Set value of thermal output in p.u."
-                                          annotation (Placement(transformation(
+  Modelica.Blocks.Interfaces.RealInput QF_setl_
+    "Set value of thermal output in p.u." annotation (Placement(transformation(
           extent={{-132,-18},{-92,22}}),iconTransformation(extent={{-120,-34},{-80,
             6}})));
   Basics.Interfaces.SteamSignal      steamSignal annotation (Placement(
         transformation(
         extent={{-20,-20},{20,20}},
         rotation=90,
-        origin={150,-72})));
+        origin={162,-60})));
   EnthalpyPredictor enthalpyPredictor(CL_hEvap_pD_=CL_hEvap_pD_,
-      Tau_evap=Tau_evap)
+      Tau_evap=Tau_evap,
+    initType=Modelica.Blocks.Types.Init.SteadyState,
+    h_evap_start=2200e3)
     annotation (Placement(transformation(extent={{72,-98},{92,-78}})));
-  Modelica.Blocks.Interfaces.RealOutput m_StG_ "Mass flow rate of steam generation in p.u."
-                                                 annotation (Placement(
+  Modelica.Blocks.Interfaces.RealOutput m_StG_
+    "Mass flow rate of steam generation in p.u." annotation (Placement(
         transformation(
         extent={{-10,-10},{10,10}},
         rotation=270,
-        origin={-42,-110})));
+        origin={-40,-110})));
+  Modelica.Blocks.Interfaces.RealOutput p_LS_ "Connector of Real output signal"
+                                                                                annotation (Placement(transformation(
+        extent={{-10,-10},{10,10}},
+        rotation=270,
+        origin={20,-110})));
 equation
  if cardinality(yT_)==0 then
    turbineValveCaracteristics.u[1]=y_T_const;
@@ -158,21 +179,21 @@ equation
       color={0,0,127},
       smooth=Smooth.None));
   connect(convert2LifeSteamFlow.y[1], steamSignal.m_flow_) annotation (Line(
-      points={{93,30},{98,30},{98,-72},{150,-72}},
+      points={{93,30},{98,30},{98,-59.9},{161.9,-59.9}},
       color={0,0,127},
       smooth=Smooth.None), Text(
       string="%second",
       index=1,
       extent={{6,3},{6,3}}));
   connect(h.y, steamSignal.h_) annotation (Line(
-      points={{13,64},{134,64},{134,-72},{150,-72}},
+      points={{13,64},{134,64},{134,-59.9},{161.9,-59.9}},
       color={0,0,127},
       smooth=Smooth.None), Text(
       string="%second",
       index=1,
       extent={{6,3},{6,3}}));
   connect(convert2LifeSteamPressure.y[1], steamSignal.p_) annotation (Line(
-      points={{51,30},{62,30},{62,-8},{96,-8},{96,-72},{150,-72}},
+      points={{51,30},{62,30},{62,-8},{96,-8},{96,-59.9},{161.9,-59.9}},
       color={0,0,127},
       smooth=Smooth.None), Text(
       string="%second",
@@ -183,36 +204,36 @@ equation
       color={0,0,127},
       smooth=Smooth.None));
   connect(enthalpyPredictor.y, steamSignal.h_evap) annotation (Line(
-      points={{93,-88},{121.5,-88},{121.5,-72},{150,-72}},
+      points={{93,-88},{121.5,-88},{121.5,-60},{162,-60}},
       color={0,0,127},
       smooth=Smooth.None), Text(
       string="%second",
       index=1,
       extent={{6,3},{6,3}}));
   connect(heatRelease.y, m_StG_) annotation (Line(
-      points={{-45,-14},{-45,-57},{-42,-57},{-42,-110}},
+      points={{-45,-14},{-40,-14},{-40,-110}},
       color={0,0,127},
       smooth=Smooth.None));
+  connect(SteamStorage.y, p_LS_) annotation (Line(points={{15,-14},{20,-14},{20,-110}}, color={0,0,127}));
+  connect(m_StG_, m_StG_) annotation (Line(points={{-40,-110},{-40,-110}}, color={0,0,127}));
     annotation (Placement(transformation(extent={{-730,-116},{-710,-96}})),
-              Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,
-            -100},{150,100}}),
-                      graphics), Icon(coordinateSystem(preserveAspectRatio=true,
-          extent={{-100,-100},{150,100}}), graphics={
+              Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},{160,100}})),
+                                 Icon(coordinateSystem(preserveAspectRatio=true,
+          extent={{-100,-100},{160,100}}), graphics={
         Polygon(
-          points={{100,76},{110,76},{110,-64},{110,-68},{148,-68},{148,-74},{106,
-              -74},{106,72},{100,72},{100,76}},
+          points={{100,76},{110,76},{110,-56},{156,-56},{158,-64},{106,-64},{106,72},{100,72},{100,76}},
           lineColor={0,0,0},
           smooth=Smooth.None,
           fillColor={135,135,135},
           fillPattern=FillPattern.Solid),
         Polygon(
-          points={{116,-60},{116,-80},{136,-60},{136,-80},{116,-60}},
+          points={{116,-50},{116,-70},{136,-50},{136,-70},{116,-50}},
           lineColor={0,0,0},
           smooth=Smooth.None,
           fillPattern=FillPattern.Solid,
           fillColor={95,95,95}),
         Line(
-          points={{126,72},{126,-68}},
+          points={{126,72},{126,-60}},
           color={0,0,255},
           smooth=Smooth.None)}));
 end CoalSupplyBoiler_01_XRG;

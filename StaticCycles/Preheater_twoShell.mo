@@ -1,14 +1,15 @@
 within ClaRa.StaticCycles;
-model Preheater_twoShell "Two cascade preheater || bubble state at shell outlets || par.: shell pressures, shell m_flows"
+model Preheater_twoShell
+  "Two cascade preheater || bubble state at shell outlets || par.: shell pressures, shell m_flows"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                            //
+// Component of the ClaRa library, version: 1.1.1                            //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                              //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -19,18 +20,26 @@ model Preheater_twoShell "Two cascade preheater || bubble state at shell outlets
   // Blue output:  Value of p is unknown and provided BY neighbor component, values of m_flow and h are known in component and provided FOR neighbor component.
   // Green output: Values of p, m_flow and h are known in component an provided FOR neighbor component.
   outer ClaRa.SimCenter simCenter;
-  parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium = simCenter.fluid1 "Medium in the component"
-    annotation(choices(choice=simCenter.fluid1 "First fluid defined in global simCenter",
-                       choice=simCenter.fluid2 "Second fluid defined in global simCenter",
-                       choice=simCenter.fluid3 "Third fluid defined in global simCenter"),
-                                                          Dialog(group="Fundamental Definitions"));
-  parameter ClaRa.Basics.Units.Pressure p_tap1=1e5 "|Fundamental Definitions|Pressure of heating steam 1";
-  parameter ClaRa.Basics.Units.Pressure p_tap2=1e5 "|Fundamental Definitions|Pressure of heating steam 2";
+  parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium = simCenter.fluid1
+    "Medium in the component"
+    annotation(choices(choice=simCenter.fluid1
+        "First fluid defined in global simCenter",
+                       choice=simCenter.fluid2
+        "Second fluid defined in global simCenter",
+                       choice=simCenter.fluid3
+        "Third fluid defined in global simCenter"),       Dialog(group="Fundamental Definitions"));
+  parameter ClaRa.Basics.Units.Pressure p_tap1=1e5
+    "|Fundamental Definitions|Pressure of heating steam 1";
+  parameter ClaRa.Basics.Units.Pressure p_tap2=1e5
+    "|Fundamental Definitions|Pressure of heating steam 2";
 
-  parameter ClaRa.Basics.Units.MassFlowRate m_flow_tap1=1 "|Fundamental Definitions|Mass flow rate of the heating steam 1";
-  parameter ClaRa.Basics.Units.MassFlowRate m_flow_tap2=1 "|Fundamental Definitions|Mass flow rate of the heating steam 2";
+  parameter ClaRa.Basics.Units.MassFlowRate m_flow_tap1=1
+    "|Fundamental Definitions|Mass flow rate of the heating steam 1";
+  parameter ClaRa.Basics.Units.MassFlowRate m_flow_tap2=1
+    "|Fundamental Definitions|Mass flow rate of the heating steam 2";
   final parameter ClaRa.Basics.Units.Pressure p_cond(fixed=false);
-  final parameter ClaRa.Basics.Units.MassFlowRate m_flow_cond(fixed=false) "Mass flow of the condensate";
+  final parameter ClaRa.Basics.Units.MassFlowRate m_flow_cond(fixed=false)
+    "Mass flow of the condensate";
   final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_tap1_in(fixed=false);
   final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_tap2_in(fixed=false);
   final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_cond_in(fixed=false);

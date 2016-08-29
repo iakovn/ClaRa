@@ -3,8 +3,8 @@ type FluidType = enumeration(
     Steam "Steam",
     Condensate "Condensate",
     FlueGas "Flue gas",
-    FreshAir "Fresh air") "The expected fluid type like, steam, condensate, gas,..."
-                                                             annotation (Icon(
+    FreshAir "Fresh air")
+  "The expected fluid type like, steam, condensate, gas,..." annotation (Icon(
       graphics={Polygon(
         points={{-100,100},{100,-100},{-100,100}},
         lineColor={255,0,0},

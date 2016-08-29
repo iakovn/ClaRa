@@ -1,7 +1,7 @@
 within ClaRa.StaticCycles;
 model Boundary_red "Red boundary"
 
-  parameter Boolean source = true;
+  parameter Boolean source = true "True if boundary is source else sink";
   parameter ClaRa.Basics.Units.MassFlowRate  m_flow(fixed= not source) annotation(Dialog(enable = not source));
   parameter ClaRa.Basics.Units.EnthalpyMassSpecific h(fixed=source) annotation(Dialog(enable = source));
   parameter ClaRa.Basics.Units.Pressure p(fixed= not source) annotation(Dialog(enable = not source));
@@ -10,11 +10,11 @@ model Boundary_red "Red boundary"
   Fundamentals.SteamSignal_red outlet(h=h)  annotation (Placement(transformation(extent={{96,-10},{104,10}})));
 initial equation
   if source then
-    h=inlet.h;
-  else
     m_flow= outlet.m_flow;
     p=outlet.p;
+  else
 
+    h=inlet.h;
   end if;
 
   annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}), graphics={Line(
@@ -36,17 +36,20 @@ initial equation
           lineColor={150,25,48},
           fillColor={255,255,255},
           fillPattern=FillPattern.Solid,
-          textString="%p"),
+          textString="%p",
+          visible=not source),
         Text(
           extent={{-60,20},{60,-20}},
           lineColor={150,25,48},
           fillColor={255,255,255},
           fillPattern=FillPattern.Solid,
-          textString="%m_flow"),
+          textString="%m_flow",
+          visible=not source),
         Text(
           extent={{-60,-20},{60,-60}},
           lineColor={150,25,48},
           fillColor={255,255,255},
           fillPattern=FillPattern.Solid,
-          textString="%h")}),               Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}), graphics));
+          textString="%h",
+          visible=source)}),               Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}), graphics));
 end Boundary_red;

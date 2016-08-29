@@ -1,7 +1,8 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.VLE_PL;
-model QuadraticNominalPoint_L2 "All geo || Quadratic pressure loss || nominal point || density dependent "
+model QuadraticNominalPoint_L2
+  "All geo || Quadratic pressure loss || nominal point || density dependent "
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.0                        //
+  // Component of the ClaRa library, version: 1.1.1                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,13 +16,16 @@ model QuadraticNominalPoint_L2 "All geo || Quadratic pressure loss || nominal po
   // XRG Simulation GmbH (Hamburg, Germany).                                   //
   //___________________________________________________________________________//
 
-  extends ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.VLE_PL.PressureLoss_L2;
+  extends
+    ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.VLE_PL.PressureLoss_L2;
   extends ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.TubeType_L2;
   extends ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.ShellType_L2;
-  parameter SI.Pressure Delta_p_smooth=100 "Start linearisation for decreasing pressure loss";
+  parameter SI.Pressure Delta_p_smooth=100
+    "Start linearisation for decreasing pressure loss";
   parameter SI.PressureDifference Delta_p_nom=1000 "Nominal pressure loss";
   parameter SI.DensityMassSpecific rho_nom=1000 "Nominal inlet density";
-  final parameter FluidDissipation.Utilities.Types.PressureLossCoefficient zeta=2*Delta_p_nom*geo.A_cross^2*rho_nom/iCom.m_flow_nom^2 "Pressure loss coefficient for total pipe";
+  final parameter FluidDissipation.Utilities.Types.PressureLossCoefficient zeta=2*Delta_p_nom*geo.A_cross^2*rho_nom/iCom.m_flow_nom^2
+    "Pressure loss coefficient for total pipe";
   SI.DensityMassSpecific rho_in "Inlet density";
 equation
   rho_in = TILMedia.VLEFluidObjectFunctions.density_phxi(

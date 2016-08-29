@@ -1,7 +1,7 @@
 within ClaRa.Components.Furnace.ChemicalReactions;
 model CoalReactionZone
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -27,18 +27,12 @@ equation
   n_Ash = xi_fuel_in[6] /Basics.Constants.M_Ash;
   n_H2O = (1-sum(xi_fuel_in)) /Basics.Constants.M_H2O;
 
-   0 =xi_fuel_in[1]/Basics.Constants.M_C*xi_CO -n_CO;
-   0 =xi_fuel_in[4]/Basics.Constants.M_N*xi_NOx -n_NO;
-   0 = xi_fuel_in[1]/Basics.Constants.M_C
-                                   -n_CO2 -n_CO;
-   0 = xi_fuel_in[2]/Basics.Constants.M_H
-                                  /2 + (1-sum(xi_fuel_in))/(Basics.Constants.M_H
-                                                                         *2+Basics.Constants.M_O)
-                                                                                           -n_H2O_prod;
-   0 = xi_fuel_in[5]/Basics.Constants.M_S
-                                   -n_SO2;
-   0 = xi_fuel_in[4]/Basics.Constants.M_N
-                                  /2-n_N2 -n_NO/2;
+   0 =xi_fuel_in[1]/Basics.Constants.M_C*xi_CO - n_CO;
+   0 =xi_fuel_in[4]/Basics.Constants.M_N*xi_NOx - n_NO;
+   0 = xi_fuel_in[1]/Basics.Constants.M_C - n_CO2 -n_CO;
+   0 = xi_fuel_in[2]/Basics.Constants.M_H / 2 + (1-sum(xi_fuel_in))/(Basics.Constants.M_H*2+Basics.Constants.M_O)-n_H2O_prod;
+   0 = xi_fuel_in[5]/Basics.Constants.M_S -n_SO2;
+   0 = xi_fuel_in[4]/Basics.Constants.M_N /2-n_N2 -n_NO/2;
 
  for i in 1:(flueGas.nc-1) loop
      if i==1 then prod_comp[1] =xi_fuel_in[6]*(1 - xi_slag);

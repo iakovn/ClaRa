@@ -1,8 +1,9 @@
 within ClaRa.Components.TurboMachines.Compressors;
-model CompressorGas_L1_stageStacked "Advanced compressor or fan for ideal gas mixtures using the stage stacking method according to N. Gasparovic"
+model CompressorGas_L1_stageStacked
+  "Advanced compressor or fan for ideal gas mixtures using the stage stacking method according to N. Gasparovic"
   import ClaRa;
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -18,14 +19,14 @@ model CompressorGas_L1_stageStacked "Advanced compressor or fan for ideal gas mi
 
   outer ClaRa.SimCenter simCenter;
 extends ClaRa.Basics.Icons.Compressor;
-parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary "True if component shall contribute to automatic efficiency calculation"
-                                                                                            annotation(Dialog(tab="Summary and Visualisation"));
+parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary
+    "True if component shall contribute to automatic efficiency calculation"                annotation(Dialog(tab="Summary and Visualisation"));
   ClaRa.Basics.Interfaces.Connected2SimCenter connected2SimCenter(
     powerIn=0,
     powerOut=-P_hyd,
     powerAux=-P_shaft + P_hyd) if                                                                                                  contributeToCycleSummary;
 
-  record Outline
+  model Outline
    extends ClaRa.Basics.Icons.RecordIcon;
    input SI.VolumeFlowRate V_flow "Volume flow rate";
    input SI.Power P_hyd "Hydraulic power";
@@ -40,7 +41,7 @@ parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary 
    input Real Pi_rel "Relative pressure ratio";
   end Outline;
 
-  record Summary
+  model Summary
     extends ClaRa.Basics.Icons.RecordIcon;
     Outline outline;
     ClaRa.Basics.Records.FlangeGas  inlet;
@@ -58,7 +59,8 @@ parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary 
            else 1e-5)) "inlet flow"
     annotation (Placement(transformation(extent={{-110,-10},{-90,10}})));
   ClaRa.Basics.Interfaces.GasPortOut outlet(Medium=medium, m_flow(max=if
-          allow_reverseFlow then Modelica.Constants.inf else -1e-5)) "outlet flow"
+          allow_reverseFlow then Modelica.Constants.inf else -1e-5))
+    "outlet flow"
     annotation (Placement(transformation(extent={{90,-10},{110,10}})));
 
   Modelica.Mechanics.Rotational.Interfaces.Flange_a shaft if useMechanicalPort
@@ -76,38 +78,48 @@ public
   TILMedia.Gas_pT flueGas_outlet( gasType = medium, T = T_out, p = outlet.p,  xi = flueGas_inlet.xi)
     annotation (Placement(transformation(extent={{70,-12},{90,8}})));
 
-  Modelica.Blocks.Interfaces.RealInput Delta_alpha_input(value=Delta_alpha) if useExternalVIGVangle "VIGV angle input"
-                       annotation (Placement(transformation(extent={{-128,60},{-88,100}})));
+  Modelica.Blocks.Interfaces.RealInput Delta_alpha_input(value=Delta_alpha) if useExternalVIGVangle
+    "VIGV angle input" annotation (Placement(transformation(extent={{-128,60},{-88,100}})));
 
   //__________________________/ Parameters \_____________________________
   parameter Integer N_stages = 12 "Number of Compressor Stages";
   parameter Integer N_VIGVstages = 1 "Number of VIGV Stages";
   parameter SI.RPM rpm_nom = 3000 "|Nominal Values|Nomial rotational speed";
-  parameter Real eta_isen_stage_nom = 0.9 "|Nominal Values|Nominal isentropic stage efficiency (axial: ca. 0.9, radial: ca. 0.82)";
-  parameter Boolean useExternalVIGVangle= false "True, if an external source should be used to set VIGV angle";
-  parameter SI.Angle Delta_alpha_fixed = 0 "Fixed angle of VIGV (variable inlet guide vanes)"
-                                                                                          annotation(Dialog(enable = not useExternalVIGVangle));
+  parameter Real eta_isen_stage_nom = 0.9
+    "|Nominal Values|Nominal isentropic stage efficiency (axial: ca. 0.9, radial: ca. 0.82)";
+  parameter Boolean useExternalVIGVangle= false
+    "True, if an external source should be used to set VIGV angle";
+  parameter SI.Angle Delta_alpha_fixed = 0
+    "Fixed angle of VIGV (variable inlet guide vanes)"                                    annotation(Dialog(enable = not useExternalVIGVangle));
   parameter Real eta_mech = 0.99 "Mechanical efficiency";
   parameter Modelica.SIunits.Inertia J "Moment of Inertia" annotation(Dialog(group="Time Response Definitions", enable= not steadyStateTorque));
-  parameter Boolean useMechanicalPort=false "|Fundamental Definitions|True, if a mechenical flange should be used";
-  parameter Boolean steadyStateTorque=false "|Fundamental Definitions|True, if steady state mechanical momentum shall be used";
-  parameter Boolean useBoundaryAssert=true "True, if simulation should stop when surge or choke boundary is hit"
-                                                                           annotation(dialog(tab = "Advanced"));
+  parameter Boolean useMechanicalPort=false
+    "|Fundamental Definitions|True, if a mechenical flange should be used";
+  parameter Boolean steadyStateTorque=false
+    "|Fundamental Definitions|True, if steady state mechanical momentum shall be used";
+  parameter Boolean useBoundaryAssert=true
+    "True, if simulation should stop when surge or choke boundary is hit"  annotation(Dialog(tab = "Advanced"));
   parameter SI.RPM rpm_fixed = 3000 "Constant rotational speed of pump" annotation (Dialog( group = "Fundamental Definitions", enable = not useMechanicalPort));
-  parameter SI.Time Tau_aux=0.1 "Time constant of auxilliary kappa states"  annotation(dialog(tab = "Advanced"));
+  parameter SI.Time Tau_aux=0.1 "Time constant of auxilliary kappa states"  annotation(Dialog(tab = "Advanced"));
 
-  parameter SI.MassFlowRate  m_flow_nom = 100 "|Nominal Values|Nominal mass flow";
+  parameter SI.MassFlowRate  m_flow_nom = 100
+    "|Nominal Values|Nominal mass flow";
   parameter Real Pi_nom = 7 "|Nominal Values|Nominal pressure ratio";
-  parameter SI.Temperature T_in_nom = 293.15 "|Nominal Values|Nominal inlet temperature";
-  parameter SI.Pressure p_in_nom = 1.01325e5 "|Nominal Values|Nominal inlet pressure";
+  parameter SI.Temperature T_in_nom = 293.15
+    "|Nominal Values|Nominal inlet temperature";
+  parameter SI.Pressure p_in_nom = 1.01325e5
+    "|Nominal Values|Nominal inlet pressure";
   parameter SI.MassFraction xi_nom[medium.nc - 1]=
      {0,0,0,0,0.76,0.23,0,0,0} "|Nominal Values|Nominal gas composition";
-  parameter Boolean useFixedEnthalpyCharacteristic=false "|Nominal Values|True, if a fixed nominal stage enthalpy characteristic should be used";
-  parameter SI.Length diameter[N_stages] = ones(N_stages)*1.5 "Individual or mean stage diameter" annotation(Dialog( group = "Nominal Values", enable = not useFixedEnthalpyCharacteristic));
-  parameter Real psi_nom_fixed[N_stages]=ones(N_stages)*0.8 "Fixed nominal enthalpy stage characteristic (axial: 0.2 to 0.9, radial: 0.9 to 1.4)"
+  parameter Boolean useFixedEnthalpyCharacteristic=false
+    "|Nominal Values|True, if a fixed nominal stage enthalpy characteristic should be used";
+  parameter SI.Length diameter[N_stages] = ones(N_stages)*1.5
+    "Individual or mean stage diameter"                                                           annotation(Dialog( group = "Nominal Values", enable = not useFixedEnthalpyCharacteristic));
+  parameter Real psi_nom_fixed[N_stages]=ones(N_stages)*0.8
+    "Fixed nominal enthalpy stage characteristic (axial: 0.2 to 0.9, radial: 0.9 to 1.4)"
                                                                                            annotation(Dialog( group = "Nominal Values", enable = useFixedEnthalpyCharacteristic));
-  parameter String VIGVInfluence= "Lower" "Influence of VIGV on psi, phi and eta"
-                                            annotation(Dialog(group="Parameters"), choices(choice="Higher", choice="Medium",  choice="Lower"));
+  parameter String VIGVInfluence= "Lower"
+    "Influence of VIGV on psi, phi and eta" annotation(Dialog(group="Parameters"), choices(choice="Higher", choice="Medium",  choice="Lower"));
 
   //________________________/ Variables \___________________________________
   Real Pi(final start=Pi_nom) "pressure ratio";
@@ -126,8 +138,10 @@ public
 
   //SI.HeatCapacityMassSpecific cp_m;
   Real Delta_alpha "Angle of VIGV (variable inlet guide vanes)";
-  Real Delta_alpha_int[i] "Angle of VIGV (variable inlet guide vanes) for internal calculation";
-  Modelica.SIunits.SpecificEnergy Y_st[i] "Specific delivery work of each stage";
+  Real Delta_alpha_int[i]
+    "Angle of VIGV (variable inlet guide vanes) for internal calculation";
+  Modelica.SIunits.SpecificEnergy Y_st[i]
+    "Specific delivery work of each stage";
   Modelica.SIunits.SpecificEnergy Y "Specific delivery work";
 
   //______//Stage variables\\______________________________________________
@@ -135,64 +149,97 @@ public
   Real kappa_in;
   Real kappa_out_st[i];
 
-  Real psi_nom_st[i](each final start=1) "Nominal stage enthalpy characteristic";
-  Real psi_rel_st[i]( each final start=1) "Relative stage enthalpy characteristic";
-  Real psi_rel_st_vigv[i]( each final start=1) "Relative stage enthalpy characteristic for VIGV";
-  Real phi_rel_st[i](each final start=1) "Relative stage performance characteristic";
-  Real phi_surge_rel_st[i]( each final start=1) "Relative stage performance characteristic at surge point";
+  Real psi_nom_st[i](each final start=1)
+    "Nominal stage enthalpy characteristic";
+  Real psi_rel_st[i]( each final start=1)
+    "Relative stage enthalpy characteristic";
+  Real psi_rel_st_vigv[i]( each final start=1)
+    "Relative stage enthalpy characteristic for VIGV";
+  Real phi_rel_st[i](each final start=1)
+    "Relative stage performance characteristic";
+  Real phi_surge_rel_st[i]( each final start=1)
+    "Relative stage performance characteristic at surge point";
   // Real phi_max_rel_st[i]
   //   "Maximum relative stage performance characteristic";
 
-  Real eta_isen_st[i]( each final start=eta_isen_stage_nom) "Nominal stage efficiency";
+  Real eta_isen_st[i]( each final start=eta_isen_stage_nom)
+    "Nominal stage efficiency";
   Real eta_isen_rel_st[i](each final start = 1) "Relative stage efficiency";
 
-  Real rpm_corr_st[i]( each final start = (rpm_nom/60)/T_in_nom^0.5) "Corrected rotational stage speed";
-  Real rpm_corr_nom_st[i]( each final start = (rpm_nom/60)/T_in_nom^0.5) "Corrected nominal rotational stage speed";
-  Real rpm_corr_rel_st[i](each final start = 1) "Relative corrected rotational speed";
+  Real rpm_corr_st[i]( each final start = (rpm_nom/60)/T_in_nom^0.5)
+    "Corrected rotational stage speed";
+  Real rpm_corr_nom_st[i]( each final start = (rpm_nom/60)/T_in_nom^0.5)
+    "Corrected nominal rotational stage speed";
+  Real rpm_corr_rel_st[i](each final start = 1)
+    "Relative corrected rotational speed";
 
-  Real m_flow_corr_st[i]( each final start = m_flow_nom * T_in_nom^0.5 / p_in_nom) "Corrected stage mass flow";
-  Real m_flow_corr_nom_st[i]( each final start = m_flow_nom * T_in_nom^0.5 / p_in_nom) "Corrected nominal stage mass flow";
+  Real m_flow_corr_st[i]( each final start = m_flow_nom * T_in_nom^0.5 / p_in_nom)
+    "Corrected stage mass flow";
+  Real m_flow_corr_nom_st[i]( each final start = m_flow_nom * T_in_nom^0.5 / p_in_nom)
+    "Corrected nominal stage mass flow";
   Real m_flow_corr_rel_st[i](each final start = 1) "Relative stage mass flow";
 
-  Real epsilon_rel_st[i](each final start = 1) "Relative stage pressure characteristic";
-  Real epsilon_rel_st_max[i](each final start = 1) "Relative stage pressure characteristic";
-  Real epsilon_rel_st_vigv[i](each final start = 1) "Relative stage pressure characteristic for VIGV";
+  Real epsilon_rel_st[i](each final start = 1)
+    "Relative stage pressure characteristic";
+  Real epsilon_rel_st_max[i](each final start = 1)
+    "Relative stage pressure characteristic";
+  Real epsilon_rel_st_vigv[i](each final start = 1)
+    "Relative stage pressure characteristic for VIGV";
 
   Real C_1_st[i] "Constant";
   Real C_2_st[i] "Constant";
 
   Real tau_st[i](each final start = 1.001) "Stage temperature ratio";
   Real Pi_st[i]( each final start = Pi_nom^(1/N_stages)) "Stage pressure ratio";
-  Real Pi_st_max[i]( each final start = Pi_nom^(1/N_stages)) "Maximum stage pressure ratio at surge line";
-  Real Pi_prod_st[i](  each final start = 1) "Overall pressure ratio until actual stage"; //not important, just for evaluation
+  Real Pi_st_max[i]( each final start = Pi_nom^(1/N_stages))
+    "Maximum stage pressure ratio at surge line";
+  Real Pi_prod_st[i](  each final start = 1)
+    "Overall pressure ratio until actual stage";                                          //not important, just for evaluation
 
-  SI.Temperature T_out_st[i]( each final start = T_in_nom) "Calculated outlet stage temperature";
-  SI.Pressure p_out_st[i](each final start = 1e5) "Calculated outlet stage pressure";
+  SI.Temperature T_out_st[i]( each final start = T_in_nom)
+    "Calculated outlet stage temperature";
+  SI.Pressure p_out_st[i](each final start = 1e5)
+    "Calculated outlet stage pressure";
 
 //Stufenvariablen nominal
-  SI.HeatCapacityMassSpecific cp_in_nom "Nominal isobaric heat capacity at stage inlet";
-  SI.HeatCapacityMassSpecific cv_in_nom "Nominal isochoric heat capacity at stage inlet";
-  SI.HeatCapacityMassSpecific cp_out_nom_st[i] "Nominal isobaric heat capacity at stage outlet";
-  SI.HeatCapacityMassSpecific cv_out_nom_st[i] "Nominal isochoric heat capacity at stage outlet";
-  Real Pi_nom_st[i](each final start = Pi_nom^(1/N_stages)) "Nominal stage pressure ratio";
-  Real Pi_nom_st_vigv[i](each final start = Pi_nom^(1/N_stages)) "Nominal stage pressure ratio for VIGV";
-  Real Pi_prod_nom_st[i]( each final start = 1) "Overall nominal pressure ratio until actual stage";
+  SI.HeatCapacityMassSpecific cp_in_nom
+    "Nominal isobaric heat capacity at stage inlet";
+  SI.HeatCapacityMassSpecific cv_in_nom
+    "Nominal isochoric heat capacity at stage inlet";
+  SI.HeatCapacityMassSpecific cp_out_nom_st[i]
+    "Nominal isobaric heat capacity at stage outlet";
+  SI.HeatCapacityMassSpecific cv_out_nom_st[i]
+    "Nominal isochoric heat capacity at stage outlet";
+  Real Pi_nom_st[i](each final start = Pi_nom^(1/N_stages))
+    "Nominal stage pressure ratio";
+  Real Pi_nom_st_vigv[i](each final start = Pi_nom^(1/N_stages))
+    "Nominal stage pressure ratio for VIGV";
+  Real Pi_prod_nom_st[i]( each final start = 1)
+    "Overall nominal pressure ratio until actual stage";
                                                                             //(not important for design point calculation, just for evaluation)
   Real kappa_nom_st[i] "Nominal stage heat capacity ratio";
   Real kappa_nom_st_vigv[i] "Nominal stage heat capacity ratio for VIGV";
-  SI.Temperature T_out_nom_st[i](each final start = T_in_nom) "Nominal stage outlet temperature";
-  SI.Efficiency eta_isen_nom_st[i](each final start=eta_isen_stage_nom) "Nominal isentropic stage efficiency";
-  Real tau_nom_st[i](each final start = 1.001) "Nominal stage temperature ratio";
-  Real tau_nom_st_vigv[i](each final start = 1.001) "Nominal stage temperature ratio for VIGV";
+  SI.Temperature T_out_nom_st[i](each final start = T_in_nom)
+    "Nominal stage outlet temperature";
+  SI.Efficiency eta_isen_nom_st[i](each final start=eta_isen_stage_nom)
+    "Nominal isentropic stage efficiency";
+  Real tau_nom_st[i](each final start = 1.001)
+    "Nominal stage temperature ratio";
+  Real tau_nom_st_vigv[i](each final start = 1.001)
+    "Nominal stage temperature ratio for VIGV";
   SI.EnthalpyMassSpecific h_out_nom_st[i] "Nominal stage outlet enthalpy";
   SI.EnthalpyMassSpecific h_in_nom_st "Nominal compressor inlet enthalpy";
   SI.EnthalpyMassSpecific Delta_h_nom_st[i] "Nominal stage enthalpy difference";
-  SI.Pressure p_out_nom_st[i]( each final start = 1e5) "Nominal outlet stage pressure";
+  SI.Pressure p_out_nom_st[i]( each final start = 1e5)
+    "Nominal outlet stage pressure";
 
 protected
- Real kappa_aux_st[i] "Auxiliary state for kappa (needed when composition changes)";
- Real kappa_aux "Auxiliary state for kappa over whole machine (needed when composition changes)";
- Real kappa_nom_aux_st[i] "Auxiliary state for kappa (needed when composition changes)";
+ Real kappa_aux_st[i]
+    "Auxiliary state for kappa (needed when composition changes)";
+ Real kappa_aux
+    "Auxiliary state for kappa over whole machine (needed when composition changes)";
+ Real kappa_nom_aux_st[i]
+    "Auxiliary state for kappa (needed when composition changes)";
  Real count_surge[i];
  Real count_choke[i];
 
@@ -316,11 +363,13 @@ public
           T = inStream(inlet.T_outflow),
           p = inlet.p,
           h = flueGas_inlet.h,
+          xi = inStream(inlet.xi_outflow),
           H_flow = inlet.m_flow* flueGas_inlet.h),
     outlet(m_flow = -outlet.m_flow,
           T = outlet.T_outflow,
           p = outlet.p,
           h = flueGas_outlet.h,
+          xi = outlet.xi_outflow,
           H_flow = -outlet.m_flow* flueGas_outlet.h)) annotation (Placement(transformation(extent={{-100,
             -114},{-80,-94}})));
 
@@ -356,7 +405,8 @@ equation
 //____________________ Mechanics ___________________________
     if useMechanicalPort then
       der(getInputsRotary.rotatoryFlange.phi) = (2*Modelica.Constants.pi*rpm/60);
-      J*a + tau_fluid + getInputsRotary.rotatoryFlange.tau = 0 "Mechanical momentum balance";
+      J*a + tau_fluid + getInputsRotary.rotatoryFlange.tau = 0
+      "Mechanical momentum balance";
     else
       rpm = rpm_fixed;
       getInputsRotary.rotatoryFlange.phi = 0.0;

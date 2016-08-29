@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.SolidVolumes;
 model NTU_L2 "NTU-based heat transfer resistance"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,20 +15,20 @@ model NTU_L2 "NTU-based heat transfer resistance"
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
 
-  import SI = ClaRa.Basics.Units;
-
   outer ClaRa.SimCenter simCenter;
   extends ClaRa.Basics.Icons.NTU;
   extends ClaRa.Basics.Icons.ComplexityLevel(complexity="L2");
 
 //_____________fundamental definitions_________________________________________//
 
- replaceable model Material = TILMedia.SolidTypes.TILMedia_Aluminum constrainedby TILMedia.SolidTypes.BaseSolid "Material of the cylinder"
+ replaceable model Material = TILMedia.SolidTypes.TILMedia_Aluminum constrainedby
+    TILMedia.SolidTypes.BaseSolid "Material of the cylinder"
                                annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
   replaceable model HeatExchangerType =
       ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.CounterFlow
-    constrainedby ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.GeneralHeatExchanger "Type of HeatExchanger"
-                                                                                       annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
+    constrainedby
+    ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.GeneralHeatExchanger
+    "Type of HeatExchanger"                                                            annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
 
 //______________geometry definitions________________________________________//
   parameter Integer N_t=1 "Number of tubes in one pass" annotation(Dialog(group="Geometry"));
@@ -36,24 +36,34 @@ model NTU_L2 "NTU-based heat transfer resistance"
   parameter Units.Length length "Tube length (for one pass)" annotation(Dialog(group="Geometry"));
   parameter Units.Length radius_i "Inner radius of tube" annotation(Dialog(group="Geometry"));
   parameter Units.Length radius_o "Outer radius of tube" annotation(Dialog(group="Geometry"));
-  parameter Units.Mass mass_struc = 0 "Mass of inner structure elements, additional to the tubes itself"             annotation(Dialog(group="Geometry"));
-  final parameter Units.Mass mass = mass_struc + solid.d*N_t*N_p*length*Modelica.Constants.pi*(radius_o^2-radius_i^2) "Total mass of HEX";
+  parameter Units.Mass mass_struc = 0
+    "Mass of inner structure elements, additional to the tubes itself"                                               annotation(Dialog(group="Geometry"));
+  final parameter Units.Mass mass = mass_struc + solid.d*N_t*N_p*length*Modelica.Constants.pi*(radius_o^2-radius_i^2)
+    "Total mass of HEX";
 
   parameter Real CF_geo=1 "Correction coefficient due to fins etc." annotation(Dialog(group="Geometry"));
-  parameter Integer stateLocation=1 "Location of the states" annotation(Dialog(group="Geometry"),choices(choice = 1 "States on outer surfaces",
-                                                                                            choice = 2 "Inner location of states"));
+  parameter Integer stateLocation=1 "Location of the states" annotation(Dialog(group="Geometry"),choices(choice = 1
+        "States on outer surfaces",                                                         choice = 2
+        "Inner location of states"));
 
 //Area of Heat Transfer
-  final parameter Units.Area A_heat_m = (A_heat_o-A_heat_i)/log(A_heat_o/A_heat_i) "Mean area of heat transfer (single tube)";
-  final parameter Units.Area A_heat_i= 2*Modelica.Constants.pi*radius_i*length*N_t*N_p "Area of heat transfer at inner phase";
-  final parameter Units.Area A_heat_o= 2*Modelica.Constants.pi*radius_o*length*N_t*N_p "Area of heat transfer at oter phase";
+  final parameter Units.Area A_heat_m = (A_heat_o-A_heat_i)/log(A_heat_o/A_heat_i)
+    "Mean area of heat transfer (single tube)";
+  final parameter Units.Area A_heat_i= 2*Modelica.Constants.pi*radius_i*length*N_t*N_p
+    "Area of heat transfer at inner phase";
+  final parameter Units.Area A_heat_o= 2*Modelica.Constants.pi*radius_o*length*N_t*N_p
+    "Area of heat transfer at oter phase";
 
 //______________Initialisation______________________________________________//
-  parameter Units.Temperature T_w_i_start= 293.15 "Initial temperature at inner phase"    annotation(Dialog(tab="Initialisation"));
-  parameter Units.Temperature T_w_a_start = 293.15 "Initial temperature at outer phase"   annotation(Dialog(tab="Initialisation"));
-  parameter ClaRa.Basics.Choices.Init initChoice=ClaRa.Basics.Choices.Init.noInit "Initialisation option"                   annotation(Dialog(tab="Initialisation"));
+  parameter Units.Temperature T_w_i_start= 293.15
+    "Initial temperature at inner phase"                                                  annotation(Dialog(tab="Initialisation"));
+  parameter Units.Temperature T_w_a_start = 293.15
+    "Initial temperature at outer phase"                                                  annotation(Dialog(tab="Initialisation"));
+  parameter ClaRa.Basics.Choices.Init initChoice=ClaRa.Basics.Choices.Init.noInit
+    "Initialisation option"                                                                                                 annotation(Dialog(tab="Initialisation"));
 //______________Visualisation______________________________________________//
- parameter Boolean showExpertSummary = false "|Summary and Visualisation||True, if expert summary should be applied";
+ parameter Boolean showExpertSummary = false
+    "|Summary and Visualisation||True, if expert summary should be applied";
 
 //______________Inputs_____________________________________________________//
   input Units.Temperature T_i_in "Inlet temperature of inner flow"
@@ -64,8 +74,10 @@ model NTU_L2 "NTU-based heat transfer resistance"
   input Units.MassFlowRate m_flow_i "Mass flow rate of inner side"      annotation (Dialog(group="Input"));
   input Units.MassFlowRate m_flow_a "Mass flow rate of outer side" annotation (Dialog(group="Input"));
 
-  input Units.CoefficientOfHeatTransfer alpha_i "Coefficient of heatTransfer for inner side"            annotation (Dialog(group="Input"));
-  input Units.CoefficientOfHeatTransfer alpha_o "Coefficient of heatTransfer for outer side"            annotation (Dialog(group="Input"));
+  input Units.CoefficientOfHeatTransfer alpha_i
+    "Coefficient of heatTransfer for inner side"                                                        annotation (Dialog(group="Input"));
+  input Units.CoefficientOfHeatTransfer alpha_o
+    "Coefficient of heatTransfer for outer side"                                                        annotation (Dialog(group="Input"));
 
   input Units.HeatCapacityMassSpecific cp_mean_i "Mean cp of inner flow"               annotation (Dialog(group="Input"));
   input Units.HeatCapacityMassSpecific cp_mean_a "Mean cp of outer flow"               annotation (Dialog(group="Input"));
@@ -73,8 +85,10 @@ model NTU_L2 "NTU-based heat transfer resistance"
 //______________Variables__________________________________________________//
   Units.Temperature T_i_out "Outlet temperature of steady state inner flow";
   Units.Temperature T_a_out "Outlet temperature of steady state outer flow";
-  Units.HeatFlowRate Q_flow_NTU_1 "Steady state heat flow rate outer to inner phase";
-  Real kA(unit="W/K") "The product U*S";
+  Units.HeatFlowRate Q_flow_NTU_1
+    "Steady state heat flow rate outer to inner phase";
+  Real kA(unit="W/K")
+    "The product heat transmission coefficient and heat transfer area";
   Real effectiveness "Heat exchanger efficiency";
 
 protected
@@ -91,24 +105,32 @@ protected
   Real C_flow_2(unit="W/K") "Larger heat capacity rate";
   Real k=(0.5*mass*solid.cp)/100;
 public
-record Summary
+model Summary
   extends ClaRa.Basics.Icons.RecordIcon;
   parameter Boolean showExpertSummary;
-  Real NTU_1 if showExpertSummary "Number of Transfer Units related to the flow 1";
-  Real NTU_2 if showExpertSummary "Number of Transfer Units related to flow 2";
+  input Real NTU_1 if showExpertSummary
+      "Number of Transfer Units related to the flow 1";
+  input Real NTU_2 if showExpertSummary
+      "Number of Transfer Units related to flow 2";
 
-  Real C_flow_low(unit="W/K") if showExpertSummary "Smaller heat capacity rate";
-  Real C_flow_high(unit="W/K") if showExpertSummary "Larger heat capacity rate";
+  input Real C_flow_low(unit="W/K") if showExpertSummary
+      "Smaller heat capacity rate";
+  input Real C_flow_high(unit="W/K") if showExpertSummary
+      "Larger heat capacity rate";
 
-  Units.Area A_mean "Mean area of heat transfer (single tube)";
-  Units.Temperature T_i_out "Outlet temperature of steady state inner flow";
-  Units.Temperature T_o_out "Outlet temperature of steady state outer flow";
-  Real kA(unit="W/K") "The product of thermal transmission and heat transfer area";
-  Real effectiveness "Heat exchanger efficiency";
-  Units.HeatFlowRate Q_flow "Steady state heat flow rate outer to inner phase";
-  Units.HeatCapacityMassSpecific cp_mean_i "Mean cp of inner flow";
-  Units.HeatCapacityMassSpecific cp_mean_a "Mean cp of outer flow";
-  Units.DensityMassSpecific d "Material density";
+  input Units.Area A_mean "Mean area of heat transfer (single tube)";
+  input Units.Temperature T_i_out
+      "Outlet temperature of steady state inner flow";
+  input Units.Temperature T_o_out
+      "Outlet temperature of steady state outer flow";
+  input Real kA(unit="W/K")
+      "The product of thermal transmission and heat transfer area";
+  input Real effectiveness "Heat exchanger efficiency";
+  input Units.HeatFlowRate Q_flow
+      "Steady state heat flow rate outer to inner phase";
+  input Units.HeatCapacityMassSpecific cp_mean_i "Mean cp of inner flow";
+  input Units.HeatCapacityMassSpecific cp_mean_a "Mean cp of outer flow";
+  input Units.DensityMassSpecific d "Material density";
 end Summary;
 
 public

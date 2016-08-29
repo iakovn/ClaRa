@@ -1,7 +1,7 @@
 within ClaRa.Basics.Functions.ClaRaDelay;
 function getDelayValuesAtTime
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -21,7 +21,7 @@ function getDelayValuesAtTime
   input Real getTime;
   output Real result;
   //annotation(derivative=getXRGDelayValuesAtTimes_der);
-external"C" result = getXRGDelayValuesAtTime(table, simulationTime, value, getTime);
+external"C" result = getXRGDelayValuesAtTime(table, simulationTime, value, getTime)
 annotation (__iti_dll="ITI_Delay-V1.dll",Library={"Delay-V1","ModelicaExternalC"});
   // annotation (derivative(
   //     zeroDerivative=simulationTime,

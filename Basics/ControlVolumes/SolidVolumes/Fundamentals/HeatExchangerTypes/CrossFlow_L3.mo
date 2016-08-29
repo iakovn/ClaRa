@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes;
 model CrossFlow_L3 "Pure cross flow heatexchanger L3"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.0                        //
+// Component of the ClaRa library, version: 1.1.1                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,12 +15,15 @@ model CrossFlow_L3 "Pure cross flow heatexchanger L3"
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
 
-extends ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.GeneralHeatExchanger_L3(
+extends
+    ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.GeneralHeatExchanger_L3
+    (
     final a=0.433,
     final b=1.60,
     final c=0.267,
     final d=0.5);
-extends ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Icons.HEX_CrossFlow_Icon;
+extends
+    ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Icons.HEX_CrossFlow_Icon;
 equation
 
   if outerPhaseChange then

@@ -6,3 +6,5 @@ testGradientLimiter
 testMatrixReader
 testTableGain
 TestSlidingmean
+TestStepsmootherGain
+TestParameterizableTable1D

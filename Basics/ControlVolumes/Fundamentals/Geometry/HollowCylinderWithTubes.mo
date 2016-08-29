@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.Geometry;
 model HollowCylinderWithTubes "Cylindric shape || Shell with tubes"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.0                        //
+  // Component of the ClaRa library, version: 1.1.1                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -40,9 +40,11 @@ model HollowCylinderWithTubes "Cylindric shape || Shell with tubes"
                       0.9245, 0.82031;
                       1, 0.7854]);
 
-  parameter ClaRa.Basics.Choices.GeometryOrientation orientation=ClaRa.Basics.Choices.GeometryOrientation.horizontal "|Essential Geometry Definition|Orientation of the component";
+  parameter ClaRa.Basics.Choices.GeometryOrientation orientation=ClaRa.Basics.Choices.GeometryOrientation.horizontal
+    "|Essential Geometry Definition|Orientation of the component";
 
-  parameter ClaRa.Basics.Choices.GeometryOrientation flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical "|Essential Geometry Definition|Orientation of the mass flow";
+  parameter ClaRa.Basics.Choices.GeometryOrientation flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical
+    "|Essential Geometry Definition|Orientation of the mass flow";
 
   parameter Units.Length diameter=1 "Diameter of the component" annotation (Dialog(
       tab="General",
@@ -51,46 +53,60 @@ model HollowCylinderWithTubes "Cylindric shape || Shell with tubes"
       groupImage="modelica://ClaRa/figures/ParameterDialog/HollowCylinderWithTubes.png",
       connectorSizing=false));
 
-  parameter Units.Length length=1 "|Essential Geometry Definition|Length of the component";
+  parameter Units.Length length=1
+    "|Essential Geometry Definition|Length of the component";
 
-  parameter Units.Length diameter_t=0.1 "|Interior Equipment|Outer diameter of internal tubes";
-  parameter Units.Length length_tubes=1 "|Interior Equipment|Length of the internal tubes (single pass)";
+  parameter Units.Length diameter_t=0.1
+    "|Interior Equipment|Outer diameter of internal tubes";
+  parameter Units.Length length_tubes=1
+    "|Interior Equipment|Length of the internal tubes (single pass)";
 
   parameter Integer N_tubes=1 "|Interior Equipment|Number of internal tubes";
-  parameter Integer N_passes=1 "|Interior Equipment|Number of passes of the internal tubes";
-  parameter Boolean parallelTubes=false "|Interior Equipment|True, if tubes are parallel to main flow orientation, else false";
+  parameter Integer N_passes=1
+    "|Interior Equipment|Number of passes of the internal tubes";
+  parameter Boolean parallelTubes=false
+    "|Interior Equipment|True, if tubes are parallel to main flow orientation, else false";
 
-  parameter Integer N_baffle=0 "|Interior Equipment|Number of baffles on shell side";
+  parameter Integer N_baffle=0
+    "|Interior Equipment|Number of baffles on shell side";
 
   final parameter Real interior(
     min=1e-6,
-    max=1) = volume/(pi/4*diameter^2*length) "|Interior Equipment|Volume fraction of interior equipment";
-  parameter Modelica.SIunits.Length Delta_z_ort=2*diameter_t "|Interior Equipment|Distance between tubes orthogonal to flow direction (center to center)";
-  parameter Modelica.SIunits.Length Delta_z_par=2*diameter_t "|Interior Equipment|Distance between tubes parallel to flow direction (center to center)";
-  final parameter Real a=Delta_z_ort/diameter_t "|Interior Equipment|Lateral alignment ratio";
-  final parameter Real b=Delta_z_par/diameter_t "|Interior Equipment|Vertical alignment ratio";
-  final parameter Real psi=if b >= 1 then 1 - Modelica.Constants.pi/4/a else 1 - Modelica.Constants.pi/4/a/b "|Interior Equipment|Void ratio";
-  parameter Boolean staggeredAlignment=true "|Interior Equipment|True, if the tubes are aligned staggeredly, false otherwise";
+    max=1) = volume/(pi/4*diameter^2*length)
+    "|Interior Equipment|Volume fraction of interior equipment";
+  parameter Modelica.SIunits.Length Delta_z_ort=2*diameter_t
+    "|Interior Equipment|Distance between tubes orthogonal to flow direction (center to center)";
+  parameter Modelica.SIunits.Length Delta_z_par=2*diameter_t
+    "|Interior Equipment|Distance between tubes parallel to flow direction (center to center)";
+  final parameter Real a=Delta_z_ort/diameter_t
+    "|Interior Equipment|Lateral alignment ratio";
+  final parameter Real b=Delta_z_par/diameter_t
+    "|Interior Equipment|Vertical alignment ratio";
+  final parameter Real psi=if b >= 1 then 1 - Modelica.Constants.pi/4/a else 1 - Modelica.Constants.pi/4/a/b
+    "|Interior Equipment|Void ratio";
+  parameter Boolean staggeredAlignment=true
+    "|Interior Equipment|True, if the tubes are aligned staggeredly, false otherwise";
   parameter Integer N_rows(
     min=N_passes,
-    max=N_tubes) = integer(ceil(sqrt(N_tubes))*N_passes) "|Interior Equipment|Number of pipe rows in flow direction (minimum = N_passes)"
+    max=N_tubes) = integer(ceil(sqrt(N_tubes))*N_passes)
+    "|Interior Equipment|Number of pipe rows in flow direction (minimum = N_passes)"
                                                                                           annotation (Dialog(group="Geometry"));
 
 equation
    for i in 1:N_inlet loop
-     assert(if height_fill <> -1 then z_in[i]<=height_fill else true, "Position of inlet flange no. " +integerString(i, 1, 1)+ "("+realString(z_in[i], 1,3)+" m) must be below max. fill height of "+ realString(height_fill, 1,3) + " m in component " +  getInstanceName() + ".");
+     assert(if height_fill <> -1 then z_in[i]<=height_fill else true, "Position of inlet flange no. " +String(i)+ "("+String(z_in[i], significantDigits=3)+" m) must be below max. fill height of "+ String(height_fill, significantDigits=3) + " m in component " +  getInstanceName() + ".");
    end for;
    for i in 1:N_outlet loop
-     assert(if height_fill <> -1 then z_out[i]<=height_fill else true, "Position of outlet flange no. " +integerString(i, 1, 1)+ "("+realString(z_out[i], 1,3)+" m) must be below max. fill height of "+ realString(height_fill, 1,3) + " m in component " +  getInstanceName() + ".");
+     assert(if height_fill <> -1 then z_out[i]<=height_fill else true, "Position of outlet flange no. " +String(i)+ "("+String(z_out[i], significantDigits=3)+" m) must be below max. fill height of "+ String(height_fill, significantDigits=3) + " m in component " +  getInstanceName() + ".");
    end for;
   for i in 1:N_inlet loop
-    assert(z_in[i]>=0, "Position of inlet flange no. " +integerString(i, 1, 1)+ "("+realString(z_in[i], 1,3)+" m) must be positive in component " +  getInstanceName() + ".");
+    assert(z_in[i]>=0, "Position of inlet flange no. " +String(i)+ "("+String(z_in[i], significantDigits=3)+" m) must be positive in component " +  getInstanceName() + ".");
   end for;
   for i in 1:N_outlet loop
-    assert(z_out[i]>=0, "Position of outlet flange no. " +integerString(i, 1, 1)+ "("+realString(z_out[i], 1,3)+" m) must be positive in component " +  getInstanceName() + ".");
+    assert(z_out[i]>=0, "Position of outlet flange no. " +String(i)+ "("+String(z_out[i], significantDigits=3)+" m) must be positive in component " +  getInstanceName() + ".");
   end for;
-  assert(A_cross>0, "The cross section of the shell side must be > 0 but is "+realString(A_cross, 1, 3) + " in instance" + getInstanceName() + ".");
-  assert(volume>0, "The volume of the shell side must be > 0 but is "+realString(volume, 1, 3) + " in instance" + getInstanceName() + ".");
+  assert(A_cross>0, "The cross section of the shell side must be > 0 but is "+String(A_cross, significantDigits=3) + " in instance" + getInstanceName() + ".");
+  assert(volume>0, "The volume of the shell side must be > 0 but is "+String(volume, significantDigits=3) + " in instance" + getInstanceName() + ".");
   annotation (Icon(graphics={Bitmap(
           extent={{-100,-100},{100,100}},
           imageSource=

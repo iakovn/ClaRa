@@ -1,7 +1,7 @@
 within ClaRa.Components.VolumesValvesFittings.Pipes.Check.TwoPhaseFlow;
 model Test_Pipe_L4_Simple
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.0                        //
+  // Component of the ClaRa library, version: 1.1.1                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -28,7 +28,8 @@ model Test_Pipe_L4_Simple
     m_flow_nom=0,
     variable_h=true,
     p_nom=100000) annotation (Placement(transformation(extent={{60,-17},{40,3}})));
-  inner SimCenter simCenter(redeclare replaceable TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1, useHomotopy=false) annotation (Placement(transformation(extent={{-80,-80},{-60,-60}})));
+  inner SimCenter simCenter(redeclare replaceable
+      TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater                                             fluid1, useHomotopy=false) annotation (Placement(transformation(extent={{-80,-80},{-60,-60}})));
 
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi massFlowSink(
     variable_p=true,

@@ -1,14 +1,14 @@
 within ClaRa.StaticCycles;
 model FixedFlow "Flow Anchour || par.: m_flow_nom || red | blue"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.0.0                            //
+// Component of the ClaRa library, version: 1.1.1                            //
 //                                                                           //
-// Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                              //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
-// DYNCAP is a research project supported by the German Federal Ministry of  //
-// Economics and Technology (FKZ 03ET2009).                                  //
-// The DYNCAP research team consists of the following project partners:      //
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
 // Institute of Energy Systems (Hamburg University of Technology),           //
 // Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
@@ -16,24 +16,34 @@ model FixedFlow "Flow Anchour || par.: m_flow_nom || red | blue"
 //___________________________________________________________________________//
 // Red input:    Values of p and m_flow are known in component and provided FOR neighbor component, value of h is unknown and provided BY neighbor component.
 // Blue output:  Value of p is unknown and provided BY neighbor component, values of m_flow and h are known in component and provided FOR neighbor component.
-outer parameter Real P_target_ "Target power in p.u.";
-final parameter ClaRa.Basics.Units.Pressure p_in=p_out;
-parameter ClaRa.Basics.Units.MassFlowRate m_flow_nom2 "|Fundamental Definitions|Nominal mass flow";
-final parameter ClaRa.Basics.Units.Pressure p_out(fixed=false);
-//final parameter ClaRa.Basics.Units.MassFlowRate m_flow(fixed=false);
-final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_in(fixed=false);
-final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_out=h_in;
-  Fundamentals.SteamSignal_red inlet(p=p_in, m_flow=m_flow_nom2*P_target_)
+  outer parameter Real P_target_ "Target power in p.u.";
+
+  parameter ClaRa.Basics.Units.MassFlowRate m_flow_nom2 "Nominal mass flow" annotation(Dialog(group="Fundamental Definitions"));
+  parameter Real CharLine_m_flow_P_target_[:,2] = [0,0;1,1]
+    "Pressure drop depending on rel. power in p.u."                                                 annotation(Dialog(group="Fundamental Definitions"));
+
+  final parameter ClaRa.Basics.Units.Pressure p_in=p_out "Inlet perssure";
+  final parameter ClaRa.Basics.Units.Pressure p_out(fixed=false)
+    "Outlet pressure";
+  final parameter ClaRa.Basics.Units.MassFlowRate m_flow(fixed=false);
+  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_in(fixed=false)
+    "Inlet spec. enthalpy";
+  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_out=h_in
+    "Outlet spec. enthalpy";
+protected
+  ClaRa.Components.Utilities.Blocks.ParameterizableTable1D table1(table=CharLine_m_flow_P_target_, u = {P_target_});
+
+public
+  Fundamentals.SteamSignal_red inlet(p=p_in, m_flow=m_flow)
     annotation (Placement(transformation(extent={{-65,-10},{-45,10}}),
         iconTransformation(extent={{-58,-10},{-50,10}})));
-  Fundamentals.SteamSignal_blue outlet(h=h_out, m_flow=m_flow_nom2*P_target_)
+  Fundamentals.SteamSignal_blue outlet(h=h_out, m_flow=m_flow)
     annotation (Placement(transformation(extent={{44,-10},{64,10}}),
         iconTransformation(extent={{50,-10},{58,10}})));
 initial equation
   outlet.p=p_out;
   inlet.h=h_in;
-  //outlet.;
-  //inlet.m_flow=m_flow_nom*P_target;
+  m_flow = table1.y[1]*m_flow_nom2;
 
 equation
 

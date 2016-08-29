@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.FluidVolumes;
 model VolumeVLE_L4 "A 1D tube-shaped control volume considering one-phase and two-phase heat transfer in a straight pipe with static momentum balance and simple energy balance."
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.0                        //
+  // Component of the ClaRa library, version: 1.1.1                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -25,24 +25,13 @@ model VolumeVLE_L4 "A 1D tube-shaped control volume considering one-phase and tw
   outer ClaRa.SimCenter simCenter;
 
   //## S U M M A R Y   D E F I N I T I O N #######################################################################
-  record Outline
+  model Outline
     extends ClaRa.Basics.Icons.RecordIcon;
     parameter Boolean showExpertSummary annotation (Dialog(hide));
 
-    //     parameter Basics.Units.Length
-    //                         length "Length of pipe";
-    //     input Basics.Units.Area
-    //                   A_cross if  showExpertSummary "Cross sectional area"  annotation(Dialog(show));
-    //     input Basics.Units.Area
-    //                   A_wall if  showExpertSummary "Total wall area"  annotation(Dialog(show));
     input Basics.Units.Volume volume_tot "Total volume of system" annotation (Dialog(show));
 
     parameter Integer N_cv "|Discretisation|Number of finite volumes";
-    //     parameter Integer N_wall "|Discretisation|Number of wall elements";
-    //     input Basics.Units.Length
-    //                     Delta_x[N_cv] if  showExpertSummary "Pipe discretisation"  annotation(Dialog(show));
-    //     input Basics.Units.Volume
-    //                     volume[N_cv] if  showExpertSummary "|Discretisation|Cell volumes"                             annotation(Dialog(show));
 
     input ClaRa.Basics.Units.PressureDifference Delta_p "Pressure difference between outlet and inlet" annotation (Dialog);
     input Basics.Units.Mass mass_tot "Total fluid mass in system mass" annotation (Dialog(show));
@@ -55,7 +44,7 @@ model VolumeVLE_L4 "A 1D tube-shaped control volume considering one-phase and tw
     input Basics.Units.MassFlowRate m_flow[N_cv + 1] if showExpertSummary "Mass flow through cell borders" annotation (Dialog(show));
   end Outline;
 
-  record Wall_L4
+  model Wall_L4
     extends ClaRa.Basics.Icons.RecordIcon;
     parameter Boolean showExpertSummary annotation (Dialog(hide));
     parameter Integer N_wall "Number of wall segments" annotation (Dialog(hide));
@@ -63,7 +52,7 @@ model VolumeVLE_L4 "A 1D tube-shaped control volume considering one-phase and tw
     input Basics.Units.HeatFlowRate Q_flow[N_wall] if showExpertSummary "Heat flows through wall segments" annotation (Dialog);
   end Wall_L4;
 
-  record Summary
+  model Summary
     extends ClaRa.Basics.Icons.RecordIcon;
     Outline outline;
     ClaRa.Basics.Records.FlangeVLE inlet;
@@ -206,7 +195,7 @@ protected
 
   //____Flows and Velocities______________________________________________________________________________________
   Basics.Units.Power H_flow[geo.N_cv + 1] "Enthalpy flow rate at cell borders";
-  Basics.Units.MassFlowRate m_flow[geo.N_cv + 1](nominal=ones(geo.N_cv + 1)*m_flow_nom, start=ones(geo.N_cv + 1)*m_flow_nom);
+  Basics.Units.MassFlowRate m_flow[geo.N_cv + 1](start=ones(geo.N_cv + 1)*m_flow_nom, nominal=ones(geo.N_cv + 1)*m_flow_nom); //JB: removed this from variable definition: "nominal=ones(geo.N_cv + 1)*m_flow_nom, "
   Basics.Units.Velocity w[geo.N_cv] "flow velocities within cells of energy model == flow velocities across cell borders of flow model ";
   Basics.Units.Velocity w_inlet "flow velocity at inlet";
   Basics.Units.Velocity w_outlet "flow velocity at outlet";
@@ -236,13 +225,13 @@ protected
 
   inner TILMedia.VLEFluid_ph fluidInlet(
     p=inlet.p,
-    each vleFluidType=medium,
+    vleFluidType=medium,
     h=actualStream(inlet.h_outflow),
     computeTransportProperties=true) annotation (Placement(transformation(extent={{-90,-30},{-70,-10}}, rotation=0)));
 
   inner TILMedia.VLEFluid_ph fluidOutlet(
     p=outlet.p,
-    each vleFluidType=medium,
+    vleFluidType=medium,
     h=actualStream(outlet.h_outflow),
     computeTransportProperties=true) annotation (Placement(transformation(extent={{70,-30},{90,-10}}, rotation=0)));
 
