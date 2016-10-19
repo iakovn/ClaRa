@@ -1,7 +1,7 @@
 within ClaRa.Components.VolumesValvesFittings.Fittings.Check;
 model Test_SprayInjector
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -33,8 +33,7 @@ Real chk1= injector1.mixingZone.summary.inlet[1].H_flow + injector1.mixingZone.s
         Valves.Fundamentals.LinearNominalPoint (                           Delta_p_nom=1.8e5, m_flow_nom=10))
                                        annotation (Placement(transformation(extent={{-30,-60},{-10,-40}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi massFlowSource_XRG(h_const=800e3, p_const=30.0e5) annotation (Placement(transformation(extent={{60,-94},{40,-74}})));
-  inner SimCenter simCenter(useHomotopy=true, redeclare replaceable
-      TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater                                                               fluid1) annotation (Placement(transformation(extent={{80,80},{100,100}})));
+  inner SimCenter simCenter(useHomotopy=true, redeclare replaceable TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1) annotation (Placement(transformation(extent={{80,80},{100,100}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_hxim_flow massFlowSource_XRG2(
     m_flow_const=43.551,
     variable_m_flow=true,
@@ -69,8 +68,7 @@ Real chk1= injector1.mixingZone.summary.inlet[1].H_flow + injector1.mixingZone.s
     annotation (Placement(transformation(extent={{98,-94},{78,-74}})));
   ClaRa.Components.VolumesValvesFittings.Valves.ValveVLE_L1
                        valve(redeclare model PressureLoss =
-        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticNominalPoint
-        (                                                                                                    rho_in_nom=20, m_flow_nom=300))
+        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticNominalPoint (                   rho_in_nom=20, m_flow_nom=300))
     annotation (Placement(transformation(extent={{2,-56},{22,-44}})));
   Visualisation.Quadruple quadruple
     annotation (Placement(transformation(extent={{-8,-74},{12,-64}})));
@@ -92,8 +90,7 @@ Real chk1= injector1.mixingZone.summary.inlet[1].H_flow + injector1.mixingZone.s
     variable_p=true) annotation (Placement(transformation(extent={{60,14},{40,34}})));
   ClaRa.Components.VolumesValvesFittings.Valves.ValveVLE_L1
                        valve1(redeclare model PressureLoss =
-        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticNominalPoint
-        (                                                                                                    rho_in_nom=20, m_flow_nom=300))
+        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticNominalPoint (                   rho_in_nom=20, m_flow_nom=300))
     annotation (Placement(transformation(extent={{4,18},{24,30}})));
   Visualisation.Quadruple quadruple1
     annotation (Placement(transformation(extent={{-8,0},{12,10}})));

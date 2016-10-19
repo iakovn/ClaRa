@@ -1,9 +1,8 @@
 within ClaRa.Components.TurboMachines.Compressors;
-model CompressorGas_L1_affinity
-  "A gas compressor or fan based on affinity laws"
+model CompressorGas_L1_affinity "A gas compressor or fan based on affinity laws"
   import ClaRa;
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -21,8 +20,8 @@ import Modelica.Constants.pi;
 
   outer ClaRa.SimCenter simCenter;
 extends ClaRa.Basics.Icons.Compressor;
-parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary
-    "True if component shall contribute to automatic efficiency calculation"                annotation(Dialog(tab="Summary and Visualisation"));
+parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary "True if component shall contribute to automatic efficiency calculation"
+                                                                                            annotation(Dialog(tab="Summary and Visualisation"));
   ClaRa.Basics.Interfaces.Connected2SimCenter connected2SimCenter(
     powerIn=0,
     powerOut=-P_hyd,
@@ -52,12 +51,10 @@ parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary
   final parameter Boolean allow_reverseFlow = false;
 
   ClaRa.Basics.Interfaces.GasPortIn inlet(Medium=medium, m_flow(min=if
-          allow_reverseFlow then -Modelica.Constants.inf else 1e-5))
-    "inlet flow"
+          allow_reverseFlow then -Modelica.Constants.inf else 1e-5)) "inlet flow"
     annotation (Placement(transformation(extent={{-110,-10},{-90,10}})));
   ClaRa.Basics.Interfaces.GasPortOut outlet(Medium=medium, m_flow(max=if
-          allow_reverseFlow then Modelica.Constants.inf else -1e-5))
-    "outlet flow"
+          allow_reverseFlow then Modelica.Constants.inf else -1e-5)) "outlet flow"
     annotation (Placement(transformation(extent={{90,-10},{110,10}})));
 
   Modelica.Mechanics.Rotational.Interfaces.Flange_a shaft if useMechanicalPort
@@ -79,23 +76,17 @@ public
 
   //__________________________/ Parameters \_____________________________
   parameter SI.RPM rpm_nom "|Characteristic field|Nomial rotational speed";
-  parameter SI.VolumeFlowRate V_flow_max
-    "|Characteristic field|Maximum volume flow rate at nominal speed";
-  parameter SI.VolumeFlowRate V_flow_min= 0
-    "|Characteristic field|V_flow(Delta_p_max, rpm_nom)";
-  parameter SI.Pressure Delta_p_max
-    "|Characteristic field|Maximum pressure difference at nominal speed";
+  parameter SI.VolumeFlowRate V_flow_max "|Characteristic field|Maximum volume flow rate at nominal speed";
+  parameter SI.VolumeFlowRate V_flow_min= 0 "|Characteristic field|V_flow(Delta_p_max, rpm_nom)";
+  parameter SI.Pressure Delta_p_max "|Characteristic field|Maximum pressure difference at nominal speed";
   parameter Real exp_hyd= 0.5 "|Characteristic field|Exponent for affinity law";
 
   parameter Real eta = 0.85 "isentropic efficiency";
   parameter Real eta_mech = 0.99 "mechanical efficiency";
-  parameter SI.Pressure Delta_p_eps= 100
-    "|Expert Settings|Numerical Robustness|Small pressure difference for linearisation around zero mass flow";
+  parameter SI.Pressure Delta_p_eps= 100 "|Expert Settings|Numerical Robustness|Small pressure difference for linearisation around zero mass flow";
   parameter Modelica.SIunits.Inertia J "Moment of Inertia" annotation(Dialog(group="Time Response Definitions", enable= not steadyStateTorque));
-    parameter Boolean useMechanicalPort=false
-    "|Fundamental Definitions|True, if a mechenical flange should be used";
-  parameter Boolean steadyStateTorque=false
-    "|Fundamental Definitions|True, if steady state mechanical momentum shall be used";
+    parameter Boolean useMechanicalPort=false "|Fundamental Definitions|True, if a mechenical flange should be used";
+  parameter Boolean steadyStateTorque=false "|Fundamental Definitions|True, if steady state mechanical momentum shall be used";
   parameter SI.RPM rpm_fixed = 60 "Constant rotational speed of pump" annotation (Dialog( group = "Fundamental Definitions", enable = not useMechanicalPort));
   parameter SI.Time Tau_aux=0.1 "Time constant of auxilliary kappa states"  annotation(Dialog(tab = "Advanced"));
   parameter Real kappa_initial = 1.3 "Initial value for kappas" annotation(Dialog(tab = "Advanced"));
@@ -159,8 +150,7 @@ equation
 //____________________ Mechanics ___________________________
   if useMechanicalPort then
     der(getInputsRotary.rotatoryFlange.phi) = (2*pi*rpm/60);
-    J*a*rpm = - tau_fluid*2*pi*rpm/60 + getInputsRotary.rotatoryFlange.tau*2*pi*rpm/60
-      "Mechanical momentum balance";
+    J*a*rpm = - tau_fluid*2*pi*rpm/60 + getInputsRotary.rotatoryFlange.tau*2*pi*rpm/60 "Mechanical momentum balance";
   else
     rpm = rpm_fixed;
     getInputsRotary.rotatoryFlange.phi = 0.0;

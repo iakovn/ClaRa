@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.GasVolumes;
 model VolumeGas_L2 "A 0-d control volume for flue gas"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -19,70 +19,59 @@ model VolumeGas_L2 "A 0-d control volume for flue gas"
   outer ClaRa.SimCenter simCenter;
 
 // ***************************** defintion of medium used in cell *************************************************
-inner parameter TILMedia.GasTypes.BaseGas medium = simCenter.flueGasModel
-    "Medium to be used in tubes"  annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
+inner parameter TILMedia.GasTypes.BaseGas medium = simCenter.flueGasModel "Medium to be used in tubes"
+                                  annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
 
 // ************************* replacable models for heat transfer, pressure loss and geometry **********************
   replaceable model HeatTransfer =
       ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.IdealHeatTransfer_L2
-    constrainedby
-    ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.HeatTransfer_L2
-    "1st: choose geometry definition | 2nd: edit corresponding record"
+    constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.HeatTransfer_L2 "1st: choose geometry definition | 2nd: edit corresponding record"
     annotation (Dialog(group="Fundamental Definitions"), choicesAllMatching=true);
     replaceable model PressureLoss =
       ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.NoFriction_L2
-    constrainedby
-    ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.PressureLoss_L2
-    "1st: choose geometry definition | 2nd: edit corresponding record"
+    constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.PressureLoss_L2 "1st: choose geometry definition | 2nd: edit corresponding record"
     annotation (Dialog(group="Fundamental Definitions"), choicesAllMatching=true);
 
   replaceable model Geometry =
       ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry
-    constrainedby
-    ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry
-    "1st: choose geometry definition | 2nd: edit corresponding record"
+    constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry "1st: choose geometry definition | 2nd: edit corresponding record"
     annotation (Dialog(group="Geometry"), choicesAllMatching=true);
 
 // ********************************************* Parmeters *******************************************
 
-inner parameter Boolean useHomotopy=simCenter.useHomotopy
-    "True, if homotopy method is used during initialisation"  annotation(Dialog(tab="Initialisation"));
+inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation"
+                                                              annotation(Dialog(tab="Initialisation"));
 parameter Boolean allow_reverseFlow = true annotation(Evaluate=true, Dialog(tab="Advanced"));
 parameter Boolean use_dynamicMassbalance = true annotation(Evaluate=true, Dialog(tab="Advanced"));
-parameter Integer heatSurfaceAlloc=1 "Heat transfer area to be considered"          annotation(Dialog(group="Geometry"),choices(choice=1
-        "Lateral surface",                                                         choice=2
-        "Inner heat transfer surface"));
-inner parameter Modelica.SIunits.MassFlowRate m_flow_nom= 10
-    "Nominal mass flow rates at inlet"  annotation(Dialog(tab="General", group="Nominal Values"));
+parameter Integer heatSurfaceAlloc=1 "Heat transfer area to be considered"          annotation(Dialog(group="Geometry"),choices(choice=1 "Lateral surface",
+                                                                                   choice=2 "Inner heat transfer surface"));
+inner parameter Modelica.SIunits.MassFlowRate m_flow_nom= 10 "Nominal mass flow rates at inlet"
+                                        annotation(Dialog(tab="General", group="Nominal Values"));
 
   inner parameter Modelica.SIunits.Pressure p_nom=1e5 "Nominal pressure"                    annotation(Dialog(group="Nominal Values"));
-  inner parameter Modelica.SIunits.SpecificEnthalpy h_nom=1e5
-    "Nominal specific enthalpy"                                                                annotation(Dialog(group="Nominal Values"));
+  inner parameter Modelica.SIunits.SpecificEnthalpy h_nom=1e5 "Nominal specific enthalpy"      annotation(Dialog(group="Nominal Values"));
 
-inner parameter ClaRa.Basics.Choices.Init initType=ClaRa.Basics.Choices.Init.noInit
-    "Type of initialisation" annotation(Dialog(tab="Initialisation"), choicesAllMatching);
-  parameter Modelica.SIunits.Temperature T_start= 273.15 + 100.0
-    "Start value of system temperature" annotation(Dialog(tab="Initialisation"));
+inner parameter ClaRa.Basics.Choices.Init initType=ClaRa.Basics.Choices.Init.noInit "Type of initialisation"
+                             annotation(Dialog(tab="Initialisation"), choicesAllMatching);
+  parameter Modelica.SIunits.Temperature T_start= 273.15 + 100.0 "Start value of system temperature"
+                                        annotation(Dialog(tab="Initialisation"));
   final parameter Modelica.SIunits.SpecificEnthalpy h_start=
-          TILMedia.GasFunctions.specificEnthalpy_pTxi(medium, p_start, T_start, xi_start)
-    "Start value of system specific enthalpy";
+          TILMedia.GasFunctions.specificEnthalpy_pTxi(medium, p_start, T_start, xi_start) "Start value of system specific enthalpy";
 //          TILMedia.GasFunctions.specificEnthalpy_pTxi(medium, p_start, T_start, xi_start[1:end-1]/sum(xi_start))
 //    "Start value of system specific enthalpy";
-  parameter Modelica.SIunits.Pressure p_start= 1.013e5
-    "Start value of sytsem pressure" annotation(Dialog(tab="Initialisation"));
-  parameter Modelica.SIunits.MassFraction xi_start[medium.nc-1]=zeros(medium.nc-1)
-    "Start value of sytsem mass fraction" annotation(Dialog(tab="Initialisation"));
+  parameter Modelica.SIunits.Pressure p_start= 1.013e5 "Start value of sytsem pressure"
+                                     annotation(Dialog(tab="Initialisation"));
+  parameter Modelica.SIunits.MassFraction xi_start[medium.nc-1]=zeros(medium.nc-1) "Start value of sytsem mass fraction"
+                                          annotation(Dialog(tab="Initialisation"));
 
 protected
    Modelica.SIunits.SpecificEnthalpy h_out "Outlet specific enthalpy";
    Modelica.SIunits.SpecificEnthalpy h_in "Inlet specific enthalpy";
-   inner Modelica.SIunits.SpecificEnthalpy h(start=h_start)
-    "Bulk specific enthalpy";
+   inner Modelica.SIunits.SpecificEnthalpy h(start=h_start) "Bulk specific enthalpy";
    Real drhodt "Density derivative";
    Modelica.SIunits.Mass mass "Mass inside volume";
    Modelica.SIunits.Pressure p(start=p_start) "Pressure inside volume";
-  Modelica.SIunits.MassFraction xi[medium.nc-1]( start=xi_start)
-    "Mass fractions inside volume";
+  Modelica.SIunits.MassFraction xi[medium.nc-1]( start=xi_start) "Mass fractions inside volume";
 public
   HeatTransfer heattransfer(heatSurfaceAlloc=heatSurfaceAlloc)
     annotation (Placement(transformation(extent={{-80,60},{-60,80}})));
@@ -93,12 +82,10 @@ public
             {32,80}})));
 
   ClaRa.Basics.Interfaces.GasPortIn inlet(Medium=medium, m_flow(min=if
-          allow_reverseFlow then -Modelica.Constants.inf else 1e-5))
-    "Inlet port"
+          allow_reverseFlow then -Modelica.Constants.inf else 1e-5)) "Inlet port"
     annotation (Placement(transformation(extent={{-110,-10},{-90,10}})));
   ClaRa.Basics.Interfaces.GasPortOut outlet(Medium=medium, m_flow(max=if
-          allow_reverseFlow then Modelica.Constants.inf else -1e-5))
-    "Outlet port"
+          allow_reverseFlow then Modelica.Constants.inf else -1e-5)) "Outlet port"
     annotation (Placement(transformation(extent={{90,-10},{110,10}})));
 
   TILMedia.Gas_pT     flueGasInlet(gasType = medium, p=inlet.p, T=noEvent(actualStream(inlet.T_outflow)), xi=noEvent(actualStream(inlet.xi_outflow)))
@@ -121,13 +108,11 @@ public
    input ClaRa.Basics.Units.Volume volume_tot "Total volume";
    input ClaRa.Basics.Units.Area A_heat "Heat transfer area";
    input ClaRa.Basics.Units.HeatFlowRate Q_flow_tot "Total heat flow rate";
-   input ClaRa.Basics.Units.PressureDifference Delta_p
-      "Pressure difference p_in - p_out";
+   input ClaRa.Basics.Units.PressureDifference Delta_p "Pressure difference p_in - p_out";
    input ClaRa.Basics.Units.Mass mass "Mass inside volume"   annotation(Dialog);
    input ClaRa.Basics.Units.Temperature T "Temperature  inside volume"   annotation(Dialog);
    input ClaRa.Basics.Units.Pressure p "Pressure inside volume"   annotation(Dialog);
-   input ClaRa.Basics.Units.EnthalpyMassSpecific h
-      "Specific enthalpy inside volume"                                                annotation(Dialog);
+   input ClaRa.Basics.Units.EnthalpyMassSpecific h "Specific enthalpy inside volume"   annotation(Dialog);
    input ClaRa.Basics.Units.Enthalpy H "Enthalpy inside volume"   annotation(Dialog);
    input ClaRa.Basics.Units.DensityMassSpecific rho "Density inside volume"   annotation(Dialog);
   end Outline;
@@ -210,8 +195,7 @@ inlet.p=if useHomotopy then homotopy(p+pressureLoss.Delta_p + (geo.z_in-geo.z_ou
              + bulk.drhodp_hxi * der(p);
   end if;
 
-  der(h) =  (inlet.m_flow*(h_in-h) + outlet.m_flow*(h_out-h)  + geo.volume*der(p) + heat.Q_flow)/mass
-    "Energy balance";
+  der(h) =  (inlet.m_flow*(h_in-h) + outlet.m_flow*(h_out-h)  + geo.volume*der(p) + heat.Q_flow)/mass "Energy balance";
 
 //     der(h) =  if useHomotopy then homotopy((inlet.m_flow*h_in + outlet.m_flow*h_out  + geo.V*der(p) + heat.Q_flow - h*geo.V*drhodt), (m_flow_nom*h_in -m_flow_nom*h_out  + geo.V*der(p) + heat.Q_flow - h*geo.V*drhodt))/mass
 //     else (inlet.m_flow*h_in + outlet.m_flow*h_out  + geo.V*der(p) + heat.Q_flow - h*geo.V*drhodt)/mass

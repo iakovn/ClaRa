@@ -1,7 +1,31 @@
 within ClaRa.Components.HeatExchangers.Check;
 model Test_HEXvle2vle_L3_2ph_CH_simple_shutoff "Quickly reduce the steam mass flow from full load to near zero. Vary liquid pressure state location"
  extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
+ extends ClaRa.Basics.Icons.PackageIcons.ExecutableRegressiong100;
+model Regression
+  extends ClaRa.Basics.Icons.RegressionSummary;
+  Modelica.Blocks.Interfaces.RealInput V_liq "Liquid shell volume";
+  Modelica.Blocks.Interfaces.RealInput T_shell_out "Shell outlet temperature";
+  Modelica.Blocks.Interfaces.RealInput p_shell_out "IP turbine outlet enthalpy";
+  Modelica.Blocks.Interfaces.RealInput Q_flow_tot "Total heat flow";
 
+  Real y_Q_flow_tot_int = integrator1.y;
+  Real y_Q_flow_tot = Q_flow_tot;
+
+  Real y_V_liq_int = integrator2.y;
+  Real y_V_liq = V_liq;
+
+  Real y_T_shell_out_int = integrator3.y;
+  Real y_T_shell_out = T_shell_out;
+  Real y_p_shell_out_int = integrator4.y;
+  Real y_p_shell_out = p_shell_out;
+
+  protected
+  Components.Utilities.Blocks.Integrator integrator1(u = Q_flow_tot, startTime=1000);
+  Components.Utilities.Blocks.Integrator integrator2(u = V_liq, startTime=1000);
+  Components.Utilities.Blocks.Integrator integrator3(u = T_shell_out, startTime=1000);
+  Components.Utilities.Blocks.Integrator integrator4(u = p_shell_out, startTime=1000);
+end Regression;
   HEXvle2vle_L3_2ph_CH_simple
                            hex(
     redeclare model WallMaterial =
@@ -35,30 +59,29 @@ model Test_HEXvle2vle_L3_2ph_CH_simple_shutoff "Quickly reduce the steam mass fl
     flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical,
     z_in_tubes=5,
     z_out_tubes=5,
-    shell(equalPressures=false),
-    levelOutput=true)
+    levelOutput=true,
+    equalPressures=false)
                    annotation (Placement(transformation(extent={{0,-20},{20,0}})));
 
   Modelica.Blocks.Sources.Ramp h_steam(
-    height=124e3,
     duration=600,
     offset=2212.6e3,
-    startTime=10000) annotation (Placement(transformation(extent={{124,32},{104,52}})));
+    startTime=10000,
+    height=0)        annotation (Placement(transformation(extent={{128,26},{108,46}})));
   Modelica.Blocks.Sources.Ramp m_cool(
     duration=100,
     startTime=1000,
     height=0,
-    offset=11500) annotation (Placement(transformation(extent={{120,-66},{100,-46}})));
+    offset=11500) annotation (Placement(transformation(extent={{120,-60},{100,-40}})));
   Modelica.Blocks.Sources.Ramp m_steam(
     startTime=10000,
     offset=76.8,
     height=-76,
-    duration=3)   annotation (Placement(transformation(extent={{128,2},{108,22}})));
+    duration=3)   annotation (Placement(transformation(extent={{128,-2},{108,18}})));
   VolumesValvesFittings.Valves.ValveVLE_L1                      valve_shell1(
     checkValve=true,
-    redeclare model PressureLoss =
-        VolumesValvesFittings.Valves.Fundamentals.QuadraticNominalPoint (                           m_flow_nom=10, Delta_p_nom=250),
-    openingInputIsActive=true)
+    openingInputIsActive=true,
+    redeclare model PressureLoss = VolumesValvesFittings.Valves.Fundamentals.QuadraticNominalPoint (Delta_p_nom=100, m_flow_nom=100))
     annotation (Placement(transformation(extent={{-30,-92},{-50,-80}})));
   VolumesValvesFittings.Valves.ValveVLE_L1                      valve_tubes1(
     openingInputIsActive=false,
@@ -86,7 +109,7 @@ model Test_HEXvle2vle_L3_2ph_CH_simple_shutoff "Quickly reduce the steam mass fl
     duration=600,
     offset=13.7 + 273.15,
     startTime=10000,
-    height=2)        annotation (Placement(transformation(extent={{120,-96},{100,-76}})));
+    height=0)        annotation (Placement(transformation(extent={{120,-90},{100,-70}})));
   inner SimCenter simCenter(
     useHomotopy=true,
     redeclare TILMedia.VLEFluidTypes.TILMedia_SplineWater fluid1,
@@ -95,8 +118,8 @@ model Test_HEXvle2vle_L3_2ph_CH_simple_shutoff "Quickly reduce the steam mass fl
   Modelica.Blocks.Sources.Ramp p_steam(
     duration=600,
     startTime=10000,
-    height=0.005e5,
-    offset=0.023e5) annotation (Placement(transformation(extent={{-100,-90},{-80,-70}})));
+    offset=0.023e5,
+    height=0)       annotation (Placement(transformation(extent={{-100,-90},{-80,-70}})));
   Modelica.Blocks.Sources.Ramp p_cool(
     duration=600,
     startTime=10000,
@@ -125,20 +148,24 @@ model Test_HEXvle2vle_L3_2ph_CH_simple_shutoff "Quickly reduce the steam mass fl
     u_ref=1,
     y_ref=1,
     y_max=1,
-    sign=-1,
     y_start=0.5,
     Tau_i=120,
-    y_min=0.001)
-               annotation (Placement(transformation(extent={{-72,-52},{-62,-62}})));
+    y_min=0.001,
+    sign=-1)   annotation (Placement(transformation(extent={{-72,-52},{-62,-62}})));
   Modelica.Blocks.Sources.RealExpression realExpression(y=0.8) annotation (Placement(transformation(extent={{-96,-62},{-80,-52}})));
+
+     Regression regression(V_liq = hex.shell.summary.outline.volume[1],
+     T_shell_out = hex.shell.summary.outlet[1].T,
+     p_shell_out = hex.shell.summary.outlet[1].p,
+     Q_flow_tot = -hex.summary.outline.Q_flow) annotation (Placement(transformation(extent={{-100,100},{-80,120}})));
 equation
 
   connect(m_steam.y, massFlowSource_h.m_flow) annotation (Line(
-      points={{107,12},{100,12},{100,30},{94,30}},
+      points={{107,8},{100,8},{100,30},{94,30}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(massFlowSource_h.h, h_steam.y) annotation (Line(
-      points={{94,36},{98,36},{98,42},{103,42}},
+      points={{94,36},{107,36}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(pressureSink_ph.steam_a,valve_shell1. outlet) annotation (Line(
@@ -158,7 +185,7 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(m_cool.y, massFlowSource_h1.m_flow) annotation (Line(
-      points={{99,-56},{96,-56},{96,-2},{84,-2}},
+      points={{99,-50},{96,-50},{96,-2},{84,-2}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(hex.In1, massFlowSource_h.steam_a) annotation (Line(
@@ -170,7 +197,7 @@ equation
   connect(p_steam.y, pressureSink_ph.p) annotation (Line(points={{-79,-80},{-74,-80}},           color={0,0,127}));
   connect(pressureSink_ph1.p, p_cool.y) annotation (Line(points={{-66,-14},{-74,-14},{-74,12},{-79,12}},
                                                                                             color={0,0,127}));
-  connect(T_cool.y, massFlowSource_h1.T) annotation (Line(points={{99,-86},{84,-86},{84,-8}},  color={0,0,127}));
+  connect(T_cool.y, massFlowSource_h1.T) annotation (Line(points={{99,-80},{84,-80},{84,-8}},  color={0,0,127}));
   connect(valve_shell1.inlet, hex.Out1) annotation (Line(
       points={{-30,-86},{10,-86},{10,-20}},
       color={0,131,169},
@@ -191,24 +218,32 @@ equation
   annotation (Diagram(coordinateSystem(extent={{-100,-100},{140,120}},
           preserveAspectRatio=false,
         initialScale=0.1),            graphics={  Text(
-          extent={{-100,116},{136,70}},
-          lineColor={0,128,0},
+          extent={{-78,104},{158,58}},
+          lineColor={115,150,0},
           horizontalAlignment=TextAlignment.Left,
           fontSize=11,
           textString="______________________________________________________________________________________________
 PURPOSE:
->>check HEXvle2vle_L3_2ph_CH_simple as a condenser in a trip scenario
+>>check HEXvle2vle_L3_2ph_CH_simple as a condenser in a trip scenario.
+    Use the expert parameter equalPressures to avoid numerically induced boiling of the liquid phase during the trip.
 
-LOOK AT: level development (hex.summary.outline.level_abs). If equalPressure = true then the liquid mass in the vessl
-will temporarily boil and the level will rise quickly.  To avoid this behaviour set the parameter equalPressures to false.
+- shutdown: shell mass flow is reduced to < 1 kg/s at time = 10000 s
+
+LOOK AT: level development (hex.summary.outline.level_abs). 
+                 liquid density (hex.shell.summary.fluid.rho[1])
+If equalPressure = true then the liquid mass in the vessel will temporarily boil and the level will rise quickly.  
+To avoid this behaviour set the parameter equalPressures to false.
 
 ______________________________________________________________________________________________"),
                        Text(
-          extent={{-100,120},{58,102}},
-          lineColor={0,128,0},
+          extent={{-80,120},{78,102}},
+          lineColor={115,150,0},
           fontSize=31,
-          textString="TESTED -- 2016-03-23 //TH")}),
-                                                 Icon(coordinateSystem(initialScale=0.1)),
+          textString="TESTED -- 2016-09-05 //TH"),
+        Rectangle(
+          extent={{-100,120},{140,-100}},
+          lineColor={115,150,0},
+          lineThickness=0.5)}),                  Icon(coordinateSystem(initialScale=0.1)),
     experiment(
       StopTime=20000,
       __Dymola_NumberOfIntervals=50000,

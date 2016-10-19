@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes;
 model ParallelFlow_L3 "Pure parallel flow heatexchanger L3"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,15 +15,12 @@ model ParallelFlow_L3 "Pure parallel flow heatexchanger L3"
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
 
-extends
-    ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.GeneralHeatExchanger_L3
-    (
+extends ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.GeneralHeatExchanger_L3(
     final a=0.671,
     final b=2.11,
     final c=0.534,
     final d=0.5);
-extends
-    ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Icons.HEX_ParallelFlow_Icon;
+extends ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Icons.HEX_ParallelFlow_Icon;
 equation
 
   h_o_in[1] = iCom.h_o_inlet;

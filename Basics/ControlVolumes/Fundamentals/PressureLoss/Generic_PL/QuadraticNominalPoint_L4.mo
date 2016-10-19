@@ -1,8 +1,7 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL;
-model QuadraticNominalPoint_L4
-  "Medium independent || Nominal point, property independent"
+model QuadraticNominalPoint_L4 "Medium independent || Nominal point, property independent"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.1                        //
+  // Component of the ClaRa library, version: 1.1.2                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -16,19 +15,15 @@ model QuadraticNominalPoint_L4
   // XRG Simulation GmbH (Hamburg, Germany).                                   //
   //___________________________________________________________________________//
 
-  extends
-    ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.PressureLoss_L4;
+  extends ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.PressureLoss_L4;
 
   //  outer ClaRa.Components.ComponentBaseClasses.Fundamentals2.PipeGeometry geo;
 
-  parameter Modelica.SIunits.Pressure Delta_p_smooth=iCom.Delta_p_nom/iCom.N_cv*0.2
-    "|Small Mass Flows|For pressure losses below this value the square root of the quadratic pressure loss model is regularised";
+  parameter Modelica.SIunits.Pressure Delta_p_smooth=iCom.Delta_p_nom/iCom.N_cv*0.2 "|Small Mass Flows|For pressure losses below this value the square root of the quadratic pressure loss model is regularised";
 
-  final parameter FluidDissipation.Utilities.Types.PressureLossCoefficient zeta_TOT=iCom.Delta_p_nom/iCom.m_flow_nom^2
-    "Pressure loss coefficient for total pipe";
+  final parameter FluidDissipation.Utilities.Types.PressureLossCoefficient zeta_TOT=iCom.Delta_p_nom/iCom.m_flow_nom^2 "Pressure loss coefficient for total pipe";
 protected
-  FluidDissipation.Utilities.Types.PressureLossCoefficient zeta[iCom.N_cv + 1]
-    "Pressure loss coefficient for total pipe";
+  FluidDissipation.Utilities.Types.PressureLossCoefficient zeta[iCom.N_cv + 1] "Pressure loss coefficient for total pipe";
 
 equation
   // Note that we want distribute zeta linearly over tha pipe length. Hence use zeta[i]=zeta_TOT*geo.Delta_x_FM[i]/(L -geo.Delta_x_FM[1]-geo.Delta_x_FM[N_cv+1] ) <-- notice that the last two terms depend on the flow model

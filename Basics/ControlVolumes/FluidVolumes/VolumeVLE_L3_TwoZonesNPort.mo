@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.FluidVolumes;
 model VolumeVLE_L3_TwoZonesNPort "A volume element balancing liquid and vapour phase with n inlet and outlet ports"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.1                        //
+  // Component of the ClaRa library, version: 1.1.2                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -313,10 +313,9 @@ equation
 
   p_bottom = p_vap + phaseBorder.level_abs*liq.d*Modelica.Constants.g_n;
   if equalPressures then
-    //der(p_liq) = der(p_vap);
     p_liq = p_vap;
   else
-    der(p_liq) = der(p_vap) + der(phaseBorder.level_abs)*liq.d*Modelica.Constants.g_n/2 +  phaseBorder.level_abs*drho_liqdt*Modelica.Constants.g_n/2;
+    p_liq = p_vap + phaseBorder.level_abs*liq.d*Modelica.Constants.g_n/2;
   end if;
   //_____________________________________________________
   //_______Mass Balances_________________________________

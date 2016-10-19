@@ -1,21 +1,17 @@
 within ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals;
-model QuadraticFrictionFlowAreaSymetric_TWV
-  "| Quadratic Pressure Dependency | Flow Area Definition | Opening Characteristics | Symetrical |"
+model QuadraticFrictionFlowAreaSymetric_TWV "| Quadratic Pressure Dependency | Flow Area Definition | Opening Characteristics | Symetrical |"
   extends ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.Basic_TWV;
   extends ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.TWV_L1;
   extends ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.TWV_L2;
   import SI = ClaRa.Basics.Units;
-  parameter SI.Area effectiveFlowArea1=7.85e-3
-    "Effective flow area for straight outlet"
+  parameter SI.Area effectiveFlowArea1=7.85e-3 "Effective flow area for straight outlet"
     annotation(Dialog(group="Valve Characteristics"));
-  parameter SI.Area effectiveFlowArea2=effectiveFlowArea1
-    "Effective flow area for shunt outlet"
+  parameter SI.Area effectiveFlowArea2=effectiveFlowArea1 "Effective flow area for shunt outlet"
     annotation(Dialog(group="Valve Characteristics"));
-  parameter Boolean useStabilisedMassFlow=false
-    "|Expert Settings|Numerical Robustness|";
+  parameter Boolean useStabilisedMassFlow=false "|Expert Settings|Numerical Robustness|";
   parameter SI.Time Tau= 0.001 "Time Constant of Stabilisation" annotation(Dialog(tab="Expert Settings", group = "Numerical Robustness", enable=useStabilisedMassFlow));
-  parameter SI.PressureDifference Delta_p_smooth = 100
-    "Below this value, root function is approximated linearly"                   annotation(Dialog(tab = "Expert Settings", group="Numerical Robustness"));
+  parameter SI.PressureDifference Delta_p_smooth = 100 "Below this value, root function is approximated linearly"
+                                                                                 annotation(Dialog(tab = "Expert Settings", group="Numerical Robustness"));
 
   SI.Pressure Delta_p[2](start={10,10}) "Pressure differences";
 equation

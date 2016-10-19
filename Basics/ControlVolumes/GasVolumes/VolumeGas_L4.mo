@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.GasVolumes;
 model VolumeGas_L4 "An array of flue gas cells."
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.1                        //
+  // Component of the ClaRa library, version: 1.1.2                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -30,16 +30,13 @@ model VolumeGas_L4 "An array of flue gas cells."
 
     parameter Integer N_cv "|Discretisation|Number of finite volumes";
 
-    input ClaRa.Basics.Units.PressureDifference Delta_p
-      "Pressure difference between outlet and inlet"                                                   annotation (Dialog);
+    input ClaRa.Basics.Units.PressureDifference Delta_p "Pressure difference between outlet and inlet" annotation (Dialog);
     input Basics.Units.Mass mass_tot "Total fluid mass in system mass" annotation (Dialog(show));
     input Basics.Units.Enthalpy H_tot "Total system enthalpy"  annotation (Dialog(show));
-    input Basics.Units.HeatFlowRate Q_flow_tot
-      "Heat flow through entire pipe wall"                                          annotation (Dialog);
+    input Basics.Units.HeatFlowRate Q_flow_tot "Heat flow through entire pipe wall" annotation (Dialog);
 
     input Basics.Units.Mass mass[N_cv] "Fluid mass in cells" annotation (Dialog(show));
-    input Basics.Units.MassFlowRate m_flow[N_cv + 1]
-      "Mass flow through cell borders"                                                annotation (Dialog(show));
+    input Basics.Units.MassFlowRate m_flow[N_cv + 1] "Mass flow through cell borders" annotation (Dialog(show));
   end Outline;
 
   inner model Summary
@@ -52,48 +49,35 @@ model VolumeGas_L4 "An array of flue gas cells."
   //## P A R A M E T E R S #######################################################################################
   //____Media Data_____________________________________________________________________________________
 public
-  inner parameter TILMedia.GasTypes.BaseGas medium=simCenter.flueGasModel
-    "Medium to be used"                                                                       annotation (choicesAllMatching, Dialog(group="Fundamental Definitions"));
+  inner parameter TILMedia.GasTypes.BaseGas medium=simCenter.flueGasModel "Medium to be used" annotation (choicesAllMatching, Dialog(group="Fundamental Definitions"));
 
   //____Physical Effects_____________________________________________________________________________________
-  inner parameter Boolean frictionAtInlet=false
-    "|Fundamental Definitions|True if pressure loss between first cell and inlet shall be considered"
+  inner parameter Boolean frictionAtInlet=false "|Fundamental Definitions|True if pressure loss between first cell and inlet shall be considered"
                                                                                             annotation (choices(checkBox=true));
-  inner parameter Boolean frictionAtOutlet=false
-    "|Fundamental Definitions|True if pressure loss between last cell and outlet shall be considered"
+  inner parameter Boolean frictionAtOutlet=false "|Fundamental Definitions|True if pressure loss between last cell and outlet shall be considered"
                                                                                             annotation (choices(checkBox=true));
   replaceable model PressureLoss =
-      ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4
-                                                                                                        constrainedby
-    ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.PressureLossBaseGas_L4
-    "|Fundamental Definitions|Pressure loss model at the tubes side"                        annotation (choicesAllMatching);
+      ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4            constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.PressureLossBaseGas_L4 "|Fundamental Definitions|Pressure loss model at the tubes side"
+                                                                                            annotation (choicesAllMatching);
 
   replaceable model HeatTransfer =
-      ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4
-      (                                                                                                    A_heat=geo.A_heat_CF[:, 1]) constrainedby
-    ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.HeatTransferBaseGas_L4
-    "|Fundamental Definitions|Heat transfer mode at the tubes side"                         annotation (choicesAllMatching);
+      ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4 (                      A_heat=geo.A_heat_CF[:, 1]) constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.HeatTransferBaseGas_L4 "|Fundamental Definitions|Heat transfer mode at the tubes side"
+                                                                                            annotation (choicesAllMatching);
 
   //____Geometric data_____________________________________________________________________________________
 
   replaceable model Geometry =
-      ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry_N_cv                          constrainedby
-    ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry_N_cv
-    "1st: choose geometry definition | 2nd: edit corresponding record"                      annotation (Dialog(group="Geometry"), choicesAllMatching=true);
+      ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry_N_cv                          constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry_N_cv "1st: choose geometry definition | 2nd: edit corresponding record"
+                                                                                            annotation (Dialog(group="Geometry"), choicesAllMatching=true);
 
   //____Nominal Values_________________________________________________________________________________
-  parameter Basics.Units.Pressure p_nom[geo.N_cv]=1e5*ones(geo.N_cv)
-    "|Nominal Values|nominal pressure";
-  parameter Basics.Units.Temperature T_nom[geo.N_cv]=293.15*ones(geo.N_cv)
-    "|Nominal Values|Nominal temperature";
-  parameter Basics.Units.MassFraction xi_nom[medium.nc - 1]={0.01,0,0.1,0,0.74,0.13,0,0.02,0}
-    "|Nominal Values|Nominal composition";
+  parameter Basics.Units.Pressure p_nom[geo.N_cv]=1e5*ones(geo.N_cv) "|Nominal Values|nominal pressure";
+  parameter Basics.Units.Temperature T_nom[geo.N_cv]=293.15*ones(geo.N_cv) "|Nominal Values|Nominal temperature";
+  parameter Basics.Units.MassFraction xi_nom[medium.nc - 1]={0.01,0,0.1,0,0.74,0.13,0,0.02,0} "|Nominal Values|Nominal composition";
 
-  inner parameter Basics.Units.MassFlowRate m_flow_nom=100
-    "|Nominal Values|Nominal mass flow";
+  inner parameter Basics.Units.MassFlowRate m_flow_nom=100 "|Nominal Values|Nominal mass flow";
 
-  inner parameter Basics.Units.Pressure Delta_p_nom=1e4
-    "|Nominal Values|Nominal pressure loss";
+  inner parameter Basics.Units.Pressure Delta_p_nom=1e4 "|Nominal Values|Nominal pressure loss";
 
   final parameter Basics.Units.DensityMassSpecific rho_nom[geo.N_cv]=TILMedia.GasFunctions.density_pTxi(
       medium,
@@ -102,29 +86,22 @@ public
       xi_nom) "Nominal density";
 
   //____Initialisation_____________________________________________________________________________________
-  parameter ClaRa.Basics.Choices.Init initType=ClaRa.Basics.Choices.Init.steadyState
-    "|Initialisation|Model Settings|type of initialisation "                                                                                  annotation (choicesAllMatching);
-  inner parameter Boolean useHomotopy=simCenter.useHomotopy
-    "|Initialisation|Model Settings|true, if homotopy method is used during initialisation";
+  parameter ClaRa.Basics.Choices.Init initType=ClaRa.Basics.Choices.Init.steadyState "|Initialisation|Model Settings|type of initialisation " annotation (choicesAllMatching);
+  inner parameter Boolean useHomotopy=simCenter.useHomotopy "|Initialisation|Model Settings|true, if homotopy method is used during initialisation";
 
-  parameter Basics.Units.Temperature T_start[:]=293.15*ones(geo.N_cv)
-    "|Initialisation||Initial temperature";
-  parameter Basics.Units.Pressure p_start[:]=1e5*ones(geo.N_cv)
-    "|Initialisation||Initial pressure";
+  parameter Basics.Units.Temperature T_start[:]=293.15*ones(geo.N_cv) "|Initialisation||Initial temperature";
+  parameter Basics.Units.Pressure p_start[:]=1e5*ones(geo.N_cv) "|Initialisation||Initial pressure";
 
-  parameter Basics.Units.MassFraction xi_start[medium.nc - 1]={0.01,0,0.1,0,0.74,0.13,0,0.02,0}
-    "|Initialisation||Initial composition";
+  parameter Basics.Units.MassFraction xi_start[medium.nc - 1]={0.01,0,0.1,0,0.74,0.13,0,0.02,0} "|Initialisation||Initial composition";
 protected
   parameter Basics.Units.Pressure p_start_internal[geo.N_cv]=if size(p_start, 1) == 2 then linspace(
       p_start[1],
       p_start[2],
-      geo.N_cv) else p_start
-    "Internal p_start array which allows the user to either state p_inlet, p_outlet if p_start has length 2, otherwise the user can specify an individual pressure profile for initialisation";
+      geo.N_cv) else p_start "Internal p_start array which allows the user to either state p_inlet, p_outlet if p_start has length 2, otherwise the user can specify an individual pressure profile for initialisation";
   parameter Basics.Units.Temperature T_start_internal[geo.N_cv]=if size(T_start, 1) == 2 then linspace(
       T_start[1],
       T_start[2],
-      geo.N_cv) else T_start
-    "Internal T_start array which allows the user to either state T_inlet, T_outlet if T_start has length 2, otherwise the user can specify an individual Temperature profile for initialisation";
+      geo.N_cv) else T_start "Internal T_start array which allows the user to either state T_inlet, T_outlet if T_start has length 2, otherwise the user can specify an individual Temperature profile for initialisation";
 
   parameter Basics.Units.EnthalpyMassSpecific h_start[geo.N_cv]=TILMedia.GasFunctions.specificEnthalpy_pTxi(
       medium,
@@ -141,19 +118,16 @@ protected
 
   //____Energy / Enthalpy_________________________________________________________________________________________
 public
-  Basics.Units.EnthalpyMassSpecific h[geo.N_cv](start=h_start, stateSelect=StateSelect.prefer)
-    "Cell enthalpy";
+  Basics.Units.EnthalpyMassSpecific h[geo.N_cv](start=h_start, stateSelect=StateSelect.prefer) "Cell enthalpy";
 
-  Basics.Units.Temperature T[geo.N_cv](start=T_start_internal)
-    "Cell Temperature";
+  Basics.Units.Temperature T[geo.N_cv](start=T_start_internal) "Cell Temperature";
   SI.Temperature T_in[geo.N_cv] "Inlet temperatures of cells";
   SI.Temperature T_out[geo.N_cv] "Outlet temperatures of cells";
 
   //____Pressure__________________________________________________________________________________________________
 protected
   Basics.Units.Pressure p[geo.N_cv](start=p_start_internal) "Cell pressure"; //nominal=p_nom,
-  Basics.Units.Pressure Delta_p_fric[geo.N_cv + 1]
-    "Pressure difference due to friction";
+  Basics.Units.Pressure Delta_p_fric[geo.N_cv + 1] "Pressure difference due to friction";
 
   //____Mass and Density__________________________________________________________________________________________
   Basics.Units.Mass mass[geo.N_cv] "Mass of fluid in cells";
@@ -172,24 +146,20 @@ protected
   Basics.Units.Power H_flow[geo.N_cv + 1] "Enthalpy flow rate at cell borders";
   Basics.Units.MassFlowRate m_flow[geo.N_cv + 1](nominal=ones(geo.N_cv + 1)*m_flow_nom, start=ones(geo.N_cv + 1)*m_flow_nom);
 
-  Basics.Units.Velocity w[geo.N_cv]
-    "flow velocities within cells of energy model == flow velocities across cell borders of flow model ";
+  Basics.Units.Velocity w[geo.N_cv] "flow velocities within cells of energy model == flow velocities across cell borders of flow model ";
   Basics.Units.Velocity w_inlet "flow velocity at inlet";
   Basics.Units.Velocity w_outlet "flow velocity at outlet";
   Basics.Units.Temperature  T_inlet "Inlet temperature of component";
   Basics.Units.Temperature  T_outlet "Outlet temperature of component";
-  Modelica.SIunits.MassFraction xi_inlet[medium.nc - 1]
-    "Inlet gas composition of component";
-  Modelica.SIunits.MassFraction xi_outlet[medium.nc - 1]
-    "Outlet gas composition of component";
+  Modelica.SIunits.MassFraction xi_inlet[medium.nc - 1] "Inlet gas composition of component";
+  Modelica.SIunits.MassFraction xi_outlet[medium.nc - 1] "Outlet gas composition of component";
 
   //____Connectors________________________________________________________________________________________________
 public
   ClaRa.Basics.Interfaces.GasPortIn inlet(Medium=medium) "Inlet port" annotation (Placement(transformation(extent={{-150,-10},{-130,10}}), iconTransformation(extent={{-150,-10},{-130,10}})));
   ClaRa.Basics.Interfaces.GasPortOut outlet(Medium=medium) "Outlet port" annotation (Placement(transformation(extent={{130,-10},{150,10}}), iconTransformation(extent={{130,-10},{150,10}})));
 
-  parameter Boolean showData=false
-    "|Summary and Visualisation||True, if a data port containing p,T,h,s,m_flow shall be shown, else false";
+  parameter Boolean showData=false "|Summary and Visualisation||True, if a data port containing p,T,h,s,m_flow shall be shown, else false";
 
   ClaRa.Basics.Interfaces.HeatPort_a heat[geo.N_cv] annotation (Placement(transformation(extent={{-10,34},{10,54}}), iconTransformation(
         extent={{-10,-10},{10,10}},
@@ -405,10 +375,8 @@ equation
   for i in 1:geo.N_cv loop
     drhodt[i]*geo.volume[i] = m_flow[i] - m_flow[i + 1] "Mass balance";
 
-    der(xi[i, :]) = 1/mass[i]*(Xi_flow[i, :] - Xi_flow[i + 1, :])
-      "Component mass balance";
-    fluid[i].drhodp_hxi*der(p[i]) = (drhodt[i] - der(h[i])*fluid[i].drhodh_pxi - sum({fluid[i].drhodxi_ph[j]*der(xi[i, j]) for j in 1:medium.nc - 1}))
-      "Calculate pressure from enthalpy and density derivative";
+    der(xi[i, :]) = 1/mass[i]*(Xi_flow[i, :] - Xi_flow[i + 1, :]) "Component mass balance";
+    fluid[i].drhodp_hxi*der(p[i]) = (drhodt[i] - der(h[i])*fluid[i].drhodh_pxi - sum({fluid[i].drhodxi_ph[j]*der(xi[i, j]) for j in 1:medium.nc - 1})) "Calculate pressure from enthalpy and density derivative";
     der(h[i]) = (H_flow[i] - H_flow[i + 1] + heat[i].Q_flow + der(p[i])*geo.volume[i] - h[i]*geo.volume[i]*drhodt[i])/mass[i];
 
     T[i] = fluid[i].T;

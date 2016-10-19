@@ -1,7 +1,7 @@
 within ClaRa.Components.VolumesValvesFittings.Pipes.Check.ThickWallScenarios;
 model Test_Pipe_L1_TML_insulatedWall
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.1                        //
+  // Component of the ClaRa library, version: 1.1.2                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -29,8 +29,7 @@ model Test_Pipe_L1_TML_insulatedWall
     m_flow_nom=0,
     variable_h=true,
     p_nom=1000) annotation (Placement(transformation(extent={{60,-69},{40,-49}})));
-  inner SimCenter simCenter(redeclare replaceable
-      TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater                                             fluid1, useHomotopy=false) annotation (Placement(transformation(extent={{-80,-132},{-60,-112}})));
+  inner SimCenter simCenter(redeclare replaceable TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1, useHomotopy=false) annotation (Placement(transformation(extent={{-80,-132},{-60,-112}})));
   PipeFlowVLE_L1_TML tube(
     z_in=0,
     z_out=0,

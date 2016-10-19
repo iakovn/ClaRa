@@ -1,6 +1,5 @@
 within ClaRa.Components.MechanicalSeparation.Check;
-model TestSeparator_L3
-  "Check of normal operation and dry operation (Benson operation) is supported"
+model TestSeparator_L3 "Check of normal operation and dry operation (Benson operation) is supported"
   extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb80;
   ClaRa.Components.MechanicalSeparation.SteamSeparatorVLE_L3 steamSeparator(
     m_flow_nom=100,
@@ -12,24 +11,20 @@ model TestSeparator_L3
     z_out2=19.9,
     radius_flange=0.1,
     redeclare model PressureLoss =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3
-        (                                                                                                    Delta_p_nom={20000}),
+        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3 (            Delta_p_nom={20000}),
     z_in=18,
     Tau_evap=0.3,
     Tau_cond=0.03) annotation (Placement(transformation(extent={{-10,0},{10,20}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_hxim_flow boundaryVLE_hxim_flow(variable_m_flow=true, variable_h=true,
     showData=true)                                                                                                     annotation (Placement(transformation(extent={{-60,0},{-40,20}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi boundaryVLE_phxi(variable_p=true) annotation (Placement(transformation(extent={{-38,74},{-18,94}})));
-  ClaRa.Components.VolumesValvesFittings.Valves.ValveVLE_L1 valveVLE_L1_1(redeclare
-      model PressureLoss =
-        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint
-        (                                                                                                    m_flow_nom=40, Delta_p_nom=3e5))
+  ClaRa.Components.VolumesValvesFittings.Valves.ValveVLE_L1 valveVLE_L1_1(redeclare model PressureLoss =
+        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint (                      m_flow_nom=40, Delta_p_nom=3e5))
                                                                                             annotation (Placement(transformation(
         extent={{-10,-6},{10,6}},
         rotation=90,
         origin={0,70})));
-  ClaRa.Components.VolumesValvesFittings.Valves.ValveVLE_L1 valveVLE_L1_2(openingInputIsActive=true, redeclare
-      model PressureLoss =
+  ClaRa.Components.VolumesValvesFittings.Valves.ValveVLE_L1 valveVLE_L1_2(openingInputIsActive=true, redeclare model PressureLoss =
         VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint (                                                                                                    Delta_p_nom=3e5, m_flow_nom=40))
                                                                                             annotation (Placement(transformation(
         extent={{-10,-6},{10,6}},
@@ -42,8 +37,7 @@ model TestSeparator_L3
   Modelica.Blocks.Sources.TimeTable
                                ramp(table=[0,1; 15000,1; 15010,0; 20000,0; 20010,1; 60000,1])
                      annotation (Placement(transformation(extent={{50,-58},{30,-38}})));
-  inner ClaRa.SimCenter simCenter(showExpertSummary=true, redeclare
-      TILMedia.VLEFluidTypes.TILMedia_SplineWater                                                               fluid1)
+  inner ClaRa.SimCenter simCenter(showExpertSummary=true, redeclare TILMedia.VLEFluidTypes.TILMedia_SplineWater fluid1)
                                                           annotation (Placement(transformation(extent={{40,-100},{80,-80}})));
   ClaRa.Visualisation.Quadruple quadruple annotation (Placement(transformation(extent={{-42,-16},{-10,-6}})));
   ClaRa.Visualisation.Quadruple quadruple1 annotation (Placement(transformation(extent={{-52,-52},{-20,-42}})));
@@ -66,8 +60,7 @@ model TestSeparator_L3
     z_out2=19.9,
     radius_flange=0.1,
     redeclare model PressureLoss =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3
-        (                                                                                                    Delta_p_nom={20000}),
+        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3 (            Delta_p_nom={20000}),
     z_in=18,
     Tau_evap=0.3) annotation (Placement(transformation(extent={{182,0},{202,20}})));
   BoundaryConditions.BoundaryVLE_hxim_flow                  boundaryVLE_hxim_flow1(
@@ -75,18 +68,14 @@ model TestSeparator_L3
     showData=true)                                                                                                     annotation (Placement(transformation(extent={{130,0},{150,20}})));
   BoundaryConditions.BoundaryVLE_phxi                  boundaryVLE_phxi2(
                                                                         variable_p=true) annotation (Placement(transformation(extent={{154,74},{174,94}})));
-  VolumesValvesFittings.Valves.ValveVLE_L1                  valveVLE_L1_3(redeclare
-      model PressureLoss =
-        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint
-        (                                                                                                    m_flow_nom=40, Delta_p_nom=3e5))
+  VolumesValvesFittings.Valves.ValveVLE_L1                  valveVLE_L1_3(redeclare model PressureLoss =
+        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint (                      m_flow_nom=40, Delta_p_nom=3e5))
                                                                                             annotation (Placement(transformation(
         extent={{-10,-6},{10,6}},
         rotation=90,
         origin={194,70})));
-  VolumesValvesFittings.Valves.ValveVLE_L1                  valveVLE_L1_4(openingInputIsActive=true, redeclare
-      model PressureLoss =
-        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint
-        (                                                                                                    Delta_p_nom=3e5, m_flow_nom=100))
+  VolumesValvesFittings.Valves.ValveVLE_L1                  valveVLE_L1_4(openingInputIsActive=true, redeclare model PressureLoss =
+        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint (                      Delta_p_nom=3e5, m_flow_nom=100))
                                                                                             annotation (Placement(transformation(
         extent={{-10,-6},{10,6}},
         rotation=270,

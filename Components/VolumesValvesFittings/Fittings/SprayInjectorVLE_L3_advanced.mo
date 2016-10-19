@@ -1,8 +1,7 @@
 within ClaRa.Components.VolumesValvesFittings.Fittings;
-model SprayInjectorVLE_L3_advanced
-  "A spray injector for i.e. temperature control"
+model SprayInjectorVLE_L3_advanced "A spray injector for i.e. temperature control"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -22,28 +21,23 @@ model SprayInjectorVLE_L3_advanced
 
 ///_______________Fundamental Definitions__________________________________________________
   parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium=
-                                                      simCenter.fluid1
-    "Medium in the component" annotation(Dialog(group="Fundamental Definitions"), choicesAllMatching);
+                                                      simCenter.fluid1 "Medium in the component"
+                              annotation(Dialog(group="Fundamental Definitions"), choicesAllMatching);
 
-  replaceable model Material = TILMedia.SolidTypes.TILMedia_Aluminum constrainedby
-    TILMedia.SolidTypes.BaseSolid "Material of the cylinder"
+  replaceable model Material = TILMedia.SolidTypes.TILMedia_Aluminum constrainedby TILMedia.SolidTypes.BaseSolid "Material of the cylinder"
                                annotation(Dialog(group="Fundamental Definitions"), choicesAllMatching);
 
   replaceable model PressureLoss =
       ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint
-    constrainedby
-    ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.GenericPressureLoss
-    "Pressure loss model of injector valve"                                        annotation(Dialog(group="Fundamental Definitions"),choicesAllMatching);
+    constrainedby ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.GenericPressureLoss "Pressure loss model of injector valve"
+                                                                                   annotation(Dialog(group="Fundamental Definitions"),choicesAllMatching);
 
   replaceable model PressureLoss_mixingZone =
       ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.QuadraticParallelZones_L3
-    constrainedby
-    ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.PressureLoss_L3
-    "Pressure loss model of injector mixing Zone"                                                                                                     annotation(Dialog(group="Fundamental Definitions"),choicesAllMatching);
+    constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.PressureLoss_L3 "Pressure loss model of injector mixing Zone"      annotation(Dialog(group="Fundamental Definitions"),choicesAllMatching);
 
   parameter Modelica.SIunits.Length diameter_o=0.5 "Diameter of the component" annotation(Dialog(group="Geometry"));
-  parameter Modelica.SIunits.Length diameter_i=0.45 "Diameter of the component"
-                                                                                annotation(Dialog(group="Geometry"));
+  parameter Modelica.SIunits.Length diameter_i=0.45 "Diameter of the component" annotation(Dialog(group="Geometry"));
   parameter Modelica.SIunits.Length length=3 "Length of the component"  annotation(Dialog(group="Geometry"));
 
   parameter Modelica.SIunits.Pressure p_nom=1e5 "Nominal pressure" annotation(Dialog(group="Nominal Values"));
@@ -51,70 +45,49 @@ model SprayInjectorVLE_L3_advanced
 //                                    annotation(Dialog(group="Nominal Values"));
 //    parameter Modelica.SIunits.SpecificEnthalpy h_nom_Spray=1000e3 "Nominal specific enthalpy"
 //                                   annotation(Dialog(group="Nominal Values"));
-    parameter Modelica.SIunits.MassFlowRate m_flow_nom_main=10
-    "Nominal mass flow rates at inlet"    annotation(Dialog(group="Nominal Values"));
+    parameter Modelica.SIunits.MassFlowRate m_flow_nom_main=10 "Nominal mass flow rates at inlet"
+                                          annotation(Dialog(group="Nominal Values"));
 //
 //    parameter Modelica.SIunits.MassFlowRate m_flow_nomSpray=10 "Nominal injection mass flow rate"
 //                                          annotation(Dialog(group="Nominal Values"));
 
 ///__________INitialisation____________________________________________________________
-   parameter Modelica.SIunits.SpecificEnthalpy h_start_main=3000e3
-    "|Initialisation|Fluid|Initial specific enthalpy of main phase";
-   parameter Modelica.SIunits.SpecificEnthalpy h_start_spray=h_start_main-100
-    "|Initialisation|Fluid|Initial specific enthalpy of spray phase";
-  parameter Modelica.SIunits.Pressure p_start=1e5
-    "|Initialisation|Fluid|Start value of sytsem pressure";
+   parameter Modelica.SIunits.SpecificEnthalpy h_start_main=3000e3 "|Initialisation|Fluid|Initial specific enthalpy of main phase";
+   parameter Modelica.SIunits.SpecificEnthalpy h_start_spray=h_start_main-100 "|Initialisation|Fluid|Initial specific enthalpy of spray phase";
+  parameter Modelica.SIunits.Pressure p_start=1e5 "|Initialisation|Fluid|Start value of sytsem pressure";
 
-  parameter Real y_start=0.05
-    "|Initialisation|Fluid|Start value for ratio spray volume to total volume";
-  parameter ClaRa.Basics.Choices.Init initFluid=ClaRa.Basics.Choices.Init.noInit
-    "|Initialisation|Fluid|Initialisation option of fluid"
+  parameter Real y_start=0.05 "|Initialisation|Fluid|Start value for ratio spray volume to total volume";
+  parameter ClaRa.Basics.Choices.Init initFluid=ClaRa.Basics.Choices.Init.noInit "|Initialisation|Fluid|Initialisation option of fluid"
                                               annotation(Dialog(group="Initialisation"));
 
-   parameter Modelica.SIunits.Temperature T_wall_start[N_wall]=ones(N_wall)*TILMedia.VLEFluidFunctions.temperature_phxi(medium, p_start, h_start_main)
-    "|Initialisation|Wall|Start values of wall temperature";
-  parameter Basics.Choices.Init initWall=ClaRa.Basics.Choices.Init.noInit
-    "|Initialisation|Wall|Initialisation option of wall";
+   parameter Modelica.SIunits.Temperature T_wall_start[N_wall]=ones(N_wall)*TILMedia.VLEFluidFunctions.temperature_phxi(medium, p_start, h_start_main) "|Initialisation|Wall|Start values of wall temperature";
+  parameter Basics.Choices.Init initWall=ClaRa.Basics.Choices.Init.noInit "|Initialisation|Wall|Initialisation option of wall";
 
-  parameter Boolean useHomotopy=simCenter.useHomotopy
-    "|Initialisation||True, if homotopy method is used during initialisation";
+  parameter Boolean useHomotopy=simCenter.useHomotopy "|Initialisation||True, if homotopy method is used during initialisation";
 
 ///__________Expert Settings__________________________________________________________
-  parameter Boolean checkValve = false
-    "|Expert Settings|Injector Valve|True, if spray injector valve is check valve";
+  parameter Boolean checkValve = false "|Expert Settings|Injector Valve|True, if spray injector valve is check valve";
 
-  parameter Boolean useStabilisedMassFlow= false
-    "|Expert Settings|Injector Valve|True, if use pseudo state for mass flow in spray injector valve";
+  parameter Boolean useStabilisedMassFlow= false "|Expert Settings|Injector Valve|True, if use pseudo state for mass flow in spray injector valve";
 
-  parameter Real Tau=0.001
-    "|Expert Settings|Injector Valve|Time constant of pseudo state in spray injector valve";
+  parameter Real Tau=0.001 "|Expert Settings|Injector Valve|Time constant of pseudo state in spray injector valve";
 
-    parameter Real opening_leak_=0
-    "|Expert Settings|Injector Valve|Leakage valve opening in p.u.";
+    parameter Real opening_leak_=0 "|Expert Settings|Injector Valve|Leakage valve opening in p.u.";
 
-    parameter Integer N_wall=3
-    "|Expert Settings|Wall|Number of radial elements of the wall";
+    parameter Integer N_wall=3 "|Expert Settings|Wall|Number of radial elements of the wall";
 
-  parameter Basics.Units.Time Tau_cond=0.03
-    "|Expert Settings|Mixing Model|Time constant of condensation";
-  parameter Basics.Units.Time Tau_evap=Tau_cond
-    "|Expert Settings|Mixing Model|Time constant of evaporation";
-  parameter Basics.Units.CoefficientOfHeatTransfer alpha_ph=50000
-    "|Expert Settings|Mixing Model|HTC of the phase border";
-  parameter Basics.Units.Area A_phaseBorder = 10
-    "|Expert Settings|Mixing Model|Heat transfer area at phase border";
-  parameter Real exp_HT_phases=0
-    "|Expert Settings|Mixing Model|Exponent for volume dependency on inter phase HT";
+  parameter Basics.Units.Time Tau_cond=0.03 "|Expert Settings|Mixing Model|Time constant of condensation";
+  parameter Basics.Units.Time Tau_evap=Tau_cond "|Expert Settings|Mixing Model|Time constant of evaporation";
+  parameter Basics.Units.CoefficientOfHeatTransfer alpha_ph=50000 "|Expert Settings|Mixing Model|HTC of the phase border";
+  parameter Basics.Units.Area A_phaseBorder = 10 "|Expert Settings|Mixing Model|Heat transfer area at phase border";
+  parameter Real exp_HT_phases=0 "|Expert Settings|Mixing Model|Exponent for volume dependency on inter phase HT";
 
-  parameter Basics.Units.VolumeFraction eps_mix[2]={0.2,0.8}
-    "|Expert Settings|Mixing Model|Volume fraction V_1/V_tot of min/max mixed outlet";
+  parameter Basics.Units.VolumeFraction eps_mix[2]={0.2,0.8} "|Expert Settings|Mixing Model|Volume fraction V_1/V_tot of min/max mixed outlet";
 
 ///__________Summary and Visualisation________________________________________________
-  parameter Boolean showExpertSummary=simCenter.showExpertSummary
-    "|Summary and Visualisation||True, if expert summary should be applied";
+  parameter Boolean showExpertSummary=simCenter.showExpertSummary "|Summary and Visualisation||True, if expert summary should be applied";
 
-  parameter Boolean showData=false
-    "|Summary and Visualisation||True, if a data port containing p,T,h,s,m_flow shall be shown, else false";
+  parameter Boolean showData=false "|Summary and Visualisation||True, if a data port containing p,T,h,s,m_flow shall be shown, else false";
 
 //   parameter Modelica.SIunits.SpecificEnthalpy h_nom_mix=(h_nom_Main*m_flow_nom_main+h_nom_Spray*m_flow_nomSpray)/(m_flow_nom_main+m_flow_nomSpray)
 //     "Nominal mix enthalpy";
@@ -146,8 +119,7 @@ public
     h_vap_start=h_start_main,
     level_rel_start=y_start,
     redeclare model PhaseBorder =
-        ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.RealMixed
-        (                                                                                                 level_rel_start=y_start, eps_mix=eps_mix),
+        ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.RealMixed (                          level_rel_start=y_start, eps_mix=eps_mix),
     redeclare model HeatTransfer =
         ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3,
     showExpertSummary=showExpertSummary,
@@ -181,8 +153,8 @@ public
         rotation=90,
         origin={-20,-46})));
 
-  Modelica.Blocks.Interfaces.RealInput opening
-    "=1: completely open, =0: completely closed" annotation (Placement(
+  Modelica.Blocks.Interfaces.RealInput opening "=1: completely open, =0: completely closed"
+                                                 annotation (Placement(
         transformation(
         extent={{-20,-20},{20,20}},
         rotation=90,

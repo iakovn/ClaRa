@@ -1,7 +1,7 @@
 within ClaRa.Components.Furnace.GeneralTransportPhenomena.BurningTime;
 model ConstantBurningTime "Assumes a constant burning time"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,8 +15,7 @@ model ConstantBurningTime "Assumes a constant burning time"
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
 
-extends
-    ClaRa.Components.Furnace.GeneralTransportPhenomena.BurningTime.PartialBurningTime;
+extends ClaRa.Components.Furnace.GeneralTransportPhenomena.BurningTime.PartialBurningTime;
     parameter ClaRa.Basics.Units.Time
                                    Tau_burn_const = 1.5;
 

@@ -2,28 +2,23 @@ within ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT;
 partial model HeatTransfer_L2 " L2 || HT-BaseClass"
 
   extends ClaRa.Basics.Icons.Alpha;
-  extends
-    ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.HeatTransferBaseVLE;
+  extends ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.HeatTransferBaseVLE;
   import SM = ClaRa.Basics.Functions.Stepsmoother;
   import SZT = ClaRa.Basics.Functions.SmoothZeroTransition;
 
   outer ClaRa.Basics.Records.IComVLE_L2 iCom;
   outer parameter Boolean useHomotopy;
 
-  parameter String temperatureDifference="Logarithmic mean"
-    "Temperature Difference"                                                         annotation (Dialog(group="Heat Transfer"), choices(
+  parameter String temperatureDifference="Logarithmic mean" "Temperature Difference" annotation (Dialog(group="Heat Transfer"), choices(
       choice = "Arithmetic mean",
       choice = "Logarithmic mean",
       choice = "Logarithmic mean - smoothed",
       choice = "Inlet",
       choice = "Outlet"));
 
-  Units.Temperature Delta_T_wi
-    "Temperature difference between wall and fluid inlet temperature";
-  Units.Temperature Delta_T_wo
-    "Temperature difference between wall and fluid outlet temperature";
-  Units.Temperature Delta_T_mean
-    "Mean temperature difference used for heat transfer calculation";
+  Units.Temperature Delta_T_wi "Temperature difference between wall and fluid inlet temperature";
+  Units.Temperature Delta_T_wo "Temperature difference between wall and fluid outlet temperature";
+  Units.Temperature Delta_T_mean "Mean temperature difference used for heat transfer calculation";
 
   Units.Temperature Delta_T_U "Upper temperature difference";
   Units.Temperature Delta_T_L "Lower temperature difference";

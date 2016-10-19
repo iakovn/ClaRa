@@ -1,7 +1,7 @@
 within ClaRa.Components.Electrical;
 model AsynchronousMotor_L2 "A simple asynchronous e-motor"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                            //
+// Component of the ClaRa library, version: 1.1.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -27,8 +27,7 @@ model AsynchronousMotor_L2 "A simple asynchronous e-motor"
   outer ClaRa.SimCenter simCenter;
 
 /////////////////Parameters/////////////////////////////////////
-  parameter Boolean activateHeatPort = false
-    "True if losses are extracted through heat connector"                                          annotation(Dialog(group="Fundamental Definitions"));
+  parameter Boolean activateHeatPort = false "True if losses are extracted through heat connector" annotation(Dialog(group="Fundamental Definitions"));
   parameter Units.Power P_nom "Nominal power" annotation(Dialog(group="Fundamental Definitions"));
   parameter Units.Torque tau_bd_nom "Nominal breakdown torque"  annotation(Dialog(group="Fundamental Definitions"));
   parameter Integer N_pp "Number of pole pairs of motor"
@@ -42,32 +41,23 @@ model AsynchronousMotor_L2 "A simple asynchronous e-motor"
   parameter Units.ElectricCurrent I_rotor_nom "Rotor nominal current" annotation(Dialog(group="Electrics Definitions"));
   parameter Units.Voltage U_term_nom "Nominal excitation voltage"  annotation(Dialog(group="Electrics Definitions"));
 
-  parameter Boolean useCharLine=false
-    "True if characteristic line shall be used (else formula of Kloss)"                                   annotation(Dialog(group="Part Load Definitions"));
-  parameter Real charLine_tau_s_[:,2] = [0,2;0.7,1.8;0.95,2.8;1,0]
-    "Characteristic line: torque = f(rpm/rpm_nom)"                                                                 annotation(Dialog(group="Part Load Definitions", enable=useCharLine));
+  parameter Boolean useCharLine=false "True if characteristic line shall be used (else formula of Kloss)" annotation(Dialog(group="Part Load Definitions"));
+  parameter Real charLine_tau_s_[:,2] = [0,2;0.7,1.8;0.95,2.8;1,0] "Characteristic line: torque = f(rpm/rpm_nom)"  annotation(Dialog(group="Part Load Definitions", enable=useCharLine));
 
-  final parameter Real Pi_windings = sqrt(tau_bd_nom*(8*pi^2*f_term_nom^2/N_pp*L_rotor)/3/U_term_nom^2)
-    "Ratio rotor windings to stator windings";
-  final parameter Units.ElectricResistance R_rotor = P_nom*eta_stator*slip_nom/3/I_rotor_nom^2
-    "Electric resistante";
-  final parameter Units.Inductance L_rotor =  R_rotor/slip_nom * sqrt(1/cosphi^2-1)/(2*pi*f_term_nom)
-    "Inductance of rotor";
-  final parameter Real slip_nom = (f_term_nom/N_pp - rpm_nom/60)/(f_term_nom/N_pp)
-    "Nominal slip";
+  final parameter Real Pi_windings = sqrt(tau_bd_nom*(8*pi^2*f_term_nom^2/N_pp*L_rotor)/3/U_term_nom^2) "Ratio rotor windings to stator windings";
+  final parameter Units.ElectricResistance R_rotor = P_nom*eta_stator*slip_nom/3/I_rotor_nom^2 "Electric resistante";
+  final parameter Units.Inductance L_rotor =  R_rotor/slip_nom * sqrt(1/cosphi^2-1)/(2*pi*f_term_nom) "Inductance of rotor";
+  final parameter Real slip_nom = (f_term_nom/N_pp - rpm_nom/60)/(f_term_nom/N_pp) "Nominal slip";
   final parameter Units.Torque tau_nom = P_nom/rpm_nom/2/pi*60 "Nominal torque";
 
   parameter String initOption = "fixed slip" "Init option" annotation(choices(choice="fixed slip", choice="steady state in speed"), Dialog(tab="Initialisation"));
-  parameter Real slip_start = (f_term_nom/N_pp - rpm_nom/60)/(f_term_nom/N_pp)
-    "Initial slip"                                                                            annotation(Dialog(tab="Initialisation"));
+  parameter Real slip_start = (f_term_nom/N_pp - rpm_nom/60)/(f_term_nom/N_pp) "Initial slip" annotation(Dialog(tab="Initialisation"));
 
-  parameter Boolean showExpertSummary=simCenter.showExpertSummary
-    "|Summary and Visualisation||True, if expert summary should be applied";
-  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary
-    "True if component shall contribute to automatic efficiency calculation"                  annotation(Dialog(tab="Summary and Visualisation"));
+  parameter Boolean showExpertSummary=simCenter.showExpertSummary "|Summary and Visualisation||True, if expert summary should be applied";
+  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary "True if component shall contribute to automatic efficiency calculation"
+                                                                                              annotation(Dialog(tab="Summary and Visualisation"));
 
-  parameter Modelica.Blocks.Types.Smoothness smoothness=Modelica.Blocks.Types.Smoothness.LinearSegments
-    "Smoothness of table interpolation"                                                                                                     annotation(Dialog(tab="Expert Settings",enable=useCharLine));
+  parameter Modelica.Blocks.Types.Smoothness smoothness=Modelica.Blocks.Types.Smoothness.LinearSegments "Smoothness of table interpolation" annotation(Dialog(tab="Expert Settings",enable=useCharLine));
 
 protected
   Units.RPM rpm(start=rpm_nom) "Shaft rotational speed";
@@ -85,8 +75,7 @@ protected
 public
 model Summary
   extends ClaRa.Basics.Icons.RecordIcon;
-  parameter Boolean showExpertSummary
-      "True, if expert summary should be applied";
+  parameter Boolean showExpertSummary "True, if expert summary should be applied";
   input Units.Power P_term "Excitation power";
   input Units.Power P_gap "Air gap electric power";
   input Units.Power P_mech "Mechanic power";

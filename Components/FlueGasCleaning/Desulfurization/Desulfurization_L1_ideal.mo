@@ -1,8 +1,7 @@
 within ClaRa.Components.FlueGasCleaning.Desulfurization;
-model Desulfurization_L1_ideal
-  "Model for an idealised desulfurization with chalk washing"
+model Desulfurization_L1_ideal "Model for an idealised desulfurization with chalk washing"
 //___________________________________________________________________________//
-// Package of the ClaRa library, version: 1.1.1                              //
+// Package of the ClaRa library, version: 1.1.2                              //
 // Models of the ClaRa library are tested under DYMOLA v2016 FD01.           //
 // It is planned to support alternative Simulators like SimulationX in the   //
 // future                                                                    //
@@ -62,8 +61,7 @@ model Desulfurization_L1_ideal
       annotation (Dialog(show));
     input Modelica.SIunits.MassFlowRate m_flow_CaCO3 "Required CaCO3 flow rate"
       annotation (Dialog(show));
-    input Modelica.SIunits.MassFlowRate m_flow_CaSO4_H2O
-      "Outlet CaSO4_H2O flow rate"
+    input Modelica.SIunits.MassFlowRate m_flow_CaSO4_H2O "Outlet CaSO4_H2O flow rate"
       annotation (Dialog(show));
     input Modelica.SIunits.MassFlowRate m_flow_H2O "Required H2O flow rate"
       annotation (Dialog(show));
@@ -78,58 +76,43 @@ model Desulfurization_L1_ideal
  end Summary;
 
 //_____________defintion of medium used in cell__________________________________________________________
-  inner parameter TILMedia.GasTypes.BaseGas      medium = simCenter.flueGasModel
-    "Medium to be used in tubes" annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
+  inner parameter TILMedia.GasTypes.BaseGas      medium = simCenter.flueGasModel "Medium to be used in tubes"
+                                 annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
 
   parameter Real SOx_separationRate = 0.95 "Sulphur separation rate" annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
-  parameter ClaRa.Basics.Units.Temperature T_in_H2O = 313.15
-    "Temperature of water inlet"                                                          annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
-  parameter Real specificPowerConsumption(unit="J/m3") = 9000
-    "Specific power consumption per standard m^3"                                                           annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
+  parameter ClaRa.Basics.Units.Temperature T_in_H2O = 313.15 "Temperature of water inlet" annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
+  parameter Real specificPowerConsumption(unit="J/m3") = 9000 "Specific power consumption per standard m^3" annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
 
   replaceable model PressureLoss =
       ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.NoFriction_L2
-    constrainedby
-    ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.PressureLoss_L2
-    "1st: choose geometry definition | 2nd: edit corresponding record"
+    constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.PressureLoss_L2 "1st: choose geometry definition | 2nd: edit corresponding record"
     annotation (Dialog(group="Fundamental Definitions"), choicesAllMatching=true);
 
   replaceable model Geometry =
       ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowCylinder(diameter=4,length=10,z_in={0},z_out={10},orientation = ClaRa.Basics.Choices.GeometryOrientation.vertical,flowOrientation = ClaRa.Basics.Choices.GeometryOrientation.vertical)
-    constrainedby
-    ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry
-    "1st: choose geometry definition | 2nd: edit corresponding record"
+    constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry "1st: choose geometry definition | 2nd: edit corresponding record"
     annotation (Dialog(group="Geometry"), choicesAllMatching=true);
 
-  inner parameter Modelica.SIunits.MassFlowRate m_flow_nom= 200
-    "Nominal mass flow rates at inlet"                                                             annotation(Dialog(tab="General", group="Nominal Values"));
+  inner parameter Modelica.SIunits.MassFlowRate m_flow_nom= 200 "Nominal mass flow rates at inlet" annotation(Dialog(tab="General", group="Nominal Values"));
   inner parameter ClaRa.Basics.Units.Pressure p_nom=1e5 "Nominal pressure"                    annotation(Dialog(group="Nominal Values"));
-  inner parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_nom=1e5
-    "Nominal specific enthalpy"                                                                annotation(Dialog(group="Nominal Values"));
+  inner parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_nom=1e5 "Nominal specific enthalpy"
+                                                                                               annotation(Dialog(group="Nominal Values"));
 
-  inner parameter ClaRa.Basics.Choices.Init initType=ClaRa.Basics.Choices.Init.noInit
-    "Type of initialisation"                                                                                   annotation(Dialog(tab="Initialisation", choicesAllMatching));
-  parameter ClaRa.Basics.Units.Temperature T_start= 273.15 + 100.0
-    "Start value of system temperature"                                                                  annotation(Dialog(tab="Initialisation"));
+  inner parameter ClaRa.Basics.Choices.Init initType=ClaRa.Basics.Choices.Init.noInit "Type of initialisation" annotation(Dialog(tab="Initialisation", choicesAllMatching));
+  parameter ClaRa.Basics.Units.Temperature T_start= 273.15 + 100.0 "Start value of system temperature"   annotation(Dialog(tab="Initialisation"));
 
-  parameter ClaRa.Basics.Units.Pressure p_start= 1.013e5
-    "Start value of sytsem pressure"                                                      annotation(Dialog(tab="Initialisation"));
-  parameter ClaRa.Basics.Units.MassFraction xi_start[medium.nc-1]={0.01,0,0.25,0,0.7,0,0,0.04,0}
-    "Start value of system mass fraction"                                                                                              annotation(Dialog(tab="Initialisation"));
-  inner parameter Boolean useHomotopy=simCenter.useHomotopy
-    "True, if homotopy method is used during initialisation"                                                         annotation(Dialog(tab="Initialisation"));
+  parameter ClaRa.Basics.Units.Pressure p_start= 1.013e5 "Start value of sytsem pressure" annotation(Dialog(tab="Initialisation"));
+  parameter ClaRa.Basics.Units.MassFraction xi_start[medium.nc-1]={0.01,0,0.25,0,0.7,0,0,0.04,0} "Start value of system mass fraction" annotation(Dialog(tab="Initialisation"));
+  inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation" annotation(Dialog(tab="Initialisation"));
 
-  parameter Boolean allow_reverseFlow = true
-    "True if simulation shall stop at reverse flow conditions"                                          annotation(Dialog(tab="Expert Settings", group="General"));
-  parameter Boolean use_dynamicMassbalance = true
-    "True if species balance shall be dynamic"                                                annotation(Dialog(tab="Expert Settings", group="General"));
+  parameter Boolean allow_reverseFlow = true "True if simulation shall stop at reverse flow conditions" annotation(Dialog(tab="Expert Settings", group="General"));
+  parameter Boolean use_dynamicMassbalance = true "True if species balance shall be dynamic"  annotation(Dialog(tab="Expert Settings", group="General"));
 
-  parameter Boolean useStabilisedMassFlow=false
-    "True if the outlet mass flow shall be low-pass filtered"                                             annotation(Dialog(tab="Expert Settings", group="Numerical Robustness"));
+  parameter Boolean useStabilisedMassFlow=false "True if the outlet mass flow shall be low-pass filtered" annotation(Dialog(tab="Expert Settings", group="Numerical Robustness"));
   parameter SI.Time Tau= 0.001 "Time Constant of Stabilisation" annotation(Dialog(tab="Expert Settings", group = "Numerical Robustness", enable=useStabilisedMassFlow));
 
-  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary
-    "True if component shall contribute to automatic efficiency calculation"                annotation(Dialog(tab="Summary and Visualisation"));
+  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary "True if component shall contribute to automatic efficiency calculation"
+                                                                                            annotation(Dialog(tab="Summary and Visualisation"));
 
 ClaRa.Basics.Units.Power P_el "Electric power consumption";
 ClaRa.Basics.Units.VolumeFlowRate V_flow_std "Standardized volume flow rate";
@@ -168,8 +151,7 @@ ClaRa.Basics.Units.VolumeFlowRate V_flow_std "Standardized volume flow rate";
     allow_reverseFlow=allow_reverseFlow,
     use_dynamicMassbalance=use_dynamicMassbalance,
     redeclare model HeatTransfer =
-        Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.IdealHeatTransfer_L2)
-                                                                                                        annotation (Placement(transformation(
+        Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.IdealHeatTransfer_L2)               annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=0,
         origin={26,0})));

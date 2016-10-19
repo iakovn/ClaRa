@@ -1,7 +1,7 @@
 within ClaRa.StaticCycles;
 model FixedFlow "Flow Anchour || par.: m_flow_nom || red | blue"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                            //
+// Component of the ClaRa library, version: 1.1.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -19,17 +19,14 @@ model FixedFlow "Flow Anchour || par.: m_flow_nom || red | blue"
   outer parameter Real P_target_ "Target power in p.u.";
 
   parameter ClaRa.Basics.Units.MassFlowRate m_flow_nom2 "Nominal mass flow" annotation(Dialog(group="Fundamental Definitions"));
-  parameter Real CharLine_m_flow_P_target_[:,2] = [0,0;1,1]
-    "Pressure drop depending on rel. power in p.u."                                                 annotation(Dialog(group="Fundamental Definitions"));
+  parameter Real CharLine_m_flow_P_target_[:,2] = [0,0;1,1] "Pressure drop depending on rel. power in p.u."
+                                                                                                annotation(Dialog(group="Fundamental Definitions"));
 
   final parameter ClaRa.Basics.Units.Pressure p_in=p_out "Inlet perssure";
-  final parameter ClaRa.Basics.Units.Pressure p_out(fixed=false)
-    "Outlet pressure";
+  final parameter ClaRa.Basics.Units.Pressure p_out(fixed=false) "Outlet pressure";
   final parameter ClaRa.Basics.Units.MassFlowRate m_flow(fixed=false);
-  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_in(fixed=false)
-    "Inlet spec. enthalpy";
-  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_out=h_in
-    "Outlet spec. enthalpy";
+  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_in(fixed=false) "Inlet spec. enthalpy";
+  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_out=h_in "Outlet spec. enthalpy";
 protected
   ClaRa.Components.Utilities.Blocks.ParameterizableTable1D table1(table=CharLine_m_flow_P_target_, u = {P_target_});
 

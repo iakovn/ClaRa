@@ -9,8 +9,7 @@ model SinkP "Pressure source for water/steam flows"
 
   type HydraulicResistance = Real (final quantity="HydraulicResistance", final unit=
              "Pa/(kg/s)");
-  replaceable package Medium = Modelica.Media.Water.WaterIF97_ph constrainedby
-    Modelica.Media.Interfaces.PartialMedium "Medium model";
+  replaceable package Medium = Modelica.Media.Water.WaterIF97_ph constrainedby Modelica.Media.Interfaces.PartialMedium "Medium model";
 
   parameter Pressure p0=1.01325e5 "Nominal pressure";
   parameter HydraulicResistance R=0 "Hydraulic resistance" annotation(Evaluate=true);

@@ -1,7 +1,7 @@
 within ClaRa.Visualisation;
 model Scope "Dynamic graphical display of one variable"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -19,8 +19,8 @@ model Scope "Dynamic graphical display of one variable"
   input Real inputVar=0 "Input variable (if showInterface=false)" annotation(Dialog(group="Input", enable=not showInterface));
 
   parameter Real y_min=0 "Choose or guess the minimal value of the y-axis" annotation(Dialog(group="Layout"));
-  parameter Real y_max(min=y_min+Modelica.Constants.eps)=1
-    "Choose or guess the maximal value of the y-axis" annotation(Dialog(group="Layout"));
+  parameter Real y_max(min=y_min+Modelica.Constants.eps)=1 "Choose or guess the maximal value of the y-axis"
+                                                      annotation(Dialog(group="Layout"));
   parameter String Unit="[-]" "Unit for plot variable" annotation(Dialog(group="Layout"));
 
 public
@@ -28,29 +28,25 @@ public
                              annotation(Dialog(group="Layout"));
   parameter Modelica.SIunits.Time t_end=1 "Start time of display"
                              annotation(Dialog(group="Layout"));
-  parameter Modelica.SIunits.Time t_sample(min=Modelica.Constants.eps)=(t_end-t_start)/100
-    "Output intervall for plot, use carefully since this creates scalars!"
+  parameter Modelica.SIunits.Time t_sample(min=Modelica.Constants.eps)=(t_end-t_start)/100 "Output intervall for plot, use carefully since this creates scalars!"
                                                                     annotation(Dialog(group="Layout"));
 
   parameter ClaRa.Basics.Types.Color color={0,131,169} "Line color"         annotation (Hide=false, Dialog(group="Layout"));
-  parameter Modelica.SIunits.Time Tau_stab=0.01
-    "Stabilizing time constant, 0 means no stabilisation "                                      annotation(Dialog(group="Numerics"));
+  parameter Modelica.SIunits.Time Tau_stab=0.01 "Stabilizing time constant, 0 means no stabilisation "
+                                                                                                annotation(Dialog(group="Numerics"));
 
 //  final parameter Real y_start=(y_min+y_max)/2 "Initial display value";
 
 protected
-  final parameter Integer N_points = integer((t_end-t_start)/t_sample+1)
-    "Number of points";
-  final parameter Real x[N_points] = linspace(1,100,N_points)
-    "x-positions of line points"                                                           annotation(Hide=false);
+  final parameter Integer N_points = integer((t_end-t_start)/t_sample+1) "Number of points";
+  final parameter Real x[N_points] = linspace(1,100,N_points) "x-positions of line points" annotation(Hide=false);
   Real y[N_points] "y-positions of line points" annotation(Hide=false);
   Real f "Horizontal position of the cover-rectangle" annotation(Hide=false);
   Real u_in "Value to be displayed";
   Real u_aux "Auxilliary variable";
 
 public
-  Modelica.Blocks.Interfaces.RealInput u(value = u_aux) if not hideInterface
-    "Input signal"
+  Modelica.Blocks.Interfaces.RealInput u(value = u_aux) if not hideInterface "Input signal"
     annotation (Placement(transformation(extent={{-40,50},{0,90}}),
         iconTransformation(extent={{-42,78},{-30,90}})));
 

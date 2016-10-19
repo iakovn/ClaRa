@@ -1,7 +1,7 @@
 within ClaRa.StaticCycles;
 model Turbine "Turbine || par.: efficiency || green | blue"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                            //
+// Component of the ClaRa library, version: 1.1.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -17,30 +17,21 @@ model Turbine "Turbine || par.: efficiency || green | blue"
   // Green input: Values of p, m_flow and h are unknown and provided BY neighbor component.
   // Blue output: Value of p is unknown and provided BY neighbor component, values of m_flow and h are known in component and provided FOR neighbor component.
   outer ClaRa.SimCenter simCenter;
-  parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium = simCenter.fluid1
-    "Medium in the component"
-    annotation(choices(choice=simCenter.fluid1
-        "First fluid defined in global simCenter",
-                       choice=simCenter.fluid2
-        "Second fluid defined in global simCenter",
-                       choice=simCenter.fluid3
-        "Third fluid defined in global simCenter"),       Dialog(group="Fundamental Definitions"));
+  parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium = simCenter.fluid1 "Medium in the component"
+    annotation(choices(choice=simCenter.fluid1 "First fluid defined in global simCenter",
+                       choice=simCenter.fluid2 "Second fluid defined in global simCenter",
+                       choice=simCenter.fluid3 "Third fluid defined in global simCenter"),
+                                                          Dialog(group="Fundamental Definitions"));
 
   parameter Real efficiency= 1 "|Fundamental Definitions|Hydraulic efficiency";
-  final parameter ClaRa.Basics.Units.DensityMassSpecific rho_in =  TILMedia.VLEFluidFunctions.density_phxi(medium, p_in,h_in)
-    "Inlet density";
-   final parameter ClaRa.Basics.Units.Power P_turbine=(-h_out + h_in)*m_flow
-    "Turbine power";
+  final parameter ClaRa.Basics.Units.DensityMassSpecific rho_in =  TILMedia.VLEFluidFunctions.density_phxi(medium, p_in,h_in) "Inlet density";
+   final parameter ClaRa.Basics.Units.Power P_turbine=(-h_out + h_in)*m_flow "Turbine power";
 
 //protected
-  final parameter ClaRa.Basics.Units.Pressure p_in(fixed=false)
-    "|Internals|Internally set values - do not edit!|Inlet pressure";
-  final parameter ClaRa.Basics.Units.Pressure p_out(fixed=false)
-    "|Internals|Internally set values - do not edit!|Outlet pressure";
-  final parameter ClaRa.Basics.Units.MassFlowRate m_flow(fixed=false,start=1)
-    "|Internals|Internally set values - do not edit!|Mass flow rate";
-  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_in(fixed=false)
-    "|Internals|Internally set values - do not edit!|Inlet specific enthalpy";
+  final parameter ClaRa.Basics.Units.Pressure p_in(fixed=false) "|Internals|Internally set values - do not edit!|Inlet pressure";
+  final parameter ClaRa.Basics.Units.Pressure p_out(fixed=false) "|Internals|Internally set values - do not edit!|Outlet pressure";
+  final parameter ClaRa.Basics.Units.MassFlowRate m_flow(fixed=false,start=1) "|Internals|Internally set values - do not edit!|Mass flow rate";
+  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_in(fixed=false) "|Internals|Internally set values - do not edit!|Inlet specific enthalpy";
   final parameter ClaRa.Basics.Units.EnthalpyMassSpecific       h_out=h_in +
       efficiency*(TILMedia.VLEFluidFunctions.specificEnthalpy_psxi(
       medium,
@@ -48,8 +39,7 @@ model Turbine "Turbine || par.: efficiency || green | blue"
       TILMedia.VLEFluidFunctions.specificEntropy_phxi(
         medium,
         p_in,
-        h_in)) - h_in)
-    "|Internals|Internally set values - do not edit!|Outlet enthalpy";
+        h_in)) - h_in) "|Internals|Internally set values - do not edit!|Outlet enthalpy";
 
 public
   Fundamentals.SteamSignal_green inlet annotation (Placement(transformation(

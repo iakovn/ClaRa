@@ -1,7 +1,7 @@
 within ClaRa.Components.Utilities.Blocks;
 model Noise "Adds a normally distributed noise to a given mean value"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -17,14 +17,14 @@ model Noise "Adds a normally distributed noise to a given mean value"
 
   parameter Real Tau_sample = 1 "Sample period" annotation(Dialog(group="Large-Scale Time Definition"));
   parameter Real startTime = 1 "start time moment" annotation(Dialog(group="Large-Scale Time Definition"));
-  parameter Boolean varMeanValue=false
-    "True, if mean value is time dependent input" annotation(Dialog(group="Noise Definition"));
-  parameter Boolean varStandardDeviation=false
-    "True, if standard deviation is time dependent input" annotation(Dialog(group="Noise Definition"));
+  parameter Boolean varMeanValue=false "True, if mean value is time dependent input"
+                                                  annotation(Dialog(group="Noise Definition"));
+  parameter Boolean varStandardDeviation=false "True, if standard deviation is time dependent input"
+                                                          annotation(Dialog(group="Noise Definition"));
   parameter Real mean_const= 1 "Constant mean value" annotation(Dialog(group="Noise Definition", enable=not varMeanValue));
   parameter Real stdDev_const= 1 "Constant standard deviation" annotation(Dialog(group="Noise Definition", enable=not varStandardDeviation));
-  parameter Modelica.SIunits.Time Tau_smooth=Tau_sample/5
-    "Time constant for smoothing of the random values" annotation(Dialog(group="Noise Definition"));
+  parameter Modelica.SIunits.Time Tau_smooth=Tau_sample/5 "Time constant for smoothing of the random values"
+                                                       annotation(Dialog(group="Noise Definition"));
 
 protected
   Real seed[3];
@@ -38,11 +38,9 @@ public
   Modelica.Blocks.Interfaces.RealOutput y annotation (Placement(transformation(extent={{100,-10},
             {120,10}}), iconTransformation(extent={{100,-10},{120,10}})));
 
-  Modelica.Blocks.Interfaces.RealInput mean(value=m_in) if (varMeanValue)
-    "Variable mass flow rate"
+  Modelica.Blocks.Interfaces.RealInput mean(value=m_in) if (varMeanValue) "Variable mass flow rate"
     annotation (Placement(transformation(extent={{-120,40},{-80,80}})));
-  Modelica.Blocks.Interfaces.RealInput sigma(value=stdDev_in) if (varStandardDeviation)
-    "Variable standard deviation"
+  Modelica.Blocks.Interfaces.RealInput sigma(value=stdDev_in) if (varStandardDeviation) "Variable standard deviation"
     annotation (Placement(transformation(extent={{-120,-80},{-80,-40}}),
         iconTransformation(extent={{-120,-62},{-80,-22}})));
 algorithm

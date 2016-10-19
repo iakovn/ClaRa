@@ -1,7 +1,7 @@
 within ClaRa.Components.Furnace.Check;
 model Test_burner_adiabatic_fuelDrying
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -205,8 +205,7 @@ model Test_burner_adiabatic_fuelDrying
         length=burner.geo.z_out[1] - burner.geo.z_in[1],
         height=10),
     redeclare model Burning_time =
-        ClaRa.Components.Furnace.GeneralTransportPhenomena.BurningTime.ConstantBurningTime)
-                                                                                                        annotation (Placement(transformation(extent={{-16,-230},{44,-210}})));
+        ClaRa.Components.Furnace.GeneralTransportPhenomena.BurningTime.ConstantBurningTime)             annotation (Placement(transformation(extent={{-16,-230},{44,-210}})));
 equation
   connect(coalFlowSource.fuel_a,coalGas_join_burner.fuel_inlet)  annotation (
       Line(

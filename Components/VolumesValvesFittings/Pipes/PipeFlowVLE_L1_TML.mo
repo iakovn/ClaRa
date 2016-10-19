@@ -1,8 +1,7 @@
 within ClaRa.Components.VolumesValvesFittings.Pipes;
-model PipeFlowVLE_L1_TML
-  "Simple tube model based on transmission line equations. Can choose between Modelica and ClaRa Delay implementation."
+model PipeFlowVLE_L1_TML "Simple tube model based on transmission line equations. Can choose between Modelica and ClaRa Delay implementation."
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.1                        //
+  // Component of the ClaRa library, version: 1.1.2                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -38,31 +37,30 @@ model PipeFlowVLE_L1_TML
       annotation (Dialog(show));
     input Basics.Units.Area A_wall if showExpertSummary "Total wall area"
       annotation (Dialog(show));
-    input Basics.Units.Length Delta_x[N_wall] if showExpertSummary
-      "Discretisation for energy balance" annotation (Dialog(show));
+    input Basics.Units.Length Delta_x[N_wall] if showExpertSummary "Discretisation for energy balance"
+                                          annotation (Dialog(show));
     input Basics.Units.Volume volume_tot "Total volume of system"
       annotation (Dialog(show));
 
-    parameter Integer N_cv
-      "|Discretisation|Number of temperature positions computed";
+    parameter Integer N_cv "|Discretisation|Number of temperature positions computed";
     parameter Integer N_wall "|Discretisation|Number of wall elements";
 
-    input Basics.Units.Pressure dp
-      "Pressure difference between outlet and inlet" annotation (Dialog);
-    input Basics.Units.HeatFlowRate Q_flow_tot
-      "Heat flow through entire pipe wall" annotation (Dialog);
-    input Basics.Units.Temperature T[N_cv] if showExpertSummary
-      "Temperatures inside pipe" annotation (Dialog);
+    input Basics.Units.Pressure dp "Pressure difference between outlet and inlet"
+                                                     annotation (Dialog);
+    input Basics.Units.HeatFlowRate Q_flow_tot "Heat flow through entire pipe wall"
+                                           annotation (Dialog);
+    input Basics.Units.Temperature T[N_cv] if showExpertSummary "Temperatures inside pipe"
+                                 annotation (Dialog);
   end Outline;
 
   model Wall_L4
     extends ClaRa.Basics.Icons.RecordIcon;
     parameter Integer N_wall "|Discretisation|Number of wall elements";
     parameter Boolean showExpertSummary annotation (Dialog(hide));
-    input Basics.Units.Temperature T[N_wall] if showExpertSummary
-      "Temperatures of wall segments" annotation (Dialog);
-    input Basics.Units.HeatFlowRate Q_flow[N_wall] if showExpertSummary
-      "Heat flows through wall segments" annotation (Dialog);
+    input Basics.Units.Temperature T[N_wall] if showExpertSummary "Temperatures of wall segments"
+                                      annotation (Dialog);
+    input Basics.Units.HeatFlowRate Q_flow[N_wall] if showExpertSummary "Heat flows through wall segments"
+                                         annotation (Dialog);
   end Wall_L4;
 
   model Summary
@@ -80,72 +78,53 @@ model PipeFlowVLE_L1_TML
 
   //____Geometric data________________________________________________________________________________________
   parameter Modelica.SIunits.Length length=10 "|Geometry|Length of the pipe";
-  parameter Modelica.SIunits.Length diameter_i=0.5
-    "|Geometry|Inner diameter of the pipe";
+  parameter Modelica.SIunits.Length diameter_i=0.5 "|Geometry|Inner diameter of the pipe";
   //   parameter Modelica.SIunits.Length d_a= 0.55
   //     "|Geometry|Outer diameter of the pipe"; //include this if cylindric wall shall be included!
-  parameter Modelica.SIunits.Length z_in=0.1
-    "|Geometry|height of inlet above ground";
-  parameter Modelica.SIunits.Length z_out=0.1
-    "|Geometry|height of outlet above ground";
+  parameter Modelica.SIunits.Length z_in=0.1 "|Geometry|height of inlet above ground";
+  parameter Modelica.SIunits.Length z_out=0.1 "|Geometry|height of outlet above ground";
   parameter Integer N_tubes=1 "|Geometry|Number Of parallel pipes";
 
   final parameter Modelica.SIunits.Area A_cross=Modelica.Constants.pi/4*diameter_i^2*
       N_tubes "cross area of volume elements";
-  final parameter Real S=Modelica.Constants.pi*diameter_i*N_tubes
-    "Shape factor of pipe wall for heat conduction";
+  final parameter Real S=Modelica.Constants.pi*diameter_i*N_tubes "Shape factor of pipe wall for heat conduction";
   //to include cylindric thick wall, set S=2*Modelica.Constants.pi/log(d_a/diameter_i)
 
   //____Discretisation________________________________________________________________________________________
-  parameter Integer N_cv=1
-    "|Discretisation|number of subdivisions of tube wall";
-  final parameter Integer N_wall=N_cv
-    "number of subdivisions for wall temperature";
-  final parameter Modelica.SIunits.Length Delta_x[N_wall]=ones(N_wall)*length/N_wall
-    "Length of heated wall section";
-  final parameter Integer N_temp=2*N_wall + 1
-    "number of tempratures to be computed";
+  parameter Integer N_cv=1 "|Discretisation|number of subdivisions of tube wall";
+  final parameter Integer N_wall=N_cv "number of subdivisions for wall temperature";
+  final parameter Modelica.SIunits.Length Delta_x[N_wall]=ones(N_wall)*length/N_wall "Length of heated wall section";
+  final parameter Integer N_temp=2*N_wall + 1 "number of tempratures to be computed";
   //____Media Data____________________________________________________________________________________________
-  parameter Boolean useConstantMediaData=false
-    "|Media Data|Use of constant media data";
-  parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium=simCenter.fluid1
-    "Medium in the component"                                                                     annotation(Dialog(enable=useConstantMediaData == false,group="Media Data"));
-  parameter Modelica.SIunits.SpecificHeatCapacity cp_const = 4200
-    "Constant heat capacity in pipe"                                                               annotation(Dialog(enable=useConstantMediaData == true,group="Media Data"));
-  parameter Modelica.SIunits.Density rho_const=985
-    "Constant fluid density in pipe"                                                annotation(Dialog(enable=useConstantMediaData == true,group="Media Data"));
-  parameter Modelica.SIunits.Velocity a_const=1500
-    "Constant speed of sound in pipe"                                                annotation(Dialog(enable=useConstantMediaData == true,group="Media Data"));
+  parameter Boolean useConstantMediaData=false "|Media Data|Use of constant media data";
+  parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium=simCenter.fluid1 "Medium in the component" annotation(Dialog(enable=useConstantMediaData == false,group="Media Data"));
+  parameter Modelica.SIunits.SpecificHeatCapacity cp_const = 4200 "Constant heat capacity in pipe" annotation(Dialog(enable=useConstantMediaData == true,group="Media Data"));
+  parameter Modelica.SIunits.Density rho_const=985 "Constant fluid density in pipe" annotation(Dialog(enable=useConstantMediaData == true,group="Media Data"));
+  parameter Modelica.SIunits.Velocity a_const=1500 "Constant speed of sound in pipe" annotation(Dialog(enable=useConstantMediaData == true,group="Media Data"));
   //____Nominal Values________________________________________________________________________________________
-  parameter Modelica.SIunits.MassFlowRate m_flow_nom=10
-    "|Physical Effects|Linear Pressure Loss|Nominal mass flow w.r.t. all parallel tubes";
-  parameter Modelica.SIunits.Pressure Delta_p_nom=1e3
-    "|Physical Effects|Linear Pressure Loss|Pressure loss over pipe length length at nominal mass flow w.r.t. all parallel tubes";
+  parameter Modelica.SIunits.MassFlowRate m_flow_nom=10 "|Physical Effects|Linear Pressure Loss|Nominal mass flow w.r.t. all parallel tubes";
+  parameter Modelica.SIunits.Pressure Delta_p_nom=1e3 "|Physical Effects|Linear Pressure Loss|Pressure loss over pipe length length at nominal mass flow w.r.t. all parallel tubes";
 
   final parameter Modelica.SIunits.Pressure Delta_p_grav_start=rho_start*g_n*(z_out -
       z_in) "Pressure loss over pipe length length at nominal operation point";
   //____Physical Effects______________________________________________________________________________________
-  parameter Boolean adiabaticWall=true
-    "|Physical Effects|Heat Transfer|set true if pipe is adiabatic";
+  parameter Boolean adiabaticWall=true "|Physical Effects|Heat Transfer|set true if pipe is adiabatic";
 
   parameter Real alpha(unit="W/(m2.K)") = 10 annotation (Dialog(
       enable=adiabaticWall == false,
       tab="Physical Effects",
       group="Heat Transfer"));
 
-  final parameter Modelica.SIunits.Frequency F=(Delta_p_nom*A_cross)/(m_flow_nom*length)
-    "Friction coefficient";
+  final parameter Modelica.SIunits.Frequency F=(Delta_p_nom*A_cross)/(m_flow_nom*length) "Friction coefficient";
 
   //____Initialisation________________________________________________________________________________________
-  inner parameter Boolean useHomotopy=simCenter.useHomotopy
-    "|Initialisation|Model Settings|True, if homotopy method is used during initialisation";
+  inner parameter Boolean useHomotopy=simCenter.useHomotopy "|Initialisation|Model Settings|True, if homotopy method is used during initialisation";
 
   parameter Modelica.SIunits.SpecificEnthalpy h_start=
       TILMedia.VLEFluidFunctions.liquidSpecificEnthalpy_pTxi(
       medium,
       p_start,
-      simCenter.T_amb_start)
-    "|Initialisation|Initial Medium Properties|Initial averaged fluid specific enthalpy";
+      simCenter.T_amb_start) "|Initialisation|Initial Medium Properties|Initial averaged fluid specific enthalpy";
 
   //   final parameter Modelica.SIunits.Temperature T_start= TILMedia.VLEFluidFunctions.temperature_phxi
   //   (medium,
@@ -153,12 +132,9 @@ model PipeFlowVLE_L1_TML
   //       h_start)
   //     "Initial averaged fluid temperature";
 
-  parameter Modelica.SIunits.Pressure p_start= (p_in_start+p_out_start)/2
-    "|Initialisation|Initial Medium Properties|Initial averaged fluid pressure";
-  parameter Modelica.SIunits.Pressure p_in_start=simCenter.p_amb_start
-    "|Initialisation|Initial Medium Properties|Initial inlet pressure";
-  parameter Modelica.SIunits.Pressure p_out_start=simCenter.p_amb_start
-    "|Initialisation|Initial Medium Properties|Initial outlet pressure";
+  parameter Modelica.SIunits.Pressure p_start= (p_in_start+p_out_start)/2 "|Initialisation|Initial Medium Properties|Initial averaged fluid pressure";
+  parameter Modelica.SIunits.Pressure p_in_start=simCenter.p_amb_start "|Initialisation|Initial Medium Properties|Initial inlet pressure";
+  parameter Modelica.SIunits.Pressure p_out_start=simCenter.p_amb_start "|Initialisation|Initial Medium Properties|Initial outlet pressure";
   final parameter Modelica.SIunits.Density rho_start=
       TILMedia.VLEFluidFunctions.density_phxi(
       medium,
@@ -166,15 +142,12 @@ model PipeFlowVLE_L1_TML
       h_start) "Initial fluid density";
 
   //____Summary and Visualisation_____________________________________________________________________________
-  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary
-    "True if component shall contribute to automatic efficiency calculation"                annotation(Dialog(tab="Summary and Visualisation"));
-  parameter Boolean heatFlowIsLoss = true
-    "True if negative heat flow is a loss (not a process product)"                                       annotation(Dialog(tab="Summary and Visualisation"));
+  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary "True if component shall contribute to automatic efficiency calculation"
+                                                                                            annotation(Dialog(tab="Summary and Visualisation"));
+  parameter Boolean heatFlowIsLoss = true "True if negative heat flow is a loss (not a process product)" annotation(Dialog(tab="Summary and Visualisation"));
 
-  parameter Boolean showExpertSummary=simCenter.showExpertSummary
-    "|Summary and Visualisation||True, if an extended summary shall be shown, else false";
-  parameter Boolean showData=false
-    "|Summary and Visualisation||True, if a data port containing p,T,h,s,m_flow shall be shown, else false";
+  parameter Boolean showExpertSummary=simCenter.showExpertSummary "|Summary and Visualisation||True, if an extended summary shall be shown, else false";
+  parameter Boolean showData=false "|Summary and Visualisation||True, if a data port containing p,T,h,s,m_flow shall be shown, else false";
   Summary summary(
     outline(
       showExpertSummary=showExpertSummary,
@@ -217,21 +190,17 @@ model PipeFlowVLE_L1_TML
 
   //____Transmission Line Specific Declarations_______________________________________________________________
 
-  parameter Boolean useClaRaDelay=simCenter.useClaRaDelay
-    "|Expert Settings|Delay Function|True for using ClaRa delay implementation / false for built in Modelica delay";
+  parameter Boolean useClaRaDelay=simCenter.useClaRaDelay "|Expert Settings|Delay Function|True for using ClaRa delay implementation / false for built in Modelica delay";
 
-  parameter Real MaxSimTime=simCenter.MaxSimTime
-    "Maximum time for simulation, must be set for Modelica delay blocks with variable delay time if simCenter.useClaRaDelay==true"
+  parameter Real MaxSimTime=simCenter.MaxSimTime "Maximum time for simulation, must be set for Modelica delay blocks with variable delay time if simCenter.useClaRaDelay==true"
     annotation (Dialog(
       enable=useClaRaDelay == false,
       tab="Expert Settings",
       group="Delay Function"));
 
-  parameter Real kappa=1.25
-    "|Expert Settings|Transmission Line Settings|TML pFrequency approximation";
+  parameter Real kappa=1.25 "|Expert Settings|Transmission Line Settings|TML pFrequency approximation";
 
-  parameter Real f_ps(unit="1/s") = 0.01
-    "|Expert Settings|Transmission Line Settings|Speed factor for pseudo state fluid properties averaging";
+  parameter Real f_ps(unit="1/s") = 0.01 "|Expert Settings|Transmission Line Settings|Speed factor for pseudo state fluid properties averaging";
 
   final parameter Integer numDelays=N_wall + N_temp + 13;
 
@@ -248,35 +217,27 @@ model PipeFlowVLE_L1_TML
   ClaRa.Basics.Units.Temperature T_wall[N_wall] "Outer wall temperatures";
 
   Real dcpdt;
-  Modelica.SIunits.SpecificHeatCapacity cp
-    "Time averaged heat capacity in pipe";
-  Modelica.SIunits.SpecificHeatCapacity cp_ps
-    "Pseudo state for time averaged heat capacity in pipe ";
+  Modelica.SIunits.SpecificHeatCapacity cp "Time averaged heat capacity in pipe";
+  Modelica.SIunits.SpecificHeatCapacity cp_ps "Pseudo state for time averaged heat capacity in pipe ";
 
   //____Pressure______________________________________________________________________________________________
   Modelica.SIunits.Pressure p_in "Pressure at inlet";
   Modelica.SIunits.Pressure p_out "Pressure at outlet";
 
-  Modelica.SIunits.Pressure Delta_p_fric=p_in - p_out
-    "Pressure difference due to friction";
+  Modelica.SIunits.Pressure Delta_p_fric=p_in - p_out "Pressure difference due to friction";
   Modelica.SIunits.Pressure Delta_p_grav "Pressure drop due to gravity";
   //rho*g_n*(z_out-z_in)
 
-  Modelica.SIunits.Pressure Delta_p_in(final start=0)
-    "Pressure at inlet:  p_in = p_nom + dp_0";
-  Modelica.SIunits.Pressure Delta_p_out(final start=0)
-    "Pressure at outlet: p_out = p_nom - R*q_nom + dp_L";
+  Modelica.SIunits.Pressure Delta_p_in(final start=0) "Pressure at inlet:  p_in = p_nom + dp_0";
+  Modelica.SIunits.Pressure Delta_p_out(final start=0) "Pressure at outlet: p_out = p_nom - R*q_nom + dp_L";
 
-  discrete Modelica.SIunits.Pressure p_L_init(start=p_out_start)
-    "Initial pressure at outlet:  p_out = p_in_init + dp_L";
+  discrete Modelica.SIunits.Pressure p_L_init(start=p_out_start) "Initial pressure at outlet:  p_out = p_in_init + dp_L";
 
-  discrete Modelica.SIunits.Pressure p_0_init(start=p_in_start)
-    "Initial pressure at inlet:  p_in = p_out_init + dp_0";
+  discrete Modelica.SIunits.Pressure p_0_init(start=p_in_start) "Initial pressure at inlet:  p_in = p_out_init + dp_0";
 
   //____Mass and Density______________________________________________________________________________________
   Modelica.SIunits.Density rho "Time averaged fluid density in pipe";
-  Modelica.SIunits.Density rho_ps
-    "Pseudo state for time averaged fluid density in pipe";
+  Modelica.SIunits.Density rho_ps "Pseudo state for time averaged fluid density in pipe";
 
   Real drhodt;
 
@@ -284,18 +245,14 @@ model PipeFlowVLE_L1_TML
   Modelica.SIunits.VolumeFlowRate V_flow_in "Volume flow at inlet";
   Modelica.SIunits.VolumeFlowRate V_flow_out "Volume flow at outlet";
 
-  Modelica.SIunits.VolumeFlowRate Delta_V_flow_in
-    "Volume flow at inlet:  V_flow_in=q_nom + dq_0";
-  Modelica.SIunits.VolumeFlowRate Delta_V_flow_out(start=0)
-    "Volume flow at outlet: V_flow_out=q_nom + dq_L";
+  Modelica.SIunits.VolumeFlowRate Delta_V_flow_in "Volume flow at inlet:  V_flow_in=q_nom + dq_0";
+  Modelica.SIunits.VolumeFlowRate Delta_V_flow_out(start=0) "Volume flow at outlet: V_flow_out=q_nom + dq_L";
 
-  discrete Modelica.SIunits.VolumeFlowRate V_flow_start(start=m_flow_nom/rho_start)
-    "Initial volume flow at inlet";
+  discrete Modelica.SIunits.VolumeFlowRate V_flow_start(start=m_flow_nom/rho_start) "Initial volume flow at inlet";
 
   Modelica.SIunits.Velocity w "Flow velocity in pipe";
   Modelica.SIunits.Velocity a "Time averaged speed of sound in pipe";
-  Modelica.SIunits.Velocity a_ps
-    "Pseudo state for time averaged speed of sound in pipe";
+  Modelica.SIunits.Velocity a_ps "Pseudo state for time averaged speed of sound in pipe";
 
   Real B(unit="1/s");
   //____Connectors____________________________________________________________________________________________
@@ -392,8 +349,7 @@ protected
 
   discrete Real A_0;
   discrete Real B_0;
-  Real Tau_pass_tot
-    "Total residence time fo fluid in pipe from inlet to outlet";
+  Real Tau_pass_tot "Total residence time fo fluid in pipe from inlet to outlet";
   ClaRa.Basics.Functions.ClaRaDelay.ExternalTable pointer_beta=
       ClaRa.Basics.Functions.ClaRaDelay.ExternalTable();
   Real hist_beta[1];

@@ -1,8 +1,7 @@
 within ClaRa.Components.Furnace.Burner;
-model Burner_L2_Dynamic_fuelDrying
-  "Model for a burner section inside a combustion chamber which is able to regard drying of unburnt fuel which contained water at burner inlet"
+model Burner_L2_Dynamic_fuelDrying "Model for a burner section inside a combustion chamber which is able to regard drying of unburnt fuel which contained water at burner inlet"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -23,16 +22,14 @@ extends ClaRa.Basics.Icons.Burner;
 //import ClaRa.Basics.Functions.Stepsmoother;
 
 //## P A R A M E T E R S #######################################################################################
-inner parameter Boolean useHomotopy=simCenter.useHomotopy
-    "True, if homotopy method is used during initialisation"  annotation(Dialog(tab="Initialisation"));
+inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation"
+                                                              annotation(Dialog(tab="Initialisation"));
 
 //## V A R I A B L E   P A R T##################################################################################
 public
  Real lambdaComb_primary "Primary lambda";
- ClaRa.Basics.Units.MassFlowRate m_flow_oxygen_req_primary
-    "Required oxygen mass flwo for primary lambda calculation";
- ClaRa.Basics.Units.MassFlowRate m_flow_air_req_primary
-    "Required air mass flwo for primary lambda calculation";
+ ClaRa.Basics.Units.MassFlowRate m_flow_oxygen_req_primary "Required oxygen mass flwo for primary lambda calculation";
+ ClaRa.Basics.Units.MassFlowRate m_flow_air_req_primary "Required air mass flwo for primary lambda calculation";
 
 protected
   Modelica.SIunits.MolarFlowRate  n_flow_C_primary "Primary molar flow of C";
@@ -42,20 +39,14 @@ protected
 
   Real drhodt "Density derivative";
 
-  ClaRa.Basics.Units.MassFraction xi_flueGasMix[flueGas.nc - 1]
-    "Flue gas mixture composition";
-  ClaRa.Basics.Units.MassFraction xi_flueGasMix_del[flueGas.nc - 1]
-    "Pseudo state for flue gas mixture composition";
+  ClaRa.Basics.Units.MassFraction xi_flueGasMix[flueGas.nc - 1] "Flue gas mixture composition";
+  ClaRa.Basics.Units.MassFraction xi_flueGasMix_del[flueGas.nc - 1] "Pseudo state for flue gas mixture composition";
 
-  ClaRa.Basics.Units.EnthalpyMassSpecific h_flueGasMix
-    "Specific enthalpy of flue gas mixture";
-  ClaRa.Basics.Units.EnthalpyMassSpecific h_flueGasMix_del
-    "Pseudo state for specific enthalpy of flue gas mixture";
+  ClaRa.Basics.Units.EnthalpyMassSpecific h_flueGasMix "Specific enthalpy of flue gas mixture";
+  ClaRa.Basics.Units.EnthalpyMassSpecific h_flueGasMix_del "Pseudo state for specific enthalpy of flue gas mixture";
 
-  ClaRa.Basics.Units.MassFlowRate m_flow_in_del
-    "Pseudo state for inlet mass flow";
-  ClaRa.Basics.Units.MassFlowRate m_flow_out_del
-    "Pseudo state for outlet mass flow";
+  ClaRa.Basics.Units.MassFlowRate m_flow_in_del "Pseudo state for inlet mass flow";
+  ClaRa.Basics.Units.MassFlowRate m_flow_out_del "Pseudo state for outlet mass flow";
 
 //_____________________/ Connectors \______________________________
 public
@@ -84,9 +75,8 @@ public
 //___________________// Chemistry \\__________
 replaceable model ReactionZone_out =
       ClaRa.Components.Furnace.ChemicalReactions.CoalReactionZone
-    constrainedby
-    ClaRa.Components.Furnace.ChemicalReactions.PartialReactionZone
-    "Model to regard chemical reactions" annotation (Dialog(group=
+    constrainedby ClaRa.Components.Furnace.ChemicalReactions.PartialReactionZone "Model to regard chemical reactions"
+                                         annotation (Dialog(group=
           "Combustion"), choicesAllMatching=true);
   ReactionZone_out reactionZone_out(xi_fuel_in=xi_fuel_out, xi_flueGas=xi_flueGas)
     annotation (Placement(transformation(extent={{-54,74},{-34,94}})));
@@ -179,6 +169,7 @@ public
   ClaRa.Basics.Units.EnthalpyMassSpecific Delta_h_fuel_water_evap;
   ClaRa.Basics.Units.EnthalpyMassSpecific LHV_out;
   Modelica.SIunits.SpecificHeatCapacity cp_out;
+  Modelica.SIunits.SpecificHeatCapacity cp_dc_in;
   ClaRa.Basics.Units.EnthalpyMassSpecific Delta_h_f_out;
   ClaRa.Basics.Units.MassFlowRate m_flow_flueGas_id_out;
 
@@ -192,8 +183,7 @@ protected
       TILMedia.VLEFluidTypes.TILMedia_SplineWater.mixingRatio_propertyCalculation[1:end - 1]/sum(TILMedia.VLEFluidTypes.TILMedia_SplineWater.mixingRatio_propertyCalculation),
       TILMedia.VLEFluidTypes.TILMedia_SplineWater.nc_propertyCalculation,
       TILMedia.VLEFluidTypes.TILMedia_SplineWater.nc,
-      TILMedia.Internals.redirectModelicaFormatMessage())
-    "Pointer to external medium memory for fuel water properties";
+      TILMedia.Internals.redirectModelicaFormatMessage()) "Pointer to external medium memory for fuel water properties";
 
     TILMedia.VLEFluidObjectFunctions.VLEFluidPointer H2O_props_out=
       TILMedia.VLEFluidObjectFunctions.VLEFluidPointer(
@@ -202,8 +192,7 @@ protected
       TILMedia.VLEFluidTypes.TILMedia_SplineWater.mixingRatio_propertyCalculation[1:end - 1]/sum(TILMedia.VLEFluidTypes.TILMedia_SplineWater.mixingRatio_propertyCalculation),
       TILMedia.VLEFluidTypes.TILMedia_SplineWater.nc_propertyCalculation,
       TILMedia.VLEFluidTypes.TILMedia_SplineWater.nc,
-      TILMedia.Internals.redirectModelicaFormatMessage())
-    "Pointer to external medium memory for fuel water properties";
+      TILMedia.Internals.redirectModelicaFormatMessage()) "Pointer to external medium memory for fuel water properties";
 
 initial equation
 
@@ -366,6 +355,7 @@ equation
     Delta_h_fuel_water_evap = 0;
     LHV_out=LHV;
     cp_out=cp;
+    cp_dc_in=cp;
     m_flow_flueGas_id_out = m_flow_flueGas_id;
     Delta_h_f_out = Delta_h_f;
     xi_flueGas_id_out = xi_flueGas_id;
@@ -376,14 +366,18 @@ equation
     h_fuel_water_out = TILMedia.VLEFluidObjectFunctions.specificEnthalpy_pTxi(fuelFlueGas_inlet.fuel.p,bulk.T, {1}, H2O_props_out);
     Delta_h_fuel_water_evap =  TILMedia.VLEFluidObjectFunctions.dewSpecificEnthalpy_Txi(inStream(fuelFlueGas_inlet.fuel.T_outflow), {1}, H2O_props_in) - TILMedia.VLEFluidObjectFunctions.bubbleSpecificEnthalpy_Txi(inStream(fuelFlueGas_inlet.fuel.T_outflow), {1}, H2O_props_in);
     if fuelFlueGas_inlet.fuel.LHV_calculationType == "predefined" and inlet.fuel.LHV_calculationType == "predefined" then
-      LHV_out = (LHV + Delta_h_fuel_water_evap*(1-sum(xi_fuel_in)))/sum(xi_fuel_in);
+     // LHV_out = (LHV + Delta_h_fuel_water_evap*(1-sum(xi_fuel_in)))/sum(xi_fuel_in);
+      LHV_out = (LHV + Delta_h_fuel_water_evap*(1-sum(xi_fuel_in)))*(1-(1-sum(xi_fuel_out)))/(1-(1-sum(xi_fuel_in))) - Delta_h_fuel_water_evap*(1-sum(xi_fuel_out));//Effenberger, lower heating value after drying
+
     elseif fuelFlueGas_inlet.fuel.LHV_calculationType == "Verbandsformel" and inlet.fuel.LHV_calculationType == "Verbandsformel" then
       LHV_out =(33907*xi_fuel_out[1] + 142324*(xi_fuel_out[2] - xi_fuel_out[3]/8.) + 10465*xi_fuel_out[5] - 2512*((1 - sum(xi_fuel_out)) + 9*xi_fuel_out[2]))*1000;
     else
      LHV_out = inStream(inlet.fuel.LHV_outflow);
     end if;
 
-    cp_out = (cp +  TILMedia.VLEFluidObjectFunctions.specificIsobaricHeatCapacity_pTxi(fuelFlueGas_inlet.fuel.p,bulk.T, {1}, H2O_props_out) * (1-sum(xi_fuel_in)))/sum(xi_fuel_in);
+    //cp_out = (cp +  TILMedia.VLEFluidObjectFunctions.specificIsobaricHeatCapacity_pTxi(fuelFlueGas_inlet.fuel.p,bulk.T, {1}, H2O_props_out) * (1-sum(xi_fuel_in)))/sum(xi_fuel_in);
+    cp_out = cp - ((1-sum(xi_fuel_in)) - (1-sum(xi_fuel_out)))*(TILMedia.VLEFluidObjectFunctions.specificIsobaricHeatCapacity_pTxi(fuelFlueGas_inlet.fuel.p,bulk.T, {1}, H2O_props_out) - cp_dc_in);
+    cp_dc_in = (cp - (1-sum(xi_fuel_in))*TILMedia.VLEFluidObjectFunctions.specificIsobaricHeatCapacity_pTxi(fuelFlueGas_inlet.fuel.p,bulk.T, {1}, H2O_props_out))/(sum(xi_fuel_in));
     m_flow_flueGas_id_out = (m_flow_fuel_id*(1 - xi_fuel_out[6]*reactionZone_out.xi_slag));
     xi_flueGas_id_out = 1/m_flow_flueGas_id_out*reactionZone_out.prod_comp;
     //Delta_h_f_out - LHV_out =m_flow_flueGas_id_out*((ideal_combustion.h_i)*cat(1,xi_flueGas_id,{1 - sum(xi_flueGas_id)})) + xi_fuel_out[6]*reactionZone.xi_slag*outlet.slagType.cp*T_0;//formation enthalpy of used fuel
@@ -436,9 +430,9 @@ equation
   assert(fuelFlueGas_inlet.fuel.LHV_calculationType == "predefined" and inlet.fuel.LHV_calculationType == "predefined" or fuelFlueGas_inlet.fuel.LHV_calculationType == "Verbandsformel" and inlet.fuel.LHV_calculationType == "Verbandsformel", "Please check your LHV calculation settings inside boundaries. Mixed LHV_calculationTypes are not supported inside one fuel stream");
   end if;
 
-  outlet.fuel.cp_outflow =cp;
-  inlet.fuel.cp_outflow =cp;
-  fuelFlueGas_inlet.fuel.cp_outflow =cp;
+  outlet.fuel.cp_outflow =cp_out;
+  inlet.fuel.cp_outflow =cp_out;
+  fuelFlueGas_inlet.fuel.cp_outflow =cp_out;
 
   //_____________/ Pressures \______________________________________________
   fuelFlueGas_inlet.fuel.p = outlet.flueGas.p;

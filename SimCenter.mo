@@ -1,7 +1,7 @@
 within ClaRa;
 model SimCenter
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -17,64 +17,52 @@ model SimCenter
 
 //extends ClaRa.Basics.Functions.ClaRaDelay.DelayInit;
 
-  replaceable parameter TILMedia.VLEFluidTypes.TILMedia_SplineWater fluid1 constrainedby
-    TILMedia.VLEFluidTypes.BaseVLEFluid( final ID=1)
-    "Medium name of working fluid in steam cycle"               annotation(Dialog(tab="Media and Materials", group="ClaRa-based Models: VLE Components"),choicesAllMatching);
-  replaceable parameter TILMedia.VLEFluidTypes.TILMedia_SplineWater fluid2 constrainedby
-    TILMedia.VLEFluidTypes.BaseVLEFluid( final ID=2)
-    "Medium name of working fluid in steam cycle"               annotation(Dialog(tab="Media and Materials", group="ClaRa-based Models: VLE Components"),choicesAllMatching);
-  replaceable parameter TILMedia.VLEFluidTypes.TILMedia_SplineWater fluid3 constrainedby
-    TILMedia.VLEFluidTypes.BaseVLEFluid( final ID=3)
-    "Medium name of working fluid in steam cycle"               annotation(Dialog(tab="Media and Materials", group="ClaRa-based Models: VLE Components"),choicesAllMatching);
-  replaceable parameter TILMedia.GasTypes.MoistAirMixture airModel constrainedby
-    TILMedia.GasTypes.BaseGas "Medium name of air model"
+  replaceable parameter TILMedia.VLEFluidTypes.TILMedia_SplineWater fluid1 constrainedby TILMedia.VLEFluidTypes.BaseVLEFluid(
+                                         final ID=1) "Medium name of working fluid in steam cycle"
+                                                                annotation(Dialog(tab="Media and Materials", group="ClaRa-based Models: VLE Components"),choicesAllMatching);
+  replaceable parameter TILMedia.VLEFluidTypes.TILMedia_SplineWater fluid2 constrainedby TILMedia.VLEFluidTypes.BaseVLEFluid(
+                                         final ID=2) "Medium name of working fluid in steam cycle"
+                                                                annotation(Dialog(tab="Media and Materials", group="ClaRa-based Models: VLE Components"),choicesAllMatching);
+  replaceable parameter TILMedia.VLEFluidTypes.TILMedia_SplineWater fluid3 constrainedby TILMedia.VLEFluidTypes.BaseVLEFluid(
+                                         final ID=3) "Medium name of working fluid in steam cycle"
+                                                                annotation(Dialog(tab="Media and Materials", group="ClaRa-based Models: VLE Components"),choicesAllMatching);
+  replaceable parameter TILMedia.GasTypes.MoistAirMixture airModel constrainedby TILMedia.GasTypes.BaseGas "Medium name of air model"
                               annotation(Dialog(tab="Media and Materials", group="ClaRa-based Models: Gas Components"),choicesAllMatching);
-  replaceable parameter TILMedia.GasTypes.FlueGasTILMedia flueGasModel constrainedby
-    TILMedia.GasTypes.BaseGas "Medium name of flue gas model"
+  replaceable parameter TILMedia.GasTypes.FlueGasTILMedia flueGasModel constrainedby TILMedia.GasTypes.BaseGas "Medium name of flue gas model"
                                     annotation(Dialog(tab="Media and Materials", group="ClaRa-based Models: Gas Components"),choicesAllMatching);
   replaceable parameter ClaRa.Basics.Media.Fuel.Coal_v1 fuelModel1
-    constrainedby ClaRa.Basics.Media.Fuel.PartialFuel
-    "Medium name of fuel model" annotation(Dialog(tab="Media and Materials", group="ClaRa-based Models: Fuel, Coal and Slag"),choicesAllMatching);
+    constrainedby ClaRa.Basics.Media.Fuel.PartialFuel "Medium name of fuel model"
+                                annotation(Dialog(tab="Media and Materials", group="ClaRa-based Models: Fuel, Coal and Slag"),choicesAllMatching);
   replaceable parameter ClaRa.Basics.Media.Fuel.Coal_v2 fuelModel2
-    constrainedby ClaRa.Basics.Media.Fuel.PartialFuel
-    "Medium name of fuel model" annotation(Dialog(tab="Media and Materials", group="ClaRa-based Models: Fuel, Coal and Slag"),choicesAllMatching);
+    constrainedby ClaRa.Basics.Media.Fuel.PartialFuel "Medium name of fuel model"
+                                annotation(Dialog(tab="Media and Materials", group="ClaRa-based Models: Fuel, Coal and Slag"),choicesAllMatching);
   replaceable parameter ClaRa.Basics.Media.Fuel.Slag_v1 slagModel
-    constrainedby ClaRa.Basics.Media.Fuel.PartialSlag
-    "Medium name of slag model"
+    constrainedby ClaRa.Basics.Media.Fuel.PartialSlag "Medium name of slag model"
                                annotation(Dialog(tab="Media and Materials", group="ClaRa-based Models: Fuel, Coal and Slag"),choicesAllMatching);
 
 ///////////////////////
   input ClaRa.Basics.Units.AbsolutePressure p_amb = 1.013e5 "Ambient pressure" annotation(Dialog(tab="Ambience", group="Variable Input"));
   input ClaRa.Basics.Units.Temperature T_amb = 293.15 "Ambient temperature" annotation(Dialog(tab="Ambience", group="Variable Input"));
-  input ClaRa.Basics.Units.RelativeHumidity rh_amb = 0.2
-    "Ambient relative humidity (0 < rh < 1)"                                                      annotation(Dialog(tab="Ambience", group="Variable Input"));
-  parameter ClaRa.Basics.Units.AbsolutePressure p_amb_start(fixed=false)
-    "Initial ambient pressure (automatically calculated)"                                                                      annotation(Dialog(tab="Ambience", group="Start Values", enable=false));
-  parameter ClaRa.Basics.Units.Temperature T_amb_start(fixed=false)
-    "Initial ambient temperature (automatically calculated)"                                                                 annotation(Dialog(tab="Ambience", group="Start Values", enable=false));
+  input ClaRa.Basics.Units.RelativeHumidity rh_amb = 0.2 "Ambient relative humidity (0 < rh < 1)" annotation(Dialog(tab="Ambience", group="Variable Input"));
+  parameter ClaRa.Basics.Units.AbsolutePressure p_amb_start(fixed=false) "Initial ambient pressure (automatically calculated)" annotation(Dialog(tab="Ambience", group="Start Values", enable=false));
+  parameter ClaRa.Basics.Units.Temperature T_amb_start(fixed=false) "Initial ambient temperature (automatically calculated)" annotation(Dialog(tab="Ambience", group="Start Values", enable=false));
 
 ///////////////////////
-    parameter Boolean showExpertSummary=false
-    "|Summary and Visualisation||True, if expert summary should be applied";
-  parameter Boolean largeFonts= false
-    "|Summary and Visualisation||True if visualisers shall be displayed as large as posible";
-  parameter Boolean contributeToCycleSummary = false
-    "True if components shall contribute to automatic efficiency calculation"                     annotation(Dialog(tab="Summary and Visualisation"));
+    parameter Boolean showExpertSummary=false "|Summary and Visualisation||True, if expert summary should be applied";
+  parameter Boolean largeFonts= false "|Summary and Visualisation||True if visualisers shall be displayed as large as posible";
+  parameter Boolean contributeToCycleSummary = false "True if components shall contribute to automatic efficiency calculation"
+                                                                                                  annotation(Dialog(tab="Summary and Visualisation"));
 
 //////////////////////
-  parameter Boolean steamCycleAllowFlowReversal = true
-    "Allow flow reversal in steam cycle"                                                    annotation(Dialog(tab="Numerics", group="ClaRa-basedModels: VLE Components"));
+  parameter Boolean steamCycleAllowFlowReversal = true "Allow flow reversal in steam cycle" annotation(Dialog(tab="Numerics", group="ClaRa-basedModels: VLE Components"));
 
-   parameter Boolean useClaRaDelay=true
-    "True for using ClaRa delay implementation / false for built in Modelica delay"
+   parameter Boolean useClaRaDelay=true "True for using ClaRa delay implementation / false for built in Modelica delay"
      annotation(Dialog(tab="Numerics",group="Delay Function"));
-   parameter Real MaxSimTime=1e4
-    "Maximum time for simulation, must be set for Modelica delay blocks with variable delay time"
+   parameter Real MaxSimTime=1e4 "Maximum time for simulation, must be set for Modelica delay blocks with variable delay time"
              annotation(Dialog(enable=useClaRaDelay==false,tab="Numerics", group="Delay Function"));
-  parameter Boolean useHomotopy=true
-    "True, if homotopy method is used during initialisation" annotation(Dialog(tab="Numerics", group="Misc"),Evaluate=true);
-    ClaRa.Basics.Interfaces.CycleSumPort cycleSumPort
-    "Reference to the volume and mass of the VLE fluid in components"
+  parameter Boolean useHomotopy=true "True, if homotopy method is used during initialisation"
+                                                             annotation(Dialog(tab="Numerics", group="Misc"),Evaluate=true);
+    ClaRa.Basics.Interfaces.CycleSumPort cycleSumPort "Reference to the volume and mass of the VLE fluid in components"
       annotation(HideResult=false);
 
 record Summary

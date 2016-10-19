@@ -1,7 +1,7 @@
 within ClaRa.StaticCycles.Check.StaticCycleExamples;
 model InitSteamCycle_T_4_Pr_F1_C1_version2
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -18,14 +18,11 @@ model InitSteamCycle_T_4_Pr_F1_C1_version2
   import TILMedia.VLEFluidFunctions.*;
   import SI = ClaRa.Basics.Units;
   outer ClaRa.SimCenter simCenter;
-  parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium = simCenter.fluid1
-    "Medium in the component"
-    annotation(choices(choice=simCenter.fluid1
-        "First fluid defined in global simCenter",
-                       choice=simCenter.fluid2
-        "Second fluid defined in global simCenter",
-                       choice=simCenter.fluid3
-        "Third fluid defined in global simCenter"),       Dialog(group="Fundamental Definitions"));
+  parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium = simCenter.fluid1 "Medium in the component"
+    annotation(choices(choice=simCenter.fluid1 "First fluid defined in global simCenter",
+                       choice=simCenter.fluid2 "Second fluid defined in global simCenter",
+                       choice=simCenter.fluid3 "Third fluid defined in global simCenter"),
+                                                          Dialog(group="Fundamental Definitions"));
   inner parameter SI.MassFlowRate m_flow_nom=416;
   inner parameter Real P_target_=1;
   // Heat Exchangers
@@ -50,11 +47,11 @@ model InitSteamCycle_T_4_Pr_F1_C1_version2
   parameter SI.PressureDifference Delta_p_LS_nom=89e5 annotation(Dialog(tab="Boiler"));
   parameter SI.PressureDifference Delta_p_RS_nom=5e5 annotation(Dialog(tab="Boiler"));
   parameter Real CharLine_Delta_p_HP_mLS_[:,:]=[0,0; 0.1,0.01; 0.2,0.04; 0.3,0.09; 0.4,
-      0.16; 0.5,0.25; 0.6,0.36; 0.7,0.49; 0.8,0.64; 0.9,0.81; 1,1]
-    "Characteristic line of pressure drop as function of mass flow rate" annotation(Dialog(tab="Boiler"));
+      0.16; 0.5,0.25; 0.6,0.36; 0.7,0.49; 0.8,0.64; 0.9,0.81; 1,1] "Characteristic line of pressure drop as function of mass flow rate"
+                                                                         annotation(Dialog(tab="Boiler"));
   parameter Real CharLine_Delta_p_IP_mRS_[:,:]=[0,0; 0.1,0.01; 0.2,0.04; 0.3,0.09; 0.4,
-      0.16; 0.5,0.25; 0.6,0.36; 0.7,0.49; 0.8,0.64; 0.9,0.81; 1,1]
-    "Characteristic line of pressure drop as function of mass flow rate" annotation(Dialog(tab="Boiler"));
+      0.16; 0.5,0.25; 0.6,0.36; 0.7,0.49; 0.8,0.64; 0.9,0.81; 1,1] "Characteristic line of pressure drop as function of mass flow rate"
+                                                                         annotation(Dialog(tab="Boiler"));
   // Pumps
   parameter Real efficiency_Pump_cond=1 annotation(Dialog(tab="Pumps"));
   parameter Real efficiency_Pump_preheater_LP1=1 annotation(Dialog(tab="Pumps"));

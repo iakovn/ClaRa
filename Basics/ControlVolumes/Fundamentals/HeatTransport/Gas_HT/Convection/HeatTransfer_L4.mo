@@ -1,8 +1,7 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Convection;
 partial model HeatTransfer_L4 "Gas || HT Base Class"
   extends ClaRa.Basics.Icons.Alpha;
-  extends
-    ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.HeatTransferBaseGas_L4;
+  extends ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.HeatTransferBaseGas_L4;
   outer ClaRa.Basics.Records.IComGas_L3 iCom;
   outer ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry_N_cv geo;
   outer parameter Boolean useHomotopy;

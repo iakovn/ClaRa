@@ -1,7 +1,7 @@
 within ClaRa.Components.Sensors;
 model Temperature "Ideal one port temperature sensor"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -17,11 +17,9 @@ model Temperature "Ideal one port temperature sensor"
 
   extends ClaRa.Basics.Icons.Sensor1;
   outer ClaRa.SimCenter simCenter;
-  parameter TILMedia.VLEFluidTypes.BaseVLEFluid   medium= simCenter.fluid1
-    "Medium to be used"                                                                        annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
-  parameter Integer unitOption = 1 "Unit of output" annotation(choicesAllMatching, Dialog( group="Fundamental Definitions"), choices(choice=1 "Kelvin", choice=2
-        "Degree Celsius",                                                                                                    choice=3
-        "Degree Fahrenheit"));
+  parameter TILMedia.VLEFluidTypes.BaseVLEFluid   medium= simCenter.fluid1 "Medium to be used" annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
+  parameter Integer unitOption = 1 "Unit of output" annotation(choicesAllMatching, Dialog( group="Fundamental Definitions"), choices(choice=1 "Kelvin", choice=2 "Degree Celsius",
+                                                                                              choice=3 "Degree Fahrenheit"));
   ClaRa.Basics.Units.Temperature_DegC T_celsius "Temperatur in Degree Celsius";
   Modelica.Blocks.Interfaces.RealOutput T "Temperature in port medium"
     annotation (Placement(transformation(extent={{100,-10},{120,10}},

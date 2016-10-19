@@ -14,10 +14,9 @@ model TestBalanceTank
     gasMedium=simCenter.airModel,
     levelOutput=true)
     annotation (Placement(transformation(extent={{-14,-48},{6,-28}})));
-  VolumesValvesFittings.Valves.ValveGas_L1            valve(redeclare model
-      PressureLoss =
-        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint
-        (m_flow_nom=10), medium=simCenter.airModel)
+  VolumesValvesFittings.Valves.ValveGas_L1            valve(redeclare model PressureLoss =
+        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint (
+         m_flow_nom=10), medium=simCenter.airModel)
                 annotation (Placement(transformation(
         extent={{-10,6},{10,-6}},
         rotation=180,

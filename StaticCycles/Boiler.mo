@@ -1,7 +1,7 @@
 within ClaRa.StaticCycles;
 model Boiler "Boiler || liveSteam: blue |green || RH: blue |green"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                            //
+// Component of the ClaRa library, version: 1.1.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -17,38 +17,27 @@ model Boiler "Boiler || liveSteam: blue |green || RH: blue |green"
   // Blue input:   Value of p is known in component and provided FOR neighbor component, values of m_flow and h are unknown and provided BY neighbor component.
   // Green output: Values of p, m_flow and h are known in component and provided FOR neighbor component.
   outer ClaRa.SimCenter simCenter;
-  parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium = simCenter.fluid1
-    "|Fundamental Definitions|Medium in the component";
+  parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium = simCenter.fluid1 "|Fundamental Definitions|Medium in the component";
 
   outer parameter Real P_target_ "Target power in p.u.";
   outer parameter ClaRa.Basics.Units.MassFlowRate m_flow_nom;
 
-  parameter ClaRa.Basics.Units.Temperature T_LS_nom
-    "|Fundamental Definitions|Life steam temperature at nominal load";
-  parameter ClaRa.Basics.Units.Temperature T_RS_nom
-    "|Fundamental Definitions|Reheated steam temperature at nominal load";
-  parameter ClaRa.Basics.Units.Pressure Delta_p_LS_nom
-    "|Fundamental Definitions|Life steam pressure loss at nominal load";
-  parameter ClaRa.Basics.Units.Pressure Delta_p_RS_nom
-    "|Fundamental Definitions|Reheated steam pressure loss at nominal load";
-  parameter ClaRa.Basics.Units.Pressure p_LS_out_nom
-    "|Fundamental Definitions|Life steam pressure at nominal load";
-  parameter ClaRa.Basics.Units.Pressure p_RS_out_nom
-    "|Fundamental Definitions|Reheated steam pressure at nominal load";
-  parameter Real CharLine_Delta_p_HP_mLS_[:,:]=[0,0;0.1, 0.01; 0.2, 0.04; 0.3, 0.09; 0.4, 0.16; 0.5, 0.25; 0.6, 0.36; 0.7, 0.49; 0.8, 0.64; 0.9, 0.81; 1, 1]
-    "Characteristic line of pressure drop as function of mass flow rate" annotation(Dialog(group="Part Load Definition"));
-  parameter Real CharLine_Delta_p_IP_mRS_[:,:]=[0,0;0.1, 0.01; 0.2, 0.04; 0.3, 0.09; 0.4, 0.16; 0.5, 0.25; 0.6, 0.36; 0.7, 0.49; 0.8, 0.64; 0.9, 0.81; 1, 1]
-    "Characteristic line of pressure drop as function of mass flow rate" annotation(Dialog(group="Part Load Definition"));
+  parameter ClaRa.Basics.Units.Temperature T_LS_nom "|Fundamental Definitions|Life steam temperature at nominal load";
+  parameter ClaRa.Basics.Units.Temperature T_RS_nom "|Fundamental Definitions|Reheated steam temperature at nominal load";
+  parameter ClaRa.Basics.Units.Pressure Delta_p_LS_nom "|Fundamental Definitions|Life steam pressure loss at nominal load";
+  parameter ClaRa.Basics.Units.Pressure Delta_p_RS_nom "|Fundamental Definitions|Reheated steam pressure loss at nominal load";
+  parameter ClaRa.Basics.Units.Pressure p_LS_out_nom "|Fundamental Definitions|Life steam pressure at nominal load";
+  parameter ClaRa.Basics.Units.Pressure p_RS_out_nom "|Fundamental Definitions|Reheated steam pressure at nominal load";
+  parameter Real CharLine_Delta_p_HP_mLS_[:,:]=[0,0;0.1, 0.01; 0.2, 0.04; 0.3, 0.09; 0.4, 0.16; 0.5, 0.25; 0.6, 0.36; 0.7, 0.49; 0.8, 0.64; 0.9, 0.81; 1, 1] "Characteristic line of pressure drop as function of mass flow rate"
+                                                                         annotation(Dialog(group="Part Load Definition"));
+  parameter Real CharLine_Delta_p_IP_mRS_[:,:]=[0,0;0.1, 0.01; 0.2, 0.04; 0.3, 0.09; 0.4, 0.16; 0.5, 0.25; 0.6, 0.36; 0.7, 0.49; 0.8, 0.64; 0.9, 0.81; 1, 1] "Characteristic line of pressure drop as function of mass flow rate"
+                                                                         annotation(Dialog(group="Part Load Definition"));
 
   final parameter ClaRa.Basics.Units.HeatFlowRate Q_nom=m_flow_feed*(h_LS_out-h_LS_in) + m_flow_cRH*(h_RS_out-h_RS_in);
-  final parameter ClaRa.Basics.Units.MassFlowRate m_flow_feed=m_flow_nom*P_target_
-    "Mass flow rate feedwater";
-  final parameter ClaRa.Basics.Units.MassFlowRate m_flow_cRH(fixed=false)
-    "Mass flow rate of cold Re-Heat ";
-  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_LS_in(fixed=false)
-    "Inlet specific enthalpy";
-  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_RS_in(fixed=false)
-    "Inlet specific enthalpy";
+  final parameter ClaRa.Basics.Units.MassFlowRate m_flow_feed=m_flow_nom*P_target_ "Mass flow rate feedwater";
+  final parameter ClaRa.Basics.Units.MassFlowRate m_flow_cRH(fixed=false) "Mass flow rate of cold Re-Heat ";
+  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_LS_in(fixed=false) "Inlet specific enthalpy";
+  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_RS_in(fixed=false) "Inlet specific enthalpy";
 
 protected
   ClaRa.Components.Utilities.Blocks.ParameterizableTable1D table1(table=CharLine_Delta_p_HP_mLS_, u = {m_flow_feed/m_flow_nom});
@@ -60,13 +49,11 @@ initial equation
   Delta_p_LS_ = table1.y[1];
   Delta_p_RS_ = table2.y[1];
 public
-  final parameter Real Q_LS_ = (h_LS_out - h_LS_in)*m_flow_feed/Q_nom
-    "Heat release in life steam at current load";
+  final parameter Real Q_LS_ = (h_LS_out - h_LS_in)*m_flow_feed/Q_nom "Heat release in life steam at current load";
 
 //_________________________________________________________________________________
 
-   final parameter Real Q_RS_ = 1 - Q_LS_
-    "Heat release in reheated steam at current load";
+   final parameter Real Q_RS_ = 1 - Q_LS_ "Heat release in reheated steam at current load";
 
   final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_LS_out=
       TILMedia.VLEFluidFunctions.specificEnthalpy_pTxi(
@@ -82,16 +69,13 @@ public
   final parameter ClaRa.Basics.Units.Pressure p_LS_in=p_LS_out + Delta_p_LS_*
       Delta_p_LS_nom "Inlet pressure";
 
-  final parameter ClaRa.Basics.Units.Pressure p_LS_out=P_target_*p_LS_out_nom
-    "Life steam pressure at current load";
+  final parameter ClaRa.Basics.Units.Pressure p_LS_out=P_target_*p_LS_out_nom "Life steam pressure at current load";
 
   final parameter ClaRa.Basics.Units.Pressure p_RS_in=p_RS_out + Delta_p_RS_*
       Delta_p_RS_nom "Inlet pressure";
-  final parameter ClaRa.Basics.Units.MassFlowRate m_flow_HP_in( fixed=false)
-    "HP inlet mass flow";
+  final parameter ClaRa.Basics.Units.MassFlowRate m_flow_HP_in( fixed=false) "HP inlet mass flow";
 
-  final parameter ClaRa.Basics.Units.Pressure p_RS_out=P_target_*p_RS_out_nom
-    "Reheated steam pressure at current load";
+  final parameter ClaRa.Basics.Units.Pressure p_RS_out=P_target_*p_RS_out_nom "Reheated steam pressure at current load";
 
 public
   Fundamentals.SteamSignal_green reheat_out(

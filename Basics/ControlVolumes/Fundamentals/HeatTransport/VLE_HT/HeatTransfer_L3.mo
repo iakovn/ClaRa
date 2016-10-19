@@ -1,7 +1,6 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT;
 partial model HeatTransfer_L3 "L3 || HT-BaseClass"
-  extends
-    ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.HeatTransferBaseVLE_L3;
+  extends ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.HeatTransferBaseVLE_L3;
   extends ClaRa.Basics.Icons.Alpha;
   outer ClaRa.Basics.Records.IComVLE_L3 iCom;
 
@@ -9,16 +8,14 @@ partial model HeatTransfer_L3 "L3 || HT-BaseClass"
 
   ClaRa.Basics.Interfaces.HeatPort_a heat[iCom.N_cv] annotation (Placement(transformation(extent={{90,-10},{110,10}}), iconTransformation(extent={{90,-10},{110,10}})));
 
-  parameter String temperatureDifference="Zonal temperatures"
-    "Temperature Difference"                                                           annotation (Dialog(group="Heat Transfer"), choices(choice="Zonal tempartures"));
+  parameter String temperatureDifference="Zonal temperatures" "Temperature Difference" annotation (Dialog(group="Heat Transfer"), choices(choice="Zonal tempartures"));
 
   //   SI.Temperature Delta_T_wi
   //     "Temperature difference between wall and fluid inlet temperature";
   //   SI.Temperature Delta_T_wo
   //     "Temperature difference between wall and fluid outlet temperature";
 
-  SI.Temperature Delta_T_mean[iCom.N_cv]
-    "Mean temperature difference between wall and fluid";
+  SI.Temperature Delta_T_mean[iCom.N_cv] "Mean temperature difference between wall and fluid";
 
   //   SI.Temperature Delta_T_U;
   //   SI.Temperature Delta_T_L;

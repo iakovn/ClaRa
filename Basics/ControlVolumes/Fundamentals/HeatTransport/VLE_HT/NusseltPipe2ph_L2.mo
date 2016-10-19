@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT;
 model NusseltPipe2ph_L2 "Pipe Geo || L2 || HTC || Nusselt (2ph)"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.1                        //
+  // Component of the ClaRa library, version: 1.1.2                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,8 +15,7 @@ model NusseltPipe2ph_L2 "Pipe Geo || L2 || HTC || Nusselt (2ph)"
   // XRG Simulation GmbH (Hamburg, Germany).                                   //
   //___________________________________________________________________________//
 
-  extends
-    ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.HeatTransfer_L2;
+  extends ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.HeatTransfer_L2;
   extends ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.TubeType_L2;
 
   outer ClaRa.SimCenter simCenter;
@@ -65,24 +64,20 @@ protected
       iCom.xi_in,
       iCom.fluidPointer_in);
 public
-  parameter FluidDissipation.Utilities.Types.TwoPhaseHeatTransferTarget HTModel = FluidDissipation.Utilities.Types.TwoPhaseHeatTransferTarget.BoilHor
-    "Type of two-phase heat transfer"                                                   annotation (Dialog(group="Heat Transfer"));
+  parameter FluidDissipation.Utilities.Types.TwoPhaseHeatTransferTarget HTModel = FluidDissipation.Utilities.Types.TwoPhaseHeatTransferTarget.BoilHor "Type of two-phase heat transfer"
+                                                                                        annotation (Dialog(group="Heat Transfer"));
   parameter Integer heatSurfaceAlloc=1 "To be considered heat transfer area" annotation (dialog(enable=false, group="Expert Setting"), choices(
       choice=1 "Lateral surface",
       choice=2 "Inner heat transfer surface",
       choice=3 "Selection to be extended"));
-  SI.CoefficientOfHeatTransfer alpha(start=alpha_nom)
-    "Heat transfer coefficient used for heat transfer calculation";
-  SI.CoefficientOfHeatTransfer alpha_1ph
-    "Heat transfer coefficient for single phase case";
-  SI.CoefficientOfHeatTransfer alpha_2ph
-    "Heat transfer coefficient for two phase case";
+  SI.CoefficientOfHeatTransfer alpha(start=alpha_nom) "Heat transfer coefficient used for heat transfer calculation";
+  SI.CoefficientOfHeatTransfer alpha_1ph "Heat transfer coefficient for single phase case";
+  SI.CoefficientOfHeatTransfer alpha_2ph "Heat transfer coefficient for two phase case";
   Real Pr "Prandtl number";
   Real Re "Reynolds number";
   Real Fr_l "Froude number";
 
-  final parameter
-    FluidDissipation.HeatTransfer.StraightPipe.kc_twoPhaseOverall_KC_IN_var               inVar_2ph_nom(
+  final parameter FluidDissipation.HeatTransfer.StraightPipe.kc_twoPhaseOverall_KC_IN_var inVar_2ph_nom(
     target=HTModel,
     m_flow=noEvent(max(0.0000001, abs(sum(iCom.m_flow_nom))/geo.N_tubes)),
     qdot_A=(eps + Q_flow_nom)/geo.A_heat_CF[heatSurfaceAlloc],
@@ -112,8 +107,7 @@ public
         iCom.p_nom,
         fluidFunction_h_bubble(iCom.mediumModel, iCom.p_nom))) annotation (Placement(transformation(extent={{-40,-60},{-20,-40}})));
 
-  final parameter
-    FluidDissipation.HeatTransfer.StraightPipe.kc_twoPhaseOverall_KC_IN_con               inCon_2ph(
+  final parameter FluidDissipation.HeatTransfer.StraightPipe.kc_twoPhaseOverall_KC_IN_con inCon_2ph(
     target=HTModel,
     p_crit=TILMedia.VLEFluidFunctions.criticalPressure_xi(iCom.mediumModel),
     A_cross=geo.A_cross,

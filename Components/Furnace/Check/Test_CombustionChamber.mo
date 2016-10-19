@@ -1,7 +1,7 @@
 within ClaRa.Components.Furnace.Check;
 model Test_CombustionChamber
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -23,8 +23,8 @@ model Test_CombustionChamber
     fuelType=simCenter.fuelModel1,
     medium=simCenter.flueGasModel,
     slagType=simCenter.slagModel) annotation (Placement(transformation(extent={{18,-36},{38,-16}})));
-  inner ClaRa.SimCenter simCenter(       redeclare
-      ClaRa.Basics.Media.Fuel.Coal_v1 fuelModel1,
+  inner ClaRa.SimCenter simCenter(       redeclare ClaRa.Basics.Media.Fuel.Coal_v1
+                                      fuelModel1,
     redeclare ClaRa.Basics.Media.Fuel.Slag_v1 slagModel,
     redeclare TILMedia.GasTypes.FlueGasTILMedia flueGasModel)
     annotation (Placement(transformation(extent={{80,80},{100,100}})));

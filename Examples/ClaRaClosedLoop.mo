@@ -1,6 +1,5 @@
 within ClaRa.Examples;
-model ClaRaClosedLoop
-  "A closed steam cycle including single reheat, feedwater tank, LP and HP preheaters"
+model ClaRaClosedLoop "A closed steam cycle including single reheat, feedwater tank, LP and HP preheaters"
   extends ClaRa.Basics.Icons.PackageIcons.ExecutableRegressiong100;
 
 model Regression
@@ -106,18 +105,14 @@ end Regression;
     height=-0.2)
     annotation (Placement(transformation(extent={{-278,48},{-258,68}})));
   parameter Real k_PID=0.5;//1.305 "Gain of controller";
-  parameter Modelica.SIunits.Time Ti_PID=650
-    "Time constant of Integrator block";
+  parameter Modelica.SIunits.Time Ti_PID=650 "Time constant of Integrator block";
                                             //216.667
   parameter Modelica.SIunits.Time startTime=2000;
   //Real Target;
-  parameter Modelica.SIunits.Time Tu=127.469
-    "equivalent dead time of steam generation";
+  parameter Modelica.SIunits.Time Tu=127.469 "equivalent dead time of steam generation";
                                         //127.469
-  parameter Modelica.SIunits.Time Tg=204.966
-    "balancing time of steam generation";
-  parameter Modelica.SIunits.Time Ts=60.2459
-    "Integration time of steam storage";
+  parameter Modelica.SIunits.Time Tg=204.966 "balancing time of steam generation";
+  parameter Modelica.SIunits.Time Ts=60.2459 "Integration time of steam storage";
   ClaRa.Components.TurboMachines.Pumps.PumpVLE_L1_simple Pump_FW(eta_mech=0.8) annotation (Placement(transformation(extent={{-56,-128},{-76,-148}})));
   Modelica.Thermal.HeatTransfer.Sources.PrescribedHeatFlow prescribedHeatFlow
     annotation (Placement(transformation(extent={{-10,-10},{10,10}},
@@ -153,12 +148,10 @@ end Regression;
     initTypeShell=ClaRa.Basics.Choices.Init.steadyDensity,
     diameter_o=0.025,
     redeclare model HeatTransfer_Shell =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3
-        (                                                                                           alpha_nom=
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3 (             alpha_nom=
                                                                                                 {10000,10000}),
     redeclare model PressureLossShell =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3
-        (                                                                                                    Delta_p_nom={100,100,100}),
+        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3 (            Delta_p_nom={100,100,100}),
     Tau_cond=0.3,
     Tau_evap=0.03,
     width_hotwell=4,
@@ -189,14 +182,13 @@ end Regression;
     z_vent=4.5,
     z_condensate=4.5,
     redeclare model PressureLoss =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3
-        (                                                                                                    Delta_p_nom={1000,1000,1000}),
+        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3 (            Delta_p_nom={1000,1000,1000}),
     initType=ClaRa.Basics.Choices.Init.steadyDensity,
     m_flow_cond_nom=NOM.feedwatertank.m_flow_cond,
     p_nom=NOM.feedwatertank.p_FWT,
     h_nom=NOM.feedwatertank.h_cond_in,
-    m_flow_heat_nom=NOM.feedwatertank.m_flow_tap1 + NOM.feedwatertank.m_flow_tap2)
-    "INIT.feedwatertank.h_cond_out"                   annotation (Placement(transformation(extent={{-12,-138},{48,-118}})));
+    m_flow_heat_nom=NOM.feedwatertank.m_flow_tap1 + NOM.feedwatertank.m_flow_tap2) "INIT.feedwatertank.h_cond_out"
+                                                      annotation (Placement(transformation(extent={{-12,-138},{48,-118}})));
   ClaRa.Components.TurboMachines.Pumps.PumpVLE_L1_simple Pump_cond(eta_mech=1, showExpertSummary=true) annotation (Placement(transformation(extent={{212,-112},{192,-132}})));
   Modelica.Blocks.Sources.Constant const3(k=0.5/6)
     annotation (Placement(transformation(extent={{262,-162},{242,-142}})));
@@ -227,10 +219,8 @@ end Regression;
         rotation=0,
         origin={34,38})));
 
-  ClaRa.Components.VolumesValvesFittings.Valves.ValveVLE_L1 valve_IP(redeclare
-      model PressureLoss =
-        Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint
-        (                                                                                                    Delta_p_nom=NOM.valve_IP.Delta_p, m_flow_nom=NOM.valve_IP.m_flow))
+  ClaRa.Components.VolumesValvesFittings.Valves.ValveVLE_L1 valve_IP(redeclare model PressureLoss =
+        Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint (                            Delta_p_nom=NOM.valve_IP.Delta_p, m_flow_nom=NOM.valve_IP.m_flow))
     annotation (Placement(transformation(
         extent={{-10,6},{10,-6}},
         rotation=270,
@@ -267,10 +257,8 @@ end Regression;
         origin={162,22})));
 
   ClaRa.Components.TurboMachines.Pumps.PumpVLE_L1_simple Pump_preheater_LP1(eta_mech=1) annotation (Placement(transformation(extent={{102,-158},{82,-178}})));
-  ClaRa.Components.VolumesValvesFittings.Valves.ValveVLE_L1 valve_LP1(redeclare
-      model PressureLoss =
-        Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticNominalPoint
-        (                                                                                                    Delta_p_nom=NOM.valve_LP1.Delta_p_nom, m_flow_nom=NOM.valve_LP1.m_flow))
+  ClaRa.Components.VolumesValvesFittings.Valves.ValveVLE_L1 valve_LP1(redeclare model PressureLoss =
+        Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticNominalPoint (                         Delta_p_nom=NOM.valve_LP1.Delta_p_nom, m_flow_nom=NOM.valve_LP1.m_flow))
     annotation (Placement(transformation(
         extent={{-10,6},{10,-6}},
         rotation=270,
@@ -321,20 +309,16 @@ end Regression;
     Tau_evap=0.03,
     alpha_ph=50000,
     redeclare model HeatTransferTubes =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2
-        (                                                                                                    alpha_nom=3500),
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2 (                      alpha_nom=3500),
     initTypeShell=ClaRa.Basics.Choices.Init.steadyDensity,
     p_nom_tubes=NOM.preheater_HP.p_cond,
     p_start_tubes(displayUnit="bar") = INIT.preheater_HP.p_cond,
     redeclare model HeatTransfer_Shell =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3
-        (                                                                                                    alpha_nom={1650,10000}),
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3 (                      alpha_nom={1650,10000}),
     redeclare model PressureLossShell =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3
-        (                                                                                                    Delta_p_nom={1000,1000,1000}),
+        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3 (            Delta_p_nom={1000,1000,1000}),
     redeclare model PressureLossTubes =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L2
-        (                                                                                                    Delta_p_nom=10))
+        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L2 (             Delta_p_nom=10))
                     annotation (Placement(transformation(
         extent={{10,10},{-10,-10}},
         rotation=90,
@@ -343,8 +327,7 @@ end Regression;
     openingInputIsActive=false,
     showExpertSummary=true,
     redeclare model PressureLoss =
-        Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticNominalPoint
-        (
+        Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticNominalPoint (
         rho_in_nom=23,
         Delta_p_nom=NOM.valve1_HP.Delta_p_nom,
         m_flow_nom=NOM.valve1_HP.m_flow))
@@ -354,8 +337,7 @@ end Regression;
         origin={-88,-12})));
   ClaRa.Components.VolumesValvesFittings.Valves.ValveVLE_L1 valve2_HP(
     openingInputIsActive=true, redeclare model PressureLoss =
-        Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticNominalPoint
-        (
+        Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticNominalPoint (
         Delta_p_nom=NOM.valve2_HP.Delta_p,
         m_flow_nom=NOM.valve2_HP.m_flow,
         rho_in_nom=500))
@@ -388,21 +370,17 @@ end Regression;
     length=13,
     z_out_shell=0.1,
     redeclare model HeatTransferTubes =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2
-        (                                                                                                    PL_alpha=[0,0.55; 0.5,0.65; 0.7,0.72; 0.8,0.77; 1,1], alpha_nom=3000),
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2 (                      PL_alpha=[0,0.55; 0.5,0.65; 0.7,0.72; 0.8,0.77; 1,1], alpha_nom=3000),
     redeclare model PressureLossTubes =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L2
-        (                                                                                                    Delta_p_nom=1000),
+        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L2 (             Delta_p_nom=1000),
     T_w_start={300,320,340},
     initTypeWall=ClaRa.Basics.Choices.Init.steadyState,
     Tau_cond=0.3,
     Tau_evap=0.03,
     redeclare model HeatTransfer_Shell =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3
-        (                                                                                                    alpha_nom={1500,8000}),
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3 (                      alpha_nom={1500,8000}),
     redeclare model PressureLossShell =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3
-        (                                                                                                    Delta_p_nom={100,100,100}),
+        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3 (            Delta_p_nom={100,100,100}),
     p_nom_tubes=NOM.preheater_LP1.p_cond,
     p_start_tubes(displayUnit="bar") = INIT.preheater_LP1.p_cond,
     initTypeTubes=ClaRa.Basics.Choices.Init.noInit)
@@ -459,10 +437,8 @@ end Regression;
     efficiency_Turb_LP2=NOM.efficiency_Turb_LP2,
     m_flow_nom=NOM.m_flow_nom) annotation (Placement(transformation(extent={{-312,-236},{-292,-216}})));
   ClaRa.Components.VolumesValvesFittings.Valves.ValveVLE_L1 valve_LP2(
-                                          Tau=1e-3, redeclare model
-      PressureLoss =
-        Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint
-        (                                                                                                    m_flow_nom=NOM.valve_LP2.m_flow, Delta_p_nom=NOM.valve_LP2.Delta_p_nom))
+                                          Tau=1e-3, redeclare model PressureLoss =
+        Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint (                            m_flow_nom=NOM.valve_LP2.m_flow, Delta_p_nom=NOM.valve_LP2.Delta_p_nom))
     annotation (Placement(transformation(
         extent={{-10,-6},{10,6}},
         rotation=180,
@@ -559,8 +535,7 @@ end Regression;
     efficiency_Turb_IP=0.93,
     efficiency_Turb_LP1=0.94,
     efficiency_Turb_LP2=0.94) annotation (Placement(transformation(extent={{-306,-200},{-286,-180}})));
-  inner SimCenter simCenter(contributeToCycleSummary=true, redeclare
-      TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater                                                                fluid1)
+  inner SimCenter simCenter(contributeToCycleSummary=true, redeclare TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1)
                                                            annotation (Placement(transformation(extent={{-280,-220},{-240,-200}})));
   Regression regression(
     V_flow_FWP = Pump_FW.summary.outline.V_flow,

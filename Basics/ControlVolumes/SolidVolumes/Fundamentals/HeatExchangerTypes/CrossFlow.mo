@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes;
 model CrossFlow "Pure cross flow heatexchanger"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,14 +15,12 @@ model CrossFlow "Pure cross flow heatexchanger"
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
 
-extends
-    ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.GeneralHeatExchanger(
+extends ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.GeneralHeatExchanger(
     final a=0.433,
     final b=1.60,
     final c=0.267,
     final d=0.5);
-extends
-    ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Icons.HEX_CrossFlow_Icon;
+extends ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Icons.HEX_CrossFlow_Icon;
 
   annotation (Icon(graphics),
                           Documentation(info="<html>

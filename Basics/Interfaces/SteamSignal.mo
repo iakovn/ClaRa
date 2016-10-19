@@ -1,6 +1,5 @@
 within ClaRa.Basics.Interfaces;
-expandable connector SteamSignal
-  "Signal bus featuring pressure, specific enthalpy and mass flow rate"
+expandable connector SteamSignal "Signal bus featuring pressure, specific enthalpy and mass flow rate"
   extends Modelica.Icons.SignalBus;
 
    Real p_ "Pressure in p.u." annotation(HideResult=false);

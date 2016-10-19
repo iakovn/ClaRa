@@ -1,8 +1,7 @@
 within ClaRa.Visualisation;
-model StatePointGas_phTs
-  "Complete state definition for visualisation in ph, TS, hs-diagrams"
+model StatePointGas_phTs "Complete state definition for visualisation in ph, TS, hs-diagrams"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -18,13 +17,11 @@ model StatePointGas_phTs
 
   outer SimCenter simCenter;
 
-  parameter TILMedia.GasTypes.BaseGas medium = simCenter.flueGasModel
-    "Medium to be used"                                                                   annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
+  parameter TILMedia.GasTypes.BaseGas medium = simCenter.flueGasModel "Medium to be used" annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
 
   parameter Integer stateViewerIndex=0 "Index for StateViewer" annotation(Dialog(group="StateViewer Index"));
   ClaRa.Basics.Units.Pressure p "Pressure of state";
-  ClaRa.Basics.Units.EnthalpyMassSpecific h=state.h
-    "Specific enthalpy of state";
+  ClaRa.Basics.Units.EnthalpyMassSpecific h=state.h "Specific enthalpy of state";
   ClaRa.Basics.Units.EntropyMassSpecific s=state.s "Specific enthalpy of state";
   ClaRa.Basics.Units.Temperature T "Temperature of state";
   ClaRa.Basics.Units.VolumeMassSpecific v=1/state.d "Specific volume of state";

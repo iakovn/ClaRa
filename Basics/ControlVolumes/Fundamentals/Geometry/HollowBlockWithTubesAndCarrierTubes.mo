@@ -1,8 +1,7 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.Geometry;
-model HollowBlockWithTubesAndCarrierTubes
-  "Block shape || Shell with tubes || Carrier tubes"
+model HollowBlockWithTubesAndCarrierTubes "Block shape || Shell with tubes || Carrier tubes"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.1                        //
+  // Component of the ClaRa library, version: 1.1.2                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -49,12 +48,9 @@ model HollowBlockWithTubesAndCarrierTubes
   // A_heat[2]=Inner HT area
   // A_heat[3]= HT area of carrier tubes
 
-  parameter Units.Length height=1
-    "|Essential Geometry Definition|Height of the component; Fixed flow direction in case of vertical flow orientation";
-  parameter Units.Length width=1
-    "|Essential Geometry Definition|Width of the component";
-  parameter Units.Length length=1
-    "Length of the component; Fixed flow direction in case of horizontal flow orientation"
+  parameter Units.Length height=1 "|Essential Geometry Definition|Height of the component; Fixed flow direction in case of vertical flow orientation";
+  parameter Units.Length width=1 "|Essential Geometry Definition|Width of the component";
+  parameter Units.Length length=1 "Length of the component; Fixed flow direction in case of horizontal flow orientation"
                                                                                           annotation (Dialog(
       tab="General",
       group="Essential Geometry Definition",
@@ -62,43 +58,30 @@ model HollowBlockWithTubesAndCarrierTubes
       groupImage="modelica://ClaRa/figures/ParameterDialog/HollowBlockWithTubes_1.png",
       connectorSizing=false));
 
-  parameter ClaRa.Basics.Choices.GeometryOrientation flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.horizontal
-    "|Essential Geometry Definition|Orientation of shell side flow";
+  parameter ClaRa.Basics.Choices.GeometryOrientation flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.horizontal "|Essential Geometry Definition|Orientation of shell side flow";
 
-  final parameter Real interior=volume/(height*width*length)
-    "Void fraction in the shell";
+  final parameter Real interior=volume/(height*width*length) "Void fraction in the shell";
 
-  parameter Units.Length diameter_t=0.1
-    "|Interior Equipment|Outer diameter of internal tubes"                                     annotation (Dialog(
+  parameter Units.Length diameter_t=0.1 "|Interior Equipment|Outer diameter of internal tubes" annotation (Dialog(
       tab="General",
       group="Shell Definition",
       showStartAttribute=false,
       groupImage="modelica://ClaRa/figures/ParameterDialog/HollowBlockWithTubes_2.png",
       connectorSizing=false));
-  parameter Integer N_tubes=1
-    "|Interior Equipment|Number of internal tubes for one pass";
-  parameter Integer N_passes=1
-    "|Interior Equipment|Number of passes of the internal tubes";
-  parameter Boolean parallelTubes=false
-    "|Interior Equipment|True, if tubes are parallel to shell flow flowOrientation, else false";
+  parameter Integer N_tubes=1 "|Interior Equipment|Number of internal tubes for one pass";
+  parameter Integer N_passes=1 "|Interior Equipment|Number of passes of the internal tubes";
+  parameter Boolean parallelTubes=false "|Interior Equipment|True, if tubes are parallel to shell flow flowOrientation, else false";
   parameter Integer N_ct=16 "|Carrier tTubes| Number of carrier tubes";
   parameter Units.Length d_ct=0.04 "|Carrier Tubes| Diameter of carrier tubes";
-  parameter Units.Length Delta_z_par=2*diameter_t
-    "|Interior Equipment|Distance between tubes parallel to flow direction";
-  parameter Units.Length Delta_z_ort=2*diameter_t
-    "|Interior Equipment|Distance between tubes orthogonal to flow direction";
-  final parameter Real a=Delta_z_ort/diameter_t
-    "|Interior Equipment|Lateral alignment ratio";
-  final parameter Real b=Delta_z_par/diameter_t
-    "|Interior Equipment|Vertical alignment ratio";
-  final parameter Real psi=if b >= 1 then 1 - Modelica.Constants.pi/4/a else 1 - Modelica.Constants.pi/4/a/b
-    "Void ratio";
-  parameter Boolean staggeredAlignment=true
-    "|Interior Equipment|True, if the tubes are aligned staggeredly, false otherwise";
+  parameter Units.Length Delta_z_par=2*diameter_t "|Interior Equipment|Distance between tubes parallel to flow direction";
+  parameter Units.Length Delta_z_ort=2*diameter_t "|Interior Equipment|Distance between tubes orthogonal to flow direction";
+  final parameter Real a=Delta_z_ort/diameter_t "|Interior Equipment|Lateral alignment ratio";
+  final parameter Real b=Delta_z_par/diameter_t "|Interior Equipment|Vertical alignment ratio";
+  final parameter Real psi=if b >= 1 then 1 - Modelica.Constants.pi/4/a else 1 - Modelica.Constants.pi/4/a/b "Void ratio";
+  parameter Boolean staggeredAlignment=true "|Interior Equipment|True, if the tubes are aligned staggeredly, false otherwise";
   parameter Integer N_rows(
     min=N_passes,
-    max=N_tubes*N_passes) = integer(ceil(sqrt(N_tubes))*N_passes)
-    "|Interior Equipment|Number of pipe rows in flow direction (minimum = N_passes)"
+    max=N_tubes*N_passes) = integer(ceil(sqrt(N_tubes))*N_passes) "|Interior Equipment|Number of pipe rows in flow direction (minimum = N_passes)"
                                                                                           annotation (Dialog(group="Geometry"));
 equation
   assert(A_cross>0, "The cross section of the shell side must be > 0 but is "+String(A_cross, significantDigits=3) + " in instance" + getInstanceName() + ".");

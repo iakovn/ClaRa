@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.SolidVolumes;
 model NTU_L3 "Base heat exchanger wall model with liquid, vapour and 2ph zones"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -24,21 +24,20 @@ model NTU_L3 "Base heat exchanger wall model with liquid, vapour and 2ph zones"
 
 //_____________material definitions_________________________________________//
 
-  parameter TILMedia.VLEFluidTypes.BaseVLEFluid   medium_shell=simCenter.fluid1
-    "Medium of shell side"    annotation(Dialog(group="Fundamental Definitions"), choicesAllMatching);
-  parameter TILMedia.VLEFluidTypes.BaseVLEFluid   medium_tubes=simCenter.fluid1
-    "Medium of tubes side"    annotation(Dialog(group="Fundamental Definitions"), choicesAllMatching);
-  replaceable model Material = TILMedia.SolidTypes.TILMedia_Aluminum constrainedby
-    TILMedia.SolidTypes.BaseSolid "Material of the cylinder"   annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
+  parameter TILMedia.VLEFluidTypes.BaseVLEFluid   medium_shell=simCenter.fluid1 "Medium of shell side"
+                              annotation(Dialog(group="Fundamental Definitions"), choicesAllMatching);
+  parameter TILMedia.VLEFluidTypes.BaseVLEFluid   medium_tubes=simCenter.fluid1 "Medium of tubes side"
+                              annotation(Dialog(group="Fundamental Definitions"), choicesAllMatching);
+  replaceable model Material = TILMedia.SolidTypes.TILMedia_Aluminum constrainedby TILMedia.SolidTypes.BaseSolid "Material of the cylinder"
+                                                               annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
 
   replaceable model HeatExchangerType =
       ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.CounterFlow_L3
-    constrainedby
-    ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.GeneralHeatExchanger_L3
-    "Type of HeatExchanger" annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
+    constrainedby ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.GeneralHeatExchanger_L3 "Type of HeatExchanger"
+                            annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
 
-  inner parameter Boolean outerPhaseChange=true
-    "True, if phase change may occur at outer side" annotation(Dialog(group="Fundamental Definitions"), choicesAllMatching);
+  inner parameter Boolean outerPhaseChange=true "True, if phase change may occur at outer side"
+                                                    annotation(Dialog(group="Fundamental Definitions"), choicesAllMatching);
 
 //______________geometry definitions________________________________________//
   parameter Integer N_t=1 "Number of tubes in one pass" annotation(Dialog(group="Geometry"));
@@ -46,26 +45,19 @@ model NTU_L3 "Base heat exchanger wall model with liquid, vapour and 2ph zones"
   parameter SI.Length length "Tube length (for one pass)" annotation(Dialog(group="Geometry"));
   parameter SI.Length radius_i "Inner radius of tube" annotation(Dialog(group="Geometry"));
   parameter SI.Length radius_o "Outer radius of tube" annotation(Dialog(group="Geometry"));
-  parameter Real mass_struc = 0
-    "Mass of inner structure elements, additional to the tubes itself"                                               annotation(Dialog(group="Geometry"));
+  parameter Real mass_struc = 0 "Mass of inner structure elements, additional to the tubes itself"                   annotation(Dialog(group="Geometry"));
   discrete SI.Mass mass "Total mass of HEX";
   parameter Real CF_geo=1 "Correction coefficient due to fins etc." annotation(Dialog(group="Geometry"));
 
 //Area of Heat Transfer
-  final parameter SI.Area A_heat_m = (A_heat_o-A_heat_i)/log(A_heat_o/A_heat_i)
-    "Mean area of heat transfer (single tube)";
-  final parameter SI.Area A_heat_i= 2*Modelica.Constants.pi*radius_i*length*N_t*N_p
-    "Area of heat transfer at inner phase";
-  final parameter SI.Area A_heat_o= 2*Modelica.Constants.pi*radius_o*length*N_t*N_p
-    "Area of heat transfer at oter phase";
+  final parameter SI.Area A_heat_m = (A_heat_o-A_heat_i)/log(A_heat_o/A_heat_i) "Mean area of heat transfer (single tube)";
+  final parameter SI.Area A_heat_i= 2*Modelica.Constants.pi*radius_i*length*N_t*N_p "Area of heat transfer at inner phase";
+  final parameter SI.Area A_heat_o= 2*Modelica.Constants.pi*radius_o*length*N_t*N_p "Area of heat transfer at oter phase";
 
 //______________Initialisation______________________________________________//
-  parameter SI.Temperature T_w_i_start[3]= ones(3)*293.15
-    "|Initialisation||Initial temperature at inner phase";
-  parameter SI.Temperature T_w_o_start[3] = ones(3)*293.15
-    "|Initialisation||Initial temperature at outer phase";
-  parameter ClaRa.Basics.Choices.Init initChoice=ClaRa.Basics.Choices.Init.noInit
-    "|Initialisation||Init Option"                                                                                                  annotation(Dialog(group="Initialisation"));
+  parameter SI.Temperature T_w_i_start[3]= ones(3)*293.15 "|Initialisation||Initial temperature at inner phase";
+  parameter SI.Temperature T_w_o_start[3] = ones(3)*293.15 "|Initialisation||Initial temperature at outer phase";
+  parameter ClaRa.Basics.Choices.Init initChoice=ClaRa.Basics.Choices.Init.noInit "|Initialisation||Init Option"                    annotation(Dialog(group="Initialisation"));
 
 protected
   final parameter Boolean smallShellFlow_start[3] = {not outerPhaseChange,not outerPhaseChange,not outerPhaseChange};
@@ -74,13 +66,10 @@ protected
 public
   replaceable function HeatCapacityAveraging =
       ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.ArithmeticMean
-    constrainedby
-    ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.GeneralMean
-    "|Expert Settings||Method for Averaging of heat capacities" annotation(choicesAllMatching);
-  parameter Real gain_eff= 1
-    "|Expert Settings||Avoid effectiveness > 1, high gain_eff leads to stricter observation but may cause numeric errors";
-  parameter SI.Time Tau_stab=0.1
-    "|Expert Settings||Time constant for state stabilisation";
+    constrainedby ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.GeneralMean "|Expert Settings||Method for Averaging of heat capacities"
+                                                                annotation(choicesAllMatching);
+  parameter Real gain_eff= 1 "|Expert Settings||Avoid effectiveness > 1, high gain_eff leads to stricter observation but may cause numeric errors";
+  parameter SI.Time Tau_stab=0.1 "|Expert Settings||Time constant for state stabilisation";
 //______________Inputs_____________________________________________________//
 
 public
@@ -94,10 +83,10 @@ public
   input SI.MassFlowRate m_flow_i "Mass flow rate of inner side"      annotation (Dialog(group="Input"));
   input SI.MassFlowRate m_flow_o "Mass flow rate of outer side" annotation (Dialog(group="Input"));
 
-  input SI.CoefficientOfHeatTransfer alpha_i[3]
-    "Coefficient of heatTransfer for inner side for regions |1|2|3|" annotation (Dialog(group="Input"));
-  input SI.CoefficientOfHeatTransfer alpha_o[3]
-    "Coefficient of heatTransfer for outer side for regions |1|2|3|" annotation (Dialog(group="Input"));
+  input SI.CoefficientOfHeatTransfer alpha_i[3] "Coefficient of heatTransfer for inner side for regions |1|2|3|"
+                                                                     annotation (Dialog(group="Input"));
+  input SI.CoefficientOfHeatTransfer alpha_o[3] "Coefficient of heatTransfer for outer side for regions |1|2|3|"
+                                                                     annotation (Dialog(group="Input"));
 
   inner input SI.AreaFraction yps_1ph "Area fraction of zone A"
                                                                annotation (Dialog(group="Input"));
@@ -105,8 +94,7 @@ public
                                                                annotation (Dialog(group="Input"));
 
 //______________Summaries and Visualisation________________________________//
-  parameter Boolean showExpertSummary = false
-    "|Summaries and Visualisation||True,if expert summaries shall be shown";
+  parameter Boolean showExpertSummary = false "|Summaries and Visualisation||True,if expert summaries shall be shown";
 //______________Variables__________________________________________________//
 //
   Real kA[3](unit="W/K") "The product U*S for regions |1|2|3|";
@@ -137,14 +125,10 @@ model Summary
   parameter Boolean showExpertSummary;
   input SI.HeatFlowRate Q_flow[3] "Heat flow rate of zones |1|2|3|";
   input SI.HeatFlowRate Q_flow_tot "Total heat flow rate";
-  input Real C_flow_low[3] if  showExpertSummary
-      "Lower heat capacity flow in zones |1|2|3|";
-  input Real C_flow_high[3] if  showExpertSummary
-      "Higher heat capacity flow in zones |1|2|3|";
-  input Real C_flow_i[3] if  showExpertSummary
-      "Inner side heat capacity flow in zones |1|2|3|";
-  input Real C_flow_o[3] if  showExpertSummary
-      "Outer side heat capacity flow in zones |1|2|3|";
+  input Real C_flow_low[3] if  showExpertSummary "Lower heat capacity flow in zones |1|2|3|";
+  input Real C_flow_high[3] if  showExpertSummary "Higher heat capacity flow in zones |1|2|3|";
+  input Real C_flow_i[3] if  showExpertSummary "Inner side heat capacity flow in zones |1|2|3|";
+  input Real C_flow_o[3] if  showExpertSummary "Outer side heat capacity flow in zones |1|2|3|";
 
   input SI.Temperature T_i[6] "Temperatures (i/o) of outer flow zones |1|2|3|";
   input SI.Temperature T_o[6] "Temperatures (i/o) of outer flow zones |1|2|3|";
@@ -154,8 +138,7 @@ model Summary
 
   input Real yps[3] "Area fractions";
   input Real effectiveness[3];
-  input Real cp_error_[3] if showExpertSummary
-      "Check: Deviation from constant cp in zones |1|2|3|";
+  input Real cp_error_[3] if showExpertSummary "Check: Deviation from constant cp in zones |1|2|3|";
   input Real kA[3](unit="W/K") "The product U*A for regions |1|2|3|";
   input SI.HeatCapacityMassSpecific cp_o[3] "Heat capacity";
   input SI.HeatCapacityMassSpecific cp_i[3] "Heat capacity";
@@ -166,10 +149,8 @@ model ECom
   extends ClaRa.Basics.Icons.RecordIcon;
   input Real z_i[6] "Zone positions at the inner side of the heat exchanger";
   input Real z_o[6] "Zone positions at the outer side of the heat exchanger";
-  input SI.EnthalpyMassSpecific h_i[6]
-      "Specific enthalpies (i/o) of inner flow zones |1|2|3|";
-  input SI.EnthalpyMassSpecific h_o[6]
-      "Specific enthalpies (i/o) of outer flow zones |1|2|3|";
+  input SI.EnthalpyMassSpecific h_i[6] "Specific enthalpies (i/o) of inner flow zones |1|2|3|";
+  input SI.EnthalpyMassSpecific h_o[6] "Specific enthalpies (i/o) of outer flow zones |1|2|3|";
 end ECom;
 public
 inner TILMedia.VLEFluid_ph O1_in(

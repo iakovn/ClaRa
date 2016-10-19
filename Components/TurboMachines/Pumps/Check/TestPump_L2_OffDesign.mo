@@ -1,6 +1,5 @@
 within ClaRa.Components.TurboMachines.Pumps.Check;
-model TestPump_L2_OffDesign
-  "Running the  L2 pump in off design, including reverse flow and zero mass flow through valve"
+model TestPump_L2_OffDesign "Running the  L2 pump in off design, including reverse flow and zero mass flow through valve"
 //___________________________________________________________________________//
 // Component of the ClaRa library, version: 1.0.0                        //
 //                                                                           //
@@ -46,8 +45,7 @@ model TestPump_L2_OffDesign
 
   end Regression;
 
-  inner ClaRa.SimCenter simCenter(redeclare
-      TILMedia.VLEFluidTypes.TILMedia_SplineWater                                       fluid1, showExpertSummary=true)
+  inner ClaRa.SimCenter simCenter(redeclare TILMedia.VLEFluidTypes.TILMedia_SplineWater fluid1, showExpertSummary=true)
                                                                                           annotation (Placement(transformation(extent={{-160,-160},{-120,-140}})));
   Modelica.Blocks.Sources.TimeTable
                                ramp1(
@@ -103,8 +101,7 @@ model TestPump_L2_OffDesign
     checkValve=false,
     openingInputIsActive=true,
     redeclare model PressureLoss =
-        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticNominalPoint
-        (                                                                                                    Delta_p_nom=1000, Delta_p_eps=1000),
+        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticNominalPoint (                   Delta_p_nom=1000, Delta_p_eps=1000),
     useStabilisedMassFlow=true)
                                annotation (Placement(transformation(extent={{0,-126},{20,-114}})));
   Modelica.Blocks.Sources.Ramp ramp(

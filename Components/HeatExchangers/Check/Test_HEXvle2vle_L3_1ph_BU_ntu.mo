@@ -61,16 +61,16 @@ model Test_HEXvle2vle_L3_1ph_BU_ntu
     openingInputIsActive=false,
     checkValve=true,
     redeclare model PressureLoss =
-        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint
-        (m_flow_nom=if ((15) > 0) then (15) else 10, Delta_p_nom=if ((1000) <>
+        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint (
+         m_flow_nom=if ((15) > 0) then (15) else 10, Delta_p_nom=if ((1000) <>
             0) then (1000) else 1000))
     annotation (Placement(transformation(extent={{-40,-88},{-60,-76}})));
   VolumesValvesFittings.Valves.ValveVLE_L1                      valve_tubes1(
     openingInputIsActive=false,
     checkValve=true,
     redeclare model PressureLoss =
-        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint
-        (m_flow_nom=if ((333) > 0) then (333) else 10, Delta_p_nom=if ((1000)
+        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint (
+         m_flow_nom=if ((333) > 0) then (333) else 10, Delta_p_nom=if ((1000)
              <> 0) then (1000) else 1000))
     annotation (Placement(transformation(extent={{10,-6},{-10,6}},
         rotation=180,
@@ -91,8 +91,7 @@ model Test_HEXvle2vle_L3_1ph_BU_ntu
     startTime=10000,
     height=-200e3)
     annotation (Placement(transformation(extent={{140,-72},{120,-52}})));
-  inner SimCenter simCenter(useHomotopy=true, redeclare
-      TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater                                                   fluid1) annotation (Placement(transformation(extent={{40,40},{60,60}})));
+  inner SimCenter simCenter(useHomotopy=true, redeclare TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1) annotation (Placement(transformation(extent={{40,40},{60,60}})));
   Visualisation.Hexdisplay_3 hexdisplay_3_1(
     T_o={hEXvle2vle_L3_1ph_BU_ntu.shell.summary.inlet.T,hEXvle2vle_L3_1ph_BU_ntu.shell.summary.outlet.T,hEXvle2vle_L3_1ph_BU_ntu.shell.summary.outlet.T,hEXvle2vle_L3_1ph_BU_ntu.shell.summary.outlet.T,hEXvle2vle_L3_1ph_BU_ntu.shell.summary.outlet.T,hEXvle2vle_L3_1ph_BU_ntu.shell.summary.outlet.T},
     T_i={hEXvle2vle_L3_1ph_BU_ntu.tubes.summary.inlet.T,hEXvle2vle_L3_1ph_BU_ntu.tubes.summary.outlet.T,hEXvle2vle_L3_1ph_BU_ntu.tubes.summary.outlet.T,hEXvle2vle_L3_1ph_BU_ntu.tubes.summary.outlet.T,hEXvle2vle_L3_1ph_BU_ntu.tubes.summary.outlet.T,hEXvle2vle_L3_1ph_BU_ntu.tubes.summary.outlet.T},

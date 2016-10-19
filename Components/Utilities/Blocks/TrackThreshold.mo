@@ -1,8 +1,7 @@
 within ClaRa.Components.Utilities.Blocks;
-model TrackThreshold
-  "A state based threshold observation with one possible switch"
+model TrackThreshold "A state based threshold observation with one possible switch"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                            //
+// Component of the ClaRa library, version: 1.1.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -17,8 +16,7 @@ model TrackThreshold
 //___________________________________________________________________________//
   //extends Modelica.Blocks.Interfaces.partialBooleanBlockIcon;
   parameter Real threshold= 1 "Threshold to be observed";
-  parameter Boolean switchWhenGreater=true
-    "True if output switschen when u>thershold";
+  parameter Boolean switchWhenGreater=true "True if output switschen when u>thershold";
   parameter Boolean y_start= false "Initial output value";
 
   Boolean hasSwitched(start=false);

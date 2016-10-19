@@ -1,8 +1,7 @@
 within ClaRa.Components.MechanicalSeparation;
-model FeedWaterTank_L2
-  "Feedwater tank : mixed volume approach | level-dependent phase separation"
+model FeedWaterTank_L2 "Feedwater tank : mixed volume approach | level-dependent phase separation"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -21,13 +20,11 @@ extends ClaRa.Components.MechanicalSeparation.FeedWaterTank_base;
   extends ClaRa.Basics.Icons.ComplexityLevel(complexity="L2");
   replaceable model PressureLoss =
       ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.NoFriction_L2
-    constrainedby
-    ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.ShellType_L2
-    "Pressure loss model" annotation(Dialog(group="Fundamental Definitions"), choicesAllMatching);
-  parameter Modelica.SIunits.SpecificEnthalpy h_start=xi_start*(TILMedia.VLEFluidFunctions.dewSpecificEnthalpy_pxi(medium, p_start) - TILMedia.VLEFluidFunctions.bubbleSpecificEnthalpy_pxi(medium, p_start)) + TILMedia.VLEFluidFunctions.bubbleSpecificEnthalpy_pxi(medium, p_start)
-    "Start value of sytsem specific enthalpy"                                                 annotation (Dialog(tab="Initialisation"));
-  parameter Modelica.Blocks.Types.Smoothness smoothness=Modelica.Blocks.Types.Smoothness.LinearSegments
-    "|Phase Separation|Numerical Robustness|Smoothness of table interpolation for calculation of filling level";
+    constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.ShellType_L2 "Pressure loss model"
+                          annotation(Dialog(group="Fundamental Definitions"), choicesAllMatching);
+  parameter Modelica.SIunits.SpecificEnthalpy h_start=xi_start*(TILMedia.VLEFluidFunctions.dewSpecificEnthalpy_pxi(medium, p_start) - TILMedia.VLEFluidFunctions.bubbleSpecificEnthalpy_pxi(medium, p_start)) + TILMedia.VLEFluidFunctions.bubbleSpecificEnthalpy_pxi(medium, p_start) "Start value of sytsem specific enthalpy"
+                                                                                              annotation (Dialog(tab="Initialisation"));
+  parameter Modelica.Blocks.Types.Smoothness smoothness=Modelica.Blocks.Types.Smoothness.LinearSegments "|Phase Separation|Numerical Robustness|Smoothness of table interpolation for calculation of filling level";
 
   parameter Modelica.SIunits.Length z_in=1 "Height of inlet ports" annotation(Dialog(group="Geometry"));
   parameter Modelica.SIunits.Length z_out=1 "Height of outlet ports"  annotation(Dialog(group="Geometry"));
@@ -150,8 +147,8 @@ public
         length=length),
     final heatSurfaceAlloc=1,
     redeclare model PhaseBorder =
-        ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.IdeallySeparated
-        (level_rel_start=
+        ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.IdeallySeparated (
+         level_rel_start=
                  level_rel_start,
                           smoothness=smoothness))
     annotation (Placement(transformation(extent={{0,-30},{-20,-10}})));

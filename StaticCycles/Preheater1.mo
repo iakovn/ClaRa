@@ -1,8 +1,7 @@
 within ClaRa.StaticCycles;
-model Preheater1
-  "Preheater || bubble state at shell outlet || par.: shell pressure, shell m_flow || cond: blue | blue || tap: red | green"
+model Preheater1 "Preheater || bubble state at shell outlet || par.: shell pressure, shell m_flow || cond: blue | blue || tap: red | green"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                            //
+// Component of the ClaRa library, version: 1.1.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -20,25 +19,18 @@ model Preheater1
   // Blue output:  Value of p is unknown and provided BY neighbor component, values of m_flow and h are known in component and provided FOR neighbor component.
   // Green output: Values of p, m_flow and h are known in component an provided FOR neighbor component.
   outer ClaRa.SimCenter simCenter;
-  parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium = simCenter.fluid1
-    "Medium in the component"                                                                       annotation(choices(choice=simCenter.fluid1
-        "First fluid defined in global simCenter",
-                       choice=simCenter.fluid2
-        "Second fluid defined in global simCenter",
-                       choice=simCenter.fluid3
-        "Third fluid defined in global simCenter"),       Dialog(group="Fundamental Definitions"));
-  parameter ClaRa.Basics.Units.Pressure p_tap
-    "|Fundamental Definitions|Pressure of heating steam";
-  parameter ClaRa.Basics.Units.MassFlowRate m_flow_tap(fixed=if setMassFlow then true else false)
-    "|Fundamental Definitions|Mass flow rate of heating steam";
-  final parameter Boolean setMassFlow= true
-    "|Fundamental Definitions|Choice of tapping mass flow declaration type";
+  parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium = simCenter.fluid1 "Medium in the component" annotation(choices(choice=simCenter.fluid1 "First fluid defined in global simCenter",
+                       choice=simCenter.fluid2 "Second fluid defined in global simCenter",
+                       choice=simCenter.fluid3 "Third fluid defined in global simCenter"),
+                                                          Dialog(group="Fundamental Definitions"));
+  parameter ClaRa.Basics.Units.Pressure p_tap "|Fundamental Definitions|Pressure of heating steam";
+  parameter ClaRa.Basics.Units.MassFlowRate m_flow_tap(fixed=if setMassFlow then true else false) "|Fundamental Definitions|Mass flow rate of heating steam";
+  final parameter Boolean setMassFlow= true "|Fundamental Definitions|Choice of tapping mass flow declaration type";
   final parameter ClaRa.Basics.Units.Pressure p_cond(fixed=false);
   //final parameter ClaRa.Basics.Units.MassFlowRate m_flow_tap=(h_cond_out - h_cond_in)
   //    *m_flow_cond/(h_tap_in - h_tap_out) "Mass flow of the heating steam";
                     //
-  final parameter ClaRa.Basics.Units.MassFlowRate m_flow_cond(fixed=false)
-    "Mass flow of the condensate";
+  final parameter ClaRa.Basics.Units.MassFlowRate m_flow_cond(fixed=false) "Mass flow of the condensate";
   final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_tap_in(fixed=false);
   final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_cond_in(fixed=false);
   final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_tap_out=

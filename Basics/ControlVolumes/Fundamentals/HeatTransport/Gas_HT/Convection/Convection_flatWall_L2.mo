@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Convection;
 model Convection_flatWall_L2 "All Geo || L2 || Convection Flat Wall"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.1                        //
+  // Component of the ClaRa library, version: 1.1.2                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,8 +15,7 @@ model Convection_flatWall_L2 "All Geo || L2 || Convection Flat Wall"
   // XRG Simulation GmbH (Hamburg, Germany).                                   //
   //___________________________________________________________________________//
 
-  extends
-    ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Convection.HeatTransfer_L2;
+  extends ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Convection.HeatTransfer_L2;
   outer ClaRa.Basics.Records.IComGas_L2 iCom;
 
   //Equations according to VDI-Waermeatlas
@@ -24,15 +23,13 @@ model Convection_flatWall_L2 "All Geo || L2 || Convection Flat Wall"
       choice=1 "Lateral surface",
       choice=2 "Inner heat transfer surface",
       choice=3 "Selection to be extended"));
-  parameter String temperatureDifference="Logarithmic mean"
-    "Temperature Difference"                                                         annotation (Dialog(group="Heat Transfer"), choices(
+  parameter String temperatureDifference="Logarithmic mean" "Temperature Difference" annotation (Dialog(group="Heat Transfer"), choices(
       choice="Arithmetic mean",
       choice="Logarithmic mean",
       choice="Inlet",
       choice="Outlet"));
 
-  parameter Real CF_fouling=0.8
-    "Scaling factor accounting for the fouling of the wall";
+  parameter Real CF_fouling=0.8 "Scaling factor accounting for the fouling of the wall";
   ClaRa.Basics.Units.CoefficientOfHeatTransfer alpha;
   ClaRa.Basics.Units.Velocity w "Flue gas velocity";
   ClaRa.Basics.Units.Length length_char "Characteristic length";
@@ -42,20 +39,16 @@ model Convection_flatWall_L2 "All Geo || L2 || Convection Flat Wall"
   Real Nu_l0 "Nusselt number";
   Real Re "Reynolds number";
 
-  Units.Temperature Delta_T_wi
-    "Temperature difference between wall and fluid inlet temperature";
-  Units.Temperature Delta_T_wo
-    "Temperature difference between wall and fluid outlet temperature";
+  Units.Temperature Delta_T_wi "Temperature difference between wall and fluid inlet temperature";
+  Units.Temperature Delta_T_wo "Temperature difference between wall and fluid outlet temperature";
   Units.Temperature Delta_T_mean "Mean temperature";
   Units.Temperature Delta_T_U "Upper temperature difference";
   Units.Temperature Delta_T_L "Lower temperature difference";
 
 protected
-  ClaRa.Basics.Units.Temperature T_prop_am
-    "Arithmetic mean for calculation of substance properties";
+  ClaRa.Basics.Units.Temperature T_prop_am "Arithmetic mean for calculation of substance properties";
   outer ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlockWithTubes geo;
-  ClaRa.Basics.Units.MassFraction xi_mean[iCom.mediumModel.nc - 1]
-    "Mean medium composition";
+  ClaRa.Basics.Units.MassFraction xi_mean[iCom.mediumModel.nc - 1] "Mean medium composition";
 
   TILMedia.Gas_pT properties(
     p=(iCom.p_in + iCom.p_out)/2,

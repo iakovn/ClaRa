@@ -1,8 +1,7 @@
 within ClaRa.Components.Furnace.FlameRoom;
-model FlameRoomWithTubeBundle_L2_Static
-  "Model for a combustion chamber section with inner tube bundle heating surfaces"
+model FlameRoomWithTubeBundle_L2_Static "Model for a combustion chamber section with inner tube bundle heating surfaces"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -16,20 +15,17 @@ model FlameRoomWithTubeBundle_L2_Static
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
 
-extends ClaRa.Components.Furnace.BaseClasses.CombustionChamberBase(redeclare
-      replaceable model Geometry =
+extends ClaRa.Components.Furnace.BaseClasses.CombustionChamberBase(redeclare replaceable model Geometry =
         ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlockWithTubesAndCarrierTubes,
         geo(flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical));
 
-extends
-    ClaRa.Components.Furnace.BaseClasses.CombustionChamberBase_additional_HPs(    redeclare
-      replaceable model HeatTransfer_CarrierTubes =
+extends ClaRa.Components.Furnace.BaseClasses.CombustionChamberBase_additional_HPs(redeclare replaceable model HeatTransfer_CarrierTubes =
         ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Convection.Convection_finnedTubes_L2);
 extends ClaRa.Basics.Icons.FlameRoomTubeBundle;
 
 //## P A R A M E T E R S #######################################################################################
-inner parameter Boolean useHomotopy=simCenter.useHomotopy
-    "True, if homotopy method is used during initialisation"  annotation(Dialog(tab="Initialisation"));
+inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation"
+                                                              annotation(Dialog(tab="Initialisation"));
 inner TILMedia.Gas_ph        flueGasOutlet(p(start = p_start_flueGas_out)=outlet.flueGas.p,xi=xi_flueGas_del,
       gasType=flueGas, h=h_flueGas_out_del)
       annotation (Placement(transformation(extent={{-130,74},{-110,94}})));

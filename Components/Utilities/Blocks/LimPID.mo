@@ -1,21 +1,17 @@
 within ClaRa.Components.Utilities.Blocks;
-block LimPID
-  "P, PI, PD, and PID controller with limited output, anti-windup compensation and delayed, smooth activation"
+block LimPID "P, PI, PD, and PID controller with limited output, anti-windup compensation and delayed, smooth activation"
   import Modelica.Blocks.Types.InitPID;
   import Modelica.Blocks.Types.SimpleController;
 
-  output Real controlError = u_s - u_m
-    "Control error (set point - measurement)";
+  output Real controlError = u_s - u_m "Control error (set point - measurement)";
 
 //---------------------------------------
 //General Design of the Controller ------
   parameter Modelica.Blocks.Types.SimpleController controllerType=
          Modelica.Blocks.Types.SimpleController.PID "Type of controller" annotation(Dialog(group="General Design of Controller"));
-  parameter Real sign= 1
-    "set to 1 if a positive control error leads to a positive control output, else -1"
+  parameter Real sign= 1 "set to 1 if a positive control error leads to a positive control output, else -1"
                                                                                        annotation(Dialog(group="General Design of Controller"));
-  parameter Boolean perUnitConversion= true
-    "True, if input and output values should be normalised with respect to reference values"
+  parameter Boolean perUnitConversion= true "True, if input and output values should be normalised with respect to reference values"
                                                                                             annotation(Dialog(group="Normalisation of I/O Signals"));
   parameter Real u_ref = 1 "Reference value for controlled variable"
                                                                     annotation(Dialog(enable=perUnitConversion, group="Normalisation of I/O Signals"));
@@ -28,32 +24,26 @@ block LimPID
 //Time Resononse of the Controller -------
   parameter Real k = 1 "Gain of Proportional block"
                                                    annotation(Dialog(group="Time Response of the Controller"));
-  parameter Modelica.SIunits.Time Tau_i(min=Modelica.Constants.small)=0.5
-    "1/Ti is gain of integrator block"
+  parameter Modelica.SIunits.Time Tau_i(min=Modelica.Constants.small)=0.5 "1/Ti is gain of integrator block"
                                       annotation(Dialog(enable=controllerType==Modelica.Blocks.Types.SimpleController.PI or
                                 controllerType==Modelica.Blocks.Types.SimpleController.PID,group="Time Response of the Controller"));
  parameter Modelica.SIunits.Time Tau_d(min=0)=0.1 "Gain of derivative block"
                               annotation(Dialog(enable=controllerType==Modelica.Blocks.Types.SimpleController.PD or
                                 controllerType==Modelica.Blocks.Types.SimpleController.PID,group="Time Response of the Controller"));
 
-  parameter Modelica.SIunits.Time Ni(min=100*Modelica.Constants.eps) = 0.9
-    "1/Ni is gain of anti-windup compensation"
+  parameter Modelica.SIunits.Time Ni(min=100*Modelica.Constants.eps) = 0.9 "1/Ni is gain of anti-windup compensation"
                                               annotation (Dialog(enable=controllerType==Modelica.Blocks.Types.SimpleController.PI or controllerType==Modelica.Blocks.Types.SimpleController.PID, group="Anti-Windup Compensation"));
-  parameter Real Nd = 1
-    "The smaller Nd, the more ideal the derivative block, setting Nd=0 introduces ideal derivative"
+  parameter Real Nd = 1 "The smaller Nd, the more ideal the derivative block, setting Nd=0 introduces ideal derivative"
        annotation(Dialog(enable=controllerType==Modelica.Blocks.Types.SimpleController.PD or
                                 controllerType==Modelica.Blocks.Types.SimpleController.PID,group="Derivative Filtering"));
 
 //------------------- Controller activation --------------------
 
-parameter Boolean use_activateInput = false
-    "Provide Boolean input to switch controller on/off."
+parameter Boolean use_activateInput = false "Provide Boolean input to switch controller on/off."
                                                     annotation(Dialog(tab="Controller activation"));
-parameter ClaRa.Basics.Units.Time t_activation=0.0
-    "Time when controller is switched on. For use_activateInput==true the controller is switched on if (time>t_activation AND activateController=true)."
+parameter ClaRa.Basics.Units.Time t_activation=0.0 "Time when controller is switched on. For use_activateInput==true the controller is switched on if (time>t_activation AND activateController=true)."
     annotation (Dialog(tab="Controller activation"));
-parameter ClaRa.Basics.Units.Time Tau_lag_I=0.0
-    "Time lag for activation of integral part AFTER controller is being switched on "
+parameter ClaRa.Basics.Units.Time Tau_lag_I=0.0 "Time lag for activation of integral part AFTER controller is being switched on "
     annotation (Dialog(tab="Controller activation"));
 
 parameter Real y_inactive = 1 "Controller output if controller is not active" annotation(Dialog(tab="Controller activation"));
@@ -61,30 +51,25 @@ parameter Real y_inactive = 1 "Controller output if controller is not active" an
 //Signal Smoothening---------------------------
 
 public
-  parameter Real Tau_in(min=0)=0
-    "Time constant for input smoothening, Tau_in=0 refers to signal no smoothening"
+  parameter Real Tau_in(min=0)=0 "Time constant for input smoothening, Tau_in=0 refers to signal no smoothening"
       annotation(Dialog(tab="I/O Filters"));
-  parameter Real Tau_out(min=0)=0
-    "time constant for output smoothening, Tau_out=0 refers to signal no smoothening"
+  parameter Real Tau_out(min=0)=0 "time constant for output smoothening, Tau_out=0 refers to signal no smoothening"
            annotation(Dialog(tab="I/O Filters"));
 
 //Initialisation--------------------------
 public
-  parameter InitPID initType=Modelica.Blocks.Types.InitPID.DoNotUse_InitialIntegratorState
-    "Type of initialization"         annotation (
+  parameter InitPID initType=Modelica.Blocks.Types.InitPID.DoNotUse_InitialIntegratorState "Type of initialization"
+                                     annotation (
       Dialog(tab="Initialization"));
-  parameter Boolean limitsAtInit = true
-    "= false, if limits are ignored during initializiation"
+  parameter Boolean limitsAtInit = true "= false, if limits are ignored during initializiation"
     annotation(Dialog(tab="Initialization",
                        enable=controllerType==SimpleController.PI or
                               controllerType==SimpleController.PID));
 
-  parameter Real xi_start=0
-    "Initial or guess value value for integrator output (= integrator state)"
+  parameter Real xi_start=0 "Initial or guess value value for integrator output (= integrator state)"
     annotation (Dialog(enable= initType == Modelica.Blocks.Types.InitPID.InitialState or initType == Modelica.Blocks.Types.InitPID.NoInit,  tab="Initialization"));
 
-  parameter Real xd_start=0
-    "Initial or guess value for state of derivative block"
+  parameter Real xd_start=0 "Initial or guess value for state of derivative block"
     annotation (Dialog(tab="Initialization",
                          enable=((controllerType==Modelica.Blocks.Types.SimpleController.PD or
                                 controllerType==Modelica.Blocks.Types.SimpleController.PID) and initType == Modelica.Blocks.Types.InitPID.InitialState or initType == Modelica.Blocks.Types.InitPID.NoInit)));
@@ -93,8 +78,7 @@ public
           "Initialization"));
 
 //Expert Settings---------------------------------------------------------------
-  parameter Real Tau_add(min=0)=0
-    "Set to >0 for additional state after add block in controller, if DAE-index reduction fails."
+  parameter Real Tau_add(min=0)=0 "Set to >0 for additional state after add block in controller, if DAE-index reduction fails."
     annotation(Dialog(tab="Expert Settings", group="DAE Index Reduction"));
 
 protected
@@ -111,8 +95,7 @@ public
   Modelica.Blocks.Interfaces.RealInput u_s "Connector of setpoint input signal"
     annotation (Placement(transformation(extent={{-240.5,-20},{-200.5,20}},
           rotation=0), iconTransformation(extent={{-140,-20},{-100,20}})));
-  Modelica.Blocks.Interfaces.RealInput u_m
-    "Connector of measurement input signal"
+  Modelica.Blocks.Interfaces.RealInput u_m "Connector of measurement input signal"
     annotation (Placement(transformation(
         origin={0,-216},
         extent={{20,-20},{-20,20}},
@@ -121,8 +104,8 @@ public
         rotation=270,
         origin={1,-120})));
 
-    Modelica.Blocks.Interfaces.BooleanInput activateInput if use_activateInput
-    "true, if controller is on" annotation (Placement(transformation(extent={{-239.5,140},{-199.5,180}}),
+    Modelica.Blocks.Interfaces.BooleanInput activateInput if use_activateInput "true, if controller is on"
+                                annotation (Placement(transformation(extent={{-239.5,140},{-199.5,180}}),
                                   iconTransformation(extent={{-140,-100},{-100,-60}})));
 
   Modelica.Blocks.Interfaces.RealOutput y "Connector of actuator output signal"
@@ -179,8 +162,8 @@ public
   Modelica.Blocks.Math.Feedback feedback
     annotation (Placement(transformation(extent={{-190.5,-10},{-170.5,10}},
                                                                       rotation=0)));
-  Modelica.Blocks.Math.Gain fromPU(k=if perUnitConversion then y_ref else 1)
-    "convert output values to \"Real\""    annotation (Placement(transformation(
+  Modelica.Blocks.Math.Gain fromPU(k=if perUnitConversion then y_ref else 1) "convert output values to \"Real\""
+                                           annotation (Placement(transformation(
           extent={{-10,-10},{10,10}},
                                    rotation=0,
         origin={210,0})));

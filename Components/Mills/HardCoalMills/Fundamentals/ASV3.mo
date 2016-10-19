@@ -1,7 +1,6 @@
 within ClaRa.Components.Mills.HardCoalMills.Fundamentals;
 record ASV3 "Loesche LM 19D: Mill 3 of Asnaes Power Station (DK)"
-  extends
-    ClaRa.Components.Mills.HardCoalMills.Fundamentals.RollerBowlMillDefinition(
+  extends ClaRa.Components.Mills.HardCoalMills.Fundamentals.RollerBowlMillDefinition(
                                    K_1=0.0353,
                                    K_2=0.0151,
                                    K_3=0.0442,

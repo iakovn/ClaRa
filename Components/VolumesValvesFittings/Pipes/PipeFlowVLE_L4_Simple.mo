@@ -1,8 +1,7 @@
 within ClaRa.Components.VolumesValvesFittings.Pipes;
-model PipeFlowVLE_L4_Simple
-  "A 1D tube-shaped control volume considering one-phase and two-phase heat transfer in a straight pipe with static momentum balance and simple energy balance."
+model PipeFlowVLE_L4_Simple "A 1D tube-shaped control volume considering one-phase and two-phase heat transfer in a straight pipe with static momentum balance and simple energy balance."
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -58,14 +57,12 @@ model PipeFlowVLE_L4_Simple
     parameter Integer N_cv(min=3)=3 "|Discretisation|Number of finite volumes";
 public
   parameter Basics.Units.Length
-                            Delta_x[N_cv]=ClaRa.Basics.Functions.GenerateGrid({0}, length*N_passes, N_cv)
-    "|Discretisation|Discretisation scheme";
+                            Delta_x[N_cv]=ClaRa.Basics.Functions.GenerateGrid({0}, length*N_passes, N_cv) "|Discretisation|Discretisation scheme";
 
 //________Summary_________________
-  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary
-    "True if component shall contribute to automatic efficiency calculation"                annotation(Dialog(tab="Summary and Visualisation"));
-  parameter Boolean heatFlowIsLoss = true
-    "True if negative heat flow is a loss (not a process product)"                                       annotation(Dialog(tab="Summary and Visualisation"));
+  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary "True if component shall contribute to automatic efficiency calculation"
+                                                                                            annotation(Dialog(tab="Summary and Visualisation"));
+  parameter Boolean heatFlowIsLoss = true "True if negative heat flow is a loss (not a process product)" annotation(Dialog(tab="Summary and Visualisation"));
 
 protected
   Basics.Interfaces.EyeIn eye_int

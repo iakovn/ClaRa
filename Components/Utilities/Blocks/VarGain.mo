@@ -1,8 +1,7 @@
 within ClaRa.Components.Utilities.Blocks;
-block VarGain
-  "Output the product of a variable gain value with the input signal"
+block VarGain "Output the product of a variable gain value with the input signal"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                            //
+// Component of the ClaRa library, version: 1.1.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,8 +14,7 @@ block VarGain
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
-  input Real k(start=1, unit="1")
-    "Variable gain value multiplied with input signal"                               annotation(Dialog);
+  input Real k(start=1, unit="1") "Variable gain value multiplied with input signal" annotation(Dialog);
 public
   Modelica.Blocks.Interfaces.RealInput u "Input signal connector"
     annotation (Placement(transformation(extent={{-140,-20},{-100,20}},

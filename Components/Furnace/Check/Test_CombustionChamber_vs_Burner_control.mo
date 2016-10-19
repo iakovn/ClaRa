@@ -1,7 +1,7 @@
 within ClaRa.Components.Furnace.Check;
 model Test_CombustionChamber_vs_Burner_control
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -82,11 +82,11 @@ model Test_CombustionChamber_vs_Burner_control
   ClaRa.Components.Furnace.Burner.Burner_L2_Static
                                             burner(
     redeclare model Burning_time =
-        ClaRa.Components.Furnace.GeneralTransportPhenomena.BurningTime.ConstantBurningTime
-        (Tau_burn_const =      2),
+        ClaRa.Components.Furnace.GeneralTransportPhenomena.BurningTime.ConstantBurningTime (
+         Tau_burn_const =      2),
     redeclare model ParticleMigration =
-        ClaRa.Components.Furnace.GeneralTransportPhenomena.ParticleMigration.FixedMigrationSpeed_simple
-        (w_fixed=1),
+        ClaRa.Components.Furnace.GeneralTransportPhenomena.ParticleMigration.FixedMigrationSpeed_simple (
+         w_fixed=1),
     redeclare model HeatTransfer_Wall =
         ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Radiation.Radiation_gas2Wall_L2,
     redeclare model HeatTransfer_Top =

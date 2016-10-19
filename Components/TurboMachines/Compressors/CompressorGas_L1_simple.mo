@@ -1,7 +1,7 @@
 within ClaRa.Components.TurboMachines.Compressors;
 model CompressorGas_L1_simple "Simple compressor or fan for gas"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -18,8 +18,8 @@ model CompressorGas_L1_simple "Simple compressor or fan for gas"
   outer ClaRa.SimCenter simCenter;
 //parameter Boolean allow_reverseFlow = true annotation(Evaluate=true, Dialog(tab="Advanced"));
 extends ClaRa.Basics.Icons.Compressor;
-parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary
-    "True if component shall contribute to automatic efficiency calculation"                annotation(Dialog(tab="Summary and Visualisation"));
+parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary "True if component shall contribute to automatic efficiency calculation"
+                                                                                            annotation(Dialog(tab="Summary and Visualisation"));
   ClaRa.Basics.Interfaces.Connected2SimCenter connected2SimCenter(
     powerIn=0,
     powerOut=-P_hyd,
@@ -44,12 +44,10 @@ parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary
 
 final parameter Boolean allow_reverseFlow = false;
   ClaRa.Basics.Interfaces.GasPortIn inlet(Medium=medium, m_flow(min=if
-          allow_reverseFlow then -Modelica.Constants.inf else 1e-5))
-    "inlet flow"
+          allow_reverseFlow then -Modelica.Constants.inf else 1e-5)) "inlet flow"
     annotation (Placement(transformation(extent={{-110,-10},{-90,10}})));
   ClaRa.Basics.Interfaces.GasPortOut outlet(Medium=medium, m_flow(max=if
-          allow_reverseFlow then Modelica.Constants.inf else -1e-5))
-    "outlet flow"
+          allow_reverseFlow then Modelica.Constants.inf else -1e-5)) "outlet flow"
     annotation (Placement(transformation(extent={{90,-10},{110,10}})));
 
 inner parameter TILMedia.GasTypes.BaseGas    medium = simCenter.flueGasModel;
@@ -83,8 +81,7 @@ parameter Real eta = 0.85 "isentropic efficiency";
 
 //__________________________/ Inputs \_____________________________
 
-  parameter
-    ClaRa.Components.TurboMachines.Compressors.Fundamentals.PresetVariableType
+  parameter ClaRa.Components.TurboMachines.Compressors.Fundamentals.PresetVariableType
     presetVariableType="V_flow" "Specifies which variable is preset"
     annotation (Dialog(group="General Settings"));
 
@@ -92,34 +89,29 @@ parameter Boolean use_P_shaftInput=false "= true, if P_shaft defined by input"
     annotation(Dialog(enable=(presetVariableType=="P_shaft"), group="Mechanical shaft power"));
 
   parameter Basics.Units.Power
-                        P_shaft_fixed = 5e3
-    "Fixed value for mechanical shaft power"
+                        P_shaft_fixed = 5e3 "Fixed value for mechanical shaft power"
     annotation(Dialog(enable=(not use_P_shaftInput and presetVariableType=="P_shaft"),group="Mechanical shaft power"));
 
-   parameter Boolean use_Delta_p_input=false
-    "= true, if Delta_p defined by input"
+   parameter Boolean use_Delta_p_input=false "= true, if Delta_p defined by input"
     annotation(Dialog(enable=(presetVariableType=="dp"), group="Pressure Increase"));
   parameter Basics.Units.Pressure
-                           Delta_p_fixed = 0.1e5
-    "Fixed value for pressure increase"
+                           Delta_p_fixed = 0.1e5 "Fixed value for pressure increase"
     annotation(Dialog(enable=(not use_Delta_p_input and presetVariableType=="dp"),group="Pressure Increase"));
 
   parameter Boolean m_flowInput=false "= true, if m_flow defined by input"
     annotation(Dialog(enable=(presetVariableType=="m_flow"), group="Mass Flow Rate"));
   parameter Basics.Units.MassFlowRate
-                               m_flow_fixed=0.5
-    "Fixed value for gas mass flow rate"
+                               m_flow_fixed=0.5 "Fixed value for gas mass flow rate"
     annotation(Dialog(enable=(not m_flowInput and presetVariableType=="m_flow"),group="Mass Flow Rate"));
 
   parameter Boolean V_flowInput=false "= true, if V_flow defined by input"
     annotation(Dialog(enable=(presetVariableType=="V_flow"), group="Volume Flow Rate"));
   parameter Basics.Units.VolumeFlowRate
-                                 V_flow_fixed=0.5e-3
-    "Fixed value for gas volume flow rate"
+                                 V_flow_fixed=0.5e-3 "Fixed value for gas volume flow rate"
     annotation(Dialog(enable=(not V_flowInput and presetVariableType=="V_flow"),group="Volume Flow Rate"));
 
-parameter ClaRa.Basics.Units.Time Tau_aux=0.1
-    "Time constant of auxilliary kappa states"  annotation(Dialog(tab = "Advanced"));
+parameter ClaRa.Basics.Units.Time Tau_aux=0.1 "Time constant of auxilliary kappa states"
+                                                annotation(Dialog(tab = "Advanced"));
 
  parameter Real kappa_initial = 1.3 "Initial value for kappas" annotation(Dialog(tab = "Advanced"));
 
@@ -142,16 +134,14 @@ parameter ClaRa.Basics.Units.Time Tau_aux=0.1
                 iconTransformation(extent={{-10,-10},{10,10}},
         rotation=270,
         origin={30,110})));
-  Modelica.Blocks.Interfaces.RealInput V_flow_in if V_flowInput
-    "Prescribed volume flow rate"
+  Modelica.Blocks.Interfaces.RealInput V_flow_in if V_flowInput "Prescribed volume flow rate"
     annotation (Placement(transformation(extent={{-10,-10},{10,10}},   rotation=270,
         origin={-32,110}),
                iconTransformation(extent={{-10,-10},{10,10}},
         rotation=270,
         origin={-30,110})));
   Modelica.Blocks.Interfaces.RealInput m_flow_in if
-                                                  m_flowInput
-    "Prescribed mass flow rate"
+                                                  m_flowInput "Prescribed mass flow rate"
     annotation (Placement(transformation(extent={{-10,-10},{10,10}},
           rotation=270,
         origin={-80,110}),

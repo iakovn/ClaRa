@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.Geometry;
 model HollowBlock "Block shape || No interior"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.1                        //
+  // Component of the ClaRa library, version: 1.1.2                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -28,14 +28,10 @@ model HollowBlock "Block shape || No interior"
 
   import SI = ClaRa.Basics.Units;
 
-  parameter Units.Length height=1
-    "|Essential Geometry Definition|Height of the component; Fixed flow direction in case of vertical flow orientation";
-  parameter Units.Length width=1
-    "|Essential Geometry Definition|Width of the component";
-  parameter Units.Length length=1
-    "|Essential Geometry Definition|Length of the component; Fixed flow direction in case of horizontal flow orientation";
-  parameter ClaRa.Basics.Choices.GeometryOrientation flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical
-    "|Essential Geometry Definition|Flow orientation of the component";
+  parameter Units.Length height=1 "|Essential Geometry Definition|Height of the component; Fixed flow direction in case of vertical flow orientation";
+  parameter Units.Length width=1 "|Essential Geometry Definition|Width of the component";
+  parameter Units.Length length=1 "|Essential Geometry Definition|Length of the component; Fixed flow direction in case of horizontal flow orientation";
+  parameter ClaRa.Basics.Choices.GeometryOrientation flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical "|Essential Geometry Definition|Flow orientation of the component";
 
 equation
    for i in 1:N_inlet loop

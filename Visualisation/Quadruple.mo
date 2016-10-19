@@ -1,7 +1,7 @@
 within ClaRa.Visualisation;
 model Quadruple " Cross-shaped dynamic display of m_flow, p, T, h and m_flow"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -18,8 +18,7 @@ model Quadruple " Cross-shaped dynamic display of m_flow, p, T, h and m_flow"
 //  parameter String unit="°C" "Variable unit";
   parameter Integer identifier= 0 "Identifier of the quadruple";
   DecimalSpaces decimalSpaces "Accuracy to be displayed" annotation(Dialog);
-  parameter Boolean largeFonts= simCenter.largeFonts
-    "True if visualisers shall be displayed as large as posible";
+  parameter Boolean largeFonts= simCenter.largeFonts "True if visualisers shall be displayed as large as posible";
   Real p=eye.p "Pressure of state";
   Real h=eye.h "Specific enthalpy of state";
   Real s=eye.s "Specific enthalpy of state";

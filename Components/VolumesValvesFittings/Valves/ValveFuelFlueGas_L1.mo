@@ -1,8 +1,7 @@
 within ClaRa.Components.VolumesValvesFittings.Valves;
-model ValveFuelFlueGas_L1
-  "Valve for mixed fuel and flue gas flow with replaceable flow models"
+model ValveFuelFlueGas_L1 "Valve for mixed fuel and flue gas flow with replaceable flow models"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -36,8 +35,8 @@ model ValveFuelFlueGas_L1
       annotation (Dialog);
     input ClaRa.Basics.Units.Temperature T "Temperature" annotation (Dialog);
     input ClaRa.Basics.Units.Pressure p "Pressure" annotation (Dialog);
-    input ClaRa.Basics.Units.HeatCapacityMassSpecific cp
-      "Specific heat capacity" annotation (Dialog);
+    input ClaRa.Basics.Units.HeatCapacityMassSpecific cp "Specific heat capacity"
+                               annotation (Dialog);
   end Coal;
 
   model Inlet
@@ -57,26 +56,22 @@ model ValveFuelFlueGas_L1
     Outlet outlet;
   end Summary;
 
-  parameter TILMedia.GasTypes.BaseGas medium = simCenter.flueGasModel
-    "Flue gas model used in component"
+  parameter TILMedia.GasTypes.BaseGas medium = simCenter.flueGasModel "Flue gas model used in component"
     annotation (choicesAllMatching, Dialog(group="Fundamental Definitions"));
-  parameter ClaRa.Basics.Media.Fuel.PartialFuel fuelType=simCenter.fuelModel1
-    "Coal elemental composition used for combustion" annotation (choices(choice=
+  parameter ClaRa.Basics.Media.Fuel.PartialFuel fuelType=simCenter.fuelModel1 "Coal elemental composition used for combustion"
+                                                     annotation (choices(choice=
          simCenter.coalModel "Coal model 1 as defined in simCenter"),
       Dialog(group="Fundamental  Definitions"));
 
   replaceable model PressureLoss =
       ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticKV
-    constrainedby
-    ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.GenericPressureLoss
-    "Pressure loss model at the tubes side" annotation (Dialog(group=
+    constrainedby ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.GenericPressureLoss "Pressure loss model at the tubes side"
+                                            annotation (Dialog(group=
           "Fundamental Definitions"), choicesAllMatching);
-  inner parameter Boolean useHomotopy=simCenter.useHomotopy
-    "True, if homotopy method is used during initialisation"
+  inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation"
     annotation (Dialog(group="Fundamental Definitions"));
 
-  parameter Boolean openingInputIsActive=false
-    "True, if  a variable opening is used"
+  parameter Boolean openingInputIsActive=false "True, if  a variable opening is used"
     annotation (Dialog(group="Control Signals"));
   parameter Real opening_const_=1 "A constant opening: =1: open, =0: closed"
     annotation (Dialog(group="Control Signals", enable=not openingInputIsActive));
@@ -84,12 +79,9 @@ model ValveFuelFlueGas_L1
   inner parameter Boolean checkValve=false "True, if valve is check valve"
     annotation (Evaluate=true, Dialog(group="Fundamental Definitions"));
 
-  parameter Boolean showExpertSummary=simCenter.showExpertSummary
-    "|Summary and Visualisation||True, if expert summary should be applied";
-  parameter Boolean showData=true
-    "|Summary and Visualisation||True, if a data port containing p,T,h,s,m_flow shall be shown, else false";
-  parameter Boolean useStabilisedMassFlow=false
-    "|Expert Settings|Numerical Robustness|";
+  parameter Boolean showExpertSummary=simCenter.showExpertSummary "|Summary and Visualisation||True, if expert summary should be applied";
+  parameter Boolean showData=true "|Summary and Visualisation||True, if a data port containing p,T,h,s,m_flow shall be shown, else false";
+  parameter Boolean useStabilisedMassFlow=false "|Expert Settings|Numerical Robustness|";
   parameter SI.Time Tau= 0.1 "Time Constant of Stabilisation" annotation(Dialog(tab="Expert Settings", group = "Numerical Robustness", enable=useStabilisedMassFlow));
   parameter Real opening_leak_ = 0 "Leakage valve opening in p.u." annotation(Dialog(tab="Expert Settings", group = "Numerical Robustness"));
 
@@ -101,8 +93,8 @@ model ValveFuelFlueGas_L1
   Modelica.Blocks.Interfaces.RealInput opening_in(
     min=0,
     max=1,
-    value=opening_) if (openingInputIsActive)
-    "=1: completely open, =0: completely closed" annotation (Placement(
+    value=opening_) if (openingInputIsActive) "=1: completely open, =0: completely closed"
+                                                 annotation (Placement(
         transformation(
         origin={0,90},
         extent={{-20,-20},{20,20}},
@@ -111,11 +103,9 @@ model ValveFuelFlueGas_L1
         rotation=270,
         origin={0,90})));
 
-  ClaRa.Basics.Interfaces.FuelFlueGas_inlet inlet(flueGas(Medium=medium), final fuelType=fuelType)
-    "Inlet port"                                                                                                annotation (Placement(transformation(extent={{-110,-10},{-90,10}})));
+  ClaRa.Basics.Interfaces.FuelFlueGas_inlet inlet(flueGas(Medium=medium), final fuelType=fuelType) "Inlet port" annotation (Placement(transformation(extent={{-110,-10},{-90,10}})));
 
-  ClaRa.Basics.Interfaces.FuelFlueGas_outlet outlet(flueGas(Medium=medium), final fuelType=fuelType)
-    "Outlet port"                                                                                                  annotation (Placement(transformation(extent={{90,-10},{110,10}})));
+  ClaRa.Basics.Interfaces.FuelFlueGas_outlet outlet(flueGas(Medium=medium), final fuelType=fuelType) "Outlet port" annotation (Placement(transformation(extent={{90,-10},{110,10}})));
 
 protected
   TILMedia.Gas_pT gasOut(gasType=medium,

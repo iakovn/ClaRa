@@ -1,8 +1,7 @@
 within ClaRa.Components.HeatExchangers;
-model IdealShell_L2
-  "A desuperheater having an ideal cooling | block-shaped geometry"
+model IdealShell_L2 "A desuperheater having an ideal cooling | block-shaped geometry"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.1                        //
+  // Component of the ClaRa library, version: 1.1.2                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -16,10 +15,8 @@ model IdealShell_L2
   // XRG Simulation GmbH (Hamburg, Germany).                                   //
   //___________________________________________________________________________//
 
-  extends ClaRa.Basics.ControlVolumes.FluidVolumes.VolumeVLE_2(redeclare model
-      Geometry =
-        ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlockWithTubes
-        (
+  extends ClaRa.Basics.ControlVolumes.FluidVolumes.VolumeVLE_2(redeclare model Geometry =
+        ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlockWithTubes (
         height=height,
         width=width,
         length=length,
@@ -47,33 +44,27 @@ model IdealShell_L2
     annotation (Dialog(tab="Geometry"));
   parameter Modelica.SIunits.Length length=1 "Length of the component"
     annotation (Dialog(tab="Geometry"));
-  parameter Modelica.SIunits.Length diameter_t=0.1
-    "Outer diameter of internal tubes"
+  parameter Modelica.SIunits.Length diameter_t=0.1 "Outer diameter of internal tubes"
     annotation (Dialog(tab="Geometry"));
   parameter Integer N_tubes=1 "Number of internal tubes"
     annotation (Dialog(tab="Geometry"));
   parameter Integer N_passes=1 "Number of passes of the internal tubes"
     annotation (Dialog(tab="Geometry"));
-  parameter ClaRa.Basics.Choices.GeometryOrientation flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.horizontal
-    "Flow orientation at shell side"
+  parameter ClaRa.Basics.Choices.GeometryOrientation flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.horizontal "Flow orientation at shell side"
                                    annotation (Dialog(tab="Geometry"));
-  parameter Boolean parallelTubes=false
-    "True, if tubes are parallel to flow orientation, else false"
+  parameter Boolean parallelTubes=false "True, if tubes are parallel to flow orientation, else false"
     annotation (Dialog(tab="Geometry"));
 
   parameter Modelica.SIunits.Length z_in=height/2 "Inlet position from bottom"
     annotation (Dialog(tab="Geometry", enable=orientation == ClaRa.Basics.Choices.GeometryOrientation.vertical));
-  parameter Modelica.SIunits.Length z_out=height/2
-    "Outlet position from bottom"
+  parameter Modelica.SIunits.Length z_out=height/2 "Outlet position from bottom"
     annotation (Dialog(tab="Geometry", enable=orientation == ClaRa.Basics.Choices.GeometryOrientation.vertical));
 
-  parameter Boolean showData=true
-    "True, if a data port containing p,T,h,s,m_flow shall be shown, else false"
+  parameter Boolean showData=true "True, if a data port containing p,T,h,s,m_flow shall be shown, else false"
     annotation (Dialog(tab="Summary and Visualisation"));
-  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary
-    "True if component shall contribute to automatic efficiency calculation"                  annotation(Dialog(tab="Summary and Visualisation"));
-  parameter Boolean heatFlowIsLoss = true
-    "True if heat flow is a loss (not a process product)"                                       annotation(Dialog(tab="Summary and Visualisation"));
+  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary "True if component shall contribute to automatic efficiency calculation"
+                                                                                              annotation(Dialog(tab="Summary and Visualisation"));
+  parameter Boolean heatFlowIsLoss = true "True if heat flow is a loss (not a process product)" annotation(Dialog(tab="Summary and Visualisation"));
 protected
   ClaRa.Basics.Interfaces.EyeIn eye_int
     annotation (Placement(transformation(extent={{45,-81},{47,-79}})));

@@ -1,6 +1,5 @@
 within ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals;
-model IdealSymetric_TWV
-  "| No Pressure Dependency | Opening Characteristics | Symetrical |"
+model IdealSymetric_TWV "| No Pressure Dependency | Opening Characteristics | Symetrical |"
   extends ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.Basic_TWV;
   extends ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.TWV_L2;
 

@@ -4,19 +4,14 @@ model SteamSeparatorVLE_L1
   extends ClaRa.Basics.Icons.ComplexityLevel(complexity="L1");
   import SZT = ClaRa.Basics.Functions.SmoothZeroTransition;
 
-  parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium=simCenter.fluid1
-    "Medium in the component"
+  parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium=simCenter.fluid1 "Medium in the component"
     annotation (Dialog(group="Fundamental Definitions"), choicesAllMatching);
 
-  parameter Real eta_vap(min=0.5, max=0.999) = 0.96
-    "Efficiency of separating liquid from vapour (at steam outlet)"                                                  annotation (Dialog(group="Fundamental Definitions"));
-  parameter Real eta_liq(min=0.5, max=0.999) = 0.98
-    "Efficiency of separating vapour from liquid (at liquid outlet)"                                                  annotation (Dialog(group="Fundamental Definitions"));
+  parameter Real eta_vap(min=0.5, max=0.999) = 0.96 "Efficiency of separating liquid from vapour (at steam outlet)"  annotation (Dialog(group="Fundamental Definitions"));
+  parameter Real eta_liq(min=0.5, max=0.999) = 0.98 "Efficiency of separating vapour from liquid (at liquid outlet)"  annotation (Dialog(group="Fundamental Definitions"));
 
-  parameter Boolean showExpertSummary=simCenter.showExpertSummary
-    "True, if expert summary should be applied"                                                               annotation(Dialog(group="Summary and Visualisation"));
-  parameter Boolean showData=true
-    "True, if a data port containing p,T,h,s,m_flow shall be shown, else false"
+  parameter Boolean showExpertSummary=simCenter.showExpertSummary "True, if expert summary should be applied" annotation(Dialog(group="Summary and Visualisation"));
+  parameter Boolean showData=true "True, if a data port containing p,T,h,s,m_flow shall be shown, else false"
                                                                                               annotation(Dialog(group="Summary and Visualisation"));
   constant Real eps=1e-3;
  model Summary

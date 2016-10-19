@@ -1,7 +1,7 @@
 within ClaRa.Visualisation;
 model Hexdisplay_3 "Area-temperature diagram for HEX with three zones"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,15 +15,15 @@ model Hexdisplay_3 "Area-temperature diagram for HEX with three zones"
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
 
-  input ClaRa.Basics.Units.Temperature T_o[6]=zeros(6)
-    "Hot side temperatures (if showInterface=false)"                                            annotation(Dialog(group="Input", enable=not showInterface));
-  input ClaRa.Basics.Units.Temperature T_i[6]=zeros(6)
-    "Hot side temperatures (if showInterface=false)"                                            annotation(Dialog(group="Input", enable=not showInterface));
+  input ClaRa.Basics.Units.Temperature T_o[6]=zeros(6) "Hot side temperatures (if showInterface=false)"
+                                                                                                annotation(Dialog(group="Input", enable=not showInterface));
+  input ClaRa.Basics.Units.Temperature T_i[6]=zeros(6) "Hot side temperatures (if showInterface=false)"
+                                                                                                annotation(Dialog(group="Input", enable=not showInterface));
   input Real z_o[6] "Position of zone limits at outer side" annotation(Dialog(group="Input", enable=not showInterface));
   input Real z_i[6] "Position of zone limits at inner side" annotation(Dialog(group="Input", enable=not showInterface));
   parameter Real y_min=0 "Choose or guess the minimal value of the y-axis" annotation(Dialog(group="Layout"));
-  parameter Real y_max(min=y_min+Modelica.Constants.eps)=1
-    "Choose or guess the maximal value of the y-axis" annotation(Dialog(group="Layout"));
+  parameter Real y_max(min=y_min+Modelica.Constants.eps)=1 "Choose or guess the maximal value of the y-axis"
+                                                      annotation(Dialog(group="Layout"));
   parameter String Unit="[-]" "Unit for plot variable" annotation(Dialog(group="Layout"));
   parameter Boolean outerPhaseChange= true "True if phase change at outer side";
 public

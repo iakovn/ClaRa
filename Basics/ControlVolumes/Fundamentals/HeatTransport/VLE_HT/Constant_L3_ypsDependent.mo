@@ -1,8 +1,7 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT;
-model Constant_L3_ypsDependent
-  "All geo || L3 || Constant HT || depending on volume fraction"
+model Constant_L3_ypsDependent "All geo || L3 || Constant HT || depending on volume fraction"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.1                        //
+  // Component of the ClaRa library, version: 1.1.2                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -16,8 +15,7 @@ model Constant_L3_ypsDependent
   // XRG Simulation GmbH (Hamburg, Germany).                                   //
   //___________________________________________________________________________//
 
-  extends
-    ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.HeatTransfer_L3;
+  extends ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.HeatTransfer_L3;
 
   //   extends
   //     ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.HeatTransferVLE_L2;
@@ -25,8 +23,7 @@ model Constant_L3_ypsDependent
   extends ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.TubeType_L3;
   extends ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.ShellType_L3;
   outer ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry geo;
-  parameter Modelica.SIunits.CoefficientOfHeatTransfer alpha_nom[iCom.N_cv]=ones(iCom.N_cv)*10
-    "Constant heat transfer coefficient || [1]:= liq | [2]:= vap "                                                                                            annotation (Dialog(group="Heat Transfer"));
+  parameter Modelica.SIunits.CoefficientOfHeatTransfer alpha_nom[iCom.N_cv]=ones(iCom.N_cv)*10 "Constant heat transfer coefficient || [1]:= liq | [2]:= vap " annotation (Dialog(group="Heat Transfer"));
   parameter Integer heatSurfaceAlloc=2 "To be considered heat transfer area" annotation (dialog(enable=false, tab="Expert Setting"), choices(
       choice=1 "Lateral surface",
       choice=2 "Inner heat transfer surface",

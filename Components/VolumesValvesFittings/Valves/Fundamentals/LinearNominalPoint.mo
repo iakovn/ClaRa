@@ -1,15 +1,12 @@
 within ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals;
 model LinearNominalPoint "Linear|Nominal operation point | subcritical flow"
 //   "A linear pressure loss using a constant pressure loss coefficient"
-  extends
-    ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.GenericPressureLoss;
+  extends ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.GenericPressureLoss;
   import SI = ClaRa.Basics.Units;
   import SM = ClaRa.Basics.Functions.Stepsmoother;
-  parameter SI.PressureDifference Delta_p_nom = 1e5
-    "|Valve Characteristics|Nominal pressure difference for Kv definition";
+  parameter SI.PressureDifference Delta_p_nom = 1e5 "|Valve Characteristics|Nominal pressure difference for Kv definition";
 
-  parameter SI.MassFlowRate m_flow_nom= 1
-    "|Valve Characteristics|Nominal mass flow rate";
+  parameter SI.MassFlowRate m_flow_nom= 1 "|Valve Characteristics|Nominal mass flow rate";
  // parameter SI.PressureDifference Delta_p_check=0;
 
  // parameter SI.PressureDifference Delta_p_hyst=0;

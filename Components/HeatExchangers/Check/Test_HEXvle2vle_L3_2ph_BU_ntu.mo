@@ -30,8 +30,7 @@ end Regression;
     redeclare model WallMaterial =
         TILMedia.SolidTypes.TILMedia_Aluminum,
     redeclare model PressureLossTubes =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.VLE_PL.PressureLossCoeffcient_L2
-        (                                                                                                    Delta_p_smooth=100, zeta_TOT=5),
+        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.VLE_PL.PressureLossCoeffcient_L2 (             Delta_p_smooth=100, zeta_TOT=5),
     redeclare model PressureLossShell =
         ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3,
     gain_eff=1,
@@ -50,8 +49,7 @@ end Regression;
     level_rel_start=0.2,
     initTypeShell=ClaRa.Basics.Choices.Init.steadyDensity,
     redeclare model HeatTransfer_Shell =
-        Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.Constant_L3_ypsDependent
-        (                                                                                                    alpha_nom={1000,5000}),
+        Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.Constant_L3_ypsDependent (                   alpha_nom={1000,5000}),
     z_in_tubes=hex.height/2,
     z_out_tubes=hex.height/2,
     z_out_shell=0.05,
@@ -61,8 +59,7 @@ end Regression;
     redeclare function HeatCapacityAveraging =
         Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.ArithmeticMean,
     redeclare model HeatTransferTubes =
-        Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.NusseltPipe1ph_L2
-        (                                                                                                    CF_alpha_tubes=0.5),
+        Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.NusseltPipe1ph_L2 (                          CF_alpha_tubes=0.5),
     smoothness=Modelica.Blocks.Types.Smoothness.LinearSegments,
     levelOutput=true)
                    annotation (Placement(transformation(extent={{16,-68},{36,-48}})));
@@ -235,7 +232,7 @@ equation
           preserveAspectRatio=false,
         initialScale=0.1),            graphics={  Text(
           extent={{-100,116},{136,70}},
-          lineColor={0,128,0},
+          lineColor={115,150,0},
           horizontalAlignment=TextAlignment.Left,
           fontSize=11,
           textString="______________________________________________________________________________________________
@@ -245,7 +242,7 @@ prove steady-state initialisation capabilities. Check controlled behaviour.
 ______________________________________________________________________________________________"),
                        Text(
           extent={{-100,120},{58,102}},
-          lineColor={0,128,0},
+          lineColor={115,150,0},
           fontSize=31,
           textString="TESTED -- 2016-03-02 //TH"),
         Rectangle(

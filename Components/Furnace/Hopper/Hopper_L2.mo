@@ -1,7 +1,7 @@
 within ClaRa.Components.Furnace.Hopper;
 model Hopper_L2 "Model for a hopper section of a combustion chamber"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -21,22 +21,18 @@ model Hopper_L2 "Model for a hopper section of a combustion chamber"
 extends ClaRa.Components.Furnace.BaseClasses.HopperBase(geo(
         flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical));
 
-inner parameter Boolean useHomotopy=simCenter.useHomotopy
-    "True, if homotopy method is used during initialisation"  annotation(Dialog(tab="Initialisation"));
+inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation"
+                                                              annotation(Dialog(tab="Initialisation"));
 
   Real sum_xi "Sum of inlet components";
   Real drhodt "Density derivative";
 
-  ClaRa.Basics.Units.MassFraction xi_flueGas_in_del[flueGas.nc - 1]
-    "Flue gas mixture composition";
+  ClaRa.Basics.Units.MassFraction xi_flueGas_in_del[flueGas.nc - 1] "Flue gas mixture composition";
 
-  ClaRa.Basics.Units.MassFlowRate m_flow_in_del
-    "Pseudo state for inlet mass flow";
-  ClaRa.Basics.Units.MassFlowRate m_flow_out_del
-    "Pseudo state for outlet mass flow";
+  ClaRa.Basics.Units.MassFlowRate m_flow_in_del "Pseudo state for inlet mass flow";
+  ClaRa.Basics.Units.MassFlowRate m_flow_out_del "Pseudo state for outlet mass flow";
   ClaRa.Basics.Units.Temperature T_bulk_del "Pseudo state for bulk temperature";
-  ClaRa.Basics.Units.DensityMassSpecific rho_bulk_del
-    "Pseudo state for bulk density";
+  ClaRa.Basics.Units.DensityMassSpecific rho_bulk_del "Pseudo state for bulk density";
 
   model Outline
   //  parameter Boolean showExpertSummary annotation(Dialog(hide));
@@ -54,8 +50,7 @@ inner parameter Boolean useHomotopy=simCenter.useHomotopy
     input ClaRa.Basics.Units.Temperature
                                      T_out "Outlet temperature";
     input ClaRa.Basics.Units.EnthalpyMassSpecific
-                                              h_out
-      "Flue gas enthalpy at outlet";
+                                              h_out "Flue gas enthalpy at outlet";
   end Outline;
 
   model Fuel
@@ -64,8 +59,8 @@ inner parameter Boolean useHomotopy=simCenter.useHomotopy
       annotation (Dialog);
     input ClaRa.Basics.Units.Temperature T "Temperature" annotation (Dialog);
     input ClaRa.Basics.Units.Pressure p "Pressure" annotation (Dialog);
-    input ClaRa.Basics.Units.HeatCapacityMassSpecific cp
-      "Specific heat capacity" annotation (Dialog);
+    input ClaRa.Basics.Units.HeatCapacityMassSpecific cp "Specific heat capacity"
+                               annotation (Dialog);
   end Fuel;
 
   model Slag

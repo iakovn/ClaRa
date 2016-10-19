@@ -1,7 +1,7 @@
 within ClaRa.Components.TurboMachines.Pumps;
 partial model Pump_Base "Base class for pumps"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                            //
+// Component of the ClaRa library, version: 1.1.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -18,17 +18,15 @@ partial model Pump_Base "Base class for pumps"
   extends ClaRa.Basics.Icons.Pump;
   //extends Modelica.Icons.UnderConstruction;
 
-  parameter TILMedia.VLEFluidTypes.BaseVLEFluid   medium=simCenter.fluid1
-    "Medium in the component"            annotation(choicesAllMatching=true, Dialog(group="Fundamental Definitions"));
-  parameter Boolean showExpertSummary = simCenter.showExpertSummary
-    "True, if expert summary should be applied"                                                     annotation(Dialog(tab="Summary and Visualisation"));
-  parameter Boolean showData=true
-    "True, if a data port containing p,T,h,s,m_flow shall be shown, else false"
-                                                                                                        annotation(Dialog(tab="Summary and Visualisation"));
-  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary
-    "True if component shall contribute to automatic efficiency calculation"                annotation(Dialog(tab="Summary and Visualisation"));
-  SI.Pressure Delta_p
-    "Pressure difference between pressure side and suction side";
+  parameter TILMedia.VLEFluidTypes.BaseVLEFluid   medium=simCenter.fluid1 "Medium in the component"
+                                         annotation(choicesAllMatching=true, Dialog(group="Fundamental Definitions"));
+  parameter Boolean showExpertSummary = simCenter.showExpertSummary "True, if expert summary should be applied"
+                                                                                            annotation(Dialog(tab="Summary and Visualisation"));
+  parameter Boolean showData=true "True, if a data port containing p,T,h,s,m_flow shall be shown, else false"
+                                                                                            annotation(Dialog(tab="Summary and Visualisation"));
+  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary "True if component shall contribute to automatic efficiency calculation"
+                                                                                            annotation(Dialog(tab="Summary and Visualisation"));
+  SI.Pressure Delta_p "Pressure difference between pressure side and suction side";
   SI.VolumeFlowRate V_flow "Volume flow rate";
   SI.Power P_hyd;
 

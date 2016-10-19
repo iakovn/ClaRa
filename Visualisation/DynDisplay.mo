@@ -1,7 +1,7 @@
 within ClaRa.Visualisation;
 model DynDisplay "Dynamic Display of one variable"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -19,10 +19,8 @@ model DynDisplay "Dynamic Display of one variable"
   input Real x1=1 "Variable value" annotation (Dialog);
   parameter String unit="°C" "Variable unit";
   parameter Integer decimalSpaces=1 "Accuracy to be displayed";
-  parameter Boolean largeFonts= simCenter.largeFonts
-    "True if visualisers shall be displayed as large as posible";
-  parameter Boolean provideConnector= false
-    "If true a real output connector is provided";
+  parameter Boolean largeFonts= simCenter.largeFonts "True if visualisers shall be displayed as large as posible";
+  parameter Boolean provideConnector= false "If true a real output connector is provided";
   outer ClaRa.SimCenter simCenter;
 
   Modelica.Blocks.Interfaces.RealOutput y(value=x1) if provideConnector annotation (Placement(transformation(extent={{100,-10},{120,10}}), iconTransformation(extent={{100,-10},{120,10}})));

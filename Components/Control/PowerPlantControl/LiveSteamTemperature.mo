@@ -1,8 +1,7 @@
 within ClaRa.Components.Control.PowerPlantControl;
-model LiveSteamTemperature
-  "A simple controller for the live steam temperature based on Strauss: \"Kraftwerkstechnik\", 5th edition, 2006."
+model LiveSteamTemperature "A simple controller for the live steam temperature based on Strauss: \"Kraftwerkstechnik\", 5th edition, 2006."
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -88,16 +87,13 @@ public
         origin={-110,-80})));
   parameter Real T_a2_ref=873.15 "Reference value for controlled variable";
   parameter Real k_PID2=1 "Gain of PID2";
-  parameter Modelica.SIunits.Time Tau_i_PID2=0.5
-    "Integration time constant of PID2";
+  parameter Modelica.SIunits.Time Tau_i_PID2=0.5 "Integration time constant of PID2";
   parameter Real T_e2_ref=1 "Reference value injector 2 outlet temperature";
   parameter Real k_P2=1 "Gain value multiplied with input signal";
-  parameter Real Delta_T_2_ref=20
-    "Reference value for Temperature difference over injector 2";
+  parameter Real Delta_T_2_ref=20 "Reference value for Temperature difference over injector 2";
   parameter Real T_e1_ref=1 "Reference value for injector 1 outlet temperature";
   parameter Real k_PID1=1 "Gain of controller";
-  parameter Modelica.SIunits.Time Tau_i_PID1=0.5
-    "Time constant of Integrator block";
+  parameter Modelica.SIunits.Time Tau_i_PID1=0.5 "Time constant of Integrator block";
   parameter Real k_P1=1 "Gain of controller";
 equation
   connect(PID2.y, add2.u1) annotation (Line(

@@ -1,7 +1,7 @@
 within ClaRa.StaticCycles;
 model Valve_fixedFlow "Valve || yellow | blue"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                            //
+// Component of the ClaRa library, version: 1.1.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -17,19 +17,13 @@ model Valve_fixedFlow "Valve || yellow | blue"
    // Yellow input: Values of p and h are unknown and provided BY neighbor component, value of m_flow is known and provided FOR neighbor component.
    // Blue output:  Value of p is unknown and provided BY neighbor component, values of m_flow and h are known in component and provided FOR neighbor component.
 
-  parameter ClaRa.Basics.Units.MassFlowRate m_flow_nom= 10
-    "Nominal mass flow rate";
+  parameter ClaRa.Basics.Units.MassFlowRate m_flow_nom= 10 "Nominal mass flow rate";
 
-  final parameter ClaRa.Basics.Units.Pressure p_in(fixed=false)
-    "Inlet pressure";
-  final parameter ClaRa.Basics.Units.Pressure p_out(fixed=false)
-    "Outlet pressure";
-  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_in(fixed=false)
-    "Inlet spec. enthalpy";
-  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_out=h_in
-    "Outlet spec. enthalpy";
-  final parameter ClaRa.Basics.Units.Pressure Delta_p=p_in-p_out
-    "Pressure difference";
+  final parameter ClaRa.Basics.Units.Pressure p_in(fixed=false) "Inlet pressure";
+  final parameter ClaRa.Basics.Units.Pressure p_out(fixed=false) "Outlet pressure";
+  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_in(fixed=false) "Inlet spec. enthalpy";
+  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_out=h_in "Outlet spec. enthalpy";
+  final parameter ClaRa.Basics.Units.Pressure Delta_p=p_in-p_out "Pressure difference";
 
   Fundamentals.SteamSignal_yellow inlet(m_flow=m_flow_nom)
     annotation (Placement(transformation(extent={{-64,-10},{-44,10}}),

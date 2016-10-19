@@ -1,8 +1,7 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Gas_PL;
-model QuadraticPressureLoss_Simple_L4
-  "Gas || Quadratic PL based on nominal values"
+model QuadraticPressureLoss_Simple_L4 "Gas || Quadratic PL based on nominal values"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.1                        //
+  // Component of the ClaRa library, version: 1.1.2                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -23,10 +22,8 @@ model QuadraticPressureLoss_Simple_L4
       iCom.p_nom,
       iCom.h_nom,
       iCom.xi_nom);
-  extends
-    ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Gas_PL.PressureLoss_L4;
-  Basics.Units.DensityMassSpecific rho[iCom.N_cv + 1]
-    "Density in FlowModel cells";
+  extends ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Gas_PL.PressureLoss_L4;
+  Basics.Units.DensityMassSpecific rho[iCom.N_cv + 1] "Density in FlowModel cells";
 
   FluidDissipation.PressureLoss.General.dp_pressureLossCoefficient_IN_con inCon[iCom.N_cv + 1](each dp_smooth=Delta_p_smooth, A_cross=geo.A_cross_FM) annotation (Placement(transformation(extent={{-60,-80},{-40,-60}})));
   //  FluidDissipation.PressureLoss.General.dp_pressureLossCoefficient_IN_var inVar[iCom.N_cv+1](
@@ -35,14 +32,11 @@ model QuadraticPressureLoss_Simple_L4
   FluidDissipation.PressureLoss.General.dp_pressureLossCoefficient_IN_var inVar[iCom.N_cv + 1](zeta_TOT=zeta, rho=rho) annotation (Placement(transformation(extent={{-28,-80},{-8,-60}})));
   //  outer ClaRa.Components.ComponentBaseClasses.Fundamentals2.PipeGeometry geo;
 
-  parameter Modelica.SIunits.Pressure Delta_p_smooth=iCom.Delta_p_nom/iCom.N_cv*0.2
-    "|Small Mass Flows|For pressure losses below this value the square root of the quadratic pressure loss model is regularised";
+  parameter Modelica.SIunits.Pressure Delta_p_smooth=iCom.Delta_p_nom/iCom.N_cv*0.2 "|Small Mass Flows|For pressure losses below this value the square root of the quadratic pressure loss model is regularised";
 
-  final parameter FluidDissipation.Utilities.Types.PressureLossCoefficient zeta_TOT=geo.A_cross_FM[1]^2*2*iCom.Delta_p_nom*rho_nom/iCom.m_flow_nom^2
-    "Pressure loss coefficient for total pipe";
+  final parameter FluidDissipation.Utilities.Types.PressureLossCoefficient zeta_TOT=geo.A_cross_FM[1]^2*2*iCom.Delta_p_nom*rho_nom/iCom.m_flow_nom^2 "Pressure loss coefficient for total pipe";
 protected
-  FluidDissipation.Utilities.Types.PressureLossCoefficient zeta[iCom.N_cv + 1]
-    "Pressure loss coefficient for total pipe";
+  FluidDissipation.Utilities.Types.PressureLossCoefficient zeta[iCom.N_cv + 1] "Pressure loss coefficient for total pipe";
 
 equation
   /////// Calcultae Media Data Required //////////////////

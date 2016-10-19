@@ -1,8 +1,7 @@
 within ClaRa.Components.VolumesValvesFittings.Pipes;
-model PipeFlowVLE_L2_Simple
-  "A 1D tube-shaped control volume considering one-phase and two-phase heat transfer in a straight pipe with static momentum balance and simple energy balance."
+model PipeFlowVLE_L2_Simple "A 1D tube-shaped control volume considering one-phase and two-phase heat transfer in a straight pipe with static momentum balance and simple energy balance."
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -39,13 +38,11 @@ model PipeFlowVLE_L2_Simple
   parameter Basics.Units.Length
                             length= 1 "|Geometry|Length of the pipe";
   parameter Basics.Units.Length
-                            diameter_i= 0.1
-    "|Geometry|Inner diameter of the pipe";
+                            diameter_i= 0.1 "|Geometry|Inner diameter of the pipe";
   parameter Basics.Units.Length
                             z_in = 0.1 "|Geometry|height of inlet above ground";
   parameter Basics.Units.Length
-                            z_out= 0.1
-    "|Geometry|height of outlet above ground";
+                            z_out= 0.1 "|Geometry|height of outlet above ground";
 
   parameter Integer N_tubes= 1 "|Geometry|Number Of parallel pipes";
   final parameter Integer N_cv=1;
@@ -56,10 +53,9 @@ model PipeFlowVLE_L2_Simple
 
 //________Summary_________________
 //________Summary_________________
-  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary
-    "True if component shall contribute to automatic efficiency calculation"                annotation(Dialog(tab="Summary and Visualisation"));
-  parameter Boolean heatFlowIsLoss = true
-    "True if negative heat flow is a loss (not a process product)"                                       annotation(Dialog(tab="Summary and Visualisation"));
+  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary "True if component shall contribute to automatic efficiency calculation"
+                                                                                            annotation(Dialog(tab="Summary and Visualisation"));
+  parameter Boolean heatFlowIsLoss = true "True if negative heat flow is a loss (not a process product)" annotation(Dialog(tab="Summary and Visualisation"));
 protected
   Basics.Interfaces.EyeIn eye_int
     annotation (Placement(transformation(extent={{85,-41},{87,-39}})));

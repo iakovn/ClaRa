@@ -1,8 +1,7 @@
 within ClaRa.Basics.ControlVolumes.SolidVolumes.Check;
-model Test_NTU_CounterParallelCross_Comparison
-  "Comparison of NTU counter cross and parallel flow models"
+model Test_NTU_CounterParallelCross_Comparison "Comparison of NTU counter cross and parallel flow models"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.1                        //
+  // Component of the ClaRa library, version: 1.1.2                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -26,16 +25,13 @@ model Test_NTU_CounterParallelCross_Comparison
   parameter Units.Pressure p_o=0.1e5 "Pressure of cold side";
   parameter Units.Pressure p_i=1e5 "Pressure of hot side";
 
-  parameter Units.CoefficientOfHeatTransfer alpha_o=600
-    "Heat transfer coefficient of cold side";
-  parameter Units.CoefficientOfHeatTransfer alpha_i=1000
-    "Heat transfer coefficient of hot side";
+  parameter Units.CoefficientOfHeatTransfer alpha_o=600 "Heat transfer coefficient of cold side";
+  parameter Units.CoefficientOfHeatTransfer alpha_i=1000 "Heat transfer coefficient of hot side";
 
   parameter Integer N_tubes=1 "Number of parallel tubes";
   parameter Integer N_passes=1 "Number of passes";
   parameter Units.Length diameter_i=0.05*2 "Diameter of cold side tubes";
-  parameter Units.Length diameter_o=(0.05 + 1e-6)*2
-    "Diameter of hot side tubes";
+  parameter Units.Length diameter_o=(0.05 + 1e-6)*2 "Diameter of hot side tubes";
   parameter Units.Length radius_i=diameter_i/2 "Diameter of cold side tubes";
   parameter Units.Length radius_o=diameter_o/2 "Diameter of hot side tubes";
   parameter Units.Length length=4 "Length of tubes";

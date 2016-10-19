@@ -1,8 +1,7 @@
 within ClaRa.Components.Utilities.Blocks;
-model ParameterizableTable1D
-  "Table look-up in one dimension (matrix/file) with n inputs and n outputs "
+model ParameterizableTable1D "Table look-up in one dimension (matrix/file) with n inputs and n outputs "
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                            //
+// Component of the ClaRa library, version: 1.1.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -32,32 +31,26 @@ model ParameterizableTable1D
 // see https://trac.modelica.org/Modelica/ticket/2023
 //
   import Modelica.Blocks.Types;
-  parameter Boolean tableOnFile=false
-    "true, if table is defined on file or in function usertab"
+  parameter Boolean tableOnFile=false "true, if table is defined on file or in function usertab"
     annotation(Dialog(group="table data definition"));
-  parameter Real table[:, :]=fill(0.0,0,2)
-    "table matrix (grid = first column; e.g., table=[0,2])"
+  parameter Real table[:, :]=fill(0.0,0,2) "table matrix (grid = first column; e.g., table=[0,2])"
        annotation(Dialog(group="table data definition", enable = not tableOnFile));
-  parameter String tableName="NoName"
-    "table name on file or in function usertab (see docu)"
+  parameter String tableName="NoName" "table name on file or in function usertab (see docu)"
        annotation(Dialog(group="table data definition", enable = tableOnFile));
   parameter String fileName="NoName" "file where matrix is stored"
        annotation(Dialog(group="table data definition", enable = tableOnFile,
                          __Dymola_loadSelector(filter="Text files (*.txt);;Matlab files (*.mat)",
                          caption="Open file in which table is present")));
-  parameter Integer columns[:]=2:size(table, 2)
-    "columns of table to be interpolated"
+  parameter Integer columns[:]=2:size(table, 2) "columns of table to be interpolated"
   annotation(Dialog(group="table data interpretation"));
-  parameter Modelica.Blocks.Types.Smoothness smoothness=Types.Smoothness.LinearSegments
-    "smoothness of table interpolation"
+  parameter Modelica.Blocks.Types.Smoothness smoothness=Types.Smoothness.LinearSegments "smoothness of table interpolation"
   annotation(Dialog(group="table data interpretation"));
   extends Modelica.Blocks.Interfaces.MIMOs(final n=size(columns, 1));
 
 protected
   Integer tableID;
 
-  function tableInit
-    "Initialize 1-dim. table defined by matrix (for details see: Modelica/Resources/C-Sources/ModelicaTables.h)"
+  function tableInit "Initialize 1-dim. table defined by matrix (for details see: Modelica/Resources/C-Sources/ModelicaTables.h)"
     input String tableName;
     input String fileName;
     input Real table[ :, :];
@@ -68,8 +61,7 @@ protected
                  smoothness) annotation(Library="ModelicaExternalC");
   end tableInit;
 
-  function tableIpo
-    "Interpolate 1-dim. table defined by matrix (for details see: Modelica/Resources/C-Sources/ModelicaTables.h)"
+  function tableIpo "Interpolate 1-dim. table defined by matrix (for details see: Modelica/Resources/C-Sources/ModelicaTables.h)"
     input Integer tableID;
     input Integer icol;
     input Real u;

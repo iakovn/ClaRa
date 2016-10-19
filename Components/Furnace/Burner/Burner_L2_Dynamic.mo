@@ -1,8 +1,7 @@
 within ClaRa.Components.Furnace.Burner;
-model Burner_L2_Dynamic
-  "Model for a burner section inside a combustion chamber"
+model Burner_L2_Dynamic "Model for a burner section inside a combustion chamber"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -23,16 +22,14 @@ extends ClaRa.Basics.Icons.Burner;
 //import ClaRa.Basics.Functions.Stepsmoother;
 
 //## P A R A M E T E R S #######################################################################################
-inner parameter Boolean useHomotopy=simCenter.useHomotopy
-    "True, if homotopy method is used during initialisation"  annotation(Dialog(tab="Initialisation"));
+inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation"
+                                                              annotation(Dialog(tab="Initialisation"));
 
 //## V A R I A B L E   P A R T##################################################################################
 public
  Real lambdaComb_primary "Primary lambda";
- ClaRa.Basics.Units.MassFlowRate m_flow_oxygen_req_primary
-    "Required oxygen mass flwo for primary lambda calculation";
- ClaRa.Basics.Units.MassFlowRate m_flow_air_req_primary
-    "Required air mass flwo for primary lambda calculation";
+ ClaRa.Basics.Units.MassFlowRate m_flow_oxygen_req_primary "Required oxygen mass flwo for primary lambda calculation";
+ ClaRa.Basics.Units.MassFlowRate m_flow_air_req_primary "Required air mass flwo for primary lambda calculation";
 
 protected
   Modelica.SIunits.MolarFlowRate  n_flow_C_primary "Primary molar flow of C";
@@ -42,20 +39,14 @@ protected
 
   Real drhodt "Density derivative";
 
-  ClaRa.Basics.Units.MassFraction xi_flueGasMix[flueGas.nc - 1]
-    "Flue gas mixture composition";
-  ClaRa.Basics.Units.MassFraction xi_flueGasMix_del[flueGas.nc - 1]
-    "Pseudo state for flue gas mixture composition";
+  ClaRa.Basics.Units.MassFraction xi_flueGasMix[flueGas.nc - 1] "Flue gas mixture composition";
+  ClaRa.Basics.Units.MassFraction xi_flueGasMix_del[flueGas.nc - 1] "Pseudo state for flue gas mixture composition";
 
-  ClaRa.Basics.Units.EnthalpyMassSpecific h_flueGasMix
-    "Specific enthalpy of flue gas mixture";
-  ClaRa.Basics.Units.EnthalpyMassSpecific h_flueGasMix_del
-    "Pseudo state for specific enthalpy of flue gas mixture";
+  ClaRa.Basics.Units.EnthalpyMassSpecific h_flueGasMix "Specific enthalpy of flue gas mixture";
+  ClaRa.Basics.Units.EnthalpyMassSpecific h_flueGasMix_del "Pseudo state for specific enthalpy of flue gas mixture";
 
-  ClaRa.Basics.Units.MassFlowRate m_flow_in_del
-    "Pseudo state for inlet mass flow";
-  ClaRa.Basics.Units.MassFlowRate m_flow_out_del
-    "Pseudo state for outlet mass flow";
+  ClaRa.Basics.Units.MassFlowRate m_flow_in_del "Pseudo state for inlet mass flow";
+  ClaRa.Basics.Units.MassFlowRate m_flow_out_del "Pseudo state for outlet mass flow";
 
 //_____________________/ Connectors \______________________________
 public

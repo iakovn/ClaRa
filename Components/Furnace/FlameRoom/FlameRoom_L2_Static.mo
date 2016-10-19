@@ -1,8 +1,7 @@
 within ClaRa.Components.Furnace.FlameRoom;
-model FlameRoom_L2_Static
-  "Model for a flame room section inside a combustion chamber"
+model FlameRoom_L2_Static "Model for a flame room section inside a combustion chamber"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -20,8 +19,8 @@ extends ClaRa.Components.Furnace.BaseClasses.CombustionChamberBase(
 
 extends ClaRa.Basics.Icons.FlameRoom;
 //## P A R A M E T E R S #######################################################################################
-inner parameter Boolean useHomotopy=simCenter.useHomotopy
-    "True, if homotopy method is used during initialisation"  annotation(Dialog(tab="Initialisation"));
+inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation"
+                                                              annotation(Dialog(tab="Initialisation"));
 
 inner TILMedia.Gas_ph        flueGasOutlet(p(start = p_start_flueGas_out)=outlet.flueGas.p,xi=xi_flueGas_del,
       gasType=flueGas, h=h_flueGas_out_del)

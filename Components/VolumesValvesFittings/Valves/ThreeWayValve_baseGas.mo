@@ -1,7 +1,7 @@
 within ClaRa.Components.VolumesValvesFittings.Valves;
 partial model ThreeWayValve_baseGas
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                            //
+// Component of the ClaRa library, version: 1.1.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -14,17 +14,14 @@ partial model ThreeWayValve_baseGas
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
-  parameter TILMedia.GasTypes.BaseGas medium = simCenter.flueGasModel
-    "Flue gas model used in component"
+  parameter TILMedia.GasTypes.BaseGas medium = simCenter.flueGasModel "Flue gas model used in component"
     annotation (choicesAllMatching, Dialog(group="Fundamental Definitions"));
 
   outer ClaRa.SimCenter simCenter;
 
  // parameter Boolean showExpertSummary=simCenter.showExpertSummary "|Summary and Visualisation||True, if expert summary should be applied";
-  parameter Boolean showData=true
-    "|Summary and Visualisation||True, if a data port containing p,T,h,s,m_flow shall be shown, else false";
-  parameter Boolean splitRatio_input=false
-    "= true, if split ratio is defined by input";
+  parameter Boolean showData=true "|Summary and Visualisation||True, if a data port containing p,T,h,s,m_flow shall be shown, else false";
+  parameter Boolean splitRatio_input=false "= true, if split ratio is defined by input";
   parameter Real splitRatio_fixed = 0.5 annotation(Dialog(enable=not splitRatio_input));
   Real splitRatio;
 protected
@@ -45,8 +42,7 @@ TILMedia.Gas_pT      gasOut1(gasType=medium,
     p=outlet1.p)                                                         annotation (Placement(transformation(extent={{70,-10},
             {90,10}},                                                                                                   rotation=0)));
 public
-  Modelica.Blocks.Interfaces.RealInput splitRatio_external(min=0,max=1,value=splitRatio) if splitRatio_input
-    "Controls mass fraction m2/m1"
+  Modelica.Blocks.Interfaces.RealInput splitRatio_external(min=0,max=1,value=splitRatio) if splitRatio_input "Controls mass fraction m2/m1"
     annotation (Placement(transformation(
         extent={{20,-20},{-20,20}},
         rotation=90,
@@ -56,11 +52,9 @@ public
         origin={0,90})));
   Basics.Interfaces.GasPortIn         inlet(Medium=medium) "Inlet port"
     annotation (Placement(transformation(extent={{-110,-10},{-90,10}})));
-  Basics.Interfaces.GasPortOut         outlet1(each Medium=medium)
-    "Outlet port"
+  Basics.Interfaces.GasPortOut         outlet1(each Medium=medium) "Outlet port"
     annotation (Placement(transformation(extent={{90,-10},{110,10}})));
-  Basics.Interfaces.GasPortOut         outlet2(each Medium=medium)
-    "Outlet port"
+  Basics.Interfaces.GasPortOut         outlet2(each Medium=medium) "Outlet port"
     annotation (Placement(transformation(extent={{-10,-90},{10,-70}}),
         iconTransformation(extent={{-10,-110},{10,-90}})));
 public

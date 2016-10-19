@@ -1,8 +1,7 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Radiation;
-model Radiation_gas2Wall_advanced_L2
-  "All Geo || L2 || Radiation Between Gas And Wall (Advanced)"
+model Radiation_gas2Wall_advanced_L2 "All Geo || L2 || Radiation Between Gas And Wall (Advanced)"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.1                        //
+  // Component of the ClaRa library, version: 1.1.2                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -16,65 +15,53 @@ model Radiation_gas2Wall_advanced_L2
   // XRG Simulation GmbH (Hamburg, Germany).                                   //
   //___________________________________________________________________________//
 
-  extends
-    ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Radiation.HeatTransfer_L2;
+  extends ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Radiation.HeatTransfer_L2;
   outer ClaRa.Basics.Records.IComGas_L2 iCom;
   extends ClaRa.Basics.Icons.Epsilon;
 
-  parameter Real CF_fouling=0.8
-    "Scaling factor accounting for the fouling of the wall";
+  parameter Real CF_fouling=0.8 "Scaling factor accounting for the fouling of the wall";
   parameter Real emissivity_wall=0.8 "Emissivity of the wall";
 
   parameter String suspension_calculationType="Fixed" "Calculation type" annotation (Dialog(group="Emissivity and absorbance factor calculation of the suspension volume"), choices(
       choice="Fixed" "Use fixed value for gas emissivity",
-      choice="Calculated"
-        "Calculate suspension emissivity according to VDI Waermeatlas",
-      choice="Gas calculated, particles fixed"
-        "Gas emissivity calculated, particle emissivity fixed"));
+      choice="Calculated" "Calculate suspension emissivity according to VDI Waermeatlas",
+      choice="Gas calculated, particles fixed" "Gas emissivity calculated, particle emissivity fixed"));
   parameter Integer heatSurfaceAlloc=1 "To be considered heat transfer area" annotation (dialog(enable=false, tab="Expert Setting"), choices(
       choice=1 "Lateral surface",
       choice=2 "Inner heat transfer surface",
       choice=3 "Selection to be extended"));
 
-  parameter Real emissivity_suspension_fixed=0.9
-    "Fixed value for gas emissivity"                                              annotation (Dialog(enable=(suspension_calculationType == "Fixed"), group="Emissivity and absorbance factor calculation of the suspension volume"));
+  parameter Real emissivity_suspension_fixed=0.9 "Fixed value for gas emissivity" annotation (Dialog(enable=(suspension_calculationType == "Fixed"), group="Emissivity and absorbance factor calculation of the suspension volume"));
 
-  parameter Real absorbance_suspension_fixed=0.9
-    "Fixed value for gas absorbance"                                              annotation (Dialog(enable=(suspension_calculationType == "Fixed"), group="Emissivity and absorbance factor calculation of the suspension volume"));
+  parameter Real absorbance_suspension_fixed=0.9 "Fixed value for gas absorbance" annotation (Dialog(enable=(suspension_calculationType == "Fixed"), group="Emissivity and absorbance factor calculation of the suspension volume"));
 
-  parameter Real emissivity_particle=0.2
-    "Value considering dust particles if emissivity and absorbance are calculated"
+  parameter Real emissivity_particle=0.2 "Value considering dust particles if emissivity and absorbance are calculated"
                                                                                       annotation (Dialog(enable=(suspension_calculationType == "Gas calculated, particles fixed"), group="Emissivity and absorbance factor calculation of the suspension volume"));
 
-  parameter ClaRa.Basics.Units.DensityMassSpecific soot_load_n=163.5e-6
-    "Amount of soot inside the products at standard temperature and pressure"         annotation (Dialog(enable=(suspension_calculationType == "Calculated"), group="Soot particle properties"));
+  parameter ClaRa.Basics.Units.DensityMassSpecific soot_load_n=163.5e-6 "Amount of soot inside the products at standard temperature and pressure"
+                                                                                      annotation (Dialog(enable=(suspension_calculationType == "Calculated"), group="Soot particle properties"));
 
-  parameter ClaRa.Basics.Units.MassFraction x_coke=0.1
-    "Coke fraction of used coal"                                                    annotation (Dialog(enable=(suspension_calculationType == "Calculated"), group="Coal particle properties"));
+  parameter ClaRa.Basics.Units.MassFraction x_coke=0.1 "Coke fraction of used coal" annotation (Dialog(enable=(suspension_calculationType == "Calculated"), group="Coal particle properties"));
 
   parameter ClaRa.Basics.Units.DensityMassSpecific d_coke=850 "Coke density" annotation (Dialog(enable=(suspension_calculationType == "Calculated"), group="Coal particle properties"));
 
-  parameter ClaRa.Basics.Units.Length diameter_mean_coke=65e-6
-    "Mean weighted diameter of coke particles (Rosin-Rammler-Distribution)"           annotation (Dialog(enable=(suspension_calculationType == "Calculated"), group="Coal particle properties"));
-
-  parameter Real n_var_coke=1.5
-    "Variance parameter of coke particle distribution (Rosin-Rammler-Distribution)"
+  parameter ClaRa.Basics.Units.Length diameter_mean_coke=65e-6 "Mean weighted diameter of coke particles (Rosin-Rammler-Distribution)"
                                                                                       annotation (Dialog(enable=(suspension_calculationType == "Calculated"), group="Coal particle properties"));
 
-  parameter Real Q_mean_abs_coke=0.85
-    "Mean relative cross section for absorption of coke particles"                                   annotation (Dialog(enable=(suspension_calculationType == "Calculated"), group="Coal particle properties"));
+  parameter Real n_var_coke=1.5 "Variance parameter of coke particle distribution (Rosin-Rammler-Distribution)"
+                                                                                      annotation (Dialog(enable=(suspension_calculationType == "Calculated"), group="Coal particle properties"));
+
+  parameter Real Q_mean_abs_coke=0.85 "Mean relative cross section for absorption of coke particles" annotation (Dialog(enable=(suspension_calculationType == "Calculated"), group="Coal particle properties"));
 
   parameter ClaRa.Basics.Units.DensityMassSpecific d_ash=2200 "Ash density" annotation (Dialog(enable=(suspension_calculationType == "Calculated"), group="Ash particle properties"));
 
-  parameter ClaRa.Basics.Units.Length diameter_mean_ash=16.8e-6
-    "Mean weighted diameter of ash particles (Rosin-Rammler-Distribution)"            annotation (Dialog(enable=(suspension_calculationType == "Calculated"), group="Ash particle properties"));
-
-  parameter Real n_var_ash=1.5
-    "Variance parameter of ash particle distribution (Rosin-Rammler-Distribution)"
+  parameter ClaRa.Basics.Units.Length diameter_mean_ash=16.8e-6 "Mean weighted diameter of ash particles (Rosin-Rammler-Distribution)"
                                                                                       annotation (Dialog(enable=(suspension_calculationType == "Calculated"), group="Ash particle properties"));
 
-  parameter Real Q_mean_abs_ash=0.2
-    "Mean relative cross section for absorption of ash particles"                                 annotation (Dialog(enable=(suspension_calculationType == "Calculated"), group="Ash particle properties"));
+  parameter Real n_var_ash=1.5 "Variance parameter of ash particle distribution (Rosin-Rammler-Distribution)"
+                                                                                      annotation (Dialog(enable=(suspension_calculationType == "Calculated"), group="Ash particle properties"));
+
+  parameter Real Q_mean_abs_ash=0.2 "Mean relative cross section for absorption of ash particles" annotation (Dialog(enable=(suspension_calculationType == "Calculated"), group="Ash particle properties"));
 
 public
   Units.Temperature T_mean "Mean temperature for radiation";
@@ -105,8 +92,7 @@ protected
   Real heat_flux_density "Heat flux density";
 
   outer ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlock geo;
-  ClaRa.Basics.Units.MassFraction xi_mean[iCom.mediumModel.nc - 1]
-    "Mean flue gas composition";
+  ClaRa.Basics.Units.MassFraction xi_mean[iCom.mediumModel.nc - 1] "Mean flue gas composition";
   outer ClaRa.Basics.Units.MassFraction xi_fuel "Mean fuel composition";
 
   TILMedia.Gas_pT properties(

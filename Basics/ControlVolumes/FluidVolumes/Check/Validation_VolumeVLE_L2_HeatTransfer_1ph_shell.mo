@@ -1,8 +1,7 @@
 within ClaRa.Basics.ControlVolumes.FluidVolumes.Check;
-model Validation_VolumeVLE_L2_HeatTransfer_1ph_shell
-  "Evaluation and validation scenario from VDI Wärmeatlas 9. Auflage 2002 Chapter Gg3"
+model Validation_VolumeVLE_L2_HeatTransfer_1ph_shell "Evaluation and validation scenario from VDI Wärmeatlas 9. Auflage 2002 Chapter Gg3"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.1                        //
+  // Component of the ClaRa library, version: 1.1.2                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -52,8 +51,7 @@ model Validation_VolumeVLE_L2_HeatTransfer_1ph_shell
         z_out={30/1000*10/2},
         width=2,
         N_tubes=10,
-        N_passes=6))
-    "max(0.000001, ((1 - Volume.bulk.q)*Volume.M))/noEvent(max(Volume.bulk.VLE.d_l, Volume.bulk.d))"
+        N_passes=6)) "max(0.000001, ((1 - Volume.bulk.q)*Volume.M))/noEvent(max(Volume.bulk.VLE.d_l, Volume.bulk.d))"
     annotation (Placement(transformation(extent={{20,40},{0,60}})));
 
   Components.BoundaryConditions.BoundaryVLE_Txim_flow massFlowSource(
@@ -66,8 +64,8 @@ model Validation_VolumeVLE_L2_HeatTransfer_1ph_shell
     p_const=100000) annotation (Placement(transformation(extent={{-80,40},{-60,60}})));
   ClaRa.Components.VolumesValvesFittings.Valves.ValveVLE_L1
     valveLinear_1_XRG1(redeclare model PressureLoss =
-        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint
-        (m_flow_nom=if ((100) > 0) then (100) else 10, Delta_p_nom=if ((0.1)
+        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint (
+         m_flow_nom=if ((100) > 0) then (100) else 10, Delta_p_nom=if ((0.1)
              <> 0) then (0.1) else 1000))                  annotation (
       Placement(transformation(
         extent={{-10,6},{10,-6}},

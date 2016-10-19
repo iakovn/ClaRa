@@ -1,8 +1,7 @@
 within ClaRa.Basics.ControlVolumes.FluidVolumes.Check;
-model Validation_VolumeVLE_L2_HeatTransfer_2ph_shell
-  "Validation scenario from VDI Wärmeatlas 9. Auflage 2002 Chapter Ja 13 Example 2"
+model Validation_VolumeVLE_L2_HeatTransfer_2ph_shell "Validation scenario from VDI Wärmeatlas 9. Auflage 2002 Chapter Ja 13 Example 2"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -53,8 +52,7 @@ extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
   Real Pr "Prandtl number of the film";
   Real Re "Reynolds number of flowing steam";
   Real Nu "Nusselt number";
-  Real failureStatus
-    "0== boundary conditions fulfilled | 1== failure >> check if still meaningfull results";
+  Real failureStatus "0== boundary conditions fulfilled | 1== failure >> check if still meaningfull results";
 
 //  Real Re_test;
 
@@ -69,8 +67,7 @@ extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
     redeclare model HeatTransfer =
         ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.NusseltShell2ph_L2,
     redeclare model Geometry =
-        ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowCylinderWithTubes
-        (
+        ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowCylinderWithTubes (
         N_inlet=1,
         N_outlet=1,
         z_in={diameter_shell_o/2},
@@ -85,8 +82,7 @@ extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
     heatSurfaceAlloc=2,
     initType=ClaRa.Basics.Choices.Init.noInit,
     redeclare model PressureLoss =
-        Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L2 (                           Delta_p_nom=10))
-    "max(0.000001, ((1 - Volume.bulk.q)*Volume.M))/noEvent(max(Volume.bulk.VLE.d_l, Volume.bulk.d))"
+        Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L2 (                           Delta_p_nom=10)) "max(0.000001, ((1 - Volume.bulk.q)*Volume.M))/noEvent(max(Volume.bulk.VLE.d_l, Volume.bulk.d))"
     annotation (Placement(transformation(extent={{52,-80},{32,-60}})));
 
   Components.BoundaryConditions.BoundaryVLE_hxim_flow MassFlowSource(
@@ -100,8 +96,7 @@ extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
     variable_h=true,
     p_nom(displayUnit="Pa") = p,
     m_flow_nom=m_flow_D) annotation (Placement(transformation(extent={{-38,-80},{-18,-60}})));
-  inner SimCenter simCenter(redeclare replaceable
-      TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater                                             fluid1, useHomotopy=true) annotation (Placement(transformation(extent={{-100,-140},{-80,-120}})));
+  inner SimCenter simCenter(redeclare replaceable TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1, useHomotopy=true) annotation (Placement(transformation(extent={{-100,-140},{-80,-120}})));
   Modelica.Blocks.Sources.Constant const4(k=T_w)
               annotation (Placement(transformation(extent={{8,-32},{20,-20}})));
   Modelica.Thermal.HeatTransfer.Sources.PrescribedTemperature

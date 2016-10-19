@@ -1,7 +1,7 @@
 within ClaRa.StaticCycles;
 model Split4 "Split || blue | yellow | blue"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                            //
+// Component of the ClaRa library, version: 1.1.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -17,13 +17,10 @@ model Split4 "Split || blue | yellow | blue"
    // Blue input:   Value of p is known in component and provided FOR neighbor component, values of m_flow and h are unknown and provided BY neighbor component.
    // Yellow output: Values of p, and h are known in component and provided FOR neighbor component, value of m_flow is unknown and provided BY beighbor component.
    // Red output:   Values of p and m_flow are unknown and provided BY neighbor component, value of h is known and provided FOR neighbor component.
-  final parameter ClaRa.Basics.Units.MassFlowRate m_flow_2(fixed=false)
-    "Mass flow rate of flow 1";
-  final parameter ClaRa.Basics.Units.MassFlowRate m_flow_3 = m_flow_1-m_flow_2
-    "Mass flow rate of flow 2";
+  final parameter ClaRa.Basics.Units.MassFlowRate m_flow_2(fixed=false) "Mass flow rate of flow 1";
+  final parameter ClaRa.Basics.Units.MassFlowRate m_flow_3 = m_flow_1-m_flow_2 "Mass flow rate of flow 2";
   final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h1(fixed=false);
-  final parameter ClaRa.Basics.Units.MassFlowRate m_flow_1(fixed=false)
-    "Mixer outlet mass flow rate";
+  final parameter ClaRa.Basics.Units.MassFlowRate m_flow_1(fixed=false) "Mixer outlet mass flow rate";
   final parameter ClaRa.Basics.Units.Pressure p(fixed=false) "Mixer pressure";
   //final parameter Real splitRatio=outlet_1.m_flow/inlet.m_flow "ratio of outlet_1.m_flow/inlet.m_flow";
 

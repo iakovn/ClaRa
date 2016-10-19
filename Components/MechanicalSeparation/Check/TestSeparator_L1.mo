@@ -1,16 +1,13 @@
 within ClaRa.Components.MechanicalSeparation.Check;
-model TestSeparator_L1
-  "Check of normal operation and dry operation (Benson operation) is supported"
+model TestSeparator_L1 "Check of normal operation and dry operation (Benson operation) is supported"
   extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb80;
 
   Real diff = steamSeparator.summary.inlet.H_flow - steamSeparator.summary.outlet1.H_flow - steamSeparator.summary.outlet2.H_flow;
   ClaRa.Components.MechanicalSeparation.SteamSeparatorVLE_L1 steamSeparator(eta_vap=0.96, eta_liq=0.98) annotation (Placement(transformation(extent={{24,0},{44,20}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_hxim_flow boundaryVLE_hxim_flow(variable_m_flow=true, variable_h=true) annotation (Placement(transformation(extent={{-60,0},{-40,20}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi boundaryVLE_phxi(variable_p=true) annotation (Placement(transformation(extent={{-36,60},{-16,80}})));
-  ClaRa.Components.VolumesValvesFittings.Valves.ValveVLE_L1 valveVLE_L1_1(redeclare
-      model PressureLoss =
-        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint
-        (                                                                                                    m_flow_nom=400)) annotation (Placement(transformation(
+  ClaRa.Components.VolumesValvesFittings.Valves.ValveVLE_L1 valveVLE_L1_1(redeclare model PressureLoss =
+        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint (                      m_flow_nom=400)) annotation (Placement(transformation(
         extent={{-10,-6},{10,6}},
         rotation=90,
         origin={34,50})));

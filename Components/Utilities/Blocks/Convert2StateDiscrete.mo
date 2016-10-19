@@ -1,8 +1,7 @@
 within ClaRa.Components.Utilities.Blocks;
-model Convert2StateDiscrete
-  "Converts a flaoting value to a discrete one. Value is changed when a certain threshold is violated"
+model Convert2StateDiscrete "Converts a flaoting value to a discrete one. Value is changed when a certain threshold is violated"
   //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                            //
+// Component of the ClaRa library, version: 1.1.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -17,8 +16,7 @@ model Convert2StateDiscrete
 //___________________________________________________________________________//
     extends Modelica.Blocks.Interfaces.SISO;
   parameter Real threshold = 0.1 "Threshold of identification of changes";
-  parameter Boolean smoothValue = true
-    "True, if output value should be smoothed using a firstOrder";
+  parameter Boolean smoothValue = true "True, if output value should be smoothed using a firstOrder";
   parameter ClaRa.Basics.Units.Time Tau=0.1 "Time constant for smoothing" annotation(Dialog(enable=smoothValue));
   discrete Real y_;
   discrete Real py_;

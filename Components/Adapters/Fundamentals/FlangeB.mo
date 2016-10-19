@@ -6,8 +6,7 @@ connector FlangeB "B-type flange connector for water/steam flows"
 //  http://sourceforge.net/projects/thermopower/
 //_____________________________________________________________________________________
 
-  replaceable package Medium = Modelica.Media.Water.WaterIF97_ph constrainedby
-    Modelica.Media.Interfaces.PartialMedium "Medium model";
+  replaceable package Medium = Modelica.Media.Water.WaterIF97_ph constrainedby Modelica.Media.Interfaces.PartialMedium "Medium model";
   Medium.AbsolutePressure p "Pressure";
   flow Medium.MassFlowRate w "Mass flowrate";
   input Medium.SpecificEnthalpy hAB "Specific enthalpy of fluid going out";

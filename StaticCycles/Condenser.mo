@@ -1,7 +1,7 @@
 within ClaRa.StaticCycles;
 model Condenser "Condenser || par.: pressure, absLevel || blue |green"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                            //
+// Component of the ClaRa library, version: 1.1.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -17,31 +17,21 @@ model Condenser "Condenser || par.: pressure, absLevel || blue |green"
   // Blue input:   Value of p is known in component and provided FOR neighbor component, values of m_flow and h are unknown and provided BY neighbor component.
   // Green output: Values of p, m_flow and h are known in component and provided FOR neighbor component.
   outer ClaRa.SimCenter simCenter;
-  parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium = simCenter.fluid1
-    "Medium in the component"
-    annotation(choices(choice=simCenter.fluid1
-        "First fluid defined in global simCenter",
-                       choice=simCenter.fluid2
-        "Second fluid defined in global simCenter",
-                       choice=simCenter.fluid3
-        "Third fluid defined in global simCenter"),       Dialog(group="Fundamental Definitions"));
+  parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium = simCenter.fluid1 "Medium in the component"
+    annotation(choices(choice=simCenter.fluid1 "First fluid defined in global simCenter",
+                       choice=simCenter.fluid2 "Second fluid defined in global simCenter",
+                       choice=simCenter.fluid3 "Third fluid defined in global simCenter"),
+                                                          Dialog(group="Fundamental Definitions"));
 
   parameter ClaRa.Basics.Units.Pressure
-                        p_condenser = 4000
-    "|Fundamental Definitions|Condenser pressure";
-  parameter ClaRa.Basics.Units.Length absLevel = 0
-    "|Fundamental Definitions|Filling level in hotwell";
+                        p_condenser = 4000 "|Fundamental Definitions|Condenser pressure";
+  parameter ClaRa.Basics.Units.Length absLevel = 0 "|Fundamental Definitions|Filling level in hotwell";
 
-    final parameter ClaRa.Basics.Units.Pressure p_in=p_condenser
-    "|Internals|Internally set values - do not edit!|Inlet pressure";
-    final parameter ClaRa.Basics.Units.Pressure p_out=p_condenser + Modelica.Constants.g_n*TILMedia.VLEFluidFunctions.bubbleDensity_pxi(medium, p_condenser)*absLevel
-    "|Internals|Internally set values - do not edit!|Outlet pressure";
-    final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_in(fixed=false)
-    "|Internals|Internally set values - do not edit!|Inlet enthalpy";
-    final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_out=TILMedia.VLEFluidFunctions.bubbleSpecificEnthalpy_pxi(medium, p_condenser)
-    "|Internals|Internally set values - do not edit!|Outlet enthalpy";
-    final parameter ClaRa.Basics.Units.MassFlowRate    m_flow_in(fixed=false)
-    "|Internals|Internally set values - do not edit!|Inlet mass flow";
+    final parameter ClaRa.Basics.Units.Pressure p_in=p_condenser "|Internals|Internally set values - do not edit!|Inlet pressure";
+    final parameter ClaRa.Basics.Units.Pressure p_out=p_condenser + Modelica.Constants.g_n*TILMedia.VLEFluidFunctions.bubbleDensity_pxi(medium, p_condenser)*absLevel "|Internals|Internally set values - do not edit!|Outlet pressure";
+    final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_in(fixed=false) "|Internals|Internally set values - do not edit!|Inlet enthalpy";
+    final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_out=TILMedia.VLEFluidFunctions.bubbleSpecificEnthalpy_pxi(medium, p_condenser) "|Internals|Internally set values - do not edit!|Outlet enthalpy";
+    final parameter ClaRa.Basics.Units.MassFlowRate    m_flow_in(fixed=false) "|Internals|Internally set values - do not edit!|Inlet mass flow";
 //    final parameter ClaRa.Basics.Units.MassFlowRate    m_flow_out=m_flow_cond;
 
 public

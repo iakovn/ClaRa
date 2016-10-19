@@ -1,8 +1,7 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL;
-model QuadraticNominalPoint_L2
-  "All geo || Quadratic pressure loss || Nominal pressure difference"
+model QuadraticNominalPoint_L2 "All geo || Quadratic pressure loss || Nominal pressure difference"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.1                        //
+  // Component of the ClaRa library, version: 1.1.2                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -20,15 +19,12 @@ model QuadraticNominalPoint_L2
   extends ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.ShellType_L2;
   extends ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.TubeType_L2;
 
-  extends
-    ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.PressureLoss_L2;
+  extends ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.PressureLoss_L2;
 
   parameter SI.Pressure Delta_p_nom=1000 "Nominal pressure loss";
-  parameter SI.Pressure Delta_p_smooth=100
-    "|Small Mass Flows|For pressure losses below this value the square root of the quadratic pressure loss model is regularised";
+  parameter SI.Pressure Delta_p_smooth=100 "|Small Mass Flows|For pressure losses below this value the square root of the quadratic pressure loss model is regularised";
 
-  final parameter FluidDissipation.Utilities.Types.PressureLossCoefficient zeta=2*Delta_p_nom*geo.A_cross^2/iCom.m_flow_nom^2
-    "Pressure loss coefficient for total pipe";
+  final parameter FluidDissipation.Utilities.Types.PressureLossCoefficient zeta=2*Delta_p_nom*geo.A_cross^2/iCom.m_flow_nom^2 "Pressure loss coefficient for total pipe";
   //density assumed to be equal to nominal density
 
 equation

@@ -1,7 +1,7 @@
 within ClaRa.StaticCycles;
 model Valve_cutPressure "Valve || green | blue"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                            //
+// Component of the ClaRa library, version: 1.1.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -16,20 +16,13 @@ model Valve_cutPressure "Valve || green | blue"
 //___________________________________________________________________________//
   // Green input: Values of p, m_flow and h are unknown and provided BY neighbor component.
  // Blue output: Value of p is unknown and provided BY neighbor component, values of m_flow and h are known in component and provided FOR neighbor component.
-  final parameter ClaRa.Basics.Units.Pressure p_in(fixed=false)
-    "Inlet perssure";
-  final parameter ClaRa.Basics.Units.Pressure p_out(fixed=false)
-    "Outlet pressure";
-  final parameter ClaRa.Basics.Units.MassFlowRate m_flow(fixed=false)
-    "Mass flow rate";
-  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_in(fixed=false)
-    "Inlet spec. enthalpy";
-  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_out=h_in
-    "Outlet spec. enthalpy";
-  final parameter ClaRa.Basics.Units.Pressure Delta_p_nom=p_out-p_in
-    "Nominal pressure drop";
-  final parameter ClaRa.Basics.Units.Pressure Delta_p=p_in-p_out
-    "Pressure difference";
+  final parameter ClaRa.Basics.Units.Pressure p_in(fixed=false) "Inlet perssure";
+  final parameter ClaRa.Basics.Units.Pressure p_out(fixed=false) "Outlet pressure";
+  final parameter ClaRa.Basics.Units.MassFlowRate m_flow(fixed=false) "Mass flow rate";
+  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_in(fixed=false) "Inlet spec. enthalpy";
+  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_out=h_in "Outlet spec. enthalpy";
+  final parameter ClaRa.Basics.Units.Pressure Delta_p_nom=p_out-p_in "Nominal pressure drop";
+  final parameter ClaRa.Basics.Units.Pressure Delta_p=p_in-p_out "Pressure difference";
 
   Fundamentals.SteamSignal_green inlet
     annotation (Placement(transformation(extent={{-64,-10},{-44,10}}),

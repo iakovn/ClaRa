@@ -1,7 +1,7 @@
 within ClaRa.StaticCycles;
 model Valve_dp_nom2 "Valve || par.: dp_nom || green | green"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                            //
+// Component of the ClaRa library, version: 1.1.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -19,21 +19,15 @@ model Valve_dp_nom2 "Valve || par.: dp_nom || green | green"
   outer parameter Real P_target_ "Target power in p.u.";
 
   parameter ClaRa.Basics.Units.Pressure Delta_p_nom "Nominal pressure drop" annotation(Dialog(group="Fundamental Definitions"));
-  parameter Real CharLine_Delta_p_P_target_[:,2] = [0,0;1,1]
-    "Pressure drop depending on rel. power in p.u."                                                 annotation(Dialog(group="Fundamental Definitions"));
+  parameter Real CharLine_Delta_p_P_target_[:,2] = [0,0;1,1] "Pressure drop depending on rel. power in p.u."
+                                                                                                annotation(Dialog(group="Fundamental Definitions"));
 
-  final parameter ClaRa.Basics.Units.Pressure p_in(fixed=false)
-    "Inlet pressure";
-  final parameter ClaRa.Basics.Units.Pressure p_out=p_in - Delta_p
-    "Outlet pressure";
-  final parameter ClaRa.Basics.Units.MassFlowRate m_flow(fixed=false)
-    "Mass flow rate";
-  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_in(fixed=false)
-    "Inlet spec. enthalpy";
-  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_out=h_in
-    "Outlet spec. enthalpy";
-  final parameter ClaRa.Basics.Units.PressureDifference Delta_p(fixed=false)
-    "Actual pressur drop";
+  final parameter ClaRa.Basics.Units.Pressure p_in(fixed=false) "Inlet pressure";
+  final parameter ClaRa.Basics.Units.Pressure p_out=p_in - Delta_p "Outlet pressure";
+  final parameter ClaRa.Basics.Units.MassFlowRate m_flow(fixed=false) "Mass flow rate";
+  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_in(fixed=false) "Inlet spec. enthalpy";
+  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_out=h_in "Outlet spec. enthalpy";
+  final parameter ClaRa.Basics.Units.PressureDifference Delta_p(fixed=false) "Actual pressur drop";
 protected
   ClaRa.Components.Utilities.Blocks.ParameterizableTable1D table1(table=CharLine_Delta_p_P_target_, u = {P_target_});
 

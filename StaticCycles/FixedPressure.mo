@@ -1,7 +1,7 @@
 within ClaRa.StaticCycles;
 model FixedPressure "Pressure fix point || blue | green"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                            //
+// Component of the ClaRa library, version: 1.1.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -18,12 +18,9 @@ model FixedPressure "Pressure fix point || blue | green"
 // Blue output: Value of p is unknown and provided BY neighbor component, values of m_flow and h are known in component and provided FOR neighbor component.
   parameter ClaRa.Basics.Units.Pressure p "Pressure" annotation(Dialog(group= "Fundamental Definitions"));
 
-  final parameter ClaRa.Basics.Units.MassFlowRate m_flow(fixed=false)
-    "Mass flow rate";
-  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_in(fixed=false)
-    "Inlet spec. enthalpy";
-  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_out=h_in
-    "Outlet spec. enthalpy";
+  final parameter ClaRa.Basics.Units.MassFlowRate m_flow(fixed=false) "Mass flow rate";
+  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_in(fixed=false) "Inlet spec. enthalpy";
+  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_out=h_in "Outlet spec. enthalpy";
 
   Fundamentals.SteamSignal_green outlet(m_flow=m_flow, h=h_out, p=p)
     annotation (Placement(transformation(extent={{-64,-10},{-44,10}}),

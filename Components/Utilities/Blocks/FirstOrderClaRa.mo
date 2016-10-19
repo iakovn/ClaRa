@@ -1,8 +1,7 @@
 within ClaRa.Components.Utilities.Blocks;
-block FirstOrderClaRa
-  "First order transfer function block (= 1 pole, allows Tau = 0)"
+block FirstOrderClaRa "First order transfer function block (= 1 pole, allows Tau = 0)"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                            //
+// Component of the ClaRa library, version: 1.1.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -17,11 +16,9 @@ block FirstOrderClaRa
 //___________________________________________________________________________//
   extends Modelica.Blocks.Interfaces.SISO;
 
-  parameter Modelica.SIunits.Time Tau=0
-    "Time Constant, set Tau=0 for no signal smoothing";
-  parameter Integer initOption = 1 "Initialisation option" annotation(choices(choice=1 "y = u", choice=2
-        "y = y_start",                                                                                                  choice=3
-        "der(y) = 0",                                                                                                    choice=4 "no init"));
+  parameter Modelica.SIunits.Time Tau=0 "Time Constant, set Tau=0 for no signal smoothing";
+  parameter Integer initOption = 1 "Initialisation option" annotation(choices(choice=1 "y = u", choice=2 "y = y_start", choice=3 "der(y) = 0",
+                                                                                            choice=4 "no init"));
   parameter Real y_start=1 "Start value at output" annotation(Dialog(enable = Tau>0 and initOption==2));
 protected
   Real y_aux;

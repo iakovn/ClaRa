@@ -8,8 +8,7 @@ model DynamicBar
   parameter Real u_min = 0 "Lower boundary for visualised variable" annotation(Dialog);
   parameter String unit= "" "The input's unit";
   parameter Integer decimalSpaces=1 "Accuracy to be displayed";
-  parameter Boolean provideConnector= false
-    "If true a real output connector is provided";
+  parameter Boolean provideConnector= false "If true a real output connector is provided";
 
   Modelica.Blocks.Interfaces.RealOutput y(value=u) if provideConnector annotation (Placement(transformation(extent={{100,-10},{120,10}}), iconTransformation(extent={{100,-10},{120,10}})));
 

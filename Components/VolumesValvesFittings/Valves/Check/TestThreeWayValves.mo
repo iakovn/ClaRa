@@ -2,8 +2,7 @@ within ClaRa.Components.VolumesValvesFittings.Valves.Check;
 model TestThreeWayValves
   extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
   ThreeWayValveVLE_L1_simple threeWayValve_VLE_L1_1(splitRatio_input=true) annotation (Placement(transformation(extent={{-6,12},{14,-6}})));
-  ThreeWayValveVLE_L2 threeWayValveVLE_L2_1(splitRatio_input=true, redeclare
-      model PressureLoss =
+  ThreeWayValveVLE_L2 threeWayValveVLE_L2_1(splitRatio_input=true, redeclare model PressureLoss =
         ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticFrictionNominalPointSymetric_TWV)
     annotation (Placement(transformation(extent={{-10,-9},{10,9}},
         rotation=0,

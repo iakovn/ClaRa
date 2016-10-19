@@ -1,7 +1,6 @@
 within ClaRa.Components.Mills.HardCoalMills.Fundamentals;
 record STV4 "Babcock & Wilcox 10E: Mill 4 of Stgsnaes Power Station  (DK)"
-  extends
-    ClaRa.Components.Mills.HardCoalMills.Fundamentals.RollerBowlMillDefinition(
+  extends ClaRa.Components.Mills.HardCoalMills.Fundamentals.RollerBowlMillDefinition(
                                    K_1=0.0452,
                                    K_2=0.0640,
                                    K_3=0.0483,

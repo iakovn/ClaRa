@@ -1,7 +1,7 @@
 within ClaRa.Components.Adapters;
 model FuelFlueGas_split
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -18,12 +18,12 @@ model FuelFlueGas_split
 
 //__________________________/ Media definintions \______________________________________________
   outer ClaRa.SimCenter simCenter;
-  inner parameter ClaRa.Basics.Media.Fuel.PartialFuel fuelType=simCenter.fuelModel1
-    "Fuel elemental composition used for combustion" annotation(choicesAllMatching, Dialog(group="Fundamental Medium Definitions"));
-  inner parameter ClaRa.Basics.Media.Fuel.PartialSlag slag=simCenter.slagModel
-    "Slag properties" annotation(choicesAllMatching, Dialog(group="Fundamental Medium Definitions"));
-  inner parameter TILMedia.GasTypes.BaseGas               flueGas = simCenter.flueGasModel
-    "Medium to be used in tubes"  annotation(choicesAllMatching, Dialog(group="Fundamental Medium Definitions"));
+  inner parameter ClaRa.Basics.Media.Fuel.PartialFuel fuelType=simCenter.fuelModel1 "Fuel elemental composition used for combustion"
+                                                     annotation(choicesAllMatching, Dialog(group="Fundamental Medium Definitions"));
+  inner parameter ClaRa.Basics.Media.Fuel.PartialSlag slag=simCenter.slagModel "Slag properties"
+                      annotation(choicesAllMatching, Dialog(group="Fundamental Medium Definitions"));
+  inner parameter TILMedia.GasTypes.BaseGas               flueGas = simCenter.flueGasModel "Medium to be used in tubes"
+                                  annotation(choicesAllMatching, Dialog(group="Fundamental Medium Definitions"));
 
   ClaRa.Basics.Interfaces.Fuel_outlet fuel_outlet(final fuelType=fuelType)
     annotation (Placement(transformation(extent={{90,50},{110,70}})));

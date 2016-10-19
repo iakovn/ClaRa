@@ -1,7 +1,7 @@
 within ClaRa.Components.Utilities.Blocks;
 model TableGain "Table based gain"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -16,24 +16,19 @@ model TableGain "Table based gain"
 //___________________________________________________________________________//
 
   import Modelica.Blocks.Types;
-  parameter Boolean tableOnFile=false
-    "true, if table is defined on file or in function usertab"
+  parameter Boolean tableOnFile=false "true, if table is defined on file or in function usertab"
     annotation(Dialog(group="table data definition"));
-  parameter Real table[:, :]=fill(0.0,0,2)
-    "table matrix (grid = first column; e.g., table=[0,2])"
+  parameter Real table[:, :]=fill(0.0,0,2) "table matrix (grid = first column; e.g., table=[0,2])"
        annotation(Dialog(group="table data definition", enable = not tableOnFile));
-  parameter String tableName="NoName"
-    "table name on file or in function usertab (see docu)"
+  parameter String tableName="NoName" "table name on file or in function usertab (see docu)"
        annotation(Dialog(group="table data definition", enable = tableOnFile));
   parameter String fileName="NoName" "file where matrix is stored"
        annotation(Dialog(group="table data definition", enable = tableOnFile,
                          __Dymola_loadSelector(filter="Text files (*.txt);;Matlab files (*.mat)",
                          caption="Open file in which table is present")));
-  parameter Integer columns[:]=2:size(table, 2)
-    "columns of table to be interpolated"
+  parameter Integer columns[:]=2:size(table, 2) "columns of table to be interpolated"
   annotation(Dialog(group="table data interpretation"));
-  parameter Modelica.Blocks.Types.Smoothness smoothness=Types.Smoothness.LinearSegments
-    "smoothness of table interpolation"
+  parameter Modelica.Blocks.Types.Smoothness smoothness=Types.Smoothness.LinearSegments "smoothness of table interpolation"
   annotation(Dialog(group="table data interpretation"));
   extends Modelica.Blocks.Interfaces.MIMOs(final n=size(columns, 1));
 

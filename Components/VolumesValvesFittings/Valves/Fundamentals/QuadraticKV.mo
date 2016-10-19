@@ -1,16 +1,12 @@
 within ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals;
 model QuadraticKV "Quadratic|Kv definition | subcritical flow"
-  extends
-    ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.GenericPressureLoss;
+  extends ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.GenericPressureLoss;
   import SI = ClaRa.Basics.Units;
   import SM = ClaRa.Basics.Functions.Stepsmoother;
-  parameter Real Kvs(unit="m3/h") = 1
-    "|Valve Characteristics|Flow Coefficient at nominal opening (Delta_p_nom = 1e5 Pa, rho_nom=1000 kg/m^3(cold water))";
-  Real Kv(unit="m3/h")
-    "|Valve Characteristics|Flow Coefficient (Delta_p_nom = 1e5 Pa, rho_nom=1000 kg/m^3(cold water))";
+  parameter Real Kvs(unit="m3/h") = 1 "|Valve Characteristics|Flow Coefficient at nominal opening (Delta_p_nom = 1e5 Pa, rho_nom=1000 kg/m^3(cold water))";
+  Real Kv(unit="m3/h") "|Valve Characteristics|Flow Coefficient (Delta_p_nom = 1e5 Pa, rho_nom=1000 kg/m^3(cold water))";
 
-  parameter SI.Pressure Delta_p_eps= 100
-    "|Expert Settings||Small pressure difference for linearisation around zero flow";
+  parameter SI.Pressure Delta_p_eps= 100 "|Expert Settings||Small pressure difference for linearisation around zero flow";
 
 equation
   gamma = 2e30 "is not used";

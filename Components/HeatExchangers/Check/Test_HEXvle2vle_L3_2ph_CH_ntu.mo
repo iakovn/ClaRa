@@ -12,8 +12,7 @@ model Test_HEXvle2vle_L3_2ph_CH_ntu
         ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.QuadraticParallelZones_L3,
     z_in_shell=10,
     redeclare model HeatTransferTubes =
-        Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L2
-        (                                                                                                    alpha_nom=5000),
+        Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L2 (                            alpha_nom=5000),
     p_start_tubes=250e5,
     initTypeWall=ClaRa.Basics.Choices.Init.steadyState,
     m_flow_nom_shell=42,
@@ -35,8 +34,7 @@ model Test_HEXvle2vle_L3_2ph_CH_ntu
         Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.InputOnly,
     N_tubes=300,
     redeclare model HeatTransfer_Shell =
-        Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.Constant_L3_ypsDependent
-        (                                                                                                    alpha_nom={1000,5000}))
+        Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.Constant_L3_ypsDependent (                   alpha_nom={1000,5000}))
                                                                                             annotation (Placement(transformation(extent={{-6,-72},{14,-52}})));
 
   Sensors.Temperature                  Temp_Shell_in
@@ -82,8 +80,7 @@ model Test_HEXvle2vle_L3_2ph_CH_ntu
     height=-106e3,
     startTime=1800)
                    annotation (Placement(transformation(extent={{100,-94},{80,-74}})));
-  inner SimCenter simCenter(useHomotopy=true, redeclare
-      TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater                                                   fluid1,
+  inner SimCenter simCenter(useHomotopy=true, redeclare TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1,
     showExpertSummary=true)                                                                                       annotation (Placement(transformation(extent={{40,40},{80,60}})));
   Visualisation.Hexdisplay_3 hexdisplay_3_1(
     T_o=hex.wall.summary.T_o - fill(273.15, 6),

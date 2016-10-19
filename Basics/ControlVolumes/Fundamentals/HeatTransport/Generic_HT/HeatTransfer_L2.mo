@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT;
 partial model HeatTransfer_L2 " L2 || HT-BaseClass"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.1                        //
+  // Component of the ClaRa library, version: 1.1.2                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -14,10 +14,8 @@ partial model HeatTransfer_L2 " L2 || HT-BaseClass"
   // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
   // XRG Simulation GmbH (Hamburg, Germany).                                   //
   //___________________________________________________________________________//
-  extends
-    ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.HeatTransferBaseGas;
-  extends
-    ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.HeatTransferBaseVLE;
+  extends ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.HeatTransferBaseGas;
+  extends ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.HeatTransferBaseVLE;
 
   extends ClaRa.Basics.Icons.Alpha;
   //  SI.Temperature T_mean "Mean temperature of Fluid";

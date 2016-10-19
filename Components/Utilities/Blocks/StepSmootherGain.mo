@@ -1,7 +1,7 @@
 within ClaRa.Components.Utilities.Blocks;
 block StepSmootherGain "Smoothly activate and deactivate a Real signal"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                            //
+// Component of the ClaRa library, version: 1.1.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -16,8 +16,7 @@ block StepSmootherGain "Smoothly activate and deactivate a Real signal"
 //___________________________________________________________________________//
   extends Modelica.Blocks.Interfaces.SISO;
 
-  Modelica.Blocks.Interfaces.RealInput x
-    "y = u for x > func and y=0 for x < noFunc"                                      annotation (Placement(transformation(
+  Modelica.Blocks.Interfaces.RealInput x "y = u for x > func and y=0 for x < noFunc" annotation (Placement(transformation(
         extent={{-20,-20},{20,20}},
         rotation=90,
         origin={0,-120}), iconTransformation(

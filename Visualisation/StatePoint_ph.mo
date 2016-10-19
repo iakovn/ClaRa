@@ -1,7 +1,7 @@
 within ClaRa.Visualisation;
 model StatePoint_ph "Pressure and Enthalpy for ph-Diagram visualisation"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -20,8 +20,8 @@ model StatePoint_ph "Pressure and Enthalpy for ph-Diagram visualisation"
   ClaRa.Basics.Interfaces.FluidPortIn port(Medium=medium)
     annotation (Placement(transformation(extent={{-110,-114},{-90,-94}}),
         iconTransformation(extent={{-110,-110},{-90,-90}})));
-  parameter TILMedia.VLEFluidTypes.BaseVLEFluid   medium= simCenter.fluid1
-    "Medium to be used"                                                                       annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
+  parameter TILMedia.VLEFluidTypes.BaseVLEFluid   medium= simCenter.fluid1 "Medium to be used"
+                                                                                              annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
 
   parameter Integer stateViewerIndex=0 "Index for StateViewer" annotation(Dialog(group="StateViewer Index"));
   Real p;

@@ -1,6 +1,5 @@
 within ClaRa.Basics.Functions.TableInterpolation;
-function tableIpo
-  "Interpolate 1-dim. table defined by matrix (for details see: Modelica/Resources/C-Sources/ModelicaTables.h)"
+function tableIpo "Interpolate 1-dim. table defined by matrix (for details see: Modelica/Resources/C-Sources/ModelicaTables.h)"
   input Integer tableID;
   input Integer icol;
   input Real u;

@@ -33,8 +33,7 @@ end Regression;
     showExpertSummary=true,
     checkValve=false,
     redeclare model PressureLoss =
-        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint
-        (                                                                                                    m_flow_nom=100, Delta_p_nom=10e5),
+        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint (                      m_flow_nom=100, Delta_p_nom=10e5),
     opening_const_=0.761174,
     useStabilisedMassFlow=false,
     openingInputIsActive=true) annotation (Placement(transformation(
@@ -95,8 +94,7 @@ end Regression;
     variable_h=false,
     h_const=3500e3,
     variable_p=true) annotation (Placement(transformation(extent={{-168,34},{-148,54}})));
-  inner ClaRa.SimCenter simCenter(redeclare
-      TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater                                       fluid1)
+  inner ClaRa.SimCenter simCenter(redeclare TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1)
                                   annotation (Placement(transformation(extent={{-200,-80},{-160,-60}})));
   Modelica.Blocks.Sources.Ramp ramp(
     height=30e5,

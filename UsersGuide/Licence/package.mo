@@ -1,7 +1,7 @@
 within ClaRa.UsersGuide;
 package Licence 
 //___________________________________________________________________________//
-// Package of the ClaRa library, version: 1.1.1                              //
+// Package of the ClaRa library, version: 1.1.2                              //
 // Models of the ClaRa library are tested under DYMOLA v2016 FD01.           //
 // It is planned to support alternative Simulators like SimulationX in the   //
 // future                                                                    //
@@ -31,7 +31,7 @@ extends ClaRa.Basics.Icons.PackageIcons.Info100;
   annotation (Documentation(info="<html>
 <pre>
 //---------------------------------------------------------------------------//
-// ClaRa library, version: 1.1.1                                         //
+// ClaRa library, version: 1.1.2                                         //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //

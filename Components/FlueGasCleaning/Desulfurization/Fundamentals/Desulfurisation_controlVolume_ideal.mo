@@ -1,7 +1,7 @@
 within ClaRa.Components.FlueGasCleaning.Desulfurization.Fundamentals;
 model Desulfurisation_controlVolume_ideal
 //___________________________________________________________________________//
-// Package of the ClaRa library, version: 1.1.1                              //
+// Package of the ClaRa library, version: 1.1.2                              //
 // Models of the ClaRa library are tested under DYMOLA v2016 FD01.           //
 // It is planned to support alternative Simulators like SimulationX in the   //
 // future                                                                    //
@@ -27,8 +27,8 @@ model Desulfurisation_controlVolume_ideal
 
   outer ClaRa.SimCenter simCenter;
 
-  inner parameter TILMedia.GasTypes.BaseGas  medium = simCenter.flueGasModel
-    "Medium to be used in tubes" annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
+  inner parameter TILMedia.GasTypes.BaseGas  medium = simCenter.flueGasModel "Medium to be used in tubes"
+                                 annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
 
   Basics.Interfaces.GasPortIn       inlet(Medium=medium)   annotation (Placement(
         transformation(extent={{-110,-10},{-90,10}}),iconTransformation(extent={{-110,
@@ -40,59 +40,42 @@ model Desulfurisation_controlVolume_ideal
 //  final parameter Modelica.SIunits.MolarInternalEnergy delta_f_H_CaCO3 = -1207.1e3;
 //  final parameter Modelica.SIunits.MolarInternalEnergy delta_f_H_CaSO4_H2O = -2023e3;
 
-final parameter Modelica.SIunits.MolarMass M_CaSO4_H2O=0.172141
-    "Molar mass of gypsum";
-final parameter Modelica.SIunits.MolarMass M_CaCO3=0.10009
-    "Molar mass of calcium carbonate";
+final parameter Modelica.SIunits.MolarMass M_CaSO4_H2O=0.172141 "Molar mass of gypsum";
+final parameter Modelica.SIunits.MolarMass M_CaCO3=0.10009 "Molar mass of calcium carbonate";
 
 Real m_flow_aux;
-parameter Boolean useStabilisedMassFlow=false
-    "|Expert Settings|Numerical Robustness|";
+parameter Boolean useStabilisedMassFlow=false "|Expert Settings|Numerical Robustness|";
     parameter SI.Time Tau= 0.001 "Time Constant of Stabilisation" annotation(Dialog(tab="Expert Settings", group = "Numerical Robustness", enable=useStabilisedMassFlow));
 
 parameter Real SOx_separationRate = 0.95 "Efficiency of SOx separation";
-parameter Modelica.SIunits.Temperature T_in_H2O = 313.15
-    "Inlet Temperature of water";
-parameter Modelica.SIunits.MassFraction xi_start[medium.nc-1]=zeros(medium.nc-1)
-    "Start value of system mass fraction" annotation(Dialog(tab="Initialisation"));
+parameter Modelica.SIunits.Temperature T_in_H2O = 313.15 "Inlet Temperature of water";
+parameter Modelica.SIunits.MassFraction xi_start[medium.nc-1]=zeros(medium.nc-1) "Start value of system mass fraction"
+                                          annotation(Dialog(tab="Initialisation"));
 
 //required molar flow rates of reaction educts
-Modelica.SIunits.MolarFlowRate n_flow_CaCO3_req
-    "Required molar flow of calcium carbonate";
-Modelica.SIunits.MolarFlowRate n_flow_O2_req
-    "Additional required molar flow of oxygen";
+Modelica.SIunits.MolarFlowRate n_flow_CaCO3_req "Required molar flow of calcium carbonate";
+Modelica.SIunits.MolarFlowRate n_flow_O2_req "Additional required molar flow of oxygen";
 Modelica.SIunits.MolarFlowRate n_flow_H2O_req "Required molar flow of water";
 
 //molar flow rates of reaction educts inside flue gas
-Modelica.SIunits.MolarFlowRate n_flow_SO2_in
-    "Molar flow rate of sulfur dioxide at inlet";
-Modelica.SIunits.MolarFlowRate n_flow_O2_in
-    "Molar flow rate of oxygen at inlet";
-Modelica.SIunits.MolarFlowRate n_flow_H2O_in
-    "Molar flow rate of water at inlet";
+Modelica.SIunits.MolarFlowRate n_flow_SO2_in "Molar flow rate of sulfur dioxide at inlet";
+Modelica.SIunits.MolarFlowRate n_flow_O2_in "Molar flow rate of oxygen at inlet";
+Modelica.SIunits.MolarFlowRate n_flow_H2O_in "Molar flow rate of water at inlet";
 
 //molar flow rates of products
-Modelica.SIunits.MolarFlowRate n_flow_CaSO4_H2O_out
-    "Molar flow rate of gypsum outlet (no connector)";
-Modelica.SIunits.MolarFlowRate n_flow_CO2_out
-    "Molar flow rate of carbon dioxide at outlet";
-Modelica.SIunits.MolarFlowRate n_flow_H2O_out(start=1)
-    "Molar flow rate of water at outlet";
-Modelica.SIunits.MolarFlowRate n_flow_H2O_sep
-    "Molar flow rate of separated water (no connector)";
+Modelica.SIunits.MolarFlowRate n_flow_CaSO4_H2O_out "Molar flow rate of gypsum outlet (no connector)";
+Modelica.SIunits.MolarFlowRate n_flow_CO2_out "Molar flow rate of carbon dioxide at outlet";
+Modelica.SIunits.MolarFlowRate n_flow_H2O_out(start=1) "Molar flow rate of water at outlet";
+Modelica.SIunits.MolarFlowRate n_flow_H2O_sep "Molar flow rate of separated water (no connector)";
 
-Modelica.SIunits.MassFlowRate m_flow_SOx_sep
-    "Mass flow of separated sulfur dioxide";
-Modelica.SIunits.MassFlowRate m_flow_CaSO4_H2O_out
-    "Mass flow of gypsum (no connector)";
+Modelica.SIunits.MassFlowRate m_flow_SOx_sep "Mass flow of separated sulfur dioxide";
+Modelica.SIunits.MassFlowRate m_flow_CaSO4_H2O_out "Mass flow of gypsum (no connector)";
 Modelica.SIunits.MassFlowRate m_flow_H2O_req "Mass flow of required water";
 Modelica.SIunits.MassFlowRate m_flow_O2_req "Mass flow of required oxygen";
-Modelica.SIunits.MassFlowRate m_flow_CaCO3_req
-    "Mass flow of required calcium carbonate";
+Modelica.SIunits.MassFlowRate m_flow_CaCO3_req "Mass flow of required calcium carbonate";
 Modelica.SIunits.MassFlowRate m_flow_O2_sep "Mass flow of separated oxygen";
 Modelica.SIunits.MassFlowRate m_flow_H2O_sep "Mass flow of separated water";
-Modelica.SIunits.MassFlowRate m_flow_CO2_prod
-    "Mass flow of produced carbon dioxide";
+Modelica.SIunits.MassFlowRate m_flow_CO2_prod "Mass flow of produced carbon dioxide";
 
 ClaRa.Basics.Units.EnthalpyMassSpecific h_out "Specific enthalpy at outlet";
 //ClaRa.Basics.Units.EnthalpyMassSpecific h_out_del "Pseudo state for specific enthalpy at outlet";

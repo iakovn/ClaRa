@@ -1,7 +1,7 @@
 within ClaRa.Components.BoundaryConditions;
 model PrescribedHeatFlow "Prescribed heat flow boundary condition 1D"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -17,8 +17,8 @@ model PrescribedHeatFlow "Prescribed heat flow boundary condition 1D"
 
   parameter Modelica.SIunits.Length length "Length of cylinder" annotation(Dialog(group="Geometry"));
   parameter Integer N_axial = 3 "Number of axial elements" annotation(Dialog(group="Discretisation"));
-  parameter Modelica.SIunits.Length Delta_x[N_axial]=ClaRa.Basics.Functions.GenerateGrid(        {1,-1}, length, N_axial)
-    "Discretisation scheme"  annotation(Dialog(group="Discretisation"));
+  parameter Modelica.SIunits.Length Delta_x[N_axial]=ClaRa.Basics.Functions.GenerateGrid(        {1,-1}, length, N_axial) "Discretisation scheme"
+                             annotation(Dialog(group="Discretisation"));
 
   Modelica.Blocks.Interfaces.RealInput Q_flow
         annotation (Placement(transformation(

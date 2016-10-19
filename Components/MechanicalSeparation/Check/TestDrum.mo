@@ -1,6 +1,5 @@
 within ClaRa.Components.MechanicalSeparation.Check;
-model TestDrum
-  "Initialisation of a natural circulation with drum and evaporator"
+model TestDrum "Initialisation of a natural circulation with drum and evaporator"
 extends Basics.Icons.PackageIcons.ExecutableExampleb50;
   ClaRa.Components.MechanicalSeparation.Drum_L3_advanced drum(
     diameter=1,
@@ -37,8 +36,7 @@ extends Basics.Icons.PackageIcons.ExecutableExampleb50;
     h_start=source.h_const,
     p_start=sink.p_const,
     redeclare model HeatTransfer =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L2
-        (                                                                                                    alpha_nom=10000))
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L2 (                      alpha_nom=10000))
                                                     annotation (Placement(
         transformation(
         extent={{10,10},{-10,-10}},
@@ -48,20 +46,16 @@ extends Basics.Icons.PackageIcons.ExecutableExampleb50;
   Modelica.Thermal.HeatTransfer.Sources.PrescribedTemperature
                                                          fixedTemperature
     annotation (Placement(transformation(extent={{40,-90},{20,-70}})));
-  inner ClaRa.SimCenter simCenter(redeclare
-      TILMedia.VLEFluidTypes.TILMedia_Water fluid1, useHomotopy=true)
+  inner ClaRa.SimCenter simCenter(redeclare TILMedia.VLEFluidTypes.TILMedia_Water
+                                            fluid1, useHomotopy=true)
     annotation (Placement(transformation(extent={{-100,-100},{-60,-80}})));
-  ClaRa.Components.VolumesValvesFittings.Valves.ValveVLE_L1 valve_1(redeclare
-      model PressureLoss =
-        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint
-        (                                                                                                    Delta_p_nom=10e5, m_flow_nom=10)) annotation (Placement(transformation(
+  ClaRa.Components.VolumesValvesFittings.Valves.ValveVLE_L1 valve_1(redeclare model PressureLoss =
+        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint (                      Delta_p_nom=10e5, m_flow_nom=10)) annotation (Placement(transformation(
         extent={{-10,-6},{10,6}},
         rotation=90,
         origin={-18,-2})));
-  ClaRa.Components.VolumesValvesFittings.Valves.ValveVLE_L1 valve_2(redeclare
-      model PressureLoss =
-        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint
-        (                                                                                                    Delta_p_nom=10e5, m_flow_nom=10)) annotation (Placement(transformation(
+  ClaRa.Components.VolumesValvesFittings.Valves.ValveVLE_L1 valve_2(redeclare model PressureLoss =
+        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint (                      Delta_p_nom=10e5, m_flow_nom=10)) annotation (Placement(transformation(
         extent={{-10,-6},{10,6}},
         rotation=180,
         origin={52,-30})));

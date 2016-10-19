@@ -3,8 +3,7 @@ partial model GenericPressureLoss
 
   extends ClaRa.Basics.Icons.Delta_p;
   import SI = ClaRa.Basics.Units;
-  parameter Real CL_valve[:, :]=[0, 0; 1, 1]
-    "|Valve Characteristics|Effective apperture as function of valve position in p.u.";
+  parameter Real CL_valve[:, :]=[0, 0; 1, 1] "|Valve Characteristics|Effective apperture as function of valve position in p.u.";
 
   outer ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.ICom iCom;
   outer Boolean checkValve;

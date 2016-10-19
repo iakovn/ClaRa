@@ -11,11 +11,11 @@ package ClaRa "Simulation of Clausius-Rankine Cycles"
 
 
 
-  annotation (preferedView="info",version="1.1.1",
+  annotation (preferedView="info",version="1.1.2",
                            uses(
       Modelica(version="3.2.1"),
-      ClaRa_Obsolete(version="1.1.1"),
-    TILMedia(version="1.1.1 ClaRa"),
+      ClaRa_Obsolete(version="1.1.2"),
+    TILMedia(version="1.1.2 ClaRa"),
     FluidDissipation(version="1.1.8")),
                                  Icon(coordinateSystem(preserveAspectRatio=
           false, extent={{-100,-100},{100,100}})),

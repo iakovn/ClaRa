@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution;
 model IdeallyStirred "Volume is ideally stirred"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.1                        //
+  // Component of the ClaRa library, version: 1.1.2                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,16 +15,12 @@ model IdeallyStirred "Volume is ideally stirred"
   // XRG Simulation GmbH (Hamburg, Germany).                                   //
   //___________________________________________________________________________//
 
-  extends
-    ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.IdealPhases(      final level_rel_start=0);
+  extends ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.IdealPhases(final level_rel_start=0);
   extends ClaRa.Basics.Icons.IdealMixing;
-  parameter String position_Delta_p_geo="inlet"
-    "Position of geostatic pressure difference"                                             annotation (choices(choice="mid", choice="inlet"), Dialog(group="Expert Settings"));
-  parameter Boolean provideDensityDerivative=true
-    "True if density derivative shall be provided"                                               annotation (Dialog(group="Expert Settings"));
+  parameter String position_Delta_p_geo="inlet" "Position of geostatic pressure difference" annotation (choices(choice="mid", choice="inlet"), Dialog(group="Expert Settings"));
+  parameter Boolean provideDensityDerivative=true "True if density derivative shall be provided" annotation (Dialog(group="Expert Settings"));
 protected
-  ClaRa.Basics.Units.DensityMassSpecific rho
-    "Density used for geostatic pressure loss calculation";
+  ClaRa.Basics.Units.DensityMassSpecific rho "Density used for geostatic pressure loss calculation";
 equation
   //_________________________Calculation of the outflowing enthalpy _________________
   h_inflow = iCom.h_bulk;

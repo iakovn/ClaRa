@@ -1,7 +1,7 @@
 within ClaRa.Components.TurboMachines.Pumps.Check;
 model TestPumpModels
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -18,8 +18,7 @@ model TestPumpModels
 
   ClaRa.Components.TurboMachines.Pumps.PumpVLE_L1_simple pump_1(showExpertSummary=true) annotation (Placement(transformation(extent={{-16,-82},{4,-62}})));
   BoundaryConditions.BoundaryVLE_pTxi pressureSink_XRG(p_const=1300000, T_const=463.15) annotation (Placement(transformation(extent={{-76,-82},{-56,-62}})));
-  inner SimCenter simCenter(redeclare
-      TILMedia.VLEFluidTypes.TILMedia_SplineWater                                 fluid1) annotation (Placement(transformation(extent={{-160,-160},{-140,-140}})));
+  inner SimCenter simCenter(redeclare TILMedia.VLEFluidTypes.TILMedia_SplineWater fluid1) annotation (Placement(transformation(extent={{-160,-160},{-140,-140}})));
   Modelica.Blocks.Sources.TimeTable
                                ramp1(
     startTime=0,

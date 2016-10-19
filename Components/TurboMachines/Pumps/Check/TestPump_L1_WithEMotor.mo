@@ -18,8 +18,7 @@ model TestPump_L1_WithEMotor "A speed controlled pump driven by an e-motor"
                               "TableBase/Power_mflow_4100.mif",
                               "TableBase/Power_mflow_4600.mif",
                               "TableBase/Power_mflow_5100.mif"};
-  inner ClaRa.SimCenter simCenter(redeclare
-      TILMedia.VLEFluidTypes.TILMedia_SplineWater                                       fluid1) annotation (Placement(transformation(extent={{-100,-100},{-60,-80}})));
+  inner ClaRa.SimCenter simCenter(redeclare TILMedia.VLEFluidTypes.TILMedia_SplineWater fluid1) annotation (Placement(transformation(extent={{-100,-100},{-60,-80}})));
   ClaRa.Components.TurboMachines.Pumps.PumpVLE_L1_affinity pump(
     useMechanicalPort=true,
     showExpertSummary=true,

@@ -1,6 +1,5 @@
 within ClaRa.Basics.Functions;
-function SmoothZeroTransition
-  "Ensure a smooth transition from y(x<0) to y(x>0) with linear behaviour around x=0"
+function SmoothZeroTransition "Ensure a smooth transition from y(x<0) to y(x>0) with linear behaviour around x=0"
   extends ClaRa.Basics.Icons.Function;
   import SM = ClaRa.Basics.Functions.Stepsmoother;
   input Real posValue "Value for x > eps";

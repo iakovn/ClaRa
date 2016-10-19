@@ -1,8 +1,7 @@
 within ClaRa.StaticCycles.Check.StaticCycleExamples;
-model SteamCycle_4NDV_3HDV_01
-  "Helps you to find reasonable start values for steam cycles"
+model SteamCycle_4NDV_3HDV_01 "Helps you to find reasonable start values for steam cycles"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -19,29 +18,21 @@ model SteamCycle_4NDV_3HDV_01
   import TILMedia.VLEFluidFunctions.*;
   import SI = ClaRa.Basics.Units;
   outer ClaRa.SimCenter simCenter;
-  parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium = simCenter.fluid1
-    "Medium in the component"
-    annotation(choices(choice=simCenter.fluid1
-        "First fluid defined in global simCenter",
-                       choice=simCenter.fluid2
-        "Second fluid defined in global simCenter",
-                       choice=simCenter.fluid3
-        "Third fluid defined in global simCenter"),       Dialog(group="Fundamental Definitions"));
+  parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium = simCenter.fluid1 "Medium in the component"
+    annotation(choices(choice=simCenter.fluid1 "First fluid defined in global simCenter",
+                       choice=simCenter.fluid2 "Second fluid defined in global simCenter",
+                       choice=simCenter.fluid3 "Third fluid defined in global simCenter"),
+                                                          Dialog(group="Fundamental Definitions"));
 
 //__________________global parameter_______________________
   inner parameter Real P_target_= 1 "Value of load in p.u."    annotation(Dialog(group="Global parameter"));
-  inner parameter SI.MassFlowRate m_flow_nom=417
-    "Feedwater massflow rate at nominal point"                                              annotation (Dialog(group="Global parameter"));
-  parameter SI.Temperature T_LS_nom=823
-    "Live steam temperature at nominal point"                                     annotation (Dialog(group="Global parameter"));
-  parameter SI.Temperature T_RS_nom=833
-    "Reheated steam temperature at nominal point"                                     annotation (Dialog(group="Global parameter"));
+  inner parameter SI.MassFlowRate m_flow_nom=417 "Feedwater massflow rate at nominal point" annotation (Dialog(group="Global parameter"));
+  parameter SI.Temperature T_LS_nom=823 "Live steam temperature at nominal point" annotation (Dialog(group="Global parameter"));
+  parameter SI.Temperature T_RS_nom=833 "Reheated steam temperature at nominal point" annotation (Dialog(group="Global parameter"));
   parameter String mediumName = "R718" annotation(Dialog(group="Global parameter"));
-  final parameter SI.HeatFlowRate Q_nom=boiler.m_flow_feed*(boiler.h_LS_out - boiler.h_LS_in) + boiler.m_flow_cRH*(boiler.h_RS_out - boiler.h_RS_in)
-    "Nominal heat flow rate"
+  final parameter SI.HeatFlowRate Q_nom=boiler.m_flow_feed*(boiler.h_LS_out - boiler.h_LS_in) + boiler.m_flow_cRH*(boiler.h_RS_out - boiler.h_RS_in) "Nominal heat flow rate"
      annotation (Dialog(group="Global parameter"));
-  final parameter SI.MassFlowRate m_flow_FW=m_flow_nom*P_target_
-    "Feedwater massflow rate at nominal point"                                                              annotation (Dialog(group="Global parameter"));
+  final parameter SI.MassFlowRate m_flow_FW=m_flow_nom*P_target_ "Feedwater massflow rate at nominal point" annotation (Dialog(group="Global parameter"));
 
 //________________preheater_HP parameter________________________
 parameter ClaRa.Basics.Units.Pressure preheater_HP_p_tap=55.95e5
@@ -84,21 +75,17 @@ parameter ClaRa.Basics.Units.MassFlowRate preheater_LP3_m_flow_tap=14.504
 
 //____________________boiler parameter_____________________
 //  parameter ClaRa.Basics.Units.HeatFlowRate Q_nom = 1150e6 annotation(Dialog(tab="Boiler"));
-  parameter SI.Pressure p_LS_out_nom=250.2e5
-    "Live steam pressure at nomninal point"                                          annotation (Dialog(tab="Boiler"));
-  parameter SI.Pressure p_RS_out_nom=51e5
-    "Reaheated steam pressure at nomninal point"                                       annotation (Dialog(tab="Boiler"));
-  parameter SI.Pressure dp_LS_nom=89e5
-    "Live steam pressure loss in boiler at nomninal point"                                    annotation (Dialog(tab="Boiler"));
-  parameter SI.Pressure dp_RS_nom=5e5
-    "Reheated steam pressure loss in boiler at nomninal point"                                   annotation (Dialog(tab="Boiler"));
+  parameter SI.Pressure p_LS_out_nom=250.2e5 "Live steam pressure at nomninal point" annotation (Dialog(tab="Boiler"));
+  parameter SI.Pressure p_RS_out_nom=51e5 "Reaheated steam pressure at nomninal point" annotation (Dialog(tab="Boiler"));
+  parameter SI.Pressure dp_LS_nom=89e5 "Live steam pressure loss in boiler at nomninal point" annotation (Dialog(tab="Boiler"));
+  parameter SI.Pressure dp_RS_nom=5e5 "Reheated steam pressure loss in boiler at nomninal point" annotation (Dialog(tab="Boiler"));
 
   parameter Real CharLine_dpHP_mLS_[:,:]=[0,0; 0.1,0.01; 0.2,0.04; 0.3,0.09; 0.4,
-      0.16; 0.5,0.25; 0.6,0.36; 0.7,0.49; 0.8,0.64; 0.9,0.81; 1,1]
-    "Characteristic line of pressure drop as function of mass flow rate" annotation(Dialog(group = "CharLines", tab="Boiler"));
+      0.16; 0.5,0.25; 0.6,0.36; 0.7,0.49; 0.8,0.64; 0.9,0.81; 1,1] "Characteristic line of pressure drop as function of mass flow rate"
+                                                                         annotation(Dialog(group = "CharLines", tab="Boiler"));
   parameter Real CharLine_dpIP_mRS_[:,:]=[0,0; 0.1,0.01; 0.2,0.04; 0.3,0.09; 0.4,
-      0.16; 0.5,0.25; 0.6,0.36; 0.7,0.49; 0.8,0.64; 0.9,0.81; 1,1]
-    "Characteristic line of pressure drop as function of mass flow rate" annotation(Dialog(group = "CharLines",  tab="Boiler"));
+      0.16; 0.5,0.25; 0.6,0.36; 0.7,0.49; 0.8,0.64; 0.9,0.81; 1,1] "Characteristic line of pressure drop as function of mass flow rate"
+                                                                         annotation(Dialog(group = "CharLines",  tab="Boiler"));
 
 //___________________pump parameter________________________
 parameter Real efficiency_Pump_FW=1 "Efficiency of freshwater pump" annotation(Dialog(tab="Pumps"));

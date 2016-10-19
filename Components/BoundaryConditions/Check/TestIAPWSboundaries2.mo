@@ -1,7 +1,7 @@
 within ClaRa.Components.BoundaryConditions.Check;
 model TestIAPWSboundaries2
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,8 +15,7 @@ model TestIAPWSboundaries2
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
   extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb60;
-  inner SimCenter simCenter(redeclare replaceable
-      TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater                                             fluid1) annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
+  inner SimCenter simCenter(redeclare replaceable TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1) annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
   Modelica.Blocks.Sources.CombiTimeTable ramp(table=[0,5; 1,5; 2,-5; 3,-5; 3.1,
         10; 4,10], extrapolation=Modelica.Blocks.Types.Extrapolation.Periodic)
     annotation (Placement(transformation(extent={{-92,14},{-72,34}})));

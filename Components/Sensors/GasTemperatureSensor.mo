@@ -1,7 +1,7 @@
 within ClaRa.Components.Sensors;
 model GasTemperatureSensor "Ideal two port temperature sensor"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -18,7 +18,7 @@ model GasTemperatureSensor "Ideal two port temperature sensor"
 extends ClaRa.Components.Sensors.GasSensorBase;
   outer ClaRa.SimCenter simCenter;
     parameter Integer unitOption = 1 "Unit of output" annotation(choicesAllMatching, Dialog( group="Fundamental Definitions"), choices(choice=1 "Kelvin", choice=2 "Degree Celsius",
-                                                                                                    choice=3 "Degree Fahrenheit"));
+                                                                                              choice=3 "Degree Fahrenheit"));
   Modelica.Blocks.Interfaces.RealOutput temperature "temperature in port"
     annotation (Placement(transformation(extent={{100,-10},{120,10}},
                                                                     rotation=

@@ -1,8 +1,7 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution;
-model RealMixed
-  "Mixing | Real | outlet states depending volume fractions | All geometries"
+model RealMixed "Mixing | Real | outlet states depending volume fractions | All geometries"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.1                        //
+  // Component of the ClaRa library, version: 1.1.2                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -17,11 +16,9 @@ model RealMixed
   //___________________________________________________________________________//
   import ClaRa.Basics.Functions.Stepsmoother;
   import SZT = ClaRa.Basics.Functions.SmoothZeroTransition;
-  extends
-    ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.RealPhases;
+  extends ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.RealPhases;
   extends ClaRa.Basics.Icons.RealMixing;
-  parameter SI.VolumeFraction eps_mix[2]={0.2,0.8}
-    "Volume fraction V_1/V_tot of min/max mixed outlet"                                                annotation(Dialog(group="Ouflow Behaviour"));
+  parameter SI.VolumeFraction eps_mix[2]={0.2,0.8} "Volume fraction V_1/V_tot of min/max mixed outlet" annotation(Dialog(group="Ouflow Behaviour"));
 
   SI.MassFraction steamQuality_in[geo.N_inlet] "Inlet steam quality";
   SI.MassFraction steamQuality_out[geo.N_outlet] "Outlet steam quality";

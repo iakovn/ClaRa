@@ -1,7 +1,7 @@
 within ClaRa.Visualisation.Check;
 model IllustrateVisualisation
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -48,8 +48,7 @@ extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb80;
     frictionAtInlet=false,
     frictionAtOutlet=true,
     redeclare model PressureLoss =
-        Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4)
-                                                                                                        annotation (Placement(transformation(extent={{-26,-23},{2,-13}})));
+        Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4)               annotation (Placement(transformation(extent={{-26,-23},{2,-13}})));
 
   Modelica.Blocks.Sources.Ramp ramp(
     height=-20,

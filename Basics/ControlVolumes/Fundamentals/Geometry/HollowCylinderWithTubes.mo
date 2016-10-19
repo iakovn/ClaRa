@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.Geometry;
 model HollowCylinderWithTubes "Cylindric shape || Shell with tubes"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.1                        //
+  // Component of the ClaRa library, version: 1.1.2                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -40,11 +40,9 @@ model HollowCylinderWithTubes "Cylindric shape || Shell with tubes"
                       0.9245, 0.82031;
                       1, 0.7854]);
 
-  parameter ClaRa.Basics.Choices.GeometryOrientation orientation=ClaRa.Basics.Choices.GeometryOrientation.horizontal
-    "|Essential Geometry Definition|Orientation of the component";
+  parameter ClaRa.Basics.Choices.GeometryOrientation orientation=ClaRa.Basics.Choices.GeometryOrientation.horizontal "|Essential Geometry Definition|Orientation of the component";
 
-  parameter ClaRa.Basics.Choices.GeometryOrientation flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical
-    "|Essential Geometry Definition|Orientation of the mass flow";
+  parameter ClaRa.Basics.Choices.GeometryOrientation flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical "|Essential Geometry Definition|Orientation of the mass flow";
 
   parameter Units.Length diameter=1 "Diameter of the component" annotation (Dialog(
       tab="General",
@@ -53,43 +51,29 @@ model HollowCylinderWithTubes "Cylindric shape || Shell with tubes"
       groupImage="modelica://ClaRa/figures/ParameterDialog/HollowCylinderWithTubes.png",
       connectorSizing=false));
 
-  parameter Units.Length length=1
-    "|Essential Geometry Definition|Length of the component";
+  parameter Units.Length length=1 "|Essential Geometry Definition|Length of the component";
 
-  parameter Units.Length diameter_t=0.1
-    "|Interior Equipment|Outer diameter of internal tubes";
-  parameter Units.Length length_tubes=1
-    "|Interior Equipment|Length of the internal tubes (single pass)";
+  parameter Units.Length diameter_t=0.1 "|Interior Equipment|Outer diameter of internal tubes";
+  parameter Units.Length length_tubes=1 "|Interior Equipment|Length of the internal tubes (single pass)";
 
   parameter Integer N_tubes=1 "|Interior Equipment|Number of internal tubes";
-  parameter Integer N_passes=1
-    "|Interior Equipment|Number of passes of the internal tubes";
-  parameter Boolean parallelTubes=false
-    "|Interior Equipment|True, if tubes are parallel to main flow orientation, else false";
+  parameter Integer N_passes=1 "|Interior Equipment|Number of passes of the internal tubes";
+  parameter Boolean parallelTubes=false "|Interior Equipment|True, if tubes are parallel to main flow orientation, else false";
 
-  parameter Integer N_baffle=0
-    "|Interior Equipment|Number of baffles on shell side";
+  parameter Integer N_baffle=0 "|Interior Equipment|Number of baffles on shell side";
 
   final parameter Real interior(
     min=1e-6,
-    max=1) = volume/(pi/4*diameter^2*length)
-    "|Interior Equipment|Volume fraction of interior equipment";
-  parameter Modelica.SIunits.Length Delta_z_ort=2*diameter_t
-    "|Interior Equipment|Distance between tubes orthogonal to flow direction (center to center)";
-  parameter Modelica.SIunits.Length Delta_z_par=2*diameter_t
-    "|Interior Equipment|Distance between tubes parallel to flow direction (center to center)";
-  final parameter Real a=Delta_z_ort/diameter_t
-    "|Interior Equipment|Lateral alignment ratio";
-  final parameter Real b=Delta_z_par/diameter_t
-    "|Interior Equipment|Vertical alignment ratio";
-  final parameter Real psi=if b >= 1 then 1 - Modelica.Constants.pi/4/a else 1 - Modelica.Constants.pi/4/a/b
-    "|Interior Equipment|Void ratio";
-  parameter Boolean staggeredAlignment=true
-    "|Interior Equipment|True, if the tubes are aligned staggeredly, false otherwise";
+    max=1) = volume/(pi/4*diameter^2*length) "|Interior Equipment|Volume fraction of interior equipment";
+  parameter Modelica.SIunits.Length Delta_z_ort=2*diameter_t "|Interior Equipment|Distance between tubes orthogonal to flow direction (center to center)";
+  parameter Modelica.SIunits.Length Delta_z_par=2*diameter_t "|Interior Equipment|Distance between tubes parallel to flow direction (center to center)";
+  final parameter Real a=Delta_z_ort/diameter_t "|Interior Equipment|Lateral alignment ratio";
+  final parameter Real b=Delta_z_par/diameter_t "|Interior Equipment|Vertical alignment ratio";
+  final parameter Real psi=if b >= 1 then 1 - Modelica.Constants.pi/4/a else 1 - Modelica.Constants.pi/4/a/b "|Interior Equipment|Void ratio";
+  parameter Boolean staggeredAlignment=true "|Interior Equipment|True, if the tubes are aligned staggeredly, false otherwise";
   parameter Integer N_rows(
     min=N_passes,
-    max=N_tubes) = integer(ceil(sqrt(N_tubes))*N_passes)
-    "|Interior Equipment|Number of pipe rows in flow direction (minimum = N_passes)"
+    max=N_tubes) = integer(ceil(sqrt(N_tubes))*N_passes) "|Interior Equipment|Number of pipe rows in flow direction (minimum = N_passes)"
                                                                                           annotation (Dialog(group="Geometry"));
 
 equation

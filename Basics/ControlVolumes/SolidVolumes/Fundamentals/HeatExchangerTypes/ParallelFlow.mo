@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes;
 model ParallelFlow "Pure parallel flow heatexchanger"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,14 +15,12 @@ model ParallelFlow "Pure parallel flow heatexchanger"
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
 
-extends
-    ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.GeneralHeatExchanger(
+extends ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.GeneralHeatExchanger(
     final a=0.671,
     final b=2.11,
     final c=0.534,
     final d=0.5);
-extends
-    ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Icons.HEX_ParallelFlow_Icon;
+extends ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Icons.HEX_ParallelFlow_Icon;
 
   annotation (Icon(graphics),          Documentation(info="<html>
 <p>VDI-Waermeatlas Chapter Ca5, 9th edition, VDI-Verlag, 2006</p>

@@ -1,8 +1,7 @@
 within ClaRa.Components.VolumesValvesFittings.Valves;
-model ThreeWayValveGas_L1_simple
-  "Three way valve for flue gas with controllable mass fraction"
+model ThreeWayValveGas_L1_simple "Three way valve for flue gas with controllable mass fraction"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -20,8 +19,8 @@ model ThreeWayValveGas_L1_simple
 
   extends ClaRa.Basics.Interfaces.DataInterfaceVector(final N_sets=2);
 
-  parameter TILMedia.GasTypes.BaseGas               medium = simCenter.flueGasModel
-    "Medium in the component" annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
+  parameter TILMedia.GasTypes.BaseGas               medium = simCenter.flueGasModel "Medium in the component"
+                              annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
 
  model FlangeGas "A summary record for gas flanges"
     extends ClaRa.Basics.Icons.RecordIcon;
@@ -39,8 +38,7 @@ model ThreeWayValveGas_L1_simple
 
   outer ClaRa.SimCenter simCenter;
 
-  parameter Boolean splitRatio_input=false
-    "= true, if split ratio is defined by input";
+  parameter Boolean splitRatio_input=false "= true, if split ratio is defined by input";
   parameter Real splitRatio_fixed = 0.5 annotation(Dialog(enable=not splitRatio_input));
   Real splitRatio;
 
@@ -56,8 +54,7 @@ model ThreeWayValveGas_L1_simple
   Basics.Interfaces.GasPortOut       outlet2(Medium=
                        medium) annotation (Placement(transformation(extent={{-10,
             -110},{10,-90}}), iconTransformation(extent={{-10,-110},{10,-90}})));
-  Modelica.Blocks.Interfaces.RealInput splitRatio_external(min=0,max=1,value=splitRatio) if splitRatio_input
-    "Controls mass fraction m2/m1"
+  Modelica.Blocks.Interfaces.RealInput splitRatio_external(min=0,max=1,value=splitRatio) if splitRatio_input "Controls mass fraction m2/m1"
     annotation (Placement(transformation(
         extent={{20,-20},{-20,20}},
         rotation=90,

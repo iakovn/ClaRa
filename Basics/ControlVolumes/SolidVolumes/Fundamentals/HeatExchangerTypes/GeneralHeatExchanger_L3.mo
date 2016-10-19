@@ -4,8 +4,7 @@ partial model GeneralHeatExchanger_L3
   import Modelica.Constants.eps;
   input Real NTU_1[3] "Number of Transfer Units at limiting side";
   input Real R_1[3] "Ratio of heat capacity flows at limiting side";
-  output Real CF_NTU[3]
-    "Correction factor for heat flow based on the NTU method";
+  output Real CF_NTU[3] "Correction factor for heat flow based on the NTU method";
 
   parameter Real a "Geometry fitting factor";
   parameter Real b "Geometry fitting exponent";
@@ -19,15 +18,11 @@ partial model GeneralHeatExchanger_L3
 
   Real yps[3] "Area fraction of the three zones";
 
-  ClaRa.Basics.Units.EnthalpyMassSpecific h_i_in[3]
-    "Spec. enthalpy at the zone borders - inner side";
-  ClaRa.Basics.Units.EnthalpyMassSpecific h_o_in[3]
-    "Spec. enthalpy at the zone borders - outer side";
+  ClaRa.Basics.Units.EnthalpyMassSpecific h_i_in[3] "Spec. enthalpy at the zone borders - inner side";
+  ClaRa.Basics.Units.EnthalpyMassSpecific h_o_in[3] "Spec. enthalpy at the zone borders - outer side";
 
-  ClaRa.Basics.Units.Temperature T_in2out_o[6]
-    "Temperatures at the zone borders - outer side";
-  ClaRa.Basics.Units.Temperature T_in2out_i[6]
-    "Temperatures at the zone borders - inner side";
+  ClaRa.Basics.Units.Temperature T_in2out_o[6] "Temperatures at the zone borders - outer side";
+  ClaRa.Basics.Units.Temperature T_in2out_i[6] "Temperatures at the zone borders - inner side";
   Real ff_i[3] "Mass Flow Fraction for the three zones at inner side";
   Real ff_o[3] "Mass Flow Fraction for the three zones at outer side";
   Real z_i[6] "Position of the zones at the inner side of the heat exchanger";

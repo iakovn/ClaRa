@@ -1,8 +1,7 @@
 within ClaRa.Components.Control.PredictorModels_3508;
-model TurbinesAndReheat_00_XRG
-  "A predictor for the generator power including the HP and IP/LP turbines as well as the energy storage in the reheater - unmodified"
+model TurbinesAndReheat_00_XRG "A predictor for the generator power including the HP and IP/LP turbines as well as the energy storage in the reheater - unmodified"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -19,12 +18,12 @@ model TurbinesAndReheat_00_XRG
   extends ClaRa.Basics.Icons.ComplexityLevel(complexity="00");
 
  parameter Real eta_Gen= 0.98 "Generator efficiency" annotation(Dialog(group="Nominal Values"));
- parameter Real turbineRatio= 0.33
-    "Aspect ratio of HP turbine output to total power output"   annotation(Dialog(group="Nominal Values"));
-parameter Modelica.SIunits.Time Tau_HP= (0.2+0.5)/2
-    "Time Constant for Energy Storage in HP turbine"                                     annotation(Dialog(group="Time Response Definition"));
-parameter Modelica.SIunits.Time Tau_IP= (10+25)/2
-    "Time Constant for Energy Storage in IP/LP turbine"                                     annotation(Dialog(group="Time Response Definition"));
+ parameter Real turbineRatio= 0.33 "Aspect ratio of HP turbine output to total power output"
+                                                                annotation(Dialog(group="Nominal Values"));
+parameter Modelica.SIunits.Time Tau_HP= (0.2+0.5)/2 "Time Constant for Energy Storage in HP turbine"
+                                                                                         annotation(Dialog(group="Time Response Definition"));
+parameter Modelica.SIunits.Time Tau_IP= (10+25)/2 "Time Constant for Energy Storage in IP/LP turbine"
+                                                                                            annotation(Dialog(group="Time Response Definition"));
 
   parameter Real m_flow_start_=1 "Initial mass flow rate in p.u." annotation(Dialog(group="Initialisation"));
   Modelica.Blocks.Continuous.FirstOrder energyStorage_HP_turbine(        T=Tau_HP,

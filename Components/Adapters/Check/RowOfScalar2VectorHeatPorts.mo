@@ -1,7 +1,7 @@
 within ClaRa.Components.Adapters.Check;
 model RowOfScalar2VectorHeatPorts
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -30,8 +30,7 @@ model RowOfScalar2VectorHeatPorts
     initType=ClaRa.Basics.Choices.Init.noInit,
     showExpertSummary=true,
     redeclare model HeatTransfer =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4
-        (                                                                                                    alpha_nom=10000),
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4 (                      alpha_nom=10000),
     N_cv=10,
     frictionAtInlet=true,
     frictionAtOutlet=true) annotation (Placement(transformation(extent={{-32,-67},{-4,-57}})));
@@ -49,8 +48,7 @@ model RowOfScalar2VectorHeatPorts
     h_start=ones(pipe2.N_cv)*1e5,
     showExpertSummary=true,
     redeclare model HeatTransfer =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4
-        (                                                                                                    alpha_nom=10000),
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4 (                      alpha_nom=10000),
     frictionAtInlet=true,
     frictionAtOutlet=true) annotation (Placement(transformation(extent={{13,-67},{39,-57}})));
 

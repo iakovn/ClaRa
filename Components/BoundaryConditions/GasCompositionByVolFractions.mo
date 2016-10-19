@@ -1,8 +1,7 @@
 within ClaRa.Components.BoundaryConditions;
-model GasCompositionByVolFractions
-  "set (flue) gas composition graphically by volume fractions"
+model GasCompositionByVolFractions "set (flue) gas composition graphically by volume fractions"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -16,8 +15,7 @@ model GasCompositionByVolFractions
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
 extends ClaRa.Basics.Icons.VolumeComposition;
-  Modelica.Blocks.Interfaces.RealOutput X[medium.nc - 1]
-    "composition of gas to be set"
+  Modelica.Blocks.Interfaces.RealOutput X[medium.nc - 1] "composition of gas to be set"
     annotation (Placement(transformation(extent={{120,0},{140,20}}),
         iconTransformation(extent={{100,-20},{140,20}})));
   TILMedia.Gas_pT gas(

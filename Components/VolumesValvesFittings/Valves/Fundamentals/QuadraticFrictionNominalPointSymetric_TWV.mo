@@ -1,33 +1,24 @@
 within ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals;
-model QuadraticFrictionNominalPointSymetric_TWV
-  "| Quadratic Pressure Dependency | Nominal Point | Opening Characteristics | Symetrical |"
+model QuadraticFrictionNominalPointSymetric_TWV "| Quadratic Pressure Dependency | Nominal Point | Opening Characteristics | Symetrical |"
   extends ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.Basic_TWV;
   extends ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.TWV_L1;
   extends ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.TWV_L2;
 
   import SI = ClaRa.Basics.Units;
 
-  parameter SI.Area effectiveFlowArea1=7.85e-3
-    "Effective flow area for straight outlet"
+  parameter SI.Area effectiveFlowArea1=7.85e-3 "Effective flow area for straight outlet"
     annotation(Dialog(group="Valve Characteristics"));
 
-  parameter SI.Pressure Delta_p_nom[2] = {1e5,1e5}
-    "|Valve Characteristics|Nominal pressure difference for Kv definition";
-  parameter SI.MassFlowRate m_flow_nom[2] = {1,1}
-    "|Valve Characteristics|Nominal mass flow rate";
-  parameter Boolean useStabilisedMassFlow=false
-    "|Expert Settings|Numerical Robustness|";
+  parameter SI.Pressure Delta_p_nom[2] = {1e5,1e5} "|Valve Characteristics|Nominal pressure difference for Kv definition";
+  parameter SI.MassFlowRate m_flow_nom[2] = {1,1} "|Valve Characteristics|Nominal mass flow rate";
+  parameter Boolean useStabilisedMassFlow=false "|Expert Settings|Numerical Robustness|";
   parameter SI.Time Tau= 0.001 "Time Constant of Stabilisation" annotation(Dialog(tab="Expert Settings", group = "Numerical Robustness", enable=useStabilisedMassFlow));
-  parameter SI.PressureDifference Delta_p_smooth = 100
-    "Below this value, root function is approximated linearly"                                                    annotation(Dialog(tab = "Expert Settings", group="Numerical Robustness"));
+  parameter SI.PressureDifference Delta_p_smooth = 100 "Below this value, root function is approximated linearly" annotation(Dialog(tab = "Expert Settings", group="Numerical Robustness"));
 
-  final parameter Real Kvs[2](unit="m3/h") = 3600 * m_flow_nom./rho_in_nom .* sqrt(rho_in_nom/1000*1e5./Delta_p_nom)
-    "|Valve Characteristics|Flow Coefficient at nominal opening (Delta_p_nom = 1e5 Pa, rho_nom=1000 kg/m^3(cold water))";
-  final parameter SI.DensityMassSpecific rho_in_nom= 1000
-    "|Valve Characteristics|Nominal density for Kv definition";
+  final parameter Real Kvs[2](unit="m3/h") = 3600 * m_flow_nom./rho_in_nom .* sqrt(rho_in_nom/1000*1e5./Delta_p_nom) "|Valve Characteristics|Flow Coefficient at nominal opening (Delta_p_nom = 1e5 Pa, rho_nom=1000 kg/m^3(cold water))";
+  final parameter SI.DensityMassSpecific rho_in_nom= 1000 "|Valve Characteristics|Nominal density for Kv definition";
 
-  Real Kv[2](unit="m3/h")
-    "|Valve Characteristics|Flow Coefficient (Delta_p_nom = 1e5 Pa, rho_nom=1000 kg/m^3(cold water))";
+  Real Kv[2](unit="m3/h") "|Valve Characteristics|Flow Coefficient (Delta_p_nom = 1e5 Pa, rho_nom=1000 kg/m^3(cold water))";
   SI.Pressure Delta_p[2](start={10,10}) "Pressure differences";
 equation
 //////////// Simple hydraulics: ///////////////////////////////

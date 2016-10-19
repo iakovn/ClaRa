@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.Geometry;
 model HollowCylinder "Cylindric shape || No interior"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.1                        //
+  // Component of the ClaRa library, version: 1.1.2                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -26,15 +26,11 @@ model HollowCylinder "Cylindric shape || No interior"
     final shape=if orientation == ClaRa.Basics.Choices.GeometryOrientation.vertical then [0, 1; 1, 1] else [0.0005, 0.02981; 0.0245, 0.20716; 0.1245, 0.45248; 0.2245, 0.58733; 0.3245, 0.68065; 0.4245, 0.74791; 0.5245, 0.7954; 0.6245, 0.8261; 0.7245, 0.84114; 0.8245, 0.84015; 0.9245, 0.82031; 1, 0.7854],
     final height_fill=if orientation == ClaRa.Basics.Choices.GeometryOrientation.vertical then length else diameter);
 
-  parameter ClaRa.Basics.Choices.GeometryOrientation orientation=ClaRa.Basics.Choices.GeometryOrientation.vertical
-    "|Essential Geometry Definition|Orientation of the component";
-  parameter ClaRa.Basics.Choices.GeometryOrientation flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical
-    "|Essential Geometry Definition|Orientation of the component";
+  parameter ClaRa.Basics.Choices.GeometryOrientation orientation=ClaRa.Basics.Choices.GeometryOrientation.vertical "|Essential Geometry Definition|Orientation of the component";
+  parameter ClaRa.Basics.Choices.GeometryOrientation flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical "|Essential Geometry Definition|Orientation of the component";
 
-  parameter Units.Length diameter=1
-    "|Essential Geometry Definition|Diameter of the component";
-  parameter Units.Length length=1
-    "|Essential Geometry Definition|Length of the component";
+  parameter Units.Length diameter=1 "|Essential Geometry Definition|Diameter of the component";
+  parameter Units.Length length=1 "|Essential Geometry Definition|Length of the component";
 
 equation
    for i in 1:N_inlet loop

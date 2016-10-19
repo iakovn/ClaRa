@@ -1,7 +1,7 @@
 within ClaRa.StaticCycles;
 model SprayAttemperator "Mixer || green | red | green"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                            //
+// Component of the ClaRa library, version: 1.1.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -18,22 +18,14 @@ model SprayAttemperator "Mixer || green | red | green"
   // Red input:    Values of p and m_flow are known in component and provided FOR neighbor component, value of h is unknown and provided BY neighbor component.
   // Green output: Values of p, m_flow and h are known in component and provided FOR neighbor component.
   outer ClaRa.SimCenter simCenter;
-  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h1(fixed=false)
-    "|Internals|Internally set values - do not edit!|Specific enthalpy of flow 1";
-  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h2(fixed=false)
-    "|Internals|Internally set values - do not edit!|Specific enthalpy of flow 2";
-  final parameter ClaRa.Basics.Units.MassFlowRate m_flow_1(fixed=false)
-    "|Internals|Internally set values - do not edit!|Mass flow rate of flow 1";
-  final parameter ClaRa.Basics.Units.MassFlowRate m_flow_2 = (h3*m_flow_3 - h1*m_flow_1)/h2
-    "|Internals|Internally set values - do not edit!|Mass flow rate of flow 2";
-  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h3 = TILMedia.VLEFluidFunctions.specificEnthalpy_pTxi(medium, p, T, zeros(medium.nc - 1))
-    "|Internals|Internally set values - do not edit!|Mixer outlet enthalpy";
-  final parameter ClaRa.Basics.Units.MassFlowRate m_flow_3=m_flow_1 + m_flow_2
-    "|Internals|Internally set values - do not edit!|Mixer outlet mass flow rate";
-  final parameter ClaRa.Basics.Units.Pressure p(fixed=false)
-    "|Internals|Internally set values - do not edit!|Mixer pressure";
-  parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium = simCenter.fluid1
-    "Medium in the component";
+  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h1(fixed=false) "|Internals|Internally set values - do not edit!|Specific enthalpy of flow 1";
+  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h2(fixed=false) "|Internals|Internally set values - do not edit!|Specific enthalpy of flow 2";
+  final parameter ClaRa.Basics.Units.MassFlowRate m_flow_1(fixed=false) "|Internals|Internally set values - do not edit!|Mass flow rate of flow 1";
+  final parameter ClaRa.Basics.Units.MassFlowRate m_flow_2 = (h3*m_flow_3 - h1*m_flow_1)/h2 "|Internals|Internally set values - do not edit!|Mass flow rate of flow 2";
+  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h3 = TILMedia.VLEFluidFunctions.specificEnthalpy_pTxi(medium, p, T, zeros(medium.nc - 1)) "|Internals|Internally set values - do not edit!|Mixer outlet enthalpy";
+  final parameter ClaRa.Basics.Units.MassFlowRate m_flow_3=m_flow_1 + m_flow_2 "|Internals|Internally set values - do not edit!|Mixer outlet mass flow rate";
+  final parameter ClaRa.Basics.Units.Pressure p(fixed=false) "|Internals|Internally set values - do not edit!|Mixer pressure";
+  parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium = simCenter.fluid1 "Medium in the component";
 
   parameter ClaRa.Basics.Units.Temperature T "Outlet Temperature";
 

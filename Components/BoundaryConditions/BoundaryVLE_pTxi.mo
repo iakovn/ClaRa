@@ -1,8 +1,7 @@
 within ClaRa.Components.BoundaryConditions;
-model BoundaryVLE_pTxi
-  "A boundary defining pressure, temperature and composition"
+model BoundaryVLE_pTxi "A boundary defining pressure, temperature and composition"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -22,29 +21,23 @@ extends ClaRa.Basics.Icons.FlowSink;
     powerOut=if massFlowIsLoss then 0 else max(0, steam_a.m_flow*actualStream(steam_a.h_outflow)),
     powerAux=0) if                                                                                                     contributeToCycleSummary;
 
-  parameter TILMedia.VLEFluidTypes.BaseVLEFluid   medium= simCenter.fluid1
-    "Medium to be used"                                                                       annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
+  parameter TILMedia.VLEFluidTypes.BaseVLEFluid   medium= simCenter.fluid1 "Medium to be used"
+                                                                                              annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
 
-  parameter Boolean variable_p=false
-    "True, if pressure defined by variable input"                                  annotation(Dialog(group="Define Variable Boundaries"));
-  parameter Boolean variable_T=false
-    "True, if temperature defined by variable input"                                  annotation(Dialog(group="Define Variable Boundaries"));
-  parameter Boolean variable_xi=false
-    "True, if composition defined by variable input"                                      annotation(Dialog(group="Define Variable Boundaries"));
-  parameter Boolean showData=true
-    "|Summary and Visualisation||True, if a data port containing p,T,h,s,m_flow shall be shown, else false";
-  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary
-    "True if component shall contribute to automatic efficiency calculation"                  annotation(Dialog(tab="Summary and Visualisation"));
-  parameter Boolean massFlowIsLoss = true
-    "True if mass flow is a loss (not a process product)"                                       annotation(Dialog(tab="Summary and Visualisation"));
+  parameter Boolean variable_p=false "True, if pressure defined by variable input" annotation(Dialog(group="Define Variable Boundaries"));
+  parameter Boolean variable_T=false "True, if temperature defined by variable input" annotation(Dialog(group="Define Variable Boundaries"));
+  parameter Boolean variable_xi=false "True, if composition defined by variable input"    annotation(Dialog(group="Define Variable Boundaries"));
+  parameter Boolean showData=true "|Summary and Visualisation||True, if a data port containing p,T,h,s,m_flow shall be shown, else false";
+  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary "True if component shall contribute to automatic efficiency calculation"
+                                                                                              annotation(Dialog(tab="Summary and Visualisation"));
+  parameter Boolean massFlowIsLoss = true "True if mass flow is a loss (not a process product)" annotation(Dialog(tab="Summary and Visualisation"));
 
   parameter SI.Pressure p_const=0 "Constant pressure"  annotation(Dialog(group="Constant Boundaries", enable= not variable_p));
-  parameter SI.Temperature T_const=293.15
-    "Constant specific temperature of source"  annotation(Dialog(group="Constant Boundaries", enable= not hInputIsActive));
-  parameter SI.MassFraction xi_const[medium.nc-1]=zeros(medium.nc-1)
-    "Constant composition"  annotation(Dialog(group="Constant Boundaries", enable= not variable_xi));
-  parameter SI.Pressure Delta_p= 0
-    "Flange pressure drop at nominal mass flow (zero refers to ideal boundary)"
+  parameter SI.Temperature T_const=293.15 "Constant specific temperature of source"
+                                               annotation(Dialog(group="Constant Boundaries", enable= not hInputIsActive));
+  parameter SI.MassFraction xi_const[medium.nc-1]=zeros(medium.nc-1) "Constant composition"
+                            annotation(Dialog(group="Constant Boundaries", enable= not variable_xi));
+  parameter SI.Pressure Delta_p= 0 "Flange pressure drop at nominal mass flow (zero refers to ideal boundary)"
                                                                                               annotation(Dialog(group="Nominal Values"));
   parameter SI.MassFlowRate m_flow_nom= 1 "Nominal flange mass flow "            annotation(Dialog(group="Nominal Values"));
   outer ClaRa.SimCenter simCenter;
@@ -56,11 +49,9 @@ protected
 public
   ClaRa.Basics.Interfaces.FluidPortIn steam_a(Medium=medium)
     annotation (Placement(transformation(extent={{90,-10},{110,10}})));
-  Modelica.Blocks.Interfaces.RealInput p(value=p_in) if (variable_p)
-    "Variable mass flow rate"
+  Modelica.Blocks.Interfaces.RealInput p(value=p_in) if (variable_p) "Variable mass flow rate"
     annotation (Placement(transformation(extent={{-120,40},{-80,80}})));
-  Modelica.Blocks.Interfaces.RealInput T(value=T_in) if (variable_T)
-    "Variable specific temperature"
+  Modelica.Blocks.Interfaces.RealInput T(value=T_in) if (variable_T) "Variable specific temperature"
     annotation (Placement(transformation(extent={{-120,-20},{-80,20}})));
   Modelica.Blocks.Interfaces.RealInput xi[medium.nc-1](value=xi_in) if
        (variable_xi) "Variable composition"

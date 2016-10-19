@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.Geometry;
 model PipeWithHotwell "Pipe bundle || Tube type || Hotwell"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.1                        //
+  // Component of the ClaRa library, version: 1.1.2                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -32,12 +32,9 @@ model PipeWithHotwell "Pipe bundle || Tube type || Hotwell"
   parameter Integer N_passes=1 "Number of passes of the internal tubes"
                                                                        annotation(Dialog(group="Essential Geometry Definition", groupImage="modelica://ClaRa/figures/ParameterDialog/PipeWithHotwell.png"));
 
-  parameter Units.Length height_hotwell=1
-    "|Hotwell Geometry|Height of the hotwell";
-  parameter Units.Length width_hotwell=1
-    "|Hotwell Geometry|Width of the hotwell";
-  parameter Units.Length length_hotwell=1
-    "|Hotwell Geometry|Length of the hotwell";
+  parameter Units.Length height_hotwell=1 "|Hotwell Geometry|Height of the hotwell";
+  parameter Units.Length width_hotwell=1 "|Hotwell Geometry|Width of the hotwell";
+  parameter Units.Length length_hotwell=1 "|Hotwell Geometry|Length of the hotwell";
 
 equation
   assert(A_cross>0, "The cross section of the shell side must be > 0 but is "+String(A_cross, significantDigits=3) + " in instance" + getInstanceName() + ".");

@@ -3,8 +3,7 @@ model TestAsynchronousMotor "A simple test for the simple motor"
 
   extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb80;
 
-  inner ClaRa.SimCenter simCenter(redeclare
-      TILMedia.VLEFluidTypes.TILMedia_SplineWater                                       fluid1, showExpertSummary=false) annotation (Placement(transformation(extent={{-100,-100},{-80,-80}})));
+  inner ClaRa.SimCenter simCenter(redeclare TILMedia.VLEFluidTypes.TILMedia_SplineWater fluid1, showExpertSummary=false) annotation (Placement(transformation(extent={{-100,-100},{-80,-80}})));
   Modelica.Mechanics.Rotational.Components.Inertia inertia1(         w(start=10), J=50)
     annotation (Placement(transformation(extent={{-48,-80},{-28,-60}})));
   Modelica.Mechanics.Rotational.Sensors.SpeedSensor speedSensor

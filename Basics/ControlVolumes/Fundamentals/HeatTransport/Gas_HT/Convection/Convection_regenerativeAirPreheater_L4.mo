@@ -1,8 +1,7 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Convection;
-model Convection_regenerativeAirPreheater_L4
-  "Gas || Convection Air Preheater Channels"
+model Convection_regenerativeAirPreheater_L4 "Gas || Convection Air Preheater Channels"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.1                        //
+  // Component of the ClaRa library, version: 1.1.2                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -16,8 +15,7 @@ model Convection_regenerativeAirPreheater_L4
   // XRG Simulation GmbH (Hamburg, Germany).                                   //
   //___________________________________________________________________________//
 
-  extends
-    ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Convection.HeatTransfer_L4;
+  extends ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Convection.HeatTransfer_L4;
   //ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Special.HeatTransfer_array;
   import ClaRa.Basics.Functions.Stepsmoother;
   outer ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry_N_cv geo;
@@ -26,8 +24,7 @@ model Convection_regenerativeAirPreheater_L4
       choice=2 "Inner heat transfer surface",
       choice=3 "Selection to be extended"));
 
-  Modelica.SIunits.CoefficientOfHeatTransfer alpha[iCom.N_cv]
-    "Heat transfer coefficient";
+  Modelica.SIunits.CoefficientOfHeatTransfer alpha[iCom.N_cv] "Heat transfer coefficient";
   outer TILMedia.Gas_ph fluid[iCom.N_cv];
 
   Real w[iCom.N_cv] "Medium velocity";

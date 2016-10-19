@@ -5,15 +5,12 @@ model SteamSeparatorVLE_L3
 
   //_____________________________________________________
   //_______________replaceable models____________________
-  inner parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium=simCenter.fluid1
-    "Medium in the component"
+  inner parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium=simCenter.fluid1 "Medium in the component"
     annotation (Dialog(group="Fundamental Definitions"), choicesAllMatching);
 
   //replaceable model HeatTransfer = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3 constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.HeatTransfer_L3 annotation (choicesAllMatching=true, Dialog(group="Fundamental Definitions"));
   replaceable model PressureLoss =
-      ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3
-                                                                                                        constrainedby
-    ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.PressureLoss_L3
+      ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3           constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.PressureLoss_L3
                                                                                               annotation (choicesAllMatching=true, Dialog(group="Fundamental Definitions"));
    outer ClaRa.SimCenter simCenter;
 
@@ -61,71 +58,51 @@ model SteamSeparatorVLE_L3
 
   parameter ClaRa.Basics.Units.Length length=20 "Length of separator" annotation(Dialog(group="Geometry"));
   parameter ClaRa.Basics.Units.Length diameter=0.5 "Diameter of separator" annotation(Dialog(group="Geometry"));
-  parameter ClaRa.Basics.Units.Length z_in=length
-    "Inlet position (from bottom)"                                               annotation(Dialog(group="Geometry"));
-  parameter ClaRa.Basics.Units.Length z_out1=0
-    "Outlet 1 position (from bottom)"                                            annotation(Dialog(group="Geometry"));
-  parameter ClaRa.Basics.Units.Length z_out2=length
-    "Outlet 2 position (from bottom)"                                                 annotation(Dialog(group="Geometry"));
+  parameter ClaRa.Basics.Units.Length z_in=length "Inlet position (from bottom)" annotation(Dialog(group="Geometry"));
+  parameter ClaRa.Basics.Units.Length z_out1=0 "Outlet 1 position (from bottom)" annotation(Dialog(group="Geometry"));
+  parameter ClaRa.Basics.Units.Length z_out2=length "Outlet 2 position (from bottom)" annotation(Dialog(group="Geometry"));
 
  // parameter ClaRa.Basics.Units.Length s_wall=0.05 "Wall thickness" annotation(Dialog(group="Geometry"));
   parameter ClaRa.Basics.Units.Length radius_flange=0.05 "Flange radius" annotation (Dialog(group="Geometry"));
 
-  inner parameter Boolean useHomotopy=simCenter.useHomotopy
-    "True, if homotopy method is used during initialisation"
+  inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation"
     annotation (Dialog(tab="Initialisation"));
   parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_liq_start=-10 +
-      TILMedia.VLEFluidFunctions.bubbleSpecificEnthalpy_pxi(medium, p_start)
-    "Start value of sytsem specific enthalpy"
+      TILMedia.VLEFluidFunctions.bubbleSpecificEnthalpy_pxi(medium, p_start) "Start value of sytsem specific enthalpy"
     annotation (Dialog(tab="Initialisation"));
   parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_vap_start=+10 +
-      TILMedia.VLEFluidFunctions.dewSpecificEnthalpy_pxi(medium, p_start)
-    "Start value of sytsem specific enthalpy"
+      TILMedia.VLEFluidFunctions.dewSpecificEnthalpy_pxi(medium, p_start) "Start value of sytsem specific enthalpy"
     annotation (Dialog(tab="Initialisation"));
 
-  parameter ClaRa.Basics.Units.MassFraction xi_liq_start[medium.nc-1] = medium.xi_default
-    "|Initialisation||Initial composition of liquid phase";
-  parameter ClaRa.Basics.Units.MassFraction xi_vap_start[medium.nc-1] = medium.xi_default
-    "|Initialisation||Initial composition of vapour phase";
+  parameter ClaRa.Basics.Units.MassFraction xi_liq_start[medium.nc-1] = medium.xi_default "|Initialisation||Initial composition of liquid phase";
+  parameter ClaRa.Basics.Units.MassFraction xi_vap_start[medium.nc-1] = medium.xi_default "|Initialisation||Initial composition of vapour phase";
 
-  parameter ClaRa.Basics.Units.Pressure p_start=1e5
-    "Start value of sytsem pressure" annotation (Dialog(tab="Initialisation"));
+  parameter ClaRa.Basics.Units.Pressure p_start=1e5 "Start value of sytsem pressure"
+                                     annotation (Dialog(tab="Initialisation"));
   parameter Real yps_start=0.5 "Start value for volume fraction"
     annotation (Dialog(tab="Initialisation"));
 
-  inner parameter ClaRa.Basics.Choices.Init initType=ClaRa.Basics.Choices.Init.noInit
-    "Type of initialisation"
+  inner parameter ClaRa.Basics.Choices.Init initType=ClaRa.Basics.Choices.Init.noInit "Type of initialisation"
     annotation (Dialog(tab="Initialisation"), choicesAllMatching);
 
-  final parameter Real absorbInflow=1
-    "absorption of incoming mass flow to the zones 1: perfect in the allocated zone, 0: perfect according to steam quality"
+  final parameter Real absorbInflow=1 "absorption of incoming mass flow to the zones 1: perfect in the allocated zone, 0: perfect according to steam quality"
                                                                                               annotation (Dialog(tab="Expert Settings"));
 
-  parameter ClaRa.Basics.Units.Time Tau_cond=0.03
-    "Time constant of condensation"                                               annotation (Dialog(tab="Phase Separation"));
-  parameter ClaRa.Basics.Units.Time Tau_evap=Tau_cond
-    "Time constant of evaporation"                                                   annotation (Dialog(tab="Phase Separation"));
-  parameter ClaRa.Basics.Units.CoefficientOfHeatTransfer alpha_ph=10000
-    "HTC of the phase border"                                                                     annotation (Dialog(tab="Phase Separation"));
-  parameter Real exp_HT_phases=-1
-    "Exponent for volume dependency on inter phase HT"                               annotation (Dialog(tab="Phase Separation"));
-  parameter Boolean equalPressures=true
-    "True if pressure in liquid and vapour phase is equal"                                     annotation (Dialog(tab="Phase Separation"));
+  parameter ClaRa.Basics.Units.Time Tau_cond=0.03 "Time constant of condensation" annotation (Dialog(tab="Phase Separation"));
+  parameter ClaRa.Basics.Units.Time Tau_evap=Tau_cond "Time constant of evaporation" annotation (Dialog(tab="Phase Separation"));
+  parameter ClaRa.Basics.Units.CoefficientOfHeatTransfer alpha_ph=10000 "HTC of the phase border" annotation (Dialog(tab="Phase Separation"));
+  parameter Real exp_HT_phases=-1 "Exponent for volume dependency on inter phase HT" annotation (Dialog(tab="Phase Separation"));
+  parameter Boolean equalPressures=true "True if pressure in liquid and vapour phase is equal" annotation (Dialog(tab="Phase Separation"));
 
-  parameter ClaRa.Basics.Units.MassFlowRate m_flow_nom=10
-    "Nominal mass flow rates at inlet"                                                       annotation (Dialog(group="Nominal Values"));
+  parameter ClaRa.Basics.Units.MassFlowRate m_flow_nom=10 "Nominal mass flow rates at inlet" annotation (Dialog(group="Nominal Values"));
   parameter ClaRa.Basics.Units.Pressure p_nom=1e5 "Nominal pressure" annotation (Dialog(group="Nominal Values"));
 
-  parameter Boolean showExpertSummary=simCenter.showExpertSummary
-    "|Summary and Visualisation||True, if expert summary should be applied";
-  parameter Boolean showData=true
-    "True, if a data port containing p,T,h,s,m_flow shall be shown, else false"
-                                                                                                        annotation(Dialog(group="Summary and Visualisation"));
-  parameter Boolean levelOutput = false
-    "True, if Real level connector shall be addded"                                      annotation(Dialog(tab="Summary and Visualisation"));
+  parameter Boolean showExpertSummary=simCenter.showExpertSummary "|Summary and Visualisation||True, if expert summary should be applied";
+  parameter Boolean showData=true "True, if a data port containing p,T,h,s,m_flow shall be shown, else false"
+                                                                                              annotation(Dialog(group="Summary and Visualisation"));
+  parameter Boolean levelOutput = false "True, if Real level connector shall be addded"  annotation(Dialog(tab="Summary and Visualisation"));
   parameter Boolean outputAbs = false "True, if absolute level is at output"  annotation(Dialog(enable = levelOutput, tab="Summary and Visualisation"));
-  parameter Modelica.Blocks.Types.Smoothness smoothness=Modelica.Blocks.Types.Smoothness.LinearSegments
-    "Smoothness of table interpolation"                                                                                                     annotation (Dialog(tab="Expert Settings"));
+  parameter Modelica.Blocks.Types.Smoothness smoothness=Modelica.Blocks.Types.Smoothness.LinearSegments "Smoothness of table interpolation" annotation (Dialog(tab="Expert Settings"));
   ClaRa.Basics.Interfaces.EyeOut eye_out1 if
                                             showData annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},

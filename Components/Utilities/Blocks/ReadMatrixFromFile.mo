@@ -1,8 +1,7 @@
 within ClaRa.Components.Utilities.Blocks;
-model ReadMatrixFromFile
-  "Read a 2D matrix from file  || *.csv and *.mat(-v4) are supported"
+model ReadMatrixFromFile "Read a 2D matrix from file  || *.csv and *.mat(-v4) are supported"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -29,8 +28,7 @@ model ReadMatrixFromFile
        annotation(Dialog(group="table data definition", enable = tableOnFile,
                          __Dymola_loadSelector(filter="Text files (*.txt);;Matlab files (*.mat)",
                          caption="Open file in which table is present")));
-  parameter String matrixName="NoName"
-    "table name on file or in function usertab (see docu)"
+  parameter String matrixName="NoName" "table name on file or in function usertab (see docu)"
        annotation(Dialog(group="table data definition", enable = tableOnFile));
 
   final parameter Integer matrixSize[2]=readMatrixSize(loadResource(fileName), matrixName);

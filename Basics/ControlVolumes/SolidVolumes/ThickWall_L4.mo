@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.SolidVolumes;
 model ThickWall_L4 "A thick cylindric wall with radial descretisation"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -20,34 +20,27 @@ model ThickWall_L4 "A thick cylindric wall with radial descretisation"
 
   replaceable model Material = TILMedia.SolidTypes.TILMedia_Aluminum
     constrainedby TILMedia.SolidTypes.BaseSolid "Material of the cylinder" annotation (choicesAllMatching=true, Dialog(group="Fundamental Definitions"));
-  input Real CF_lambda=1
-    "Time-dependent correction factor for thermal conductivity"                      annotation(Dialog(group="Fundamental Definitions"));
+  input Real CF_lambda=1 "Time-dependent correction factor for thermal conductivity" annotation(Dialog(group="Fundamental Definitions"));
 protected
-  parameter Integer N_A_heat=N_rad*2
-    "Number of surfaces used in order to model heat flow";
+  parameter Integer N_A_heat=N_rad*2 "Number of surfaces used in order to model heat flow";
 
   import SI = Modelica.SIunits;
 
 public
   parameter Integer N_rad = 1 "Number of radial elements" annotation(Dialog(group="Discretisation"));
-  parameter Real sizefunc = 0
-    "Stretching of the volume elements (+1: inner elements are smaller)"                           annotation(Dialog(group="Discretisation"));
+  parameter Real sizefunc = 0 "Stretching of the volume elements (+1: inner elements are smaller)" annotation(Dialog(group="Discretisation"));
   parameter SI.Length diameter_o "Outer diameter" annotation(Dialog(group="Geometry"));
   parameter SI.Length diameter_i "Inner diameter" annotation(Dialog(group="Geometry"));
   parameter SI.Length length "Length of cylinder" annotation(Dialog(group="Geometry"));
   parameter Integer N_tubes= 1 "Number of tubes in parallel" annotation(Dialog(group="Geometry"));
-  parameter SI.Temperature T_start[N_rad]=ones(N_rad)*293.15
-    "Start values of wall temperature inner --> outer"                                      annotation(Dialog(group="Initialisation"));
-  parameter ClaRa.Basics.Choices.Init initChoice=ClaRa.Basics.Choices.Init.noInit
-    "Initialisation option"                                                                                                 annotation(Dialog(group="Initialisation"));
-  final parameter SI.Mass mass_nominal = solid[N_rad].d*Modelica.Constants.pi/4*(diameter_o^2-diameter_i^2)*length*N_tubes
-    "Wall mass (deprecated)";
-  final parameter SI.Mass mass = solid[N_rad].d*Modelica.Constants.pi/4*(diameter_o^2-diameter_i^2)*length*N_tubes
-    "Wall mass";
+  parameter SI.Temperature T_start[N_rad]=ones(N_rad)*293.15 "Start values of wall temperature inner --> outer"
+                                                                                            annotation(Dialog(group="Initialisation"));
+  parameter ClaRa.Basics.Choices.Init initChoice=ClaRa.Basics.Choices.Init.noInit "Initialisation option"                   annotation(Dialog(group="Initialisation"));
+  final parameter SI.Mass mass_nominal = solid[N_rad].d*Modelica.Constants.pi/4*(diameter_o^2-diameter_i^2)*length*N_tubes "Wall mass (deprecated)";
+  final parameter SI.Mass mass = solid[N_rad].d*Modelica.Constants.pi/4*(diameter_o^2-diameter_i^2)*length*N_tubes "Wall mass";
   SI.Length Delta_radius[N_rad] "Thicknes of the volume elements";
   SI.Length radius[N_rad+1] "Radii of the heat transfer areas";
-  SI.Temperature T[N_rad](start=T_start, nominal=300)
-    "Solid material temperature";
+  SI.Temperature T[N_rad](start=T_start, nominal=300) "Solid material temperature";
   SI.InternalEnergy U[N_rad] "Internal energy";
   SI.HeatFlowRate Q_flow[N_rad+1] "Heat flow through material";
   SI.Area A_heat[N_A_heat];
@@ -73,8 +66,7 @@ public
  model Summary
    extends ClaRa.Basics.Icons.RecordIcon;
    parameter Integer N_rad "Number of radial elements";
-   parameter Integer N_A_heat
-      "Number of surfaces used in order to model heat flow";
+   parameter Integer N_A_heat "Number of surfaces used in order to model heat flow";
    input SI.Length diameter_o "Outer diameter";
    input SI.Length diameter_i "Inner diameter";
    input SI.Length length "Length of cylinder";

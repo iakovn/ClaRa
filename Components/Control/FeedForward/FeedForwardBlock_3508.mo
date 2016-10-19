@@ -1,8 +1,7 @@
 within ClaRa.Components.Control.FeedForward;
-model FeedForwardBlock_3508
-  "feed forward for coal mass flow and turbine valve aperture"
+model FeedForwardBlock_3508 "feed forward for coal mass flow and turbine valve aperture"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -16,31 +15,31 @@ model FeedForwardBlock_3508
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
 
-  parameter Real CL_Valve_[:,:]=[0,0; 1, 1]
-    "Characteristics of the turbine valve" annotation(Dialog(group="Part Load Definition"));
+  parameter Real CL_Valve_[:,:]=[0,0; 1, 1] "Characteristics of the turbine valve"
+                                           annotation(Dialog(group="Part Load Definition"));
 
   parameter Real k_FuelOvershoot=100 "Gain of fuel overshoot";
   parameter Real eta_gen= 0.98 "Efficiency of generator";
 
-  Modelica.Blocks.Interfaces.RealInput derP_max_
-    "Maximum overall power gradient" annotation (Placement(transformation(
+  Modelica.Blocks.Interfaces.RealInput derP_max_ "Maximum overall power gradient"
+                                     annotation (Placement(transformation(
         extent={{-20,-20},{20,20}},
         rotation=180,
         origin={120,-20})));
-  Modelica.Blocks.Interfaces.RealInput derP_StG_
-    "Maximum  power gradient due to steam generator restrictions" annotation (
+  Modelica.Blocks.Interfaces.RealInput derP_StG_ "Maximum  power gradient due to steam generator restrictions"
+                                                                  annotation (
       Placement(transformation(
         extent={{-20,-20},{20,20}},
         rotation=180,
         origin={120,-50})));
-  Modelica.Blocks.Interfaces.RealInput derP_T_
-    "Maximum  power gradient due to turbine restrictions" annotation (Placement(
+  Modelica.Blocks.Interfaces.RealInput derP_T_ "Maximum  power gradient due to turbine restrictions"
+                                                          annotation (Placement(
         transformation(
         extent={{-20,-20},{20,20}},
         rotation=180,
         origin={120,-80})));
-  Modelica.Blocks.Interfaces.RealInput P_G_target_
-    "Target value generator power" annotation (Placement(transformation(
+  Modelica.Blocks.Interfaces.RealInput P_G_target_ "Target value generator power"
+                                   annotation (Placement(transformation(
         extent={{-20,-20},{20,20}},
         rotation=270,
         origin={-40,120})));
@@ -104,14 +103,14 @@ public
     annotation (Placement(transformation(extent={{-10,-10},{10,10}},
         rotation=270,
         origin={16,-38})));
-  Modelica.Blocks.Interfaces.RealOutput y_Turbine_
-    "Feed forward value for turbine valve openeing" annotation (Placement(
+  Modelica.Blocks.Interfaces.RealOutput y_Turbine_ "Feed forward value for turbine valve openeing"
+                                                    annotation (Placement(
         transformation(
         extent={{-10,-10},{10,10}},
         rotation=270,
         origin={20,-110})));
-  Modelica.Blocks.Interfaces.RealOutput P_G_set_
-    "Connector of Real output signal" annotation (Placement(transformation(
+  Modelica.Blocks.Interfaces.RealOutput P_G_set_ "Connector of Real output signal"
+                                      annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=270,
         origin={-80,-110})));

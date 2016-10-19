@@ -1,6 +1,5 @@
 within ClaRa.Basics.Interfaces;
-expandable connector Bus
-  "An expandable connector for the usage in ClaRa control definitions"
+expandable connector Bus "An expandable connector for the usage in ClaRa control definitions"
 
   annotation (
     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}, initialScale=0.2), graphics={

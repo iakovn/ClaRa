@@ -1,8 +1,7 @@
 within ClaRa.Components.VolumesValvesFittings.Fittings;
-model SplitVLE_L2_flex
-  "A voluminous split for an arbitrary number of inputs NOT CAPABLE FOR PHASE-CHANGE"
+model SplitVLE_L2_flex "A voluminous split for an arbitrary number of inputs NOT CAPABLE FOR PHASE-CHANGE"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -37,48 +36,40 @@ model Summary
   ClaRa.Basics.Records.FluidVLE_L2           fluid;
 end Summary;
 
-  parameter TILMedia.VLEFluidTypes.BaseVLEFluid   medium=simCenter.fluid1
-    "Medium in the component"  annotation(Dialog(group="Fundamental Definitions"));
+  parameter TILMedia.VLEFluidTypes.BaseVLEFluid   medium=simCenter.fluid1 "Medium in the component"
+                               annotation(Dialog(group="Fundamental Definitions"));
   parameter Integer N_ports_out(min=1)=1 "Number of outlet  ports"
     annotation(Evaluate=true, Dialog(tab="General",group="Fundamental Definitions"));//connectorSizing=true,
-  parameter Boolean useHomotopy=simCenter.useHomotopy
-    "True, if homotopy method is used during initialisation"  annotation(Dialog(tab="Initialisation"));
+  parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation"
+                                                              annotation(Dialog(tab="Initialisation"));
    parameter Modelica.SIunits.Volume V(min=1e-6)=0.1 "System Volume"                               annotation(Dialog(tab="General", group="Geometry"));
-  parameter Modelica.SIunits.MassFlowRate m_flow_out_nom[N_ports_out]= {10}
-    "Nominal mass flow rates at inlet"  annotation(Dialog(tab="General", group="Nominal Values"));
+  parameter Modelica.SIunits.MassFlowRate m_flow_out_nom[N_ports_out]= {10} "Nominal mass flow rates at inlet"
+                                        annotation(Dialog(tab="General", group="Nominal Values"));
   parameter Modelica.SIunits.Pressure p_nom=1e5 "Nominal pressure"                    annotation(Dialog(group="Nominal Values"));
-  parameter Modelica.SIunits.SpecificEnthalpy h_nom=1e5
-    "Nominal specific enthalpy"                                                                annotation(Dialog(group="Nominal Values"));
+  parameter Modelica.SIunits.SpecificEnthalpy h_nom=1e5 "Nominal specific enthalpy"            annotation(Dialog(group="Nominal Values"));
 
-  parameter Modelica.SIunits.SpecificEnthalpy h_start= 1e5
-    "Start value of sytsem specific enthalpy"
+  parameter Modelica.SIunits.SpecificEnthalpy h_start= 1e5 "Start value of sytsem specific enthalpy"
                                              annotation(Dialog(tab="Initialisation"));
-  parameter Modelica.SIunits.Pressure p_start= 1e5
-    "Start value of sytsem pressure"                                                annotation(Dialog(tab="Initialisation"));
-  parameter ClaRa.Basics.Choices.Init initType=ClaRa.Basics.Choices.Init.noInit
-    "Type of initialisation" annotation(Dialog(tab="Initialisation"), choicesAllMatching);
-  final parameter Boolean  showSummary=false
-    "True, if a summary shall be shown, else false"                                   annotation(Dialog(tab="Summary and Visualisation"));
-    parameter Boolean showExpertSummary=false
-    "True, if a summary shall be shown, else false"                                   annotation(Dialog(tab="Summary and Visualisation"));
-  parameter Boolean showData=true
-    "True, if a data port containing p,T,h,s,m_flow shall be shown, else false"
+  parameter Modelica.SIunits.Pressure p_start= 1e5 "Start value of sytsem pressure" annotation(Dialog(tab="Initialisation"));
+  parameter ClaRa.Basics.Choices.Init initType=ClaRa.Basics.Choices.Init.noInit "Type of initialisation"
+                             annotation(Dialog(tab="Initialisation"), choicesAllMatching);
+  final parameter Boolean  showSummary=false "True, if a summary shall be shown, else false"
+                                                                                      annotation(Dialog(tab="Summary and Visualisation"));
+    parameter Boolean showExpertSummary=false "True, if a summary shall be shown, else false"
+                                                                                      annotation(Dialog(tab="Summary and Visualisation"));
+  parameter Boolean showData=true "True, if a data port containing p,T,h,s,m_flow shall be shown, else false"
                                                                                 annotation(Dialog(tab="Summary and Visualisation"));
-  parameter Boolean preciseTwoPhase = true
-    "|Expert Stettings||True, if two-phase transients should be capured precisely";
+  parameter Boolean preciseTwoPhase = true "|Expert Stettings||True, if two-phase transients should be capured precisely";
 protected
-    parameter Modelica.SIunits.Density rho_nom= TILMedia.VLEFluidFunctions.density_phxi(medium, p_nom, h_nom)
-    "Nominal density";
-    Modelica.SIunits.Power Hdrhodt =  if preciseTwoPhase then h*V*drhodt else 0
-    "h*V*drhodt";
+    parameter Modelica.SIunits.Density rho_nom= TILMedia.VLEFluidFunctions.density_phxi(medium, p_nom, h_nom) "Nominal density";
+    Modelica.SIunits.Power Hdrhodt =  if preciseTwoPhase then h*V*drhodt else 0 "h*V*drhodt";
 public
   Modelica.SIunits.EnthalpyFlowRate H_flow_in;
   Modelica.SIunits.EnthalpyFlowRate H_flow_out[N_ports_out];
   Modelica.SIunits.SpecificEnthalpy h(start=h_start);
   Modelica.SIunits.Mass mass "Total system mass";
   Real drhodt;//(unit="kg/(m3s)");
-  Modelica.SIunits.Pressure p(start=p_start, stateSelect=StateSelect.prefer)
-    "System pressure";
+  Modelica.SIunits.Pressure p(start=p_start, stateSelect=StateSelect.prefer) "System pressure";
 
    Summary summary(N_ports_out=N_ports_out,outline(volume_tot = V),
                    inlet(showExpertSummary = showExpertSummary,m_flow=inlet.m_flow,  T=fluidIn.T, p=inlet.p, h=fluidIn.h,s=fluidIn.s, steamQuality=fluidIn.q, H_flow=fluidIn.h .* inlet.m_flow, rho=fluidIn.d),
@@ -88,8 +79,7 @@ public
 
   ClaRa.Basics.Interfaces.FluidPortIn inlet(Medium=medium) "Inlet port"
     annotation (Placement(transformation(extent={{-110,-10},{-90,10}})));
-  ClaRa.Basics.Interfaces.FluidPortOut outlet[N_ports_out](each Medium=medium)
-    "Outlet port"
+  ClaRa.Basics.Interfaces.FluidPortOut outlet[N_ports_out](each Medium=medium) "Outlet port"
     annotation (Placement(transformation(extent={{90,-10},{110,10}})));
 protected
 TILMedia.VLEFluid_ph bulk(vleFluidType =    medium,    p = p, h=h) annotation (Placement(transformation(extent={{70,-10},{90,10}}, rotation=0)));
@@ -108,8 +98,7 @@ equation
                              + der(h)*bulk.drhodh_pxi;
                                                    //calculating drhodt from state variables
 
-   der(h) = 1/mass*(H_flow_in + sum(H_flow_out)  + V*der(p) -Hdrhodt)
-    "Energy balance, decoupled from the mass balance to avoid heavy mass fluctuations during phase change or flow reversal. The term '-h*V*drhodt' is ommited";
+   der(h) = 1/mass*(H_flow_in + sum(H_flow_out)  + V*der(p) -Hdrhodt) "Energy balance, decoupled from the mass balance to avoid heavy mass fluctuations during phase change or flow reversal. The term '-h*V*drhodt' is ommited";
 //~~~~~~~~~~~~~~~~~~~~~~~~~
 // Boundary conditions ~~~~
   for i in 1:N_ports_out loop

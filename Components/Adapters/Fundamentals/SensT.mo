@@ -6,8 +6,7 @@ model SensT "ThermoPower's temperature sensor"
 //  http://sourceforge.net/projects/thermopower/
 //_____________________________________________________________________________________
 
-  replaceable package Medium = Modelica.Media.Water.WaterIF97_ph constrainedby
-    Modelica.Media.Interfaces.PartialMedium "Medium model";
+  replaceable package Medium = Modelica.Media.Water.WaterIF97_ph constrainedby Modelica.Media.Interfaces.PartialMedium "Medium model";
   Medium.BaseProperties fluid;
   FlangeA inlet(redeclare package Medium = Medium)
                                   annotation (extent=[-80, -60; -40, -20]);

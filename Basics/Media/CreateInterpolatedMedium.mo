@@ -1,7 +1,7 @@
 within ClaRa.Basics.Media;
 model CreateInterpolatedMedium
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -16,8 +16,8 @@ model CreateInterpolatedMedium
 //___________________________________________________________________________//
 extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb80;
 
-  TILMedia.VLEFluid_ph refrigerant(redeclare
-      TILMedia.VLEFluidTypes.BaseVLEFluid vleFluidType(
+  TILMedia.VLEFluid_ph refrigerant(redeclare TILMedia.VLEFluidTypes.BaseVLEFluid
+                                          vleFluidType(
       fixedMixingRatio=false,
       nc_propertyCalculation=1,
       mixingRatio_propertyCalculation={1},
@@ -28,8 +28,8 @@ extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb80;
       computeTransportProperties=true)
     annotation (Placement(transformation(extent={{-30,20},{-10,40}})));
 
- TILMedia.VLEFluid_ph refrigerant2(redeclare
-      TILMedia.VLEFluidTypes.BaseVLEFluid vleFluidType(
+ TILMedia.VLEFluid_ph refrigerant2(redeclare TILMedia.VLEFluidTypes.BaseVLEFluid
+                                          vleFluidType(
       fixedMixingRatio=false,
       nc_propertyCalculation=1,
       mixingRatio_propertyCalculation={1},

@@ -1,8 +1,7 @@
 within ClaRa.Components.Utilities.Blocks;
-block Integrator
-  "Output the integral of the input signal - variable Integrator time constant"
+block Integrator "Output the integral of the input signal - variable Integrator time constant"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                            //
+// Component of the ClaRa library, version: 1.1.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -19,16 +18,14 @@ block Integrator
   import SI = ClaRa.Basics.Units;
   extends Modelica.Blocks.Interfaces.SISO(y(start=y_start_const));
 
-  parameter Boolean variable_Tau_i=false
-    "True, if integrator time is set by variable input";
+  parameter Boolean variable_Tau_i=false "True, if integrator time is set by variable input";
   parameter SI.Time Tau_i_const=1 "Constant integrator time"
      annotation (Dialog(enable= not variable_Tau_i));
 
-  parameter Modelica.Blocks.Types.Init initType=Modelica.Blocks.Types.Init.InitialState
-    "Type of initialization"                                                                                      annotation(Evaluate=true,Dialog(group="Initialization"));
+  parameter Modelica.Blocks.Types.Init initType=Modelica.Blocks.Types.Init.InitialState "Type of initialization"  annotation(Evaluate=true,Dialog(group="Initialization"));
 
-  parameter Boolean y_startInputIsActive=false
-    "True, if integrator initial output shall be set by variable input"                                 annotation (Dialog(group="Initialization"));
+  parameter Boolean y_startInputIsActive=false "True, if integrator initial output shall be set by variable input"
+                                                                                            annotation (Dialog(group="Initialization"));
 
   parameter Real y_start_const=0 "Initial or guess value of output (= state)"  annotation (Dialog(group="Initialization",enable= not y_startInputIsActive));
   parameter SI.Time startTime= 0 "Start time for integration";

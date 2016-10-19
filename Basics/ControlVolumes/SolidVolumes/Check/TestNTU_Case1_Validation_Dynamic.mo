@@ -1,8 +1,7 @@
 within ClaRa.Basics.ControlVolumes.SolidVolumes.Check;
-model TestNTU_Case1_Validation_Dynamic
-  "Validation with TestThermalElements.TestNTU_Case2"
+model TestNTU_Case1_Validation_Dynamic "Validation with TestThermalElements.TestNTU_Case2"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.1                        //
+  // Component of the ClaRa library, version: 1.1.2                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -86,8 +85,7 @@ model TestNTU_Case1_Validation_Dynamic
         p_o,
         N_cv),
     redeclare model HeatTransfer =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4
-        (                                                                               alpha_nom=alpha_o),
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4 ( alpha_nom=alpha_o),
     initType=ClaRa.Basics.Choices.Init.steadyState,
     Delta_p_nom=100)                                annotation (Placement(transformation(extent={{-6,28},{26,16}})));
   Components.VolumesValvesFittings.Pipes.PipeFlowVLE_L4_Simple pipe_ColdSide(
@@ -110,8 +108,7 @@ model TestNTU_Case1_Validation_Dynamic
         450e3,
         N_cv),
     redeclare model HeatTransfer =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4
-        (                                                                              alpha_nom=alpha_i),
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4 (alpha_nom=alpha_i),
     redeclare model PressureLoss =
         ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4,
     h_start=linspace(
@@ -204,8 +201,7 @@ model TestNTU_Case1_Validation_Dynamic
         N_tubes=N_tubes,
         N_passes=N_passes),
     redeclare model HeatTransfer =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2
-        (                                                                                                    alpha_nom=alpha_o, PL_alpha=[0, 1; 0.5, 1]),
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2 (                      alpha_nom=alpha_o, PL_alpha=[0, 1; 0.5, 1]),
     m_flow_nom=m_flow_o,
     p_nom=p_o,
     h_nom=h_o_in,
@@ -213,12 +209,10 @@ model TestNTU_Case1_Validation_Dynamic
     p_start=30000000,
     initType=ClaRa.Basics.Choices.Init.steadyEnthalpy,
     redeclare model PhaseBorder =
-        ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.IdeallyStirred
-        (                                                                                                    position_Delta_p_geo="inlet")) annotation (Placement(transformation(extent={{1,-28},{21,-48}})));
+        ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.IdeallyStirred (                        position_Delta_p_geo="inlet")) annotation (Placement(transformation(extent={{1,-28},{21,-48}})));
   FluidVolumes.VolumeVLE_2 innerVol(
     redeclare model HeatTransfer =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2
-        (                                                                                                    alpha_nom=alpha_i, PL_alpha=[0, 1; 0.5, 1]),
+        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2 (                      alpha_nom=alpha_i, PL_alpha=[0, 1; 0.5, 1]),
     m_flow_nom=m_flow_i,
     p_nom=p_i,
     h_nom=h_i_in,
@@ -226,8 +220,7 @@ model TestNTU_Case1_Validation_Dynamic
     h_start=3000e3,
     p_start=90000,
     redeclare model PhaseBorder =
-        ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.IdeallyStirred
-        (                                                                                                    position_Delta_p_geo="inlet")) annotation (Placement(transformation(extent={{21,-98},{1,-78}})));
+        ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.IdeallyStirred (                        position_Delta_p_geo="inlet")) annotation (Placement(transformation(extent={{21,-98},{1,-78}})));
 equation
   for i in 1:pipe_ColdSide.N_cv loop
 

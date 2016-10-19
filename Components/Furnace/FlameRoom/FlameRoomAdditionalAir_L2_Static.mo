@@ -1,8 +1,7 @@
 within ClaRa.Components.Furnace.FlameRoom;
-model FlameRoomAdditionalAir_L2_Static
-  "Model for a flame room section with additional secondary air inlet inside a combustion chamber"
+model FlameRoomAdditionalAir_L2_Static "Model for a flame room section with additional secondary air inlet inside a combustion chamber"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -21,15 +20,13 @@ extends ClaRa.Components.Furnace.BaseClasses.CombustionChamberBase(
 extends ClaRa.Basics.Icons.FlameRoom;
 
 //## P A R A M E T E R S #######################################################################################
-inner parameter Boolean useHomotopy=simCenter.useHomotopy
-    "True, if homotopy method is used during initialisation"  annotation(Dialog(tab="Initialisation"));
+inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation"
+                                                              annotation(Dialog(tab="Initialisation"));
 
 //## V A R I A B L E   P A R T##################################################################################
 
-ClaRa.Basics.Units.MassFraction xi_flueGasMix[flueGas.nc - 1]
-    "Flue gas mixture composition";
-ClaRa.Basics.Units.EnthalpyMassSpecific h_flueGasMix
-    "Specific enthalpy of flue gas mixture";
+ClaRa.Basics.Units.MassFraction xi_flueGasMix[flueGas.nc - 1] "Flue gas mixture composition";
+ClaRa.Basics.Units.EnthalpyMassSpecific h_flueGasMix "Specific enthalpy of flue gas mixture";
 
 //_____________________/ Connectors \______________________________
 public

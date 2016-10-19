@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Radiation;
 model Radiation_gas2Wall_L2 "All Geo || L2 || Radiation Between Gas and Wall"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.1                        //
+  // Component of the ClaRa library, version: 1.1.2                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,13 +15,11 @@ model Radiation_gas2Wall_L2 "All Geo || L2 || Radiation Between Gas and Wall"
   // XRG Simulation GmbH (Hamburg, Germany).                                   //
   //___________________________________________________________________________//
 
-  extends
-    ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Radiation.HeatTransfer_L2;
+  extends ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Radiation.HeatTransfer_L2;
   outer ClaRa.Basics.Records.IComGas_L2 iCom;
   extends ClaRa.Basics.Icons.Epsilon;
 
-  parameter Real CF_fouling=0.8
-    "Scaling factor accounting for the fouling of the wall";
+  parameter Real CF_fouling=0.8 "Scaling factor accounting for the fouling of the wall";
   parameter Real emissivity_wall=0.8 "Emissivity of the wall";
   parameter Real emissivity_flame=0.9 "Emissivity of the flame";
   parameter Real absorbance_flame=0.9 "Absorbance of the flame";

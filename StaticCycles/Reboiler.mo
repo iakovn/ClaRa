@@ -1,7 +1,7 @@
 within ClaRa.StaticCycles;
 model Reboiler "Reboiler || par.: p_reb, m_flow_reb || red | green"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                            //
+// Component of the ClaRa library, version: 1.1.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -17,19 +17,14 @@ model Reboiler "Reboiler || par.: p_reb, m_flow_reb || red | green"
   // Red input:    Values of p and m_flow are known in component and provided FOR neighbor component, value of h is unknown and provided BY neighbor component.
   // Green output: Values of p, m_flow and h are known in component an provided FOR neighbor component.
   outer ClaRa.SimCenter simCenter;
-  parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium = simCenter.fluid1
-    "Medium in the component"
-    annotation(choices(choice=simCenter.fluid1
-        "First fluid defined in global simCenter",
-                       choice=simCenter.fluid2
-        "Second fluid defined in global simCenter",
-                       choice=simCenter.fluid3
-        "Third fluid defined in global simCenter"),       Dialog(group="Fundamental Definitions"));
+  parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium = simCenter.fluid1 "Medium in the component"
+    annotation(choices(choice=simCenter.fluid1 "First fluid defined in global simCenter",
+                       choice=simCenter.fluid2 "Second fluid defined in global simCenter",
+                       choice=simCenter.fluid3 "Third fluid defined in global simCenter"),
+                                                          Dialog(group="Fundamental Definitions"));
 
-parameter ClaRa.Basics.Units.Pressure p_reb=3.5e5
-    "|Fundamental Definitions|Reboiler pressure";
-parameter ClaRa.Basics.Units.MassFlowRate m_flow_reb=150
-    "|Fundamental Definitions|Reboiler mass flow rate";
+parameter ClaRa.Basics.Units.Pressure p_reb=3.5e5 "|Fundamental Definitions|Reboiler pressure";
+parameter ClaRa.Basics.Units.MassFlowRate m_flow_reb=150 "|Fundamental Definitions|Reboiler mass flow rate";
 final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_in(fixed=false);
 final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_out=
       TILMedia.VLEFluidFunctions.bubbleSpecificEnthalpy_pxi(medium, p_reb);

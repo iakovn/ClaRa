@@ -5,9 +5,9 @@ partial model partialFan
 protected
   outer ClaRa.SimCenter simCenter;
 public
-inner parameter TILMedia.GasTypes.BaseGas medium = simCenter.flueGasModel
-    "Medium to be used"   annotation(choices(choice=simCenter.flueGasModel
-        "Gas model as defined in simCenter"),       Dialog(group="Media Definitions"));
+inner parameter TILMedia.GasTypes.BaseGas medium = simCenter.flueGasModel "Medium to be used"
+                          annotation(choices(choice=simCenter.flueGasModel "Gas model as defined in simCenter"),
+                                                    Dialog(group="Media Definitions"));
 
 /******************** Connectors *****************************/
 
@@ -28,8 +28,8 @@ protected
     annotation (Placement(transformation(extent={{-10,-10},{10,10}}, rotation=0)));
 /****************** Start Values ********************/
 
- parameter Modelica.SIunits.MassFlowRate m_flow_start = 1e-3
-    "Mass flow rate at start" annotation(Dialog(tab="Start Values"));
+ parameter Modelica.SIunits.MassFlowRate m_flow_start = 1e-3 "Mass flow rate at start"
+                              annotation(Dialog(tab="Start Values"));
 /****************** Additional variables **************/
 public
  ClaRa.Basics.Units.Pressure

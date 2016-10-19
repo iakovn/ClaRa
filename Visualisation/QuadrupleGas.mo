@@ -1,7 +1,7 @@
 within ClaRa.Visualisation;
 model QuadrupleGas " Cross-shaped dynamic display of variables by users choice"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -18,8 +18,7 @@ model QuadrupleGas " Cross-shaped dynamic display of variables by users choice"
 //  parameter String unit="°C" "Variable unit";
   parameter Integer identifier= 0 "Identifier of the quadruple";
   DecimalSpaces decimalSpaces "Accuracy to be displayed" annotation(Dialog);
-  parameter Boolean largeFonts= simCenter.largeFonts
-    "True if visualisers shall be displayed as large as posible";
+  parameter Boolean largeFonts= simCenter.largeFonts "True if visualisers shall be displayed as large as posible";
 
   parameter Integer value1=1 "Value 1 to display" annotation (Dialog(group="Values to display"), choices(
       choice=1 "Temperature",
@@ -89,14 +88,10 @@ model QuadrupleGas " Cross-shaped dynamic display of variables by users choice"
       choice=14 "Mass concentration of NH3",
       choice=15 "Mass concentration of Ar"));
 
-  Real x1= if value1==1 then eye.T elseif value1==2 then eye.m_flow elseif value1==3 then eye.h elseif value1==4 then eye.p elseif value1==5 then eye.s elseif value1==6 then eye.xi[1] elseif value1==7 then eye.xi[2] elseif value1==8 then eye.xi[3] elseif value1==9 then eye.xi[4] elseif value1==10 then eye.xi[5] elseif value1==11 then eye.xi[6] elseif value1==12 then eye.xi[7] elseif value1==13 then eye.xi[8] elseif value1==14 then eye.xi[9] elseif value1==15 then (1-sum(eye.xi)) else 0
-    "Display value 1";
-  Real x2= if value2==1 then eye.T elseif value2==2 then eye.m_flow elseif value2==3 then eye.h elseif value2==4 then eye.p elseif value2==5 then eye.s elseif value2==6 then eye.xi[1] elseif value2==7 then eye.xi[2] elseif value2==8 then eye.xi[3] elseif value2==9 then eye.xi[4] elseif value2==10 then eye.xi[5] elseif value2==11 then eye.xi[6] elseif value2==12 then eye.xi[7] elseif value2==13 then eye.xi[8] elseif value2==14 then eye.xi[9] elseif value2==15 then (1-sum(eye.xi)) else 0
-    "Display value 2";
-  Real x3= if value3==1 then eye.T elseif value3==2 then eye.m_flow elseif value3==3 then eye.h elseif value3==4 then eye.p elseif value3==5 then eye.s elseif value3==6 then eye.xi[1] elseif value3==7 then eye.xi[2] elseif value3==8 then eye.xi[3] elseif value3==9 then eye.xi[4] elseif value3==10 then eye.xi[5] elseif value3==11 then eye.xi[6] elseif value3==12 then eye.xi[7] elseif value3==13 then eye.xi[8] elseif value3==14 then eye.xi[9] elseif value3==15 then (1-sum(eye.xi)) else 0
-    "Display value 3";
-  Real x4= if value4==1 then eye.T elseif value4==2 then eye.m_flow elseif value4==3 then eye.h elseif value4==4 then eye.p elseif value4==5 then eye.s elseif value4==6 then eye.xi[1] elseif value4==7 then eye.xi[2] elseif value4==8 then eye.xi[3] elseif value4==9 then eye.xi[4] elseif value4==10 then eye.xi[5] elseif value4==11 then eye.xi[6] elseif value4==12 then eye.xi[7] elseif value4==13 then eye.xi[8] elseif value4==14 then eye.xi[9] elseif value4==15 then (1-sum(eye.xi)) else 0
-    "Display value 4";
+  Real x1= if value1==1 then eye.T elseif value1==2 then eye.m_flow elseif value1==3 then eye.h elseif value1==4 then eye.p elseif value1==5 then eye.s elseif value1==6 then eye.xi[1] elseif value1==7 then eye.xi[2] elseif value1==8 then eye.xi[3] elseif value1==9 then eye.xi[4] elseif value1==10 then eye.xi[5] elseif value1==11 then eye.xi[6] elseif value1==12 then eye.xi[7] elseif value1==13 then eye.xi[8] elseif value1==14 then eye.xi[9] elseif value1==15 then (1-sum(eye.xi)) else 0 "Display value 1";
+  Real x2= if value2==1 then eye.T elseif value2==2 then eye.m_flow elseif value2==3 then eye.h elseif value2==4 then eye.p elseif value2==5 then eye.s elseif value2==6 then eye.xi[1] elseif value2==7 then eye.xi[2] elseif value2==8 then eye.xi[3] elseif value2==9 then eye.xi[4] elseif value2==10 then eye.xi[5] elseif value2==11 then eye.xi[6] elseif value2==12 then eye.xi[7] elseif value2==13 then eye.xi[8] elseif value2==14 then eye.xi[9] elseif value2==15 then (1-sum(eye.xi)) else 0 "Display value 2";
+  Real x3= if value3==1 then eye.T elseif value3==2 then eye.m_flow elseif value3==3 then eye.h elseif value3==4 then eye.p elseif value3==5 then eye.s elseif value3==6 then eye.xi[1] elseif value3==7 then eye.xi[2] elseif value3==8 then eye.xi[3] elseif value3==9 then eye.xi[4] elseif value3==10 then eye.xi[5] elseif value3==11 then eye.xi[6] elseif value3==12 then eye.xi[7] elseif value3==13 then eye.xi[8] elseif value3==14 then eye.xi[9] elseif value3==15 then (1-sum(eye.xi)) else 0 "Display value 3";
+  Real x4= if value4==1 then eye.T elseif value4==2 then eye.m_flow elseif value4==3 then eye.h elseif value4==4 then eye.p elseif value4==5 then eye.s elseif value4==6 then eye.xi[1] elseif value4==7 then eye.xi[2] elseif value4==8 then eye.xi[3] elseif value4==9 then eye.xi[4] elseif value4==10 then eye.xi[5] elseif value4==11 then eye.xi[6] elseif value4==12 then eye.xi[7] elseif value4==13 then eye.xi[8] elseif value4==14 then eye.xi[9] elseif value4==15 then (1-sum(eye.xi)) else 0 "Display value 4";
 
   record DecimalSpaces
     parameter Integer x1=1 "Accuracy to be displayed for value x1";

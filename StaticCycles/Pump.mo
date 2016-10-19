@@ -1,7 +1,7 @@
 within ClaRa.StaticCycles;
 model Pump "Ideal Pump || par.: efficiency || green | blue"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                            //
+// Component of the ClaRa library, version: 1.1.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -23,8 +23,8 @@ model Pump "Ideal Pump || par.: efficiency || green | blue"
                        choice=simCenter.fluid3 "Third fluid defined in global simCenter"),
                                                           Dialog(group="Fundamental Definitions"));
   parameter Real  efficiency = 1 "|Fundamental Definitions|Pump efficiency";
-  final parameter ClaRa.Basics.Units.DensityMassSpecific rho_in = TILMedia.VLEFluidFunctions.bubbleDensity_pxi(medium, p_in);
-  final parameter ClaRa.Basics.Units.Power P_pump = (p_out - p_in)*m_flow/rho_in/efficiency;
+  final parameter ClaRa.Basics.Units.DensityMassSpecific rho_in = TILMedia.VLEFluidFunctions.bubbleDensity_pxi(medium, p_in) "Inlet density";
+  final parameter ClaRa.Basics.Units.Power P_pump = (p_out - p_in)*m_flow/rho_in/efficiency "Pump power";
 //protected
   final parameter ClaRa.Basics.Units.Pressure p_in(fixed=false) "Inlet pressure";
   final parameter ClaRa.Basics.Units.Pressure p_out(fixed=false) "Outlet pressure";

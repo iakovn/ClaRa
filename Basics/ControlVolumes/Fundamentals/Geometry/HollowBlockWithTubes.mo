@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.Geometry;
 model HollowBlockWithTubes "Block shape || Shell with tubes"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.1                        //
+  // Component of the ClaRa library, version: 1.1.2                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -43,13 +43,11 @@ model HollowBlockWithTubes "Block shape || Shell with tubes"
     final height_fill=height,
     final shape=[0, 1; 1, 1]);
 
-  parameter Units.Length height=1
-    "Height of the component; Fixed flow direction in case of vertical flow orientation"
+  parameter Units.Length height=1 "Height of the component; Fixed flow direction in case of vertical flow orientation"
                                                                                           annotation (Dialog(tab="General",group="Essential Geometry Definition"));
   parameter Units.Length width=1 "Width of the component"
                                                          annotation (Dialog(tab="General",group="Essential Geometry Definition"));
-  parameter Units.Length length=1
-    "Length of the component; Fixed flow direction in case of horizontal flow orientation"
+  parameter Units.Length length=1 "Length of the component; Fixed flow direction in case of horizontal flow orientation"
                                                                                           annotation (Dialog(
       tab="General",
       group="Essential Geometry Definition",
@@ -57,11 +55,10 @@ model HollowBlockWithTubes "Block shape || Shell with tubes"
       groupImage="modelica://ClaRa/figures/ParameterDialog/HollowBlockWithTubes.png",
       connectorSizing=false));
 
-  parameter ClaRa.Basics.Choices.GeometryOrientation flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.horizontal
-    "Orientation of shell side flow"                                                      annotation (Dialog(tab="General",group="Essential Geometry Definition"));
+  parameter ClaRa.Basics.Choices.GeometryOrientation flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.horizontal "Orientation of shell side flow"
+                                                                                          annotation (Dialog(tab="General",group="Essential Geometry Definition"));
 
-  final parameter Real interior=volume/(height*width*length)
-    "Clear fraction in the shell";
+  final parameter Real interior=volume/(height*width*length) "Clear fraction in the shell";
 
   parameter Units.Length diameter_t=0.1 "Outer diameter of internal tubes" annotation (Dialog(
       tab="General",
@@ -71,23 +68,19 @@ model HollowBlockWithTubes "Block shape || Shell with tubes"
       connectorSizing=false));
   parameter Integer N_tubes=1 "Number of internal tubes for one pass" annotation(Dialog(group="Interior Equipment"));
   parameter Integer N_passes=1 "Number of passes of the internal tubes" annotation(Dialog(group="Interior Equipment"));
-  parameter Boolean parallelTubes=false
-    "True, if tubes are parallel to shell flow flowOrientation, else false"               annotation(Dialog(group="Interior Equipment"));
+  parameter Boolean parallelTubes=false "True, if tubes are parallel to shell flow flowOrientation, else false"
+                                                                                          annotation(Dialog(group="Interior Equipment"));
 
-  parameter Units.Length Delta_z_par=2*diameter_t
-    "Distance between tubes parallel to flow direction"                                                annotation(Dialog(group="Interior Equipment"));
-  parameter Units.Length Delta_z_ort=2*diameter_t
-    "Distance between tubes orthogonal to flow direction"                                                annotation(Dialog(group="Interior Equipment"));
+  parameter Units.Length Delta_z_par=2*diameter_t "Distance between tubes parallel to flow direction"  annotation(Dialog(group="Interior Equipment"));
+  parameter Units.Length Delta_z_ort=2*diameter_t "Distance between tubes orthogonal to flow direction"  annotation(Dialog(group="Interior Equipment"));
   final parameter Real a=Delta_z_ort/diameter_t "Orthogonal alignment ratio"  annotation(Dialog(group="Interior Equipment"));
   final parameter Real b=Delta_z_par/diameter_t "Parallel alignment ratio"  annotation(Dialog(group="Interior Equipment"));
-  final parameter Real psi=if b >= 1 then 1 - Modelica.Constants.pi/4/a else 1 - Modelica.Constants.pi/4/a/b
-    "Void ratio"                                                                          annotation(Dialog(group="Interior Equipment"));
-  parameter Boolean staggeredAlignment=true
-    "True, if the tubes are aligned staggeredly, false otherwise"                                          annotation(Dialog(group="Interior Equipment"));
+  final parameter Real psi=if b >= 1 then 1 - Modelica.Constants.pi/4/a else 1 - Modelica.Constants.pi/4/a/b "Void ratio"
+                                                                                          annotation(Dialog(group="Interior Equipment"));
+  parameter Boolean staggeredAlignment=true "True, if the tubes are aligned staggeredly, false otherwise"  annotation(Dialog(group="Interior Equipment"));
   parameter Integer N_rows(
     min=N_passes,
-    max=N_tubes*N_passes) = integer(ceil(sqrt(N_tubes))*N_passes)
-    "Number of pipe rows in flow direction (minimum = N_passes)"                                                               annotation (Dialog(group="Interior Equipment", enable= not parallelTubes, groupImage="modelica://ClaRa/figures/ParameterDialog/HollowBlockWithTubes_1.png"));
+    max=N_tubes*N_passes) = integer(ceil(sqrt(N_tubes))*N_passes) "Number of pipe rows in flow direction (minimum = N_passes)" annotation (Dialog(group="Interior Equipment", enable= not parallelTubes, groupImage="modelica://ClaRa/figures/ParameterDialog/HollowBlockWithTubes_1.png"));
 
 equation
    for i in 1:N_inlet loop

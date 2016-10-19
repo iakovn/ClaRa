@@ -1,8 +1,7 @@
 within ClaRa.Components.Utilities.Blocks;
-block VariableGradientLimiter
-  "Limit the range of a signal with variable limits"
+block VariableGradientLimiter "Limit the range of a signal with variable limits"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                            //
+// Component of the ClaRa library, version: 1.1.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -17,23 +16,20 @@ block VariableGradientLimiter
 //___________________________________________________________________________//
   extends Modelica.Blocks.Interfaces.SISO;
   import ClaRa.Basics.Functions.Stepsmoother;
-  parameter Real Nd(min=Modelica.Constants.small) = 10
-    "|Expert Settings|Input - Output Coupling|The higher Nd, the closer y follows u";
+  parameter Real Nd(min=Modelica.Constants.small) = 10 "|Expert Settings|Input - Output Coupling|The higher Nd, the closer y follows u";
 
-  parameter Boolean useThresh=false
-    "|Expert Settings|Numerical Noise Suppression|Use threshould for suppression of numerical noise";
+  parameter Boolean useThresh=false "|Expert Settings|Numerical Noise Suppression|Use threshould for suppression of numerical noise";
   parameter Real thres(max=1e-6)=1e-7 "If abs(u-y)< thres, y becomes a simple pass through of u. Increasing thres can improve simulation speed. However to large values can make the simulation unstable. 
      A good starting point is the choice thres = tolerance/1000."                         annotation (Dialog(enable = useThresh,tab="Expert Settings",group="Numerical Noise Suppression"));
-  parameter Boolean constantLimits= false
-    "True, if gradient limits are constant";
+  parameter Boolean constantLimits= false "True, if gradient limits are constant";
   parameter Real maxGrad_const = 1 "Constant max gradient" annotation (Dialog(enable = constantLimits));
   parameter Real minGrad_const = -1 "Constant min gradient" annotation (Dialog(enable = constantLimits));
 
-  Modelica.Blocks.Interfaces.RealInput maxGrad(value=maxGrad_) if not constantLimits
-    "Maximum Gradient allowd" annotation (Placement(transformation(extent={{
+  Modelica.Blocks.Interfaces.RealInput maxGrad(value=maxGrad_) if not constantLimits "Maximum Gradient allowd"
+                              annotation (Placement(transformation(extent={{
             -140,60},{-100,100}}, rotation=0)));
-  Modelica.Blocks.Interfaces.RealInput minGrad(value=minGrad_) if not constantLimits
-    "Minimum Gradient allowd" annotation (Placement(transformation(extent={{
+  Modelica.Blocks.Interfaces.RealInput minGrad(value=minGrad_) if not constantLimits "Minimum Gradient allowd"
+                              annotation (Placement(transformation(extent={{
             -140,-100},{-100,-60}}, rotation=0)));
 
 protected

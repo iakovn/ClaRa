@@ -1,7 +1,7 @@
 within ClaRa.Components.VolumesValvesFittings.Fittings;
 model JoinGas_L2_flex "Adiabatic junction volume"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -43,12 +43,12 @@ extends ClaRa.Basics.Icons.ComplexityLevel(complexity="L2");
    ClaRa.Basics.Records.FlangeGas outlet;
  end Summary;
 
-inner parameter ClaRa.Basics.Choices.Init initType=ClaRa.Basics.Choices.Init.noInit
-    "Type of initialisation" annotation(Dialog(tab="Initialisation"), choicesAllMatching);
+inner parameter ClaRa.Basics.Choices.Init initType=ClaRa.Basics.Choices.Init.noInit "Type of initialisation"
+                             annotation(Dialog(tab="Initialisation"), choicesAllMatching);
 
 // ***************************** defintion of medium used in cell *************************************************
-inner parameter TILMedia.GasTypes.BaseGas medium = simCenter.flueGasModel
-    "Medium to be used in tubes"  annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
+inner parameter TILMedia.GasTypes.BaseGas medium = simCenter.flueGasModel "Medium to be used in tubes"
+                                  annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
 
   ClaRa.Basics.Interfaces.GasPortIn inlet[N_ports_in](each Medium=medium, m_flow)
     annotation (Placement(transformation(extent={{-110,-10},{-90,10}}), iconTransformation(extent={{-110,-10},{-90,10}})));
@@ -77,35 +77,30 @@ protected
     annotation (Placement(transformation(extent={{-10,-12},{10,8}})));
   /****************** Nominal values *******************/
 public
-  parameter Modelica.SIunits.MassFlowRate m_flow_in_nom[N_ports_in]= {10}
-    "Nominal mass flow rates at inlet"  annotation(Dialog(tab="General", group="Nominal Values"));
+  parameter Modelica.SIunits.MassFlowRate m_flow_in_nom[N_ports_in]= {10} "Nominal mass flow rates at inlet"
+                                        annotation(Dialog(tab="General", group="Nominal Values"));
   parameter Modelica.SIunits.Pressure p_nom=1e5 "Nominal pressure"                    annotation(Dialog(group="Nominal Values"));
-  parameter Modelica.SIunits.Temperature T_nom=293.15
-    "Nominal specific enthalpy"                                                                annotation(Dialog(group="Nominal Values"));
+  parameter Modelica.SIunits.Temperature T_nom=293.15 "Nominal specific enthalpy"              annotation(Dialog(group="Nominal Values"));
   parameter ClaRa.Basics.Units.MassFraction xi_nom[medium.nc - 1]={0,0,0,0,0.76,0.23,0,0,0}  annotation(Dialog(group="Nominal Values"));
 
-  final parameter Modelica.SIunits.Density rho_nom= TILMedia.GasFunctions.density_pTxi(medium, p_nom, T_nom, xi_nom)
-    "Nominal density";
+  final parameter Modelica.SIunits.Density rho_nom= TILMedia.GasFunctions.density_pTxi(medium, p_nom, T_nom, xi_nom) "Nominal density";
   /****************** Initial values *******************/
 public
-    parameter Boolean useHomotopy=simCenter.useHomotopy
-    "True, if homotopy method is used during initialisation"  annotation(Dialog(tab="Initialisation"));
-  parameter ClaRa.Basics.Units.Pressure p_start=1.013e5
-    "Initial value for air pressure"
+    parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation"
+                                                              annotation(Dialog(tab="Initialisation"));
+  parameter ClaRa.Basics.Units.Pressure p_start=1.013e5 "Initial value for air pressure"
     annotation(Dialog(tab="Initialisation"));
 //   parameter Boolean fixedInitialPressure = true
 //     "if true, initial pressure is fixed" annotation(Dialog(group="Initial Values"));
 
-  parameter ClaRa.Basics.Units.Temperature T_start=298.15
-    "Initial value for air temperature"
+  parameter ClaRa.Basics.Units.Temperature T_start=298.15 "Initial value for air temperature"
     annotation(Dialog(tab="Initialisation"));
 
   parameter ClaRa.Basics.Units.MassFraction[medium.nc - 1]
-                                                         mixingRatio_initial=zeros(medium.nc-1)
-    "Initial value for mixing ratio" annotation(Dialog(tab="Initialisation"));
+                                                         mixingRatio_initial=zeros(medium.nc-1) "Initial value for mixing ratio"
+                                     annotation(Dialog(tab="Initialisation"));
 
-  final parameter Modelica.SIunits.SpecificEnthalpy h_start = TILMedia.GasFunctions.specificEnthalpy_pTxi(medium, p_start, T_start, mixingRatio_initial)
-    "Start value for specific Enthalpy inside volume";
+  final parameter Modelica.SIunits.SpecificEnthalpy h_start = TILMedia.GasFunctions.specificEnthalpy_pTxi(medium, p_start, T_start, mixingRatio_initial) "Start value for specific Enthalpy inside volume";
 
   ClaRa.Basics.Units.MassFraction xi[medium.nc - 1](start=mixingRatio_initial);
   Modelica.SIunits.SpecificEnthalpy h(start=h_start) "Specific enthalpy";
@@ -162,19 +157,16 @@ equation
   end for;
 
  //  der(h) = 1/mass*(sum(inlet.m_flow .*(gasInlet.h - h*ones(N_ports_in))) + outlet.m_flow*(gasOutlet.h - h) + volume*der(p)) "Energy balance";
-  der(h) =if useHomotopy then homotopy(1/mass*(sum(inlet.m_flow .*(gasInlet.h - h*ones(N_ports_in))) + outlet.m_flow*(gasOutlet.h - h) + volume*der(p)),  1/mass*(sum(m_flow_in_nom .*(gasInlet.h - h*ones(N_ports_in))) + m_flow_in_nom[1]*(gasOutlet.h - h) + volume*der(p))) else 1/mass*(sum(inlet.m_flow .*(gasInlet.h - h*ones(N_ports_in))) + outlet.m_flow*(gasOutlet.h - h) + volume*der(p))
-    "Energy balance";
+  der(h) =if useHomotopy then homotopy(1/mass*(sum(inlet.m_flow .*(gasInlet.h - h*ones(N_ports_in))) + outlet.m_flow*(gasOutlet.h - h) + volume*der(p)),  1/mass*(sum(m_flow_in_nom .*(gasInlet.h - h*ones(N_ports_in))) + m_flow_in_nom[1]*(gasOutlet.h - h) + volume*der(p))) else 1/mass*(sum(inlet.m_flow .*(gasInlet.h - h*ones(N_ports_in))) + outlet.m_flow*(gasOutlet.h - h) + volume*der(p)) "Energy balance";
 
   for i in 1:medium.nc - 1 loop
    // der(xi[i]) = 1/mass.*(sum(inlet.m_flow.*(gasInlet.xi[i]-xi[i]*ones(N_ports_in))) + outlet.m_flow.*(gasOutlet.xi[i]-xi[i])) "Mass balance";
-   der(xi[i]) = if useHomotopy then homotopy(1/mass.*(sum(inlet.m_flow.*(gasInlet.xi[i]-xi[i]*ones(N_ports_in))) + outlet.m_flow.*(gasOutlet.xi[i]-xi[i])), 1/mass.*(sum(m_flow_in_nom.*(xi_nom[i]*ones(N_ports_in)-xi[i]*ones(N_ports_in))) +  m_flow_in_nom[1].*(xi_nom[i]-xi[i]))) else 1/mass.*(sum(inlet.m_flow.*(gasInlet.xi[i]-xi[i]*ones(N_ports_in))) + outlet.m_flow.*(gasOutlet.xi[i]-xi[i]))
-      "Mass balance";
+   der(xi[i]) = if useHomotopy then homotopy(1/mass.*(sum(inlet.m_flow.*(gasInlet.xi[i]-xi[i]*ones(N_ports_in))) + outlet.m_flow.*(gasOutlet.xi[i]-xi[i])), 1/mass.*(sum(m_flow_in_nom.*(xi_nom[i]*ones(N_ports_in)-xi[i]*ones(N_ports_in))) +  m_flow_in_nom[1].*(xi_nom[i]-xi[i]))) else 1/mass.*(sum(inlet.m_flow.*(gasInlet.xi[i]-xi[i]*ones(N_ports_in))) + outlet.m_flow.*(gasOutlet.xi[i]-xi[i])) "Mass balance";
   end for;
 
       //______________ Balance euqations _______________________
 
-    mass = if useHomotopy then volume*homotopy(bulk.d,rho_nom) else volume*bulk.d
-    "Mass in control volume";
+    mass = if useHomotopy then volume*homotopy(bulk.d,rho_nom) else volume*bulk.d "Mass in control volume";
 
     drhodt = bulk.drhodh_pxi*der(h) + bulk.drhodp_hxi*der(p) + sum({bulk.drhodxi_ph[i] * der(bulk.xi[i]) for i in 1:medium.nc-1});
 

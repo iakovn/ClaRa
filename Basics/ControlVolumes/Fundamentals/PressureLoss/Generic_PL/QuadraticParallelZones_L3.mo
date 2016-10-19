@@ -1,8 +1,7 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL;
-model QuadraticParallelZones_L3
-  "All geo || L3 || Quadratic pressure loss || nominal point"
+model QuadraticParallelZones_L3 "All geo || L3 || Quadratic pressure loss || nominal point"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.1                        //
+  // Component of the ClaRa library, version: 1.1.2                        //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -16,15 +15,11 @@ model QuadraticParallelZones_L3
   // XRG Simulation GmbH (Hamburg, Germany).                                   //
   //___________________________________________________________________________//
 
-  extends
-    ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.PressureLoss_L3;
+  extends ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.PressureLoss_L3;
 
-  parameter SI.Pressure Delta_p_nom[iCom.N_inlet]=ones(iCom.N_inlet)*1000
-    "Nominal ressure loss";
-  parameter SI.PressureDifference Delta_p_smooth=100
-    "Small pressure difference for linearisation around zero mass flow";
-  parameter Real CF_backflow=1
-    "Enhancement factor for reverse flow pressure loss";
+  parameter SI.Pressure Delta_p_nom[iCom.N_inlet]=ones(iCom.N_inlet)*1000 "Nominal ressure loss";
+  parameter SI.PressureDifference Delta_p_smooth=100 "Small pressure difference for linearisation around zero mass flow";
+  parameter Real CF_backflow=1 "Enhancement factor for reverse flow pressure loss";
   //   SI.PressureDifference Delta_p[iCom.N_inlet]
   //     "Pressure difference du to friction";
 

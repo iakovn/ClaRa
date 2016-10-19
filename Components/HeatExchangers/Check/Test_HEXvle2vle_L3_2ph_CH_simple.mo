@@ -36,8 +36,7 @@ end Regression;
         ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.QuadraticParallelZones_L3,
     z_in_shell=10,
     redeclare model HeatTransferTubes =
-        Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L2
-        (                                                                                                    alpha_nom=5000),
+        Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L2 (                            alpha_nom=5000),
     T_w_start=linspace(
         200 + 273.15,
         450 + 273.15,
@@ -58,8 +57,7 @@ end Regression;
     z_out_shell=0.1,
     initTypeTubes=ClaRa.Basics.Choices.Init.noInit,
     redeclare model HeatTransfer_Shell =
-        Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.Constant_L3_ypsDependent
-        (                                                                                                    alpha_nom={1000,3000}),
+        Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.Constant_L3_ypsDependent (                   alpha_nom={1000,3000}),
     level_rel_start=0.2,
     N_tubes=500)                                                                                                     annotation (Placement(transformation(extent={{-6,-72},{14,-52}})));
 
@@ -102,8 +100,7 @@ end Regression;
     offset=961e3,
     startTime=10000,
     height=-106e3) annotation (Placement(transformation(extent={{100,-94},{80,-74}})));
-  inner SimCenter simCenter(useHomotopy=true, redeclare
-      TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater                                                   fluid1,
+  inner SimCenter simCenter(useHomotopy=true, redeclare TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1,
     showExpertSummary=true)                                                                                       annotation (Placement(transformation(extent={{40,40},{80,60}})));
   Visualisation.Hexdisplay_3 hexdisplay_3_1(
     T_o={hex.shell.summary.inlet[1].T,hex.shell.summary.outlet[1].T,hex.shell.summary.outlet[1].T,hex.shell.summary.outlet[1].T,hex.shell.summary.outlet[1].T,hex.shell.summary.outlet[1].T},

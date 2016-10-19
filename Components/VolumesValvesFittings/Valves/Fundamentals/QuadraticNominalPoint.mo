@@ -1,25 +1,17 @@
 within ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals;
-model QuadraticNominalPoint
-  "Quadratic|Nominal operation point | subcritical flow"
+model QuadraticNominalPoint "Quadratic|Nominal operation point | subcritical flow"
 //   "A linear pressure loss using a constant pressure loss coefficient"
-  extends
-    ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.GenericPressureLoss;
+  extends ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.GenericPressureLoss;
   import SI = ClaRa.Basics.Units;
   import SM = ClaRa.Basics.Functions.Stepsmoother;
 
-  final parameter Real Kvs(unit="m3/h") = 3600 * m_flow_nom/rho_in_nom * sqrt(rho_in_nom/1000*1e5/Delta_p_nom)
-    "|Valve Characteristics|Flow Coefficient at nominal opening (Delta_p_nom = 1e5 Pa, rho_nom=1000 kg/m^3(cold water))";
-  Real Kv(unit="m3/h")
-    "|Valve Characteristics|Flow Coefficient (Delta_p_nom = 1e5 Pa, rho_nom=1000 kg/m^3(cold water))";
-  parameter SI.Pressure Delta_p_eps= 100
-    "|Expert Settings||Small pressure difference for linearisation around zeor flow";
+  final parameter Real Kvs(unit="m3/h") = 3600 * m_flow_nom/rho_in_nom * sqrt(rho_in_nom/1000*1e5/Delta_p_nom) "|Valve Characteristics|Flow Coefficient at nominal opening (Delta_p_nom = 1e5 Pa, rho_nom=1000 kg/m^3(cold water))";
+  Real Kv(unit="m3/h") "|Valve Characteristics|Flow Coefficient (Delta_p_nom = 1e5 Pa, rho_nom=1000 kg/m^3(cold water))";
+  parameter SI.Pressure Delta_p_eps= 100 "|Expert Settings||Small pressure difference for linearisation around zeor flow";
 // protected
-  parameter SI.Pressure Delta_p_nom = 1e5
-    "|Valve Characteristics|Nominal pressure difference for Kv definition";
-  parameter SI.DensityMassSpecific rho_in_nom= 1000
-    "|Valve Characteristics|Nominal density for Kv definition";
-  parameter SI.MassFlowRate m_flow_nom= 1
-    "|Valve Characteristics|Nominal mass flow rate";
+  parameter SI.Pressure Delta_p_nom = 1e5 "|Valve Characteristics|Nominal pressure difference for Kv definition";
+  parameter SI.DensityMassSpecific rho_in_nom= 1000 "|Valve Characteristics|Nominal density for Kv definition";
+  parameter SI.MassFlowRate m_flow_nom= 1 "|Valve Characteristics|Nominal mass flow rate";
 
 equation
   gamma = 2e30 "is not used";

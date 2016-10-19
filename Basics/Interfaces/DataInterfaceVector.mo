@@ -1,7 +1,7 @@
 within ClaRa.Basics.Interfaces;
 model DataInterfaceVector
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.1                        //
+// Component of the ClaRa library, version: 1.1.2                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,8 +15,7 @@ model DataInterfaceVector
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
 
-parameter Integer N_sets= 0
-    "Number of data sets to be provided (if showData=true)"                         annotation(Dialog(tab="Summary and Visualisation"));
+parameter Integer N_sets= 0 "Number of data sets to be provided (if showData=true)" annotation(Dialog(tab="Summary and Visualisation"));
 //    input Real p_int[N_sets] annotation(HideResult=true);
 //    input Real h_int[N_sets] annotation(HideResult=true);
 //    input Real m_flow_int[N_sets] annotation(HideResult=true);

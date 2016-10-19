@@ -1,6 +1,5 @@
 within ClaRa.Basics.Functions;
-function CalculateStateChangeFraction
-  "Calculate the fraction of state change in two-phase region to total state change"
+function CalculateStateChangeFraction "Calculate the fraction of state change in two-phase region to total state change"
   extends ClaRa.Basics.Icons.Function;
   input ClaRa.Basics.Units.EnthalpyMassSpecific h_in "Inlet spec. enthalpy";
   input ClaRa.Basics.Units.EnthalpyMassSpecific h_out "Outlet spec.  enthalpy";
