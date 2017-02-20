@@ -1,10 +1,10 @@
 within ClaRa.Components.HeatExchangers;
 model RegenerativeAirPreheater_L4 "Model for a regenerative air preheater"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.2                        //
+  // Component of the ClaRa library, version: 1.2.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -80,11 +80,19 @@ model RegenerativeAirPreheater_L4 "Model for a regenerative air preheater"
   inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation"
     annotation (Dialog(tab="Initialisation"));
 
-  inner parameter ClaRa.Basics.Choices.Init initType_cells=ClaRa.Basics.Choices.Init.noInit "Type of cell initialisation"
-    annotation (Dialog(tab="Initialisation"), choicesAllMatching);
+  inner parameter Integer initOptionCells=0 "Type of gas cell initialisation" annotation (Dialog(tab="Initialisation"), choices(
+      choice=0 "Use guess values",
+      choice=1 "Steady state",
+      choice=201 "Steady pressure",
+      choice=202 "Steady enthalpy",
+      choice=202 "Steady temperature",
+      choice=208 "Steady pressure and enthalpy"));
 
-  inner parameter ClaRa.Basics.Choices.Init initType_wall=ClaRa.Basics.Choices.Init.noInit "Type of wall initialisation"
-    annotation (Dialog(tab="Initialisation"), choicesAllMatching);
+  parameter Integer initOptionWall=0 "Init Option of Wall"
+    annotation (Dialog(tab="Initialisation"), choices(
+      choice=0 "Use guess values",
+      choice=1 "Steady state",
+      choice=203 "Steady temperature"));
 
   parameter ClaRa.Basics.Units.Temperature T_start_freshAir[:]={293.15,293.15} "Start value of fresh air system Temperature"
     annotation (Dialog(tab="Initialisation"));
@@ -216,7 +224,6 @@ public
   Basics.ControlVolumes.GasVolumes.VolumeGas_L4 flueGasCell(
     each xi_start=xi_start_flueGas,
     each useHomotopy=useHomotopy,
-    each initType=initType_cells,
     each m_flow_nom=m_flow_flueGas_nom,
     each p_nom=p_freshAir_nom*ones(N_cv),
     each xi_nom=xi_nom_flueGas,
@@ -232,9 +239,11 @@ public
         ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry_N_cv (
         N_heat=1,
         N_cv=N_cv,
+        diameter_hyd=fill(d_gl, N_cv),
         volume=ones(N_cv)*volume_flueGas/N_cv,
         A_cross=ones(N_cv)*A_flueGas_free,
-        A_heat=ones(N_cv, 1)*A_heat/N_cv)) annotation (Placement(transformation(
+        A_heat=ones(N_cv, 1)*A_heat/N_cv),
+    initOption=initOptionCells) annotation (Placement(transformation(
         extent={{-14,-6},{14,6}},
         rotation=90,
         origin={46,-22})));
@@ -242,7 +251,6 @@ public
   Basics.ControlVolumes.GasVolumes.VolumeGas_L4 freshAirCell(
     each xi_start=xi_start_freshAir,
     each useHomotopy=useHomotopy,
-    each initType=initType_cells,
     each m_flow_nom=m_flow_freshAir_nom,
     each p_nom=p_freshAir_nom*ones(N_cv),
     each xi_nom=xi_nom_freshAir,
@@ -258,9 +266,11 @@ public
         ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry_N_cv (
         N_heat=1,
         N_cv=N_cv,
+        diameter_hyd=fill(d_gl, N_cv),
         volume=ones(N_cv)*volume_air/N_cv,
         A_cross=ones(N_cv)*A_air_free,
-        A_heat=ones(N_cv, 1)*A_heat/N_cv)) annotation (Placement(transformation(
+        A_heat=ones(N_cv, 1)*A_heat/N_cv),
+    initOption=initOptionCells) annotation (Placement(transformation(
         extent={{-14,-6},{14,6}},
         rotation=270,
         origin={-46,-22})));
@@ -270,6 +280,7 @@ public
     each mass=mass/N_cv,
     each A_heat=A_heat/N_cv,
     each thickness_wall=s_sp,
+    each initOption=initOptionWall,
     T_start=T_start_wall_internal,
     each stateLocation=stateLocation) annotation (Placement(transformation(
         extent={{-10,-5},{10,5}},
@@ -284,28 +295,28 @@ public
         origin={46,40})));
 
   Summary summary(
-    flueGasInlet(
+    flueGasInlet(mediumModel=medium,
       m_flow=flueGasCell.inlet.m_flow,
       T=inStream(flueGasCell.inlet.T_outflow),
       p=flueGasCell.inlet.p,
       h=flueGasCell.fluidInlet.h,
       xi = inStream(flueGasCell.inlet.xi_outflow),
       H_flow=flueGasCell.inlet.m_flow*flueGasCell.fluidInlet.h),
-    freshAirInlet(
+    freshAirInlet(mediumModel=medium,
       m_flow=freshAirCell.inlet.m_flow,
       T=inStream(freshAirCell.inlet.T_outflow),
       p=freshAirCell.inlet.p,
       h=freshAirCell.fluidInlet.h,
       xi = inStream(freshAirCell.inlet.xi_outflow),
       H_flow=freshAirCell.inlet.m_flow*freshAirCell.fluidInlet.h),
-    flueGasOutlet(
+    flueGasOutlet(mediumModel=medium,
       m_flow=-flueGasCell.outlet.m_flow,
       T=flueGasCell.outlet.T_outflow,
       p=flueGasCell.outlet.p,
       h=flueGasCell.fluidOutlet.h,
       xi = flueGasCell.outlet.xi_outflow,
       H_flow=-flueGasCell.outlet.m_flow*flueGasCell.fluidOutlet.h),
-    freshAirOutlet(
+    freshAirOutlet(mediumModel=medium,
       m_flow=-freshAirCell.outlet.m_flow,
       T=freshAirCell.outlet.T_outflow,
       p=freshAirCell.outlet.p,

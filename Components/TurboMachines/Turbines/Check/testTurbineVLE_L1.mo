@@ -110,12 +110,11 @@ end Regression;
   Modelica.Blocks.Sources.Ramp ramp2(
     duration=4000,
     startTime=6000,
-    height=0*80e5,
-    offset=0.045e5) annotation (Placement(transformation(extent={{104,-62},{84,-42}})));
+    offset=0.045e5,
+    height=0.95e5)  annotation (Placement(transformation(extent={{104,-62},{84,-42}})));
   ClaRa.Components.TurboMachines.Turbines.SteamTurbineVLE_L1 turbineIP(
     showExpertSummary=true,
     showData=true,
-    eta_mech=1,
     m_flow_nom=79.1,
     rpm(start=3000),
     steadyStateTorque=false,
@@ -127,7 +126,6 @@ end Regression;
   ClaRa.Components.TurboMachines.Turbines.SteamTurbineVLE_L1 turbineLP(
     showExpertSummary=true,
     showData=true,
-    eta_mech=1,
     m_flow_nom=79.1,
     rpm(start=3000),
     steadyStateTorque=false,

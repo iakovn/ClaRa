@@ -1,7 +1,7 @@
-within ClaRa.Components.VolumesValvesFittings.Fittings.Check;
+ï»¿within ClaRa.Components.VolumesValvesFittings.Fittings.Check;
 model Test_JoinSplitGas_L2_flex
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //

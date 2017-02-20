@@ -1,7 +1,7 @@
-within ClaRa.Components.HeatExchangers;
+ï»¿within ClaRa.Components.HeatExchangers;
 model HEXvle_L3_2ph_BU "Single side: VLE | L3 | two phase at shell side | Block shape | U-type"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.2                        //
+  // Component of the ClaRa library, version: 1.2.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -115,8 +115,9 @@ model HEXvle_L3_2ph_BU "Single side: VLE | L3 | two phase at shell side | Block 
                         p_start_shell=1e5 "Start value of sytsem pressure"
     annotation (Dialog(tab="Shell Side", group="Initialisation"));
   parameter Real level_rel_start=0.5 "Start value for relative filling Level" annotation (Dialog(tab="Shell Side", group="Initialisation"));
-  parameter Basics.Choices.Init initTypeShell=ClaRa.Basics.Choices.Init.noInit "Type of initialisation"
-    annotation (Dialog(tab="Shell Side", group="Initialisation"));
+  inner parameter Integer initOptionShell = 211 "Type of initialisation"
+    annotation (Dialog(tab= "Shell Side", group="Initialisation"), choices(choice = 0 "Use guess values", choice = 209 "Steady in vapour pressure, enthalpies and vapour volume", choice=201 "Steady vapour pressure", choice = 202 "Steady enthalpy", choice=204 "Fixed volume fraction",  choice=211 "Fixed values in level, enthalpies and vapour pressure"));
+
   //________________________________ Shell epert settings  _______________________________________//
   parameter Modelica.Blocks.Types.Smoothness smoothness=Modelica.Blocks.Types.Smoothness.LinearSegments "Smoothness of level calculation (table based)" annotation (Dialog(tab="Shell Side", group="Expert Settings"));
 
@@ -195,7 +196,6 @@ model HEXvle_L3_2ph_BU "Single side: VLE | L3 | two phase at shell side | Block 
     m_flow_nom=m_flow_nom_shell,
     useHomotopy=useHomotopy,
     p_start=p_start_shell,
-    initType=initTypeShell,
     showExpertSummary=showExpertSummary,
     Tau_cond=Tau_cond,
     Tau_evap=Tau_evap,
@@ -206,14 +206,12 @@ model HEXvle_L3_2ph_BU "Single side: VLE | L3 | two phase at shell side | Block 
     level_rel_start=level_rel_start,
     exp_HT_phases=expHT_phases,
     heatSurfaceAlloc=2,
-    redeclare model PhaseBorder =
-        Basics.ControlVolumes.Fundamentals.SpacialDistribution.RealSeparated (
+    redeclare model PhaseBorder = Basics.ControlVolumes.Fundamentals.SpacialDistribution.RealSeparated (
         level_rel_start=level_rel_start,
         radius_flange=radius_flange,
         absorbInflow=absorbInflow,
         smoothness=smoothness),
-    redeclare model Geometry =
-        Basics.ControlVolumes.Fundamentals.Geometry.HollowBlockWithTubesAndHotwell (
+    redeclare model Geometry = Basics.ControlVolumes.Fundamentals.Geometry.HollowBlockWithTubesAndHotwell (
         height=height,
         width=width,
         length=length,
@@ -233,8 +231,8 @@ model HEXvle_L3_2ph_BU "Single side: VLE | L3 | two phase at shell side | Block 
         parallelTubes=parallelTubes,
         CF_geo={1,CF_geo},
         N_rows=N_rows),
-    equalPressures=equalPressures)
-                        annotation (Placement(transformation(
+    equalPressures=equalPressures,
+    initOption=initOptionShell) annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=270,
         origin={0,0})));

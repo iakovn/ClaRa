@@ -1,7 +1,7 @@
-within ClaRa.Components.HeatExchangers;
+ï»¿within ClaRa.Components.HeatExchangers;
 model HEXvle2vle_L3_1ph_kA " VLE 2 VLE | L3 | 1 phase on each side | generic geometry | effective kA"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.2                        //
+  // Component of the ClaRa library, version: 1.2.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -74,8 +74,10 @@ model HEXvle2vle_L3_1ph_kA " VLE 2 VLE | L3 | 1 phase on each side | generic geo
   parameter ClaRa.Basics.Units.Pressure
                         p_start_shell=1e5 "Start value of sytsem pressure"
     annotation (Dialog(tab="Shell Side", group="Initialisation"));
-  parameter Basics.Choices.Init initTypeShell=ClaRa.Basics.Choices.Init.noInit "Type of initialisation"
-    annotation (Dialog(tab="Shell Side", group="Initialisation"));
+  parameter Integer initOptionShell=0 "Type of initialisation"
+    annotation (Dialog(tab="Shell Side", group="Initialisation"), choices(choice = 0 "Use guess values", choice = 1 "Steady state",
+                                                                                              choice=201 "Steady pressure",
+                                                                                              choice = 202 "Steady enthalpy"));
 
   //*********************************** / TUBE SIDE \ ***********************************//
   //________________________________ Tubes fundamentals _______________________________//
@@ -115,8 +117,10 @@ model HEXvle2vle_L3_1ph_kA " VLE 2 VLE | L3 | 1 phase on each side | generic geo
   parameter ClaRa.Basics.Units.Pressure
                         p_start_tubes=1e5 "Start value of sytsem pressure at tube side"
     annotation (Dialog(tab="Tubes", group="Initialisation"));
-  parameter Basics.Choices.Init initTypeTubes=ClaRa.Basics.Choices.Init.noInit "Type of initialisation at tube side"
-    annotation (Dialog(tab="Tubes", group="Initialisation"));
+  parameter Integer initOptionTubes=0 "Type of initialisation at tube side"
+    annotation (Dialog(tab="Tubes", group="Initialisation"), choices(choice = 0 "Use guess values", choice = 1 "Steady state",
+                                                                                              choice=201 "Steady pressure",
+                                                                                              choice = 202 "Steady enthalpy"));
 
   //*********************************** / WALL \ ***********************************//
   //________________________________ Wall fundamentals _______________________________//
@@ -130,8 +134,9 @@ model HEXvle2vle_L3_1ph_kA " VLE 2 VLE | L3 | 1 phase on each side | generic geo
     annotation (Dialog(tab="Tube Wall", group="Initialisation"));
   parameter Basics.Units.Temperature T_w_o_start=293.15 "Initial temperature at outer phase"
     annotation (Dialog(tab="Tube Wall", group="Initialisation"));
-  parameter Basics.Choices.Init initWall=ClaRa.Basics.Choices.Init.noInit "Initialisation option"
-    annotation (Dialog(tab="Tube Wall", group="Initialisation"));
+  parameter Integer initOptionWall=0 "|Initialisation option for wall"    annotation (Dialog(tab="Tube Wall", group="Initialisation"), choices(
+      choice=0 "Use guess values",
+      choice=1 "Steady state"));
 
 //*******************************General *************************************************//
   parameter Boolean tubesLimitHeatFlow = true "True if the tube side heat transfer limits overall performance" annotation(Dialog(tab="General", group="Heat Exchanger Definition"));
@@ -172,7 +177,6 @@ model HEXvle2vle_L3_1ph_kA " VLE 2 VLE | L3 | 1 phase on each side | generic geo
     useHomotopy=useHomotopy,
     h_start=h_start_tubes,
     p_start=p_start_tubes,
-    initType=initTypeTubes,
     redeclare model PressureLoss = PressureLossTubes,
     redeclare model PhaseBorder =
         ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.IdeallyStirred,
@@ -184,8 +188,9 @@ model HEXvle2vle_L3_1ph_kA " VLE 2 VLE | L3 | 1 phase on each side | generic geo
         volume=volume_tubes,
         z_in={z_in_tubes},
         z_out={z_out_tubes},
-        N_heat=1))
-    annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+        N_heat=1),
+    initOption=initOptionTubes) annotation (Placement(transformation(
+        extent={{-10,-10},{10,10}},
         rotation=90,
         origin={70,0})));
 
@@ -198,7 +203,6 @@ model HEXvle2vle_L3_1ph_kA " VLE 2 VLE | L3 | 1 phase on each side | generic geo
     useHomotopy=useHomotopy,
     h_start=h_start_shell,
     p_start=p_start_shell,
-    initType=initTypeShell,
     redeclare model PhaseBorder =
         ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.IdeallyStirred,
     showExpertSummary=showExpertSummary,
@@ -210,7 +214,8 @@ model HEXvle2vle_L3_1ph_kA " VLE 2 VLE | L3 | 1 phase on each side | generic geo
         volume=volume_shell,
         z_in={z_in_shell},
         z_out={z_out_shell},
-        N_heat=1))    annotation (Placement(transformation(
+        N_heat=1),
+    initOption=initOptionShell) annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=270,
         origin={0,0})));
@@ -229,10 +234,11 @@ model HEXvle2vle_L3_1ph_kA " VLE 2 VLE | L3 | 1 phase on each side | generic geo
     redeclare model HeatExchangerType = HeatExchangerType,
     T_w_i_start=T_w_i_start,
     T_w_a_start=T_w_o_start,
-    initChoice=initWall,
-    m_flow_nom=if tubesLimitHeatFlow then m_flow_nom_tubes else m_flow_nom_shell,
-    innerSideLimitsHeatFlow=tubesLimitHeatFlow)
-                                   annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+    m_flow_nom=if tubesLimitHeatFlow then m_flow_nom_tubes else
+        m_flow_nom_shell,
+    innerSideLimitsHeatFlow=tubesLimitHeatFlow,
+    initOption=initOptionWall) annotation (Placement(transformation(
+        extent={{-10,-10},{10,10}},
         rotation=90,
         origin={30,0})));
 

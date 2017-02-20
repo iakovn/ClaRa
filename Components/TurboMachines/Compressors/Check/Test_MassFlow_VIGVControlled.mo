@@ -1,7 +1,7 @@
-within ClaRa.Components.TurboMachines.Compressors.Check;
+ï»¿within ClaRa.Components.TurboMachines.Compressors.Check;
 model Test_MassFlow_VIGVControlled
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -73,8 +73,7 @@ model Test_MassFlow_VIGVControlled
     offset=1.125e5,
     table=[0,0; 5,0; 10,0.015e5; 11,0.015e5])
     annotation (Placement(transformation(extent={{52,-70},{32,-50}})));
-  Sensors.GasMassflowSensor gasMassflowSensor
-    annotation (Placement(transformation(extent={{-32,-54},{-12,-34}})));
+  Sensors.SensorGas_L1_m_flow gasMassflowSensor annotation (Placement(transformation(extent={{-32,-54},{-12,-34}})));
   Utilities.Blocks.LimPID PID(
     controllerType=Modelica.Blocks.Types.SimpleController.PI,
     perUnitConversion=true,

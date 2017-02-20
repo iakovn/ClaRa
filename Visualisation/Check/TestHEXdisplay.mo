@@ -1,7 +1,7 @@
-within ClaRa.Visualisation.Check;
+ï»¿within ClaRa.Visualisation.Check;
 model TestHEXdisplay "Illustrates the capabilities of the HEXdisplay"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -78,9 +78,7 @@ extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb80;
     N_p=N_passes,
     length=length,
     outerPhaseChange=false,
-    initChoice=ClaRa.Basics.Choices.Init.steadyTemperature,
-    redeclare function HeatCapacityAveraging =
-        ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.ArithmeticMean,
+    redeclare function HeatCapacityAveraging = ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.ArithmeticMean,
     radius_i=radius_i,
     radius_o=radius_o,
     p_o=p_o,
@@ -93,11 +91,11 @@ extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb80;
     alpha_o=ones(3)*alpha_o,
     T_w_i_start=ones(3)*T_i_in,
     T_w_o_start=ones(3)*T_o_in,
-    redeclare model HeatExchangerType =
-        ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.CounterFlow_L3,
+    redeclare model HeatExchangerType = ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.CounterFlow_L3,
     showExpertSummary=true,
     PI_1ph_in(initType=Modelica.Blocks.Types.InitPID.NoInit),
-    PI_2ph(initType=Modelica.Blocks.Types.InitPID.NoInit)) annotation (Placement(transformation(extent={{74,-106},{94,-86}})));
+    PI_2ph(initType=Modelica.Blocks.Types.InitPID.NoInit),
+    initOption=203) annotation (Placement(transformation(extent={{74,-106},{94,-86}})));
 
   Hexdisplay_3 hexdisplay_3_2(
     y_min=373,
@@ -120,9 +118,7 @@ extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb80;
     N_p=N_passes,
     length=length,
     outerPhaseChange=false,
-    initChoice=ClaRa.Basics.Choices.Init.steadyTemperature,
-    redeclare function HeatCapacityAveraging =
-        ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.ArithmeticMean,
+    redeclare function HeatCapacityAveraging = ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.ArithmeticMean,
     radius_i=radius_i,
     radius_o=radius_o,
     p_o=p_o,
@@ -135,11 +131,11 @@ extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb80;
     alpha_o=ones(3)*alpha_o,
     T_w_i_start=ones(3)*T_i_in,
     T_w_o_start=ones(3)*T_o_in,
-    redeclare model HeatExchangerType =
-        ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.CrossFlow_L3,
+    redeclare model HeatExchangerType = ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.CrossFlow_L3,
     showExpertSummary=true,
     PI_2ph(initType=Modelica.Blocks.Types.InitPID.NoInit),
-    PI_1ph_in(initType=Modelica.Blocks.Types.InitPID.NoInit)) annotation (Placement(transformation(extent={{368,-108},{388,-88}})));
+    PI_1ph_in(initType=Modelica.Blocks.Types.InitPID.NoInit),
+    initOption=203) annotation (Placement(transformation(extent={{368,-108},{388,-88}})));
   Modelica.Blocks.Sources.Ramp T(
     height=20,
     offset=T_o_in,
@@ -175,7 +171,6 @@ public
     N_p=N_passes,
     length=length,
     outerPhaseChange=false,
-    initChoice=ClaRa.Basics.Choices.Init.steadyTemperature,
     radius_i=radius_i,
     radius_o=radius_o,
     p_o=p_o,
@@ -188,12 +183,11 @@ public
     alpha_o=ones(3)*alpha_o,
     T_w_i_start=ones(3)*T_i_in,
     T_w_o_start=ones(3)*T_o_in,
-    redeclare model HeatExchangerType =
-        ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.ParallelFlow_L3,
-    redeclare function HeatCapacityAveraging =
-        ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.ArithmeticMean,
+    redeclare model HeatExchangerType = ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.ParallelFlow_L3,
+    redeclare function HeatCapacityAveraging = ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.ArithmeticMean,
     PI_2ph(initType=Modelica.Blocks.Types.InitPID.NoInit),
-    PI_1ph_in(initType=Modelica.Blocks.Types.InitPID.NoInit)) annotation (Placement(transformation(extent={{220,-108},{240,-88}})));
+    PI_1ph_in(initType=Modelica.Blocks.Types.InitPID.NoInit),
+    initOption=203) annotation (Placement(transformation(extent={{220,-108},{240,-88}})));
 
   annotation (                                                        Diagram(
         coordinateSystem(extent={{-100,-120},{400,100}}, preserveAspectRatio=true),

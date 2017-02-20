@@ -1,7 +1,7 @@
-within ClaRa.Components.Mills.HardCoalMills.Check;
+ï»¿within ClaRa.Components.Mills.HardCoalMills.Check;
 model combineMillandFurnace
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -37,13 +37,11 @@ model combineMillandFurnace
     annotation (Placement(transformation(extent={{16,-14},{-16,14}},
         rotation=180,
         origin={-84,-37})));
-  ClaRa.Components.Mills.HardCoalMills.VerticalMill_L3
-                     mills1(
+  ClaRa.Components.Mills.HardCoalMills.VerticalMill_L3 mills1(
     millKoeff=ClaRa.Components.Mills.HardCoalMills.Fundamentals.STV1(),
     N_mills=1,
-    initChoice=ClaRa.Basics.Choices.Init.noInit,
-    T_0=363.15)
-    annotation (Placement(transformation(extent={{30,-33},{50,-13}})));
+    initOption=0,
+    T_out_start=363.15) annotation (Placement(transformation(extent={{30,-33},{50,-13}})));
   Modelica.Blocks.Sources.Ramp ramp1(
     offset=1.50,
     startTime=1000,

@@ -1,7 +1,7 @@
-within ClaRa.Components.VolumesValvesFittings.Pipes.Check.TwoPhaseFlow;
+ï»¿within ClaRa.Components.VolumesValvesFittings.Pipes.Check.TwoPhaseFlow;
 model Test_Pipe_L4_Simple
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.2                        //
+  // Component of the ClaRa library, version: 1.2.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -71,13 +71,13 @@ model Test_Pipe_L4_Simple
     length=tube.length,
     Delta_x=tube.Delta_x,
     N_ax=tube.N_cv,
-    initChoice=ClaRa.Basics.Choices.Init.noInit,
     diameter_i=tube.diameter_i,
     diameter_o=tube.diameter_i + 0.01,
     T_start=573*ones(tube.N_cv),
     redeclare model Material = TILMedia.SolidTypes.TILMedia_Steel,
     stateLocation=2,
-    N_tubes=tube.N_tubes) annotation (Placement(transformation(extent={{2,9},{14,23}})));
+    N_tubes=tube.N_tubes,
+    initOption=0) annotation (Placement(transformation(extent={{2,9},{14,23}})));
 
   Modelica.Blocks.Sources.Step inlet_enthalpy(
     startTime=2000,
@@ -123,11 +123,11 @@ equation
       color={0,0,127},
       smooth=Smooth.None));
   connect(T_wall.y, realInputMultiplyer.Signal) annotation (Line(
-      points={{-71.95,29.5},{-40.42,29.5}},
+      points={{-71.95,29.5},{-41.26,29.5}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(realInputMultiplyer.y, prescribedTemperature.T) annotation (Line(
-      points={{-27.4,29.5},{-18,29},{-11.2,29}},
+      points={{-25.3,29.4525},{-18,29},{-11.2,29}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(prescribedTemperature.port, thinWall.outerPhase) annotation (Line(

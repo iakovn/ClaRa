@@ -1,7 +1,7 @@
-within ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT;
+ï»¿within ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT;
 partial model HeatTransfer_L2 " L2 || HT-BaseClass"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.2                        //
+  // Component of the ClaRa library, version: 1.2.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //

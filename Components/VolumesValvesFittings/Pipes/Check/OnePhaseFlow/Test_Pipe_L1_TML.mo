@@ -1,7 +1,7 @@
-within ClaRa.Components.VolumesValvesFittings.Pipes.Check.OnePhaseFlow;
+ï»¿within ClaRa.Components.VolumesValvesFittings.Pipes.Check.OnePhaseFlow;
 model Test_Pipe_L1_TML
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.2                        //
+  // Component of the ClaRa library, version: 1.2.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -97,9 +97,9 @@ model Test_Pipe_L1_TML
     length=tube.length,
     Delta_x=tube.Delta_x,
     T_start=320*ones(tube.N_cv),
-    initChoice=ClaRa.Basics.Choices.Init.noInit,
     stateLocation=1,
-    N_ax=tube.N_cv) annotation (Placement(transformation(extent={{-2,-49},{10,-35}})));
+    N_ax=tube.N_cv,
+    initOption=0) annotation (Placement(transformation(extent={{-2,-49},{10,-35}})));
   Modelica.Blocks.Sources.Ramp mass_flow_2(
     offset=100,
     startTime=1500,
@@ -141,11 +141,11 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(T_wall.y, realInputMultiplyer.Signal) annotation (Line(
-      points={{-77.95,-22.5},{-46.42,-22.5}},
+      points={{-77.95,-22.5},{-47.26,-22.5}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(realInputMultiplyer.y, prescribedTemperature.T) annotation (Line(
-      points={{-33.4,-22.5},{-24,-23},{-17.2,-23}},
+      points={{-31.3,-22.5475},{-24,-23},{-17.2,-23}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(prescribedTemperature.port, thinWall.outerPhase) annotation (Line(

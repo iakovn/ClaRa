@@ -1,7 +1,7 @@
-within ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution;
+ï»¿within ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution;
 model RealSeparated "Separation | Real | outlet states depending on filling Level | All geometries"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.2                        //
+  // Component of the ClaRa library, version: 1.2.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -19,12 +19,6 @@ model RealSeparated "Separation | Real | outlet states depending on filling Leve
   extends ClaRa.Basics.Icons.RealSeparation;
   import ClaRa.Basics.Functions.Stepsmoother;
   import SZT = ClaRa.Basics.Functions.SmoothZeroTransition;
-
-//   outer ClaRa.Basics.Records.IComVLE_L3 iCom;
-//   outer ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry geo;
-
-//   outer ClaRa.Basics.Choices.Init initType;
-//   outer parameter Boolean useHomotopy;
 
   parameter SI.Length radius_flange=0.05 "Flange radius" annotation(Dialog(group="Flange Geometry and Inlet Behaviour"));
   parameter Real absorbInflow(

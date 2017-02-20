@@ -1,7 +1,7 @@
-within ClaRa.SubSystems.Boiler.Check;
+ï»¿within ClaRa.SubSystems.Boiler.Check;
 model testCoalSupplyBoiler7_XRG
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -62,12 +62,11 @@ model testCoalSupplyBoiler7_XRG
   Modelica.Blocks.Sources.RealExpression realPlantPower_(y=-(HPTurbine.P_t +
         IPTurbine.P_t + LPTurbine.P_t)/turbinesAndReheat_01_XRG.P_G_nom)
     annotation (Placement(transformation(extent={{104,-26},{124,-6}})));
-  ClaRa.SubSystems.Boiler.SteamGenerator_L3    steamGenerator_1_XRG(
-    initHP=ClaRa.Basics.Choices.Init.noInit,
+  ClaRa.SubSystems.Boiler.SteamGenerator_L3 steamGenerator_1_XRG(
     h_LS_start=3400e3,
     p_LS_start=24000000,
-    p_RH_start=2800000)
-    annotation (Placement(transformation(extent={{6,-64},{32,-28}})));
+    p_RH_start=2800000,
+    initOption_HP=0) annotation (Placement(transformation(extent={{6,-64},{32,-28}})));
   Components.BoundaryConditions.BoundaryVLE_hxim_flow  massFlowSource_XRG(
     m_flow_const=419,
     h_const=500e3,
@@ -92,9 +91,11 @@ public
     rho_nom=1.7,
     m_flow_nom=419 - 150,
     p_nom=400000,
-    CL_eta_mflow=[0.0,0.9; 1,0.9]) annotation (Placement(transformation(extent={{140,-80},{150,-60}})));
-  Components.VolumesValvesFittings.Fittings.Split_L2_Y split_IET3_1
-    annotation (Placement(transformation(extent={{116,-96},{136,-84}})));
+    redeclare model Efficiency =
+        ClaRa.Components.TurboMachines.Fundamentals.EfficiencyModels.TableMassFlow (
+         eta_mflow=([0.0,0.9; 1,0.9])))
+    annotation (Placement(transformation(extent={{140,-80},{150,-60}})));
+  Components.VolumesValvesFittings.Fittings.SplitVLE_L2_Y split_IET3_1 annotation (Placement(transformation(extent={{116,-96},{136,-84}})));
   Components.BoundaryConditions.BoundaryVLE_hxim_flow  massFlowSource_XRG1(variable_m_flow=false, m_flow_const=-150) annotation (Placement(transformation(extent={{90,-140},{110,-120}})));
   Modelica.Blocks.Sources.Ramp ramp3(
     offset=1,
@@ -105,7 +106,7 @@ public
 equation
 
   connect(ramp1.y, Model_boiler.yT_)         annotation (Line(
-      points={{-79,170},{46,170},{46,148.3},{43.968,148.3}},
+      points={{-79,170},{46,170},{46,148.3},{42.5077,148.3}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(SV_Pressure_LS.y, PID.u_s) annotation (Line(
@@ -113,7 +114,7 @@ equation
       color={0,0,127},
       smooth=Smooth.None));
   connect(MV_Pressure_LS.y, PID.u_m)  annotation (Line(
-      points={{-111,74},{-88,74},{-88,78},{-88,78}},
+      points={{-111,74},{-88,74},{-88,78},{-87.9,78}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(ramp2.y, add.u1) annotation (Line(
@@ -127,7 +128,7 @@ equation
 
   connect(turbinesAndReheat_01_XRG.inlet, Model_boiler.steamSignal) annotation (
      Line(
-      points={{82.3,120.6},{54,120.6},{54,120.76},{48,120.76}},
+      points={{82.3,120.6},{54,120.6},{54,122.8},{48.3231,122.8}},
       color={255,204,51},
       thickness=0.5,
       smooth=Smooth.None));
@@ -157,7 +158,7 @@ equation
       color={0,0,127},
       smooth=Smooth.Bezier));
   connect(Model_boiler.steamSignal, mediumData_b) annotation (Line(
-      points={{48,120.76},{48,186},{-140,186},{-140,-58},{-131,-58}},
+      points={{48.3231,122.8},{48.3231,186},{-140,186},{-140,-58},{-131,-58}},
       color={255,204,51},
       thickness=0.5,
       smooth=Smooth.None));
@@ -182,7 +183,7 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(PID.y, add.u2) annotation (Line(
-      points={{-77.1,90},{-44,90}},
+      points={{-77,90},{-44,90}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(add.y, steamGenerator_1_XRG.QF_setl_) annotation (Line(

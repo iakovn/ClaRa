@@ -1,7 +1,7 @@
-within ClaRa.Components.Utilities.Blocks;
+﻿within ClaRa.Components.Utilities.Blocks;
 model ParameterizableTable1D "Table look-up in one dimension (matrix/file) with n inputs and n outputs "
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                            //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -56,7 +56,7 @@ protected
     input Real table[ :, :];
     input Modelica.Blocks.Types.Smoothness smoothness;
     output Integer tableID;
-  external "C" tableID=  ModelicaTables_CombiTable1D_init(
+  external "C" tableID = ModelicaTables_CombiTable1D_init(
                  tableName, fileName, table, size(table, 1), size(table, 2),
                  smoothness) annotation(Library="ModelicaExternalC");
   end tableInit;
@@ -66,8 +66,7 @@ protected
     input Integer icol;
     input Real u;
     output Real value;
-  external "C" value =
-                     ModelicaTables_CombiTable1D_interpolate(tableID, icol, u) annotation(Library="ModelicaExternalC");
+  external "C" value=ModelicaTables_CombiTable1D_interpolate(tableID, icol, u) annotation(Library="ModelicaExternalC");
   end tableIpo;
 equation
   if tableOnFile then

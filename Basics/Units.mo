@@ -1,7 +1,7 @@
-within ClaRa.Basics;
+﻿within ClaRa.Basics;
 package Units
 //___________________________________________________________________________//
-// Package of the ClaRa library, version: 1.1.2                              //
+// Package of the ClaRa library, version: 1.2.0                              //
 // Models of the ClaRa library are tested under DYMOLA v2016 FD01.           //
 // It is planned to support alternative Simulators like SimulationX in the   //
 // future                                                                    //
@@ -27,6 +27,7 @@ package Units
   extends ClaRa.Basics.Icons.PackageIcons.Basics80;
   type AbsolutePressure = Real(final quantity= "PressureDifference", final unit="Pa", displayUnit="Pa", nominal= 1e5, min=0);
   type Angle = Real(final quantity= "Angle", final unit="rad", displayUnit="deg", nominal= Modelica.Constants.pi);
+  type AngularVelocity = Real (final quantity="AngularVelocity", final unit="rad/s");
   type Area = Real(final quantity= "Area", final unit="m2", displayUnit="m2", nominal= 1, min=0);
   type AreaFraction = Real(final quantity= "AreaFraction", final unit="m2/m2", displayUnit="m2/m2", nominal= 1, min=0);
   type CoefficientOfHeatTransfer = Real(final quantity= "CoefficientOfHeatTransfer", final unit="W/(m2.K)", displayUnit="W/(m2.K)", nominal= 1, min=0);
@@ -69,6 +70,7 @@ package Units
   type MolarMass =   Real(final quantity= "MolarMass", final unit="kg/mol", displayUnit="kg/mol", nominal=1, min=0);
   type Momentum =    Real(final quantity= "Momentum", final unit="kg.m/s", displayUnit="kg.m/s", nominal=1);
   type MomentumFlowRate = Real(final quantity= "MomentumFlowRate", final unit="kg.m/s2", displayUnit="N", nominal=1);
+  type MomentOfInertia = Real (final quantity="MomentOfInertia", final unit="kg.m2");
   type Power = Real(final quantity= "Power", final unit="W", displayUnit="W", nominal= 1e5);
   type Pressure = Real(final quantity= "Pressure", final unit="Pa", displayUnit="Pa", nominal= 1e5, min=0);
   type PressureDifference = Real(final quantity= "PressureDifference", final unit="Pa", displayUnit="Pa", nominal= 0);

@@ -1,7 +1,7 @@
-within ClaRa.Components.MechanicalSeparation;
+ï»¿within ClaRa.Components.MechanicalSeparation;
 model BalanceTank_L3 "A balance tank with a vent"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                            //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -32,8 +32,11 @@ model BalanceTank_L3 "A balance tank with a vent"
   parameter ClaRa.Basics.Units.Length s_wall=2 "|Geometry|Wall thickness of the tank";
   parameter ClaRa.Basics.Units.Length height=2 "|Geometry|Height of the tank";
   parameter ClaRa.Basics.Units.Temperature T_start[3]=ones(3)*293.15 "|Initialisation|Wall|Start values of wall temperature";
-  parameter ClaRa.Basics.Choices.Init initWall=ClaRa.Basics.Choices.Init.noInit "|Initialisation|Wall|Wall init option"
-                                           annotation (choicesAllMatching);
+  parameter Integer initOptionWall=0 "|Initialisation|Wall|Wall init option"
+    annotation (choices(
+      choice=0 "Use guess values",
+      choice=1 "Steady state",
+      choice=203 "Steady temperature"));
 
   parameter ClaRa.Basics.Units.Length z_in[3]=ones(3)*height "|Geometry|Height of liquid inlet ports";
   parameter ClaRa.Basics.Units.Length z_out[1]={0.1} "|Geometry|Height of liquid outlet ports";
@@ -79,7 +82,7 @@ model BalanceTank_L3 "A balance tank with a vent"
     T_start=T_start,
     diameter_o=diameter_i + 2*s_wall,
     redeclare model Material = Material,
-    initChoice=initWall) annotation (Placement(transformation(extent={{32,-36},{52,-16}})));
+    initOption=initOptionWall) annotation (Placement(transformation(extent={{32,-36},{52,-16}})));
 
   Basics.ControlVolumes.FluidVolumes.VolumeVLEGas_L3 volume(
     medium=liquidMedium,

@@ -1,7 +1,7 @@
-within ClaRa.Components.Sensors;
-model GasSensorBase "Base class for gas sensors"
+ï»¿within ClaRa.Components.Sensors;
+model gasSensorBase "Base class for gas sensors"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -39,4 +39,4 @@ equation
                                                   graphics),
                                  Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}),
                                          graphics));
-end GasSensorBase;
+end gasSensorBase;

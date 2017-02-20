@@ -1,5 +1,3 @@
-testGasPressureSensor
-testGasMassFlowSensor
-testGasComponentSensor
-testGasCompositionSensor
 TestVLESensors
+TestGasSensors
+TestSensorVLE_L3_T

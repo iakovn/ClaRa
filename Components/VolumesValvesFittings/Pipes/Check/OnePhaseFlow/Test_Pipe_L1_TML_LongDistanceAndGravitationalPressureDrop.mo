@@ -1,7 +1,7 @@
-within ClaRa.Components.VolumesValvesFittings.Pipes.Check.OnePhaseFlow;
+ï»¿within ClaRa.Components.VolumesValvesFittings.Pipes.Check.OnePhaseFlow;
 model Test_Pipe_L1_TML_LongDistanceAndGravitationalPressureDrop
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.2                        //
+  // Component of the ClaRa library, version: 1.2.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -113,7 +113,7 @@ end Regression;
     N_ax=tube7.N_cv,
     stateLocation=1,
     T_start=320.378*ones(tube7.N_cv),
-    initChoice=ClaRa.Basics.Choices.Init.steadyTemperature) annotation (Placement(transformation(extent={{1,139},{29,150}})));
+    initOption=203) annotation (Placement(transformation(extent={{1,139},{29,150}})));
   Modelica.Blocks.Sources.Ramp mass_flow_2(
     offset=100,
     duration=1,
@@ -248,7 +248,7 @@ end Regression;
     N_ax=tube7.N_cv,
     stateLocation=1,
     T_start=320.378*ones(tube7.N_cv),
-    initChoice=ClaRa.Basics.Choices.Init.steadyTemperature) annotation (Placement(transformation(
+    initOption=203) annotation (Placement(transformation(
         extent={{-13.9998,5},{14.0005,-4.99999}},
         rotation=90,
         origin={61,106})));
@@ -260,7 +260,7 @@ end Regression;
     N_ax=tube7.N_cv,
     stateLocation=1,
     T_start=320.378*ones(tube7.N_cv),
-    initChoice=ClaRa.Basics.Choices.Init.steadyTemperature) annotation (Placement(transformation(
+    initOption=203) annotation (Placement(transformation(
         extent={{-15,-5.50005},{15,5.50008}},
         rotation=270,
         origin={136.5,105})));
@@ -272,7 +272,7 @@ end Regression;
     N_ax=tube7.N_cv,
     stateLocation=1,
     T_start=320.378*ones(tube7.N_cv),
-    initChoice=ClaRa.Basics.Choices.Init.steadyTemperature) annotation (Placement(transformation(
+    initOption=203) annotation (Placement(transformation(
         extent={{-15.5,-5.50001},{15.5,5.50003}},
         rotation=90,
         origin={186.5,105.5})));
@@ -284,7 +284,7 @@ end Regression;
     N_ax=tube7.N_cv,
     stateLocation=1,
     T_start=320.378*ones(tube7.N_cv),
-    initChoice=ClaRa.Basics.Choices.Init.steadyTemperature) annotation (Placement(transformation(extent={{70,53},{102,64}})));
+    initOption=203) annotation (Placement(transformation(extent={{70,53},{102,64}})));
   ClaRa.Basics.ControlVolumes.SolidVolumes.ThinWall_L4 thinWall5(
     diameter_o=0.55,
     diameter_i=0.5,
@@ -296,7 +296,7 @@ end Regression;
         320.378,
         320.378,
         tube7.N_cv),
-    initChoice=ClaRa.Basics.Choices.Init.steadyTemperature) annotation (Placement(transformation(extent={{130,168},{160,178}})));
+    initOption=203) annotation (Placement(transformation(extent={{130,168},{160,178}})));
   ClaRa.Basics.ControlVolumes.SolidVolumes.ThinWall_L4 thinWall6(
     diameter_o=0.55,
     diameter_i=0.5,
@@ -304,8 +304,8 @@ end Regression;
     Delta_x=tube7.Delta_x,
     N_ax=tube7.N_cv,
     stateLocation=1,
-    initChoice=ClaRa.Basics.Choices.Init.steadyTemperature,
-    T_start=320.378*ones(tube7.N_cv)) annotation (Placement(transformation(extent={{191,53},{219,64}})));
+    T_start=320.378*ones(tube7.N_cv),
+    initOption=203) annotation (Placement(transformation(extent={{191,53},{219,64}})));
   PipeFlowVLE_L1_TML tube_merged(
     Delta_V_flow_out(start=0),
     z_in=0,
@@ -346,7 +346,7 @@ end Regression;
     length=tube_merged.length,
     Delta_x=tube_merged.Delta_x,
     T_start=320.378*ones(tube_merged.N_cv),
-    initChoice=ClaRa.Basics.Choices.Init.steadyTemperature) annotation (Placement(transformation(extent={{50,-46},{82,-34}})));
+    initOption=203) annotation (Placement(transformation(extent={{50,-46},{82,-34}})));
   Modelica.Blocks.Math.MultiSum multiSum1(
                                          nu=2) annotation (Placement(
         transformation(

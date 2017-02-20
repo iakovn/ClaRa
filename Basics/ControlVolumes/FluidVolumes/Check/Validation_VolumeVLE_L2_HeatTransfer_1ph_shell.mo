@@ -1,7 +1,7 @@
-within ClaRa.Basics.ControlVolumes.FluidVolumes.Check;
+ï»¿within ClaRa.Basics.ControlVolumes.FluidVolumes.Check;
 model Validation_VolumeVLE_L2_HeatTransfer_1ph_shell "Evaluation and validation scenario from VDI Wärmeatlas 9. Auflage 2002 Chapter Gg3"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.2                        //
+  // Component of the ClaRa library, version: 1.2.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -28,17 +28,12 @@ model Validation_VolumeVLE_L2_HeatTransfer_1ph_shell "Evaluation and validation 
     p_nom(displayUnit="Pa") = 1e5,
     p_start(displayUnit="Pa") = 1e5,
     h_nom=2740e3,
-    redeclare model PhaseBorder =
-        ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.IdeallyStirred,
+    redeclare model PhaseBorder = ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.IdeallyStirred,
     h_start=400e3,
-    initType=ClaRa.Basics.Choices.Init.steadyState,
-    redeclare model PressureLoss =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.NoFriction_L2,
-    redeclare model HeatTransfer =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.NusseltShell1ph_L2,
+    redeclare model PressureLoss = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.NoFriction_L2,
+    redeclare model HeatTransfer = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.NusseltShell1ph_L2,
     m_flow_nom=100,
-    redeclare model Geometry =
-        Fundamentals.Geometry.HollowBlockWithTubes (
+    redeclare model Geometry = Fundamentals.Geometry.HollowBlockWithTubes (
         length=2,
         diameter_t=20/1000,
         parallelTubes=false,
@@ -51,8 +46,8 @@ model Validation_VolumeVLE_L2_HeatTransfer_1ph_shell "Evaluation and validation 
         z_out={30/1000*10/2},
         width=2,
         N_tubes=10,
-        N_passes=6)) "max(0.000001, ((1 - Volume.bulk.q)*Volume.M))/noEvent(max(Volume.bulk.VLE.d_l, Volume.bulk.d))"
-    annotation (Placement(transformation(extent={{20,40},{0,60}})));
+        N_passes=6),
+    initOption=1) "max(0.000001, ((1 - Volume.bulk.q)*Volume.M))/noEvent(max(Volume.bulk.VLE.d_l, Volume.bulk.d))" annotation (Placement(transformation(extent={{20,40},{0,60}})));
 
   Components.BoundaryConditions.BoundaryVLE_Txim_flow massFlowSource(
     variable_m_flow=true,

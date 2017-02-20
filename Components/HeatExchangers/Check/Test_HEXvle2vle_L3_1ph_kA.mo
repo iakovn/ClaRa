@@ -2,25 +2,18 @@ within ClaRa.Components.HeatExchangers.Check;
 model Test_HEXvle2vle_L3_1ph_kA
  extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
 
-  HEXvle2vle_L3_1ph_kA     hEXvle2vle_L3_1ph_BU_ntu(
-    redeclare model WallMaterial =
-        TILMedia.SolidTypes.TILMedia_Aluminum,
+  HEXvle2vle_L3_1ph_kA hEXvle2vle_L3_1ph_BU_ntu(
+    redeclare model WallMaterial = TILMedia.SolidTypes.TILMedia_Aluminum,
     mass_struc=25000,
-    redeclare model PressureLossShell =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L2,
+    redeclare model PressureLossShell = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L2,
     h_start_shell=2975e3,
     p_start_shell=21.05e5,
-    initTypeShell=ClaRa.Basics.Choices.Init.steadyState,
-    redeclare model PressureLossTubes =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L2,
+    redeclare model PressureLossTubes = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L2,
     p_nom_tubes=250e5,
     h_nom_tubes=1130e3,
     h_start_tubes=1130e3,
     p_start_tubes=250e5,
-    initTypeTubes=ClaRa.Basics.Choices.Init.steadyState,
-    initWall=ClaRa.Basics.Choices.Init.steadyState,
-    redeclare model HeatExchangerType =
-        Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.CrossFlow,
+    redeclare model HeatExchangerType = Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.CrossFlow,
     volume_shell=7,
     z_in_shell=7,
     z_out_shell=0.1,
@@ -28,16 +21,15 @@ model Test_HEXvle2vle_L3_1ph_kA
     volume_tubes=0.8*7,
     z_in_tubes=7,
     z_out_tubes=0.1,
-    tubesLimitHeatFlow=false)                       annotation (Placement(transformation(extent={{-2,-76},{18,-56}})));
+    tubesLimitHeatFlow=false,
+    initOptionShell=1,
+    initOptionTubes=1,
+    initOptionWall=1) annotation (Placement(transformation(extent={{-2,-76},{18,-56}})));
 
-  Sensors.Temperature                  Temp_Shell_in
-    annotation (Placement(transformation(extent={{16,2},{36,22}})));
-  Sensors.Temperature                  Temp_Shell_out
-    annotation (Placement(transformation(extent={{-46,-82},{-26,-62}})));
-  Sensors.Temperature                  Temp_Tubes_in
-    annotation (Placement(transformation(extent={{16,-42},{36,-22}})));
-  Sensors.Temperature                  Temp_Tubes_out
-    annotation (Placement(transformation(extent={{44,-70},{64,-90}})));
+  Sensors.SensorVLE_L1_T Temp_Shell_in annotation (Placement(transformation(extent={{16,2},{36,22}})));
+  Sensors.SensorVLE_L1_T Temp_Shell_out annotation (Placement(transformation(extent={{-46,-82},{-26,-62}})));
+  Sensors.SensorVLE_L1_T Temp_Tubes_in annotation (Placement(transformation(extent={{16,-42},{36,-22}})));
+  Sensors.SensorVLE_L1_T Temp_Tubes_out annotation (Placement(transformation(extent={{44,-70},{64,-90}})));
   Modelica.Blocks.Sources.Ramp h_hot1(
     duration=1500,
     startTime=5000,

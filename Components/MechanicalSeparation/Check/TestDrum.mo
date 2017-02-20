@@ -9,7 +9,6 @@ extends Basics.Icons.PackageIcons.ExecutableExampleb50;
     z_sat=9,
     z_down=1,
     level_rel_start=0.5,
-    initType=ClaRa.Basics.Choices.Init.steadyDensity,
     h_liq_start=source.h_const,
     h_vap_start=sink.h_const,
     p_start=sink.p_const,
@@ -17,28 +16,25 @@ extends Basics.Icons.PackageIcons.ExecutableExampleb50;
     levelOutput=true,
     outputAbs=false,
     showLevel=true,
-    showData=true)     annotation (Placement(transformation(extent={{-30,-40},{30,-20}})));
+    showData=true,
+    initOption=204) annotation (Placement(transformation(extent={{-30,-40},{30,-20}})));
 
   ClaRa.Components.BoundaryConditions.BoundaryVLE_hxim_flow source(h_const=1500e3, m_flow_const=7.1)
     annotation (Placement(transformation(extent={{100,-40},{80,-20}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi sink(p_const=150e5, h_const=2500e3) annotation (Placement(transformation(extent={{-78,8},{-58,28}})));
   ClaRa.Components.HeatExchangers.TubeBundle_L2 evaporator(
-    redeclare model PressureLoss =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L2,
+    redeclare model PressureLoss = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L2,
     length=2,
     diameter=0.02,
     N_tubes=1,
     N_passes=40,
-    initType=ClaRa.Basics.Choices.Init.steadyState,
     m_flow_nom=sink.m_flow_nom,
     p_nom=sink.p_const,
     h_nom=sink.h_const,
     h_start=source.h_const,
     p_start=sink.p_const,
-    redeclare model HeatTransfer =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L2 (                      alpha_nom=10000))
-                                                    annotation (Placement(
-        transformation(
+    redeclare model HeatTransfer = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L2 (alpha_nom=10000),
+    initOption=1) annotation (Placement(transformation(
         extent={{10,10},{-10,-10}},
         rotation=90,
         origin={0,-80})));

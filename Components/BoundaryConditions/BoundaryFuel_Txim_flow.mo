@@ -1,7 +1,7 @@
-within ClaRa.Components.BoundaryConditions;
+ï»¿within ClaRa.Components.BoundaryConditions;
 model BoundaryFuel_Txim_flow "A source defining mass flow, temperature and composition"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -57,7 +57,7 @@ protected
   //SI.EnthalpyMassSpecific LHV;
 
 public
-  ClaRa.Basics.Interfaces.Fuel_outlet fuel_a(final fuelType=fuelType)
+  ClaRa.Basics.Interfaces.Fuel_outlet fuel_a(final fuelType=fuelType, LHV_calculationType=LHV_calculationType)
     annotation (Placement(transformation(extent={{90,-10},{110,10}})));
 
   Modelica.Blocks.Interfaces.RealInput m_flow(value=m_flow_in) if (variable_m_flow) "Variable mass flow rate"
@@ -71,13 +71,13 @@ equation
 
   if LHV_calculationType == "predefined" then
     fuel_a.LHV_outflow = LHV_predefined;
-    fuel_a.LHV_calculationType=LHV_calculationType;
+//     fuel_a.LHV_calculationType=LHV_calculationType;
   elseif LHV_calculationType == "Verbandsformel" then
     fuel_a.LHV_outflow =(33907*fuel_a.xi_outflow[1] + 142324*(fuel_a.xi_outflow[2] - fuel_a.xi_outflow[3]/8.) + 10465*fuel_a.xi_outflow[5] - 2512*((1 - sum(fuel_a.xi_outflow)) + 9*fuel_a.xi_outflow[2]))*1000;
-    fuel_a.LHV_calculationType=LHV_calculationType;
+//     fuel_a.LHV_calculationType=LHV_calculationType;
   else
     fuel_a.LHV_outflow = LHV_predefined;
-    fuel_a.LHV_calculationType=LHV_calculationType;
+//     fuel_a.LHV_calculationType=LHV_calculationType;
     assert(fuel_a.LHV_calculationType == "predefined" or fuel_a.LHV_calculationType == "Verbandsformel", "Please check your LHV calculation settings inside boundaries.");
   end if;
 

@@ -1,7 +1,7 @@
-within ClaRa.Visualisation;
+ï»¿within ClaRa.Visualisation;
 model DynDisplay "Dynamic Display of one variable"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -43,7 +43,7 @@ model DynDisplay "Dynamic Display of one variable"
           fillColor={215,215,215},
           fillPattern=FillPattern.Solid,
           lineColor=DynamicSelect({118,124,127}, if x1 > 0 then {0,131,169} else {167,25,48}),
-          textString=DynamicSelect(" x ", String(x1,format=  "1."+String(decimalSpaces)+"f") + " %unit")),
+          textString=DynamicSelect(" x ", String(x1,format = "1."+String(decimalSpaces)+"f") + " %unit")),
         Text(
           extent={{-100,100},{100,0}},
           fillColor={135,135,135},

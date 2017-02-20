@@ -1,7 +1,7 @@
-within ClaRa.Components.Electrical;
+ï»¿within ClaRa.Components.Electrical;
 model AsynchronousMotor_L2 "A simple asynchronous e-motor"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                            //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -32,10 +32,10 @@ model AsynchronousMotor_L2 "A simple asynchronous e-motor"
   parameter Units.Torque tau_bd_nom "Nominal breakdown torque"  annotation(Dialog(group="Fundamental Definitions"));
   parameter Integer N_pp "Number of pole pairs of motor"
                                                         annotation(Dialog(group="Fundamental Definitions"));
-  parameter ClaRa.Basics.Units.RPM rpm_nom "nominal speed" annotation(Dialog(group="Fundamental Definitions"));
+  parameter Units.RPM rpm_nom "nominal speed" annotation(Dialog(group="Fundamental Definitions"));
   parameter Real cosphi(min=0, max=1) "Efficiency factor" annotation(Dialog(group="Fundamental Definitions"));
   parameter Units.Efficiency eta_stator "Lumped constant stator efficiency" annotation(Dialog(group="Fundamental Definitions"));
-  parameter Modelica.SIunits.MomentOfInertia J=1500 "Moment of inertia" annotation(Dialog(group="Fundamental Definitions"));
+  parameter Units.MomentOfInertia J=1500 "Moment of inertia" annotation(Dialog(group="Fundamental Definitions"));
 
   parameter Units.Frequency f_term_nom = 50 "Nominal excitation frequency" annotation(Dialog(group="Electrics Definitions"));
   parameter Units.ElectricCurrent I_rotor_nom "Rotor nominal current" annotation(Dialog(group="Electrics Definitions"));

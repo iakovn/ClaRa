@@ -1,10 +1,10 @@
 within ClaRa;
 model SimCenter
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -65,16 +65,59 @@ model SimCenter
     ClaRa.Basics.Interfaces.CycleSumPort cycleSumPort "Reference to the volume and mass of the VLE fluid in components"
       annotation(HideResult=false);
 
-record Summary
+/////////////////////
+  ClaRa.Basics.Units.EnthalpyMassSpecific h_amb_fluid1 "Ambient enthalpy of VLE fluid 1";
+  ClaRa.Basics.Units.EntropyMassSpecific s_amb_fluid1 "Ambient entropy of VLE fluid 1";
+
+  ClaRa.Basics.Units.EnthalpyMassSpecific h_amb_fluid2 "Ambient enthalpy of VLE fluid 2";
+  ClaRa.Basics.Units.EntropyMassSpecific s_amb_fluid2 "Ambient entropy of VLE fluid 2";
+
+  ClaRa.Basics.Units.EnthalpyMassSpecific h_amb_fluid3 "Ambient enthalpy of VLE fluid 3";
+  ClaRa.Basics.Units.EntropyMassSpecific s_amb_fluid3 "Ambient entropy of VLE fluid 3";
+
+ TILMedia.VLEFluidObjectFunctions.VLEFluidPointer vleFluidPointerAmb_fluid1=
+       TILMedia.VLEFluidObjectFunctions.VLEFluidPointer(
+      fluid1.concatVLEFluidName,
+      7,
+      fluid1.xi_default,
+      fluid1.nc_propertyCalculation,
+      fluid1.nc,
+      0) "Pointer to external medium memory";
+
+ TILMedia.VLEFluidObjectFunctions.VLEFluidPointer vleFluidPointerAmb_fluid2=
+       TILMedia.VLEFluidObjectFunctions.VLEFluidPointer(
+      fluid2.concatVLEFluidName,
+      7,
+      fluid2.xi_default,
+      fluid2.nc_propertyCalculation,
+      fluid2.nc,
+      0) "Pointer to external medium memory";
+
+ TILMedia.VLEFluidObjectFunctions.VLEFluidPointer vleFluidPointerAmb_fluid3=
+       TILMedia.VLEFluidObjectFunctions.VLEFluidPointer(
+      fluid3.concatVLEFluidName,
+      7,
+      fluid3.xi_default,
+      fluid3.nc_propertyCalculation,
+      fluid3.nc,
+      0) "Pointer to external medium memory";
+
+record summary_clara
   extends ClaRa.Basics.Icons.RecordIcon;
   Real eta_th "Thermal efficiency";
   Real eta_el "Electrical efficiency";
-end Summary;
-Summary summary(eta_th = cycleSumPort.power_out/(cycleSumPort.power_in+1e-6),
-  eta_el = (cycleSumPort.power_out - cycleSumPort.power_aux) / (1e-6+ cycleSumPort.power_in));
+end summary_clara;
+  summary_clara summary(eta_th=cycleSumPort.power_out/(cycleSumPort.power_in + 1e-6), eta_el=(cycleSumPort.power_out - cycleSumPort.power_aux)/(1e-6 + cycleSumPort.power_in));
 initial equation
  p_amb_start=p_amb;
  T_amb_start=T_amb;
+equation
+ h_amb_fluid1 =  TILMedia.VLEFluidObjectFunctions.specificEnthalpy_pTxi(p_amb,T_amb,fluid1.xi_default,vleFluidPointerAmb_fluid1);
+ s_amb_fluid1 =  TILMedia.VLEFluidObjectFunctions.specificEntropy_pTxi(p_amb,T_amb,fluid1.xi_default,vleFluidPointerAmb_fluid1);
+ h_amb_fluid2 =  TILMedia.VLEFluidObjectFunctions.specificEnthalpy_pTxi(p_amb,T_amb,fluid2.xi_default,vleFluidPointerAmb_fluid2);
+ s_amb_fluid2 =  TILMedia.VLEFluidObjectFunctions.specificEntropy_pTxi(p_amb,T_amb,fluid2.xi_default,vleFluidPointerAmb_fluid2);
+ h_amb_fluid3 =  TILMedia.VLEFluidObjectFunctions.specificEnthalpy_pTxi(p_amb,T_amb,fluid3.xi_default,vleFluidPointerAmb_fluid3);
+ s_amb_fluid3 =  TILMedia.VLEFluidObjectFunctions.specificEntropy_pTxi(p_amb,T_amb,fluid3.xi_default,vleFluidPointerAmb_fluid3);
 
 annotation (   defaultComponentName="simCenter",
     defaultComponentPrefixes="inner",

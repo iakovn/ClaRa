@@ -1,7 +1,7 @@
-within ClaRa.Components.VolumesValvesFittings.Pipes.Check.OnePhaseFlow;
+ï»¿within ClaRa.Components.VolumesValvesFittings.Pipes.Check.OnePhaseFlow;
 model Test_Pipe_L4_Advanced
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.2                        //
+  // Component of the ClaRa library, version: 1.2.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -41,15 +41,13 @@ model Test_Pipe_L4_Advanced
     h_start=ones(tube.N_cv)*200e3,
     length=50,
     N_cv=50,
-    redeclare model PressureLoss =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4,
-    redeclare model HeatTransfer =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4,
+    redeclare model PressureLoss = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4,
+    redeclare model HeatTransfer = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4,
     p_start=ones(tube.N_cv)*1e5,
     frictionAtInlet=true,
     frictionAtOutlet=true,
-    initType=ClaRa.Basics.Choices.Init.steadyState,
-    suppressHighFrequencyOscillations=true) annotation (Placement(transformation(extent={{14,-63},{-8,-55}})));
+    suppressHighFrequencyOscillations=true,
+    initOption=1) annotation (Placement(transformation(extent={{14,-63},{-8,-55}})));
 
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi massFlowSink(
     variable_p=true,
@@ -114,8 +112,8 @@ model Test_Pipe_L4_Advanced
     Delta_x=tube.Delta_x,
     N_ax=tube.N_cv,
     T_start=320*ones(tube.N_cv),
-    initChoice=ClaRa.Basics.Choices.Init.noInit,
-    stateLocation=2) annotation (Placement(transformation(extent={{-10,-42},{16,-32}})));
+    stateLocation=2,
+    initOption=0) annotation (Placement(transformation(extent={{-10,-42},{16,-32}})));
 equation
   connect(multiSum.y, massFlowSource.m_flow) annotation (Line(
       points={{65.98,-54},{64,-54},{62,-53}},
@@ -140,7 +138,7 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(T_wall.y, realInputMultiplyer.Signal) annotation (Line(
-      points={{-77.95,-22.5},{-64.42,-22.5}},
+      points={{-77.95,-22.5},{-65.26,-22.5}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(mass_flow_2.y, multiSum.u[2]) annotation (Line(
@@ -152,7 +150,7 @@ equation
       color={0,0,127},
       smooth=Smooth.None));
   connect(realInputMultiplyer.y, prescribedTemperature.T) annotation (Line(
-      points={{-51.4,-22.5},{-51.4,-22},{-41.2,-22}},
+      points={{-49.3,-22.5475},{-49.3,-22},{-41.2,-22}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(thinWall1.innerPhase, tube.heat) annotation (Line(

@@ -1,7 +1,7 @@
-within ClaRa.Components.VolumesValvesFittings.Pipes.Check.TwoPhaseFlow;
+﻿within ClaRa.Components.VolumesValvesFittings.Pipes.Check.TwoPhaseFlow;
 model Test_Pipe_L4_Advanced
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.2                        //
+  // Component of the ClaRa library, version: 1.2.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright � 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -41,21 +41,20 @@ model Test_Pipe_L4_Advanced
     m_flow_nom=400,
     Delta_p_nom=400000,
     N_cv=40,
-    h_start=linspace(
-        1.4e6,
-        0.337048e6,
-        tube.N_cv),
     p_start=linspace(
         2e7,
         1.9e7,
         tube.N_cv),
-    redeclare model PressureLoss =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4,
-    redeclare model HeatTransfer =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4,
-    initType=ClaRa.Basics.Choices.Init.noInit,
+    redeclare model PressureLoss = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4,
     frictionAtInlet=true,
-    frictionAtOutlet=true) annotation (Placement(transformation(extent={{24,-9},{-10,4}})));
+    frictionAtOutlet=true,
+    initOption=0,
+    h_start=linspace(
+        1.4e6,
+        1.4e6,
+        tube.N_cv),
+    redeclare model HeatTransfer = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4 (alpha_nom=10000))
+                  annotation (Placement(transformation(extent={{24,-9},{-10,4}})));
 
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi massFlowSink(
     variable_p=true,
@@ -84,7 +83,7 @@ model Test_Pipe_L4_Advanced
     startTime=1000,
     duration=200,
     height=300,
-    offset=350) annotation (Placement(transformation(
+    offset=573) annotation (Placement(transformation(
         extent={{-10.5,-10.5},{10.5,10.5}},
         rotation=0,
         origin={-85.5,33.5})));
@@ -98,13 +97,13 @@ model Test_Pipe_L4_Advanced
     length=tube.length,
     Delta_x=tube.Delta_x,
     N_ax=tube.N_cv,
-    initChoice=ClaRa.Basics.Choices.Init.noInit,
     diameter_i=tube.diameter_i,
     diameter_o=tube.diameter_i + 0.01,
     T_start=573*ones(tube.N_cv),
     redeclare model Material = TILMedia.SolidTypes.TILMedia_Steel,
     stateLocation=2,
-    N_tubes=tube.N_tubes) annotation (Placement(transformation(extent={{0,11},{12,25}})));
+    N_tubes=tube.N_tubes,
+    initOption=0) annotation (Placement(transformation(extent={{0,11},{12,25}})));
 
   Modelica.Blocks.Sources.Step inlet_enthalpy(
     startTime=2000,
@@ -138,11 +137,11 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(T_wall.y, realInputMultiplyer.Signal) annotation (Line(
-      points={{-73.95,33.5},{-52.42,33.5}},
+      points={{-73.95,33.5},{-53.26,33.5}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(realInputMultiplyer.y, prescribedTemperature.T) annotation (Line(
-      points={{-39.4,33.5},{-20,33},{-19.2,33}},
+      points={{-37.3,33.4525},{-20,33},{-19.2,33}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(prescribedTemperature.port, thinWall.outerPhase) annotation (Line(
@@ -183,7 +182,7 @@ ________________________________________________________________________________
           horizontalAlignment=TextAlignment.Left,
           fontSize=9,
           textString="______________________________________________________________________________________________
-Scenario:  increase of outer wall temperature (at t=200s 350K --> 650 K) causing evaporation in pipe     
+Scenario:  increase of outer wall temperature (at t=1000s 300°c --> 600 °C) causing evaporation in pipe     
  _______________________________________________________________________________________
 ")}),
     experiment(

@@ -1,7 +1,7 @@
-within ClaRa.Components.VolumesValvesFittings.Pipes.Check.ThickWallScenarios;
+ï»¿within ClaRa.Components.VolumesValvesFittings.Pipes.Check.ThickWallScenarios;
 model Test_Pipe_L1_TML_insulatedWall
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.2                        //
+  // Component of the ClaRa library, version: 1.2.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -87,8 +87,8 @@ model Test_Pipe_L1_TML_insulatedWall
     Delta_x=tube.Delta_x,
     N_ax=tube.N_cv,
     T_start=293*ones(tube.N_cv),
-    initChoice=ClaRa.Basics.Choices.Init.noInit,
-    stateLocation=3) annotation (Placement(transformation(extent={{-2,-49},{10,-35}})));
+    stateLocation=3,
+    initOption=0) annotation (Placement(transformation(extent={{-2,-49},{10,-35}})));
   Modelica.Blocks.Sources.Ramp mass_flow_2(
     duration=1,
     offset=100,

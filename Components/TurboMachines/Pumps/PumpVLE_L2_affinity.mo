@@ -1,7 +1,7 @@
-within ClaRa.Components.TurboMachines.Pumps;
+ï»¿within ClaRa.Components.TurboMachines.Pumps;
 model PumpVLE_L2_affinity "A pump for VLE mixtures with a finite fluid volume, based on affinity laws"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                            //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -62,7 +62,9 @@ model PumpVLE_L2_affinity "A pump for VLE mixtures with a finite fluid volume, b
 
   parameter Modelica.SIunits.SpecificEnthalpy h_start= 1e5 "Start value of outlet specific enthalpy" annotation(Dialog(tab="Pump Volume", group="Initialisation"));
   parameter Modelica.SIunits.Pressure p_start= 1e5 "Start value of outlet pressure" annotation(Dialog(tab="Pump Volume", group="Initialisation"));
-  parameter ClaRa.Basics.Choices.Init      initType=ClaRa.Basics.Choices.Init.noInit "Type of initialisation" annotation(Dialog(tab="Pump Volume", group="Initialisation"), choicesAllMatching);
+  parameter Integer initOption=0 "Type of initialisation at tube side"
+    annotation (Dialog(tab="Pump Volume", group="Initialisation"), choices(choice = 0 "Use guess values", choice = 1 "Steady state", choice=201 "Steady pressure", choice = 202 "Steady enthalpy"));
+
   parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation"   annotation(Dialog(tab="Pump Volume", group="Initialisation"));
 
   //________________________________________________________________________________
@@ -143,19 +145,18 @@ protected
     contributeToCycleSummary=contributeToCycleSummary,
     drp_exp=drp_exp)       annotation (Placement(transformation(extent={{-10,-10},{10,10}})));
 
-  Basics.ControlVolumes.FluidVolumes.VolumeVLE_2 pumpFluidVolume(medium=medium,
+  Basics.ControlVolumes.FluidVolumes.VolumeVLE_2 pumpFluidVolume(
+    medium=medium,
     useHomotopy=useHomotopy,
     m_flow_nom=m_flow_nom,
     p_nom=p_nom,
     h_nom=h_nom,
     h_start=h_start,
     p_start=p_start,
-    initType=initType,
     showExpertSummary=showExpertSummary,
     redeclare model PressureLoss = PressureLoss,
-    redeclare model Geometry =
-        ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry)
-    annotation (Placement(transformation(extent={{24,-10},{44,10}})));
+    redeclare model Geometry = ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry,
+    initOption=initOption) annotation (Placement(transformation(extent={{24,-10},{44,10}})));
 public
   Summary summary(
      outline( V_flow=pump.V_flow,

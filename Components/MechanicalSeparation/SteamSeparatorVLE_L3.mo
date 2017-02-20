@@ -22,11 +22,9 @@ model SteamSeparatorVLE_L3
     xi_vap_start=xi_vap_start,
     p_start=p_start,
     level_rel_start=yps_start,
-    initType=initType,
     showExpertSummary=showExpertSummary,
     medium=medium,
-    redeclare model HeatTransfer =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3,
+    redeclare model HeatTransfer = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3,
     redeclare model PressureLoss = PressureLoss,
     Tau_cond=Tau_cond,
     Tau_evap=Tau_evap,
@@ -35,8 +33,7 @@ model SteamSeparatorVLE_L3
     exp_HT_phases=exp_HT_phases,
     m_flow_nom=m_flow_nom,
     p_nom=p_nom,
-    redeclare model Geometry =
-        ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowCylinder (
+    redeclare model Geometry = ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowCylinder (
         N_outlet=2,
         z_in={z_in},
         z_out={z_out1,z_out2},
@@ -44,14 +41,13 @@ model SteamSeparatorVLE_L3
         flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical,
         diameter=diameter,
         length=length),
-    redeclare model PhaseBorder =
-        Basics.ControlVolumes.Fundamentals.SpacialDistribution.RealSeparated (
+    redeclare model PhaseBorder = Basics.ControlVolumes.Fundamentals.SpacialDistribution.RealSeparated (
         level_rel_start=yps_start,
         radius_flange=radius_flange,
         absorbInflow=absorbInflow,
         smoothness=smoothness),
-    equalPressures=equalPressures)
-                                annotation (Placement(transformation(extent={{-40,-10},{-20,10}})));
+    equalPressures=equalPressures,
+    initOption=initOption)  annotation (Placement(transformation(extent={{-40,-10},{-20,10}})));
   ClaRa.Basics.Interfaces.FluidPortIn inlet(Medium=medium) "Inlet port" annotation (Placement(transformation(extent={{-110,-10},{-90,10}})));
   ClaRa.Basics.Interfaces.FluidPortOut outlet2(Medium=medium) "Steam outlet" annotation (Placement(transformation(extent={{-10,90},{10,110}})));
   ClaRa.Basics.Interfaces.FluidPortOut outlet1(Medium=medium) "Liquid outlet" annotation (Placement(transformation(extent={{-10,-110},{10,-90}})));
@@ -82,8 +78,8 @@ model SteamSeparatorVLE_L3
   parameter Real yps_start=0.5 "Start value for volume fraction"
     annotation (Dialog(tab="Initialisation"));
 
-  inner parameter ClaRa.Basics.Choices.Init initType=ClaRa.Basics.Choices.Init.noInit "Type of initialisation"
-    annotation (Dialog(tab="Initialisation"), choicesAllMatching);
+  inner parameter Integer initOption = 211 "Type of initialisation"
+    annotation (Dialog(tab= "Initialisation"), choices(choice = 0 "Use guess values", choice = 209 "Steady in vapour pressure, enthalpies and vapour volume", choice=201 "Steady vapour pressure", choice = 202 "Steady enthalpy", choice=204 "Fixed volume fraction",  choice=211 "Fixed values in level, enthalpies and vapour pressure"));
 
   final parameter Real absorbInflow=1 "absorption of incoming mass flow to the zones 1: perfect in the allocated zone, 0: perfect according to steam quality"
                                                                                               annotation (Dialog(tab="Expert Settings"));

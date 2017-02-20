@@ -1,13 +1,13 @@
 within ClaRa.Components.FlueGasCleaning.Desulfurization.Fundamentals;
 model Desulfurisation_controlVolume_ideal
 //___________________________________________________________________________//
-// Package of the ClaRa library, version: 1.1.2                              //
+// Package of the ClaRa library, version: 1.2.0                              //
 // Models of the ClaRa library are tested under DYMOLA v2016 FD01.           //
 // It is planned to support alternative Simulators like SimulationX in the   //
 // future                                                                    //
 //___________________________________________________________________________//
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // This Modelica package is free software and the use is completely at your  //
 // own risk; it can be redistributed and/or modified under the terms of the  //
@@ -80,15 +80,7 @@ Modelica.SIunits.MassFlowRate m_flow_CO2_prod "Mass flow of produced carbon diox
 ClaRa.Basics.Units.EnthalpyMassSpecific h_out "Specific enthalpy at outlet";
 //ClaRa.Basics.Units.EnthalpyMassSpecific h_out_del "Pseudo state for specific enthalpy at outlet";
 
-     TILMedia.GasObjectFunctions.GasPointer GasPointerOutlet=
-      TILMedia.GasObjectFunctions.GasPointer(
-       medium.concatGasName,
-       8,
-       medium.xi_default,
-       medium.nc_propertyCalculation,
-       medium.nc,
-       0,
-       0);
+
 
   TILMedia.Gas_pT     flueGasInlet(p=inlet.p,
   T=inStream(inlet.T_outflow),
@@ -108,6 +100,7 @@ initial equation
  // h_out_del = h_out;
 
 equation
+
 n_flow_SO2_in =inlet.m_flow*inStream(inlet.xi_outflow[4])/flueGasInlet.M_i[4];
 n_flow_O2_in =inlet.m_flow*inStream(inlet.xi_outflow[6])/flueGasInlet.M_i[6];
 n_flow_H2O_in =inlet.m_flow*inStream(inlet.xi_outflow[8])/flueGasInlet.M_i[8];

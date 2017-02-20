@@ -1,7 +1,7 @@
-within ClaRa.Basics.ControlVolumes.SolidVolumes.Check;
+ï»¿within ClaRa.Basics.ControlVolumes.SolidVolumes.Check;
 model Test_NTU_CounterParallelCross_Comparison "Comparison of NTU counter cross and parallel flow models"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.2                        //
+  // Component of the ClaRa library, version: 1.2.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -63,12 +63,10 @@ model Test_NTU_CounterParallelCross_Comparison "Comparison of NTU counter cross 
     m_flow_o=m_flow_o,
     alpha_i=ones(3)*alpha_i,
     alpha_o=ones(3)*alpha_o,
-    redeclare model HeatExchangerType =
-        ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.CounterFlow_L3,
-    initChoice=ClaRa.Basics.Choices.Init.noInit,
-    redeclare function HeatCapacityAveraging =
-        ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.ArithmeticMean,
-    outerPhaseChange=false) annotation (Placement(transformation(extent={{-80,-60},{-40,-20}})));
+    redeclare model HeatExchangerType = ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.CounterFlow_L3,
+    redeclare function HeatCapacityAveraging = ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.ArithmeticMean,
+    outerPhaseChange=false,
+    initOption=0) annotation (Placement(transformation(extent={{-80,-60},{-40,-20}})));
 
   ClaRa.Basics.ControlVolumes.SolidVolumes.NTU_L3_standalone NTU_parallel(
     N_t=N_tubes,
@@ -86,12 +84,10 @@ model Test_NTU_CounterParallelCross_Comparison "Comparison of NTU counter cross 
     m_flow_o=m_flow_o,
     alpha_i=ones(3)*alpha_i,
     alpha_o=ones(3)*alpha_o,
-    redeclare model HeatExchangerType =
-        ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.ParallelFlow_L3,
-    initChoice=ClaRa.Basics.Choices.Init.noInit,
-    redeclare function HeatCapacityAveraging =
-        ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.ArithmeticMean,
-    outerPhaseChange=false) annotation (Placement(transformation(extent={{-20,-60},{20,-20}})));
+    redeclare model HeatExchangerType = ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.ParallelFlow_L3,
+    redeclare function HeatCapacityAveraging = ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.ArithmeticMean,
+    outerPhaseChange=false,
+    initOption=0) annotation (Placement(transformation(extent={{-20,-60},{20,-20}})));
 
   ClaRa.Basics.ControlVolumes.SolidVolumes.NTU_L3_standalone NTU_cross(
     N_t=N_tubes,
@@ -109,12 +105,10 @@ model Test_NTU_CounterParallelCross_Comparison "Comparison of NTU counter cross 
     m_flow_o=m_flow_o,
     alpha_i=ones(3)*alpha_i,
     alpha_o=ones(3)*alpha_o,
-    redeclare model HeatExchangerType =
-        ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.CrossFlow_L3,
-    initChoice=ClaRa.Basics.Choices.Init.noInit,
-    redeclare function HeatCapacityAveraging =
-        ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.ArithmeticMean,
-    outerPhaseChange=false) annotation (Placement(transformation(extent={{40,-60},{80,-20}})));
+    redeclare model HeatExchangerType = ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.CrossFlow_L3,
+    redeclare function HeatCapacityAveraging = ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.ArithmeticMean,
+    outerPhaseChange=false,
+    initOption=0) annotation (Placement(transformation(extent={{40,-60},{80,-20}})));
 
   annotation (
     Diagram(coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=true), graphics={Text(

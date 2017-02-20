@@ -1,7 +1,7 @@
-within ClaRa.Basics.ControlVolumes.FluidVolumes;
+ï»¿within ClaRa.Basics.ControlVolumes.FluidVolumes;
 model VolumeVLE_L4_Advanced "A 1D tube-shaped control volume considering one-phase and two-phase heat transfer in a straight pipe with detailed dynamic momentum and energy balance."
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -134,8 +134,7 @@ public
                                    rho_nom[geo.N_cv]= TILMedia.VLEFluidFunctions.density_phxi(medium, p_nom, h_nom) "Nominal density";
 
 //____Initialisation_____________________________________________________________________________________
-  parameter ClaRa.Basics.Choices.Init initType=ClaRa.Basics.Choices.Init.steadyState "|Initialisation|Model Settings|type of initialisation"
-                                                            annotation(choicesAllMatching);
+  parameter Integer initOption = 1 "Type of initialisation" annotation(Dialog(tab="Initialisation"), choices(choice = 0 "Use guess values", choice = 1 "Steady state", choice=201 "Steady pressure", choice = 202 "Steady enthalpy", choice=208 "steady presure and enthalpy"));
   inner parameter Boolean useHomotopy=simCenter.useHomotopy "|Initialisation|Model Settings|true, if homotopy method is used during initialisation";
 
   parameter Basics.Units.EnthalpyMassSpecific
@@ -324,7 +323,7 @@ public
 
 initial equation
 
-  if initType == ClaRa.Basics.Choices.Init.steadyState then
+  if initOption == 1 then
     der(h)=zeros(geo.N_cv);
     der(p)=zeros(geo.N_cv);
 
@@ -337,11 +336,17 @@ initial equation
      else //inlet_dp_innerPipe_dp_outlet
          der(m_flow[2:geo.N_cv])=zeros(geo.N_cv-1);
      end if;
-
-  elseif initType == ClaRa.Basics.Choices.Init.steadyPressure then
+  elseif initOption == 201 then
     der(p)=zeros(geo.N_cv);
-  elseif initType == ClaRa.Basics.Choices.Init.steadyEnthalpy then
+  elseif initOption == 202 then
     der(h)=zeros(geo.N_cv);
+  elseif initOption == 208 then
+    der(h)=zeros(geo.N_cv);
+    der(p)=zeros(geo.N_cv);
+  elseif initOption ==0 then
+    // do nothing
+  else
+    assert(false, "Unknown initialisation option in " + getInstanceName());
   end if;
 //--------------------------------------------------------------------------------------
 

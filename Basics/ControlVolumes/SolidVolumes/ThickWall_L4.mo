@@ -1,7 +1,7 @@
-within ClaRa.Basics.ControlVolumes.SolidVolumes;
+ï»¿within ClaRa.Basics.ControlVolumes.SolidVolumes;
 model ThickWall_L4 "A thick cylindric wall with radial descretisation"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -35,7 +35,10 @@ public
   parameter Integer N_tubes= 1 "Number of tubes in parallel" annotation(Dialog(group="Geometry"));
   parameter SI.Temperature T_start[N_rad]=ones(N_rad)*293.15 "Start values of wall temperature inner --> outer"
                                                                                             annotation(Dialog(group="Initialisation"));
-  parameter ClaRa.Basics.Choices.Init initChoice=ClaRa.Basics.Choices.Init.noInit "Initialisation option"                   annotation(Dialog(group="Initialisation"));
+  inner parameter Integer initOption=0 "Type of initialisation" annotation (Dialog(group="Initialisation"), choices(
+      choice=0 "Use guess values",
+      choice=1 "Steady state",
+      choice=203 "Steady temperature"));
   final parameter SI.Mass mass_nominal = solid[N_rad].d*Modelica.Constants.pi/4*(diameter_o^2-diameter_i^2)*length*N_tubes "Wall mass (deprecated)";
   final parameter SI.Mass mass = solid[N_rad].d*Modelica.Constants.pi/4*(diameter_o^2-diameter_i^2)*length*N_tubes "Wall mass";
   SI.Length Delta_radius[N_rad] "Thicknes of the volume elements";
@@ -142,14 +145,15 @@ equation
    end for;
 
 initial equation
-  if initChoice == ClaRa.Basics.Choices.Init.noInit then
-    // do nothing
-    //U={solid[i].cp*solid[i].d * Modelica.Constants.pi*(radius[i+1]^2-radius[i]^2) * length * T_start[i] for i in 1:N_rad};
-    T=T_start;
-  else
-    der(T)=zeros(N_rad);
-    //U={solid[i].cp*solid[i].d * Modelica.Constants.pi*(radius[i+1]^2-radius[i]^2) * length * T_0[i] for i in 1:n};
-  end if;
+   if initOption == 1 then //steady state
+     der(U)=zeros(N_rad);
+   elseif initOption == 203 then //steady temperature
+     der(T)=zeros(N_rad);
+   elseif initOption == 0 then //no init
+    T=T_start; // do nothing
+   else
+    assert(initOption == 0,"Invalid init option");
+   end if;
 
   annotation (Icon(coordinateSystem(preserveAspectRatio=true, extent={{-100,-75},
             {100,75}}),

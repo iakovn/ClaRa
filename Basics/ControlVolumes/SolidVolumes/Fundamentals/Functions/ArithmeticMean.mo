@@ -1,7 +1,7 @@
-within ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions;
+ï»¿within ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions;
 function ArithmeticMean "Use arithmetic mean, i.e. (In1 + In2)/2"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //

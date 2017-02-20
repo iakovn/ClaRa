@@ -1,7 +1,7 @@
-within ClaRa.Components.MechanicalSeparation;
+ï»¿within ClaRa.Components.MechanicalSeparation;
 model Drum_L3_advanced "Drum : separated volume approach | level-dependent phase separation"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -56,9 +56,14 @@ extends ClaRa.Basics.Icons.Drum;
       TILMedia.VLEFluidFunctions.dewSpecificEnthalpy_pxi(medium, volume.p_start) "Start value of vapour specific enthalpy" annotation(Dialog(tab="Initialisation", group="Volume"));
   parameter ClaRa.Basics.Units.Pressure p_start=1e5 "Start value of sytsem pressure"     annotation(Dialog(tab="Initialisation", group="Volume"));
   parameter Real level_rel_start = 0.5 "Initial filling level" annotation(Dialog(tab="Initialisation", group="Volume"));
-  parameter Basics.Choices.Init      initType=ClaRa.Basics.Choices.Init.steadyTemperature "Type of initialisation" annotation(Dialog(tab="Initialisation", group="Volume"));
+  inner parameter Integer initOption = 211 "Type of initialisation"
+    annotation (Dialog(tab= "Initialisation", group = "Volume"), choices(choice = 0 "Use guess values", choice = 209 "Steady in vapour pressure, enthalpies and vapour volume", choice=201 "Steady vapour pressure", choice = 202 "Steady enthalpy", choice=204 "Fixed volume fraction",  choice=211 "Fixed values in level, enthalpies and vapour pressure"));
+
   parameter Modelica.SIunits.Temperature T_wall_start[wall.N_rad]=ones(wall.N_rad)*293.15 "Start values of wall temperature inner --> outer" annotation(Dialog(tab="Initialisation", group="Wall"));
-  parameter Basics.Choices.Init initChoice_wall=ClaRa.Basics.Choices.Init.noInit "Initialisation option for wall" annotation(Dialog(tab="Initialisation", group="Wall"));
+  parameter Integer initOptionWall=0 "Initialisation option for wall" annotation(Dialog(tab="Initialisation", group="Wall"),choices(
+      choice=0 "Use guess values",
+      choice=1 "Steady state",
+      choice=203 "Steady temperature"));
 
   replaceable model PressureLoss =
       ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3
@@ -210,14 +215,12 @@ extends ClaRa.Basics.Icons.Drum;
     useHomotopy=useHomotopy,
     p_nom=p_nom,
     p_start=p_start,
-    initType=initType,
     level_rel_start=level_rel_start,
     Tau_cond=Tau_cond,
     showExpertSummary=showExpertSummary,
     Tau_evap=Tau_evap,
     alpha_ph=500,
-    redeclare model Geometry =
-        ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry (
+    redeclare model Geometry = ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry (
         volume=Modelica.Constants.pi/4*diameter^2*length,
         N_heat=1,
         A_heat={Modelica.Constants.pi*diameter*length},
@@ -232,16 +235,15 @@ extends ClaRa.Basics.Icons.Drum;
         z_out={z_sat,z_down}),
     h_liq_start=h_liq_start,
     h_vap_start=h_vap_start,
-    redeclare model PhaseBorder =
-        ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.RealSeparated (
+    redeclare model PhaseBorder = ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.RealSeparated (
         level_rel_start=level_rel_start,
         radius_flange=radius_flange,
         absorbInflow=absorbInflow,
         smoothness=smoothness),
     A_heat_ph=A_phaseBorder,
     exp_HT_phases=expHT_phases,
-    redeclare model HeatTransfer = HeatTransfer)
-                                annotation (Placement(transformation(extent={{12,-30},{-8,-10}})));
+    redeclare model HeatTransfer = HeatTransfer,
+    initOption=initOption) annotation (Placement(transformation(extent={{12,-30},{-8,-10}})));
 
   ClaRa.Basics.ControlVolumes.SolidVolumes.ThickWall_L4 wall(
     sizefunc=+1,
@@ -253,7 +255,7 @@ extends ClaRa.Basics.Icons.Drum;
     diameter_o=diameter + 2*thickness_wall,
     CF_lambda=CF_lambda,
     T_start=T_wall_start,
-    initChoice=initChoice_wall)
+    initOption=initOptionWall)
              annotation (Placement(transformation(extent={{-8,28},{12,48}})));
 
   Basics.Interfaces.FluidPortOut sat(Medium=medium) "Saturated steam outlet"

@@ -59,7 +59,6 @@ partial model HopperBase
   ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlock constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry(
                                                                       flowOrientation = ClaRa.Basics.Choices.GeometryOrientation.vertical, height_fill=-1) "1st: choose geometry definition | 2nd: edit corresponding record"
     annotation (Dialog(group="Geometry"), choicesAllMatching=true);
-
   //__________________/ Parameter \_______________________________________________
 
   inner parameter Modelica.SIunits.MassFlowRate m_flow_nom= 10 "Nominal mass flow rates at inlet" annotation(Dialog(group="Nominal Values"));

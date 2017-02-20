@@ -1,10 +1,10 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT;
 model Constant_L2 "All Geo || L2 || HTC || Constant"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.2                        //
+  // Component of the ClaRa library, version: 1.2.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -41,9 +41,8 @@ model Constant_L2 "All Geo || L2 || HTC || Constant"
       choice=3 "Selection to be extended"));
   parameter Real CF_fouling=1 "Scaling factor accounting for the fouling of the wall" annotation (Dialog(group="Heat Transfer"));
 
-  parameter String temperatureDifference="Logarithmic mean" "Temperature Difference" annotation (Dialog(group="Heat Transfer"), choices(
+  parameter String temperatureDifference="Logarithmic mean - smoothed" "Temperature Difference" annotation (Dialog(group="Heat Transfer"), choices(
       choice = "Arithmetic mean",
-      choice = "Logarithmic mean",
       choice = "Logarithmic mean - smoothed",
       choice = "Inlet",
       choice = "Outlet"));
@@ -64,6 +63,7 @@ equation
   Delta_T_L = ClaRa.Basics.Functions.minAbs(Delta_T_wi, Delta_T_wo, 0.1);
 
   if temperatureDifference == "Logarithmic mean" then
+    //The following equation is only supported due to an backward compatibility issue - avoid its usage
     Delta_T_mean = noEvent(if floor(abs(Delta_T_wo)*1/eps) <= 1 or floor(abs(Delta_T_wi)*1/eps) <= 1 then 0 elseif (heat.T < iCom.T_out and heat.T > iCom.T_in) or (heat.T > iCom.T_out and heat.T < iCom.T_in) then 0 elseif floor(abs(Delta_T_wo - Delta_T_wi)*1/eps) < 1 then Delta_T_wi else (Delta_T_U - Delta_T_L)/log(Delta_T_U/Delta_T_L));
   elseif temperatureDifference == "Logarithmic mean - smoothed" then
     Delta_T_mean = SM(0.1,eps, abs(Delta_T_L))*SM(0.01,eps, Delta_T_U*Delta_T_L) * SZT((Delta_T_U - Delta_T_L)/log(abs(Delta_T_U)/(abs(Delta_T_L)+1e-9)), Delta_T_wi, (abs(Delta_T_U)-abs(Delta_T_L))-0.01, 0.001);

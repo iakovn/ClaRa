@@ -1,7 +1,7 @@
-within ClaRa.Visualisation;
+ï»¿within ClaRa.Visualisation;
 model Quadruple " Cross-shaped dynamic display of m_flow, p, T, h and m_flow"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -50,22 +50,22 @@ end DecimalSpaces;
           fillColor={215,215,215},
           fillPattern=FillPattern.Solid,
           lineColor=DynamicSelect({230, 230, 230}, if time> 0 then if eye.m_flow>0 then {0,131,169} else {167,25,48} else {230,230,230}),
-          textString=DynamicSelect(" m ", String(eye.m_flow,format=  "1."+String(decimalSpaces.m_flow)+"f") +" kg/s")),
+          textString=DynamicSelect(" m ", String(eye.m_flow,format = "1."+String(decimalSpaces.m_flow)+"f") +" kg/s")),
         Text(
           extent=DynamicSelect({{-200,-100},{0,-200}},if largeFonts then {{-200,-100},{0,-200}} else {{-200,-120},{0,-180}}),
           fillColor={215,215,215},
           fillPattern=FillPattern.Solid,
           lineColor=DynamicSelect({230,230,230},if time>0 then {0,131,169} else {230,230,230}),
-          textString=DynamicSelect(" h ", String(eye.h,format=  "1."+String(decimalSpaces.h)+"f") + " kJ/kg")),
+          textString=DynamicSelect(" h ", String(eye.h,format = "1."+String(decimalSpaces.h)+"f") + " kJ/kg")),
         Text(
           extent=DynamicSelect({{0,0},{200,-100}},if largeFonts then {{0,0},{200,-100}} else {{0,-20},{200,-80}}),
-          textString=DynamicSelect(" T ", String(eye.T, format=  "1."+String(decimalSpaces.T)+"f") + " °C"),
+          textString=DynamicSelect(" T ", String(eye.T, format = "1."+String(decimalSpaces.T)+"f") + " °C"),
           fillColor={215,215,215},
           fillPattern=FillPattern.Solid,
           lineColor=DynamicSelect({230,230,230},if time>0 then {0,131,169} else {230,230,230})),
         Text(
           extent=DynamicSelect({{0,-100},{200,-200}}, if largeFonts then {{0,-100},{200,-200}} else {{0,-120},{200,-180}}),
-          textString=DynamicSelect(" p ", String(eye.p,format=  "1."+String(decimalSpaces.p)+"f") + " bar"),
+          textString=DynamicSelect(" p ", String(eye.p,format = "1."+String(decimalSpaces.p)+"f") + " bar"),
           fillColor={215,215,215},
           fillPattern=FillPattern.Solid,
           lineColor=DynamicSelect({230,230,230},if time>0 then {0,131,169} else {230,230,230})),

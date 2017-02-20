@@ -1,7 +1,7 @@
-within ClaRa.Components.MechanicalSeparation.Check;
+ï»¿within ClaRa.Components.MechanicalSeparation.Check;
 model TestFeedWaterTank_1Separator "test case to compare FeedWaterTank_1 and FeedWaterTank_3"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -109,16 +109,15 @@ end Regression;
     z_out=0.1,
     orientation=ClaRa.Basics.Choices.GeometryOrientation.horizontal,
     showExpertSummary=true,
-    tau_evap=0.001,
     Tau_cond=0.001,
-    initType=ClaRa.Basics.Choices.Init.steadyDensity,
     smoothness=Modelica.Blocks.Types.Smoothness.ContinuousDerivative,
     levelOutput=true,
     showLevel=true,
     p_nom=900000,
     p_start=900000,
-    redeclare model PressureLoss = Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.NoFriction_L3)
-                                                                                            annotation (Placement(transformation(extent={{-34,-86},{26,-66}})));
+    redeclare model PressureLoss = Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.NoFriction_L3,
+    initOption=204,
+ Tau_evap=0.001) annotation (Placement(transformation(extent={{-34,-86},{26,-66}})));
 
   ClaRa.Components.BoundaryConditions.BoundaryVLE_hxim_flow massFlowSource_XRG12(m_flow_const=-10, variable_m_flow=true) annotation (Placement(transformation(extent={{60,-38},{40,-18}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_hxim_flow massFlowSource_XRG13(
@@ -135,14 +134,12 @@ end Regression;
     z_in=4,
     z_out=0.1,
     orientation=ClaRa.Basics.Choices.GeometryOrientation.horizontal,
-    redeclare model PressureLoss =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.NoFriction_L2,
+    redeclare model PressureLoss = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.NoFriction_L2,
     showLevel=true,
     levelOutput=true,
+    initOption=205,
     p_nom=900000,
-    p_start=900000,
-    initType=ClaRa.Basics.Choices.Init.steadyDensityPressure)
-                    annotation (Placement(transformation(extent={{-36,-14},{24,6}})));
+    p_start=900000) annotation (Placement(transformation(extent={{-36,-14},{24,6}})));
 
   ClaRa.Components.BoundaryConditions.BoundaryVLE_hxim_flow massFlowSource_XRG14(
     variable_m_flow=false,
@@ -179,7 +176,6 @@ end Regression;
     length=21,
     level_rel_start=2.5/4,
     orientation=ClaRa.Basics.Choices.GeometryOrientation.horizontal,
-    initType=ClaRa.Basics.Choices.Init.steadyDensity,
     showExpertSummary=true,
     Tau_evap=0.001,
     z_condensate=4,
@@ -188,12 +184,12 @@ end Regression;
     z_vent=0.1,
     Tau_cond=0.001,
     z_tapping=0.2,
-    redeclare model PressureLoss =
-        Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3 (                  Delta_p_nom={2e5*423/14,1000*400/423,1000*23/423}),
+    redeclare model PressureLoss = Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3 (Delta_p_nom={2e5*423/14,1000*400/423,1000*23/423}),
     levelOutput=true,
     showLevel=true,
     p_nom=900000,
-    p_start=900000)                                                                                                     annotation (Placement(transformation(extent={{-30,-202},{30,-182}})));
+    p_start=900000,
+    initOption=204) annotation (Placement(transformation(extent={{-30,-202},{30,-182}})));
 
   BoundaryConditions.BoundaryVLE_phxi                       massFlowSource_XRG9(
     h_const=3152.9e3, p_const=12e5)

@@ -28,21 +28,16 @@ end Regression;
 
   HEXvle2vle_L3_2ph_CH_simple hex(
     mass_struc=1,
-    redeclare model WallMaterial =
-        TILMedia.SolidTypes.TILMedia_Aluminum,
-    redeclare model PressureLossTubes =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.QuadraticNominalPoint_L2,
-    redeclare model PressureLossShell =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.QuadraticParallelZones_L3,
+    redeclare model WallMaterial = TILMedia.SolidTypes.TILMedia_Aluminum,
+    redeclare model PressureLossTubes = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.QuadraticNominalPoint_L2,
+    redeclare model PressureLossShell = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.QuadraticParallelZones_L3,
     z_in_shell=10,
-    redeclare model HeatTransferTubes =
-        Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L2 (                            alpha_nom=5000),
+    redeclare model HeatTransferTubes = Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L2 (alpha_nom=5000),
     T_w_start=linspace(
         200 + 273.15,
         450 + 273.15,
         3),
     p_start_tubes=250e5,
-    initTypeWall=ClaRa.Basics.Choices.Init.steadyState,
     m_flow_nom_shell=42,
     p_nom_shell=53e5,
     h_nom_shell=3000e3,
@@ -55,16 +50,14 @@ end Regression;
     h_start_tubes=1000e3,
     m_flow_nom_tubes=416,
     z_out_shell=0.1,
-    initTypeTubes=ClaRa.Basics.Choices.Init.noInit,
-    redeclare model HeatTransfer_Shell =
-        Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.Constant_L3_ypsDependent (                   alpha_nom={1000,3000}),
+    redeclare model HeatTransfer_Shell = Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.Constant_L3_ypsDependent (alpha_nom={1000,3000}),
     level_rel_start=0.2,
-    N_tubes=500)                                                                                                     annotation (Placement(transformation(extent={{-6,-72},{14,-52}})));
+    N_tubes=500,
+    initOptionTubes=0,
+    initOptionWall=1) annotation (Placement(transformation(extent={{-6,-72},{14,-52}})));
 
-  Sensors.Temperature                  Temp_Shell_in
-    annotation (Placement(transformation(extent={{14,-22},{34,-42}})));
-  Sensors.Temperature                  Temp_Tubes_in
-    annotation (Placement(transformation(extent={{38,-68},{58,-88}})));
+  Sensors.SensorVLE_L1_T Temp_Shell_in annotation (Placement(transformation(extent={{14,-22},{34,-42}})));
+  Sensors.SensorVLE_L1_T Temp_Tubes_in annotation (Placement(transformation(extent={{38,-68},{58,-88}})));
   Modelica.Blocks.Sources.Ramp h_hot(
     offset=2942e3,
     duration=600,

@@ -40,7 +40,7 @@ annotation (    Icon(coordinateSystem(preserveAspectRatio=false,extent={{0,0},{1
           extent={{-100,110},{100,90}},
           lineColor=DynamicSelect({27,36,42},if u>u_max then {27,36,42} elseif u>u_high then {167,25,48} elseif u<u_low then {0,131,169} else {115,150,0}),
           origin={50,110},
-          textString=  DynamicSelect("value", String(u,format=  "1."+String(decimalSpaces)+"f")+ " %unit"),
+          textString = DynamicSelect("value", String(u,format = "1."+String(decimalSpaces)+"f")+ " %unit"),
           fontSize=0),
         Text(
           extent=DynamicSelect({{85, 90},{200, 110}},{{85,u_set/(u_max-u_min)*200-10},{200,u_set/(u_max-u_min)*200+10}}),

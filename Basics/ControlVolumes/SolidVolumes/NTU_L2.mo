@@ -1,7 +1,7 @@
-within ClaRa.Basics.ControlVolumes.SolidVolumes;
+ï»¿within ClaRa.Basics.ControlVolumes.SolidVolumes;
 model NTU_L2 "NTU-based heat transfer resistance"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -49,7 +49,9 @@ model NTU_L2 "NTU-based heat transfer resistance"
 //______________Initialisation______________________________________________//
   parameter Units.Temperature T_w_i_start= 293.15 "Initial temperature at inner phase"    annotation(Dialog(tab="Initialisation"));
   parameter Units.Temperature T_w_a_start = 293.15 "Initial temperature at outer phase"   annotation(Dialog(tab="Initialisation"));
-  parameter ClaRa.Basics.Choices.Init initChoice=ClaRa.Basics.Choices.Init.noInit "Initialisation option"                   annotation(Dialog(tab="Initialisation"));
+  inner parameter Integer initOption=0 "Type of initialisation" annotation (Dialog(tab="Initialisation"), choices(
+      choice=0 "Use guess values",
+      choice=1 "Steady state"));
 //______________Visualisation______________________________________________//
  parameter Boolean showExpertSummary = false "|Summary and Visualisation||True, if expert summary should be applied";
 
@@ -127,11 +129,15 @@ public
 annotation(Placement(transformation(extent={{-100,-102},{-80,-82}})));
 
 initial equation
-  if initChoice == ClaRa.Basics.Choices.Init.steadyState then
+   if initOption == 1 then //steady state
     der(T_w_i)=0;
     der(T_w_a)=0;
+   elseif initOption == 0 then //no init
+   // do nothing
+   else
+    assert(initOption == 0,"Invalid init option");
+   end if;
 
-  end if;
 //   if stateLocation ==2 then
 //     innerPhase.T = T_w_i;
 //     outerPhase.T = T_w_a;

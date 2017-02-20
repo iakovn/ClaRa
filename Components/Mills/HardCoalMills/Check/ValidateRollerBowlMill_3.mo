@@ -1,7 +1,7 @@
-within ClaRa.Components.Mills.HardCoalMills.Check;
+ï»¿within ClaRa.Components.Mills.HardCoalMills.Check;
 model ValidateRollerBowlMill_3 "A test scenario derived from the paper Niemczyk: 'Derivation and validation of a coal mill model for control'"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -46,13 +46,12 @@ model Regression
   Components.Utilities.Blocks.TimeExtrema timeExtrema4(u = m_flow_coal_out);
 end Regression;
 
-  ClaRa.Components.Mills.HardCoalMills.VerticalMill_L3    Mill2(
-    M_c_0=3000,
-    initChoice=ClaRa.Basics.Choices.Init.steadyDensity,
-    T_0=96.15 + 273.15,
-    M_pf_0=100,
-    millKoeff=ClaRa.Components.Mills.HardCoalMills.Fundamentals.STV4())
-    annotation (Placement(transformation(extent={{-8,-60},{12,-40}})));
+  ClaRa.Components.Mills.HardCoalMills.VerticalMill_L3 Mill2(
+    millKoeff=ClaRa.Components.Mills.HardCoalMills.Fundamentals.STV4(),
+    initOption=801,
+    mass_rct_start=3000,
+    mass_pct_start=100,
+    T_out_start=96.15 + 273.15) annotation (Placement(transformation(extent={{-8,-60},{12,-40}})));
   inner SimCenter simCenter(redeclare ClaRa.Basics.Media.Fuel.Coal_v2 fuelModel1, T_amb=283.15) annotation (Placement(transformation(extent={{80,80},{100,100}})));
   Modelica.Blocks.Sources.CombiTimeTable W_c(
     tableOnFile=true,

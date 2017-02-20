@@ -1,10 +1,10 @@
 within ClaRa.StaticCycles;
 model Triple "Visualise static cycle results"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                            //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -16,6 +16,10 @@ model Triple "Visualise static cycle results"
 //___________________________________________________________________________//
   parameter Integer stacy_id = 0 "Identifier of the static cycle triple";
   DecimalSpaces decimalSpaces "Accuracy to be displayed" annotation(Dialog);
+
+  final parameter ClaRa.Basics.Units.MassFlowRate m_flow(fixed=false) "Measured mass flow rate";
+  final parameter ClaRa.Basics.Units.Pressure p(fixed=false) "Measured mass flow rate";
+  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h(fixed=false) "Measured mass flow rate";
 record DecimalSpaces
 parameter Integer m_flow=1 "Accuracy to be displayed for mass flow";
 parameter Integer h=1 "Accuracy to be displayed for enthalpy";
@@ -23,6 +27,12 @@ parameter Integer p=1 "Accuracy to be displayed for pressure";
 end DecimalSpaces;
 
   Fundamentals.SteamSignal_base steamSignal annotation (Placement(transformation(extent={{-108,-10},{-100,10}}),iconTransformation(extent={{-120,-20},{-100,40}})));
+
+
+initial equation
+  m_flow = steamSignal.m_flow;
+  p=steamSignal.p;
+  h=steamSignal.h;
 
 annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{220,180}},
         initialScale=0.1),     graphics={
@@ -52,5 +62,4 @@ annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100}
           color=DynamicSelect({164,167,170},{0,131,169}),
           smooth=Smooth.None,thickness=0.5)}),                                                                           Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{220,180}},
         initialScale=0.1),   graphics));
-
 end Triple;

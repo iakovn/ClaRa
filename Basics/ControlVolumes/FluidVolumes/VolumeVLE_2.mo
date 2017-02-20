@@ -1,10 +1,10 @@
 within ClaRa.Basics.ControlVolumes.FluidVolumes;
 model VolumeVLE_2 "A lumped control volume for vapour/liquid equilibrium"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -79,12 +79,12 @@ end Summary;
   inner parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_nom=1e5 "Nominal specific enthalpy"      annotation(Dialog(group="Nominal Values"));
   inner parameter ClaRa.Basics.Units.MassFraction xi_nom[medium.nc-1] = medium.xi_default "Nominal mass fraction"      annotation(Dialog(group="Nominal Values"));
 
-  parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_start= 1e5 "Start value of sytsem specific enthalpy"
+  parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_start= 1e5 "Start value of system specific enthalpy"
                                              annotation(Dialog(tab="Initialisation"));
-  parameter ClaRa.Basics.Units.Pressure p_start= 1e5 "Start value of sytsem pressure" annotation(Dialog(tab="Initialisation"));
-  inner parameter ClaRa.Basics.Choices.Init      initType=ClaRa.Basics.Choices.Init.noInit "Type of initialisation"
-                             annotation(Dialog(tab="Initialisation"), choicesAllMatching);
+  parameter ClaRa.Basics.Units.Pressure p_start= 1e5 "Start value of system pressure" annotation(Dialog(tab="Initialisation"));
   parameter ClaRa.Basics.Units.MassFraction xi_start[medium.nc-1] = medium.xi_default "Start value for mass fraction" annotation(Dialog(tab="Initialisation"));
+  inner parameter Integer  initOption=0 "Type of initialisation" annotation(Dialog(tab="Initialisation"), choices(choice = 0 "Use guess values", choice = 1 "Steady state", choice=201 "Steady pressure", choice = 202 "Steady enthalpy", choice=204 "Fixed rel.level (for phaseBorder = idealSeparated only)",  choice=205 "Fixed rel.level and steady pressure (for phaseBorder = idealSeparated only)"));
+
   parameter Boolean showExpertSummary = simCenter.showExpertSummary "True, if expert summary should be applied" annotation(Dialog(tab="Summary and Visualisation"));
   parameter Integer heatSurfaceAlloc=1 "Heat transfer area to be considered"          annotation(Dialog(group="Geometry"),choices(choice=1 "Lateral surface",
                                                                                    choice=2 "Inner heat transfer surface"));
@@ -95,15 +95,15 @@ protected
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Variables and model instances ~~~~~~~~~~~~
 
-  ClaRa.Basics.Units.EnthalpyMassSpecific h_out;
-  ClaRa.Basics.Units.EnthalpyMassSpecific h_in;
-  ClaRa.Basics.Units.EnthalpyMassSpecific h(start=h_start);
+  ClaRa.Basics.Units.EnthalpyMassSpecific h_out "Outlet spec. enthalpy";
+  ClaRa.Basics.Units.EnthalpyMassSpecific h_in "Inlet spec. enthalpy";
+  ClaRa.Basics.Units.EnthalpyMassSpecific h(start=h_start) "spec. enthalpy state";
 
-  ClaRa.Basics.Units.MassFraction xi_out[medium.nc-1];
-  ClaRa.Basics.Units.MassFraction xi_in[medium.nc-1];
-  ClaRa.Basics.Units.MassFraction xi[medium.nc-1](start=xi_start);
+  ClaRa.Basics.Units.MassFraction xi_out[medium.nc-1] "Outlet composition";
+  ClaRa.Basics.Units.MassFraction xi_in[medium.nc-1] "Inlet composition";
+  ClaRa.Basics.Units.MassFraction xi[medium.nc-1](start=xi_start) "Composition state";
 
-  Real drhodt;//(unit="kg/(m3s)");
+  Real drhodt "Time derivative of density"; //(unit="kg/(m3s)");
 
 public
   ClaRa.Basics.Units.Mass mass "Total system mass";
@@ -229,19 +229,26 @@ equation
   outlet.xi_outflow  = inStream(inlet.xi_outflow);
 
 initial equation
-  if initType==ClaRa.Basics.Choices.Init.steadyState then
+  if initOption == 1 then //steady state
     der(h)=0;
     der(p)=0;
     der(xi)=zeros(medium.nc-1);
-  elseif initType==ClaRa.Basics.Choices.Init.steadyPressure then
+  elseif initOption == 201 then //steady pressure
     der(p)=0;
-  elseif initType==ClaRa.Basics.Choices.Init.steadyEnthalpy then
+  elseif initOption == 202 then //steady enthalpy
     der(h)=0;
-  elseif initType==ClaRa.Basics.Choices.Init.noInit then
+  elseif initOption == 0 then //no init
     // do nothing
+  elseif initOption == 204 and phaseBorder.modelType=="IdeallySeparated" then // fixed rel. level
+    phaseBorder.level_rel = phaseBorder.level_rel_start;
+  elseif initOption == 205 and phaseBorder.modelType=="IdeallySeparated" then // fixed rel. level and steady pressure
+    phaseBorder.level_rel = phaseBorder.level_rel_start;
+    der(iCom.p_bulk) = 0;
   else
-    // assert(false, "unsipported initial condition");
+    assert(false, "Unsupported initial condition in " + getInstanceName());
   end if;
+
+
 
 equation
   connect(heattransfer.heat, heat) annotation (Line(

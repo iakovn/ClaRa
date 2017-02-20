@@ -1,7 +1,7 @@
-within ClaRa.Visualisation.Check;
+ï»¿within ClaRa.Visualisation.Check;
 model IllustrateVisualisation
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,10 +15,8 @@ model IllustrateVisualisation
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
 extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb80;
-  ClaRa.Components.Sensors.vlePressureSensor vlePressureSensor
-    annotation (Placement(transformation(extent={{-40,-10},{-20,10}})));
-  ClaRa.Components.Sensors.Temperature temperature
-    annotation (Placement(transformation(extent={{-4,-8},{16,12}})));
+  ClaRa.Components.Sensors.SensorVLE_L1_p vlePressureSensor annotation (Placement(transformation(extent={{-40,-10},{-20,10}})));
+  ClaRa.Components.Sensors.SensorVLE_L1_T temperature annotation (Placement(transformation(extent={{-4,-8},{16,12}})));
   ClaRa.Visualisation.Quadruple quadruple
     annotation (Placement(transformation(extent={{12,-36},{42,-26}})));
   ClaRa.Visualisation.DynDisplay dynDisplay(

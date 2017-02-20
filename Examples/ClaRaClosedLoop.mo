@@ -39,35 +39,35 @@ end Regression;
         simCenter.fluid1,
         NOM.Turbine_HP.p_in,
         NOM.Turbine_HP.h_in),
-    p_in_0=INIT.Turbine_HP.p_in,
-    p_out_0=INIT.Turbine_HP.p_out,
     eta_mech=1,
-    CL_eta_mflow=[0.0,NOM.efficiency_Turb_HP; 1,NOM.efficiency_Turb_HP],
-    allowFlowReversal=true) annotation (Placement(transformation(extent={{-58,38},{-48,58}})));
+    allowFlowReversal=true,
+    redeclare model Efficiency =
+        ClaRa.Components.TurboMachines.Fundamentals.EfficiencyModels.TableMassFlow (
+         eta_mflow=([0.0,NOM.efficiency_Turb_HP; 1,NOM.efficiency_Turb_HP])),
+    p_in_start=INIT.Turbine_HP.p_in,
+    p_out_start=INIT.Turbine_HP.p_out)
+    annotation (Placement(transformation(extent={{-58,38},{-48,58}})));
 
   ClaRa.SubSystems.Boiler.SteamGenerator_L3 steamGenerator_1_XRG(
     p_LS_start=INIT.boiler.p_LS_out,
     p_RH_start=INIT.boiler.p_RS_out,
-    Q_flow_F_nom=NOM.boiler.Q_nom,
     p_LS_nom=NOM.boiler.p_LS_out,
     p_RH_nom=NOM.boiler.p_RS_out,
     h_LS_nom=NOM.boiler.h_LS_out,
     h_RH_nom=NOM.boiler.h_RS_out,
     h_LS_start=INIT.boiler.h_LS_out,
     h_RH_start=INIT.boiler.h_RS_out,
-    initHP=ClaRa.Basics.Choices.Init.noInit,
-    initIP=ClaRa.Basics.Choices.Init.steadyState,
     CL_etaF_QF_=[0,1; 1,1],
-    CL_yF_QF_=[0.4207,0.8341; 0.6246,0.8195; 0.8171,0.8049; 1,NOM.boiler.m_flow_feed*(NOM.boiler.h_LS_out - NOM.boiler.h_LS_in)/NOM.boiler.Q_nom],
-    m_flow_nomLS=NOM.boiler.m_flow_nom,
     Delta_p_nomHP=NOM.Delta_p_LS_nom,
     Delta_p_nomIP=NOM.Delta_p_RS_nom,
     CL_Delta_pHP_mLS_=INIT.CharLine_Delta_p_HP_mLS_,
-    CL_Delta_pIP_mLS_=INIT.CharLine_Delta_p_IP_mRS_)
-                            annotation (Placement(transformation(extent={{-152,46},{-124,84}})));
+    CL_Delta_pIP_mLS_=INIT.CharLine_Delta_p_IP_mRS_,
+    Q_flow_F_nom=NOM.boiler.Q_flow,
+    CL_yF_QF_=[0.4207,0.8341; 0.6246,0.8195; 0.8171,0.8049; 1,NOM.boiler.m_flow_feed*(NOM.boiler.h_LS_out - NOM.boiler.h_LS_in)/NOM.boiler.Q_flow],
+    m_flow_nomLS=NOM.boiler.m_flow_LS_nom,
+    initOption_HP=0,
+    initOption_IP=208) annotation (Placement(transformation(extent={{-152,46},{-124,84}})));
   ClaRa.Components.TurboMachines.Turbines.SteamTurbineVLE_L1 Turbine_IP(
-    p_in_0(displayUnit="Pa") = INIT.Turbine_IP.p_in,
-    p_out_0(displayUnit="Pa") = INIT.Turbine_IP.p_out,
     p_nom=NOM.Turbine_IP.p_in,
     m_flow_nom=NOM.Turbine_IP.m_flow,
     Pi=NOM.Turbine_IP.p_out/NOM.Turbine_IP.p_in,
@@ -77,12 +77,14 @@ end Regression;
         NOM.Turbine_IP.h_in),
     eta_mech=1,
     allowFlowReversal=true,
-    CL_eta_mflow=[0.0,NOM.Turbine_IP.efficiency; 1,NOM.Turbine_IP.efficiency])
-                            annotation (Placement(transformation(extent={{-12,38},{-2,58}})));
+    redeclare model Efficiency =
+        ClaRa.Components.TurboMachines.Fundamentals.EfficiencyModels.TableMassFlow (
+         eta_mflow=([0.0,NOM.Turbine_IP.efficiency; 1,NOM.Turbine_IP.efficiency])),
+    p_in_start=INIT.Turbine_IP.p_in,
+    p_out_start=INIT.Turbine_IP.p_out)
+    annotation (Placement(transformation(extent={{-12,38},{-2,58}})));
 
   ClaRa.Components.TurboMachines.Turbines.SteamTurbineVLE_L1 Turbine_LP2(
-    p_out_0(displayUnit="Pa") = INIT.Turbine_LP2.p_out,
-    p_in_0(displayUnit="Pa") = INIT.Turbine_LP2.p_in,
     p_nom=NOM.Turbine_LP2.p_in,
     m_flow_nom=NOM.Turbine_LP2.m_flow,
     Pi=NOM.Turbine_LP2.p_out/NOM.Turbine_LP2.p_in,
@@ -92,8 +94,12 @@ end Regression;
         NOM.Turbine_LP2.h_in),
     eta_mech=1,
     allowFlowReversal=true,
-    CL_eta_mflow=[0.0,NOM.Turbine_LP2.efficiency; 1,NOM.Turbine_LP2.efficiency])
-                            annotation (Placement(transformation(extent={{232,6},{242,26}})));
+    redeclare model Efficiency =
+        ClaRa.Components.TurboMachines.Fundamentals.EfficiencyModels.TableMassFlow (
+         eta_mflow=([0.0,NOM.Turbine_LP2.efficiency; 1,NOM.Turbine_LP2.efficiency])),
+    p_in_start=INIT.Turbine_LP2.p_in,
+    p_out_start=INIT.Turbine_LP2.p_out)
+    annotation (Placement(transformation(extent={{232,6},{242,26}})));
 
   Modelica.Blocks.Sources.RealExpression realPlantPower_(y=-(turbine_HP1.P_t +
         Turbine_IP.P_t + Turbine_LP1.P_t + Turbine_LP2.P_t)/550e6)
@@ -145,13 +151,9 @@ end Regression;
     height=5,
     width=5,
     length=10,
-    initTypeShell=ClaRa.Basics.Choices.Init.steadyDensity,
     diameter_o=0.025,
-    redeclare model HeatTransfer_Shell =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3 (             alpha_nom=
-                                                                                                {10000,10000}),
-    redeclare model PressureLossShell =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3 (            Delta_p_nom={100,100,100}),
+    redeclare model HeatTransfer_Shell = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3 (alpha_nom={10000,10000}),
+    redeclare model PressureLossShell = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3 (Delta_p_nom={100,100,100}),
     Tau_cond=0.3,
     Tau_evap=0.03,
     width_hotwell=4,
@@ -163,7 +165,8 @@ end Regression;
     p_nom_shell=NOM.condenser.p_condenser,
     p_start_shell=INIT.condenser.p_condenser,
     z_in_aux1=1,
-    z_in_aux2=1)           annotation (Placement(transformation(extent={{232,-46},{252,-22}})));
+    z_in_aux2=1,
+    initOptionShell=204) annotation (Placement(transformation(extent={{232,-46},{252,-22}})));
 
   ClaRa.Visualisation.Quadruple quadruple5(decimalSpaces(p=2))
     annotation (Placement(transformation(extent={{252,-72},{312,-52}})));
@@ -181,14 +184,12 @@ end Regression;
     z_aux=4.5,
     z_vent=4.5,
     z_condensate=4.5,
-    redeclare model PressureLoss =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3 (            Delta_p_nom={1000,1000,1000}),
-    initType=ClaRa.Basics.Choices.Init.steadyDensity,
+    redeclare model PressureLoss = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3 (Delta_p_nom={1000,1000,1000}),
     m_flow_cond_nom=NOM.feedwatertank.m_flow_cond,
     p_nom=NOM.feedwatertank.p_FWT,
     h_nom=NOM.feedwatertank.h_cond_in,
-    m_flow_heat_nom=NOM.feedwatertank.m_flow_tap1 + NOM.feedwatertank.m_flow_tap2) "INIT.feedwatertank.h_cond_out"
-                                                      annotation (Placement(transformation(extent={{-12,-138},{48,-118}})));
+    m_flow_heat_nom=NOM.feedwatertank.m_flow_tap1 + NOM.feedwatertank.m_flow_tap2,
+    initOption=204) "INIT.feedwatertank.h_cond_out" annotation (Placement(transformation(extent={{-12,-138},{48,-118}})));
   ClaRa.Components.TurboMachines.Pumps.PumpVLE_L1_simple Pump_cond(eta_mech=1, showExpertSummary=true) annotation (Placement(transformation(extent={{212,-112},{192,-132}})));
   Modelica.Blocks.Sources.Constant const3(k=0.5/6)
     annotation (Placement(transformation(extent={{262,-162},{242,-142}})));
@@ -207,14 +208,14 @@ end Regression;
     annotation (Placement(transformation(extent={{232,-162},{212,-142}})));
   ClaRa.Visualisation.Quadruple quadruple6
     annotation (Placement(transformation(extent={{-14,-172},{46,-152}})));
-  ClaRa.Components.VolumesValvesFittings.Fittings.Split_L2_Y join_IP(
+  ClaRa.Components.VolumesValvesFittings.Fittings.SplitVLE_L2_Y join_IP(
     h_start=INIT.Turbine_IP.h_out,
     p_start=INIT.Turbine_IP.p_out,
     volume=0.1,
-    initType=ClaRa.Basics.Choices.Init.noInit,
     p_nom=NOM.Turbine_IP.p_out,
     h_nom=NOM.Turbine_IP.h_out,
-    m_flow_out_nom={NOM.feedwatertank.m_flow_cond,NOM.feedwatertank.m_flow_tap2})                                   annotation (Placement(transformation(
+    m_flow_out_nom={NOM.feedwatertank.m_flow_cond,NOM.feedwatertank.m_flow_tap2},
+    initOption=0) annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=0,
         origin={34,38})));
@@ -226,8 +227,6 @@ end Regression;
         rotation=270,
         origin={34,-42})));
   ClaRa.Components.TurboMachines.Turbines.SteamTurbineVLE_L1 Turbine_LP1(
-    p_in_0(displayUnit="Pa") = INIT.Turbine_LP1.p_in,
-    p_out_0(displayUnit="Pa") = INIT.Turbine_LP1.p_out,
     p_nom=NOM.Turbine_LP1.p_in,
     m_flow_nom=NOM.Turbine_LP1.m_flow,
     Pi=NOM.Turbine_LP1.p_out/NOM.Turbine_LP1.p_in,
@@ -237,21 +236,25 @@ end Regression;
         NOM.Turbine_LP1.h_in),
     eta_mech=1,
     allowFlowReversal=true,
-    CL_eta_mflow=[0.0,NOM.Turbine_LP1.efficiency; 1,NOM.Turbine_LP1.efficiency])
-                            annotation (Placement(transformation(extent={{88,22},{98,42}})));
+    redeclare model Efficiency =
+        ClaRa.Components.TurboMachines.Fundamentals.EfficiencyModels.TableMassFlow (
+         eta_mflow=([0.0,NOM.Turbine_LP1.efficiency; 1,NOM.Turbine_LP1.efficiency])),
+    p_in_start=INIT.Turbine_LP1.p_in,
+    p_out_start=INIT.Turbine_LP1.p_out)
+    annotation (Placement(transformation(extent={{88,22},{98,42}})));
 
   ClaRa.Visualisation.Quadruple quadruple7
     annotation (Placement(transformation(extent={{-30,-10},{30,10}},
         rotation=0,
         origin={142,58})));
-  ClaRa.Components.VolumesValvesFittings.Fittings.Split_L2_Y join_LP1(
+  ClaRa.Components.VolumesValvesFittings.Fittings.SplitVLE_L2_Y join_LP1(
     p_nom=INIT.Turbine_LP1.p_out,
     h_nom=INIT.Turbine_LP1.h_out,
     h_start=INIT.Turbine_LP1.h_out,
     p_start=INIT.Turbine_LP1.p_out,
     volume=0.1,
-    initType=ClaRa.Basics.Choices.Init.noInit,
-    m_flow_out_nom={-NOM.preheater_LP1.m_flow_cond,-NOM.preheater_LP1.m_flow_tap}) annotation (Placement(transformation(
+    m_flow_out_nom={-NOM.preheater_LP1.m_flow_cond,-NOM.preheater_LP1.m_flow_tap},
+    initOption=0) annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=0,
         origin={162,22})));
@@ -267,24 +270,21 @@ end Regression;
   Modelica.Blocks.Sources.Constant const_reheater_LP1_relLevel(k=0.5)
     annotation (Placement(transformation(extent={{162,-202},{142,-182}})));
   Modelica.Blocks.Sources.RealExpression preheater_LP1_relLevel(y=preheater_LP1.shell.phaseBorder.level_rel) annotation (Placement(transformation(extent={{162,-236},{122,-208}})));
-  ClaRa.Components.VolumesValvesFittings.Fittings.Split_L2_Y join_HP(
+  ClaRa.Components.VolumesValvesFittings.Fittings.SplitVLE_L2_Y join_HP(
     volume=0.1,
     p_start=INIT.Turbine_HP.p_out,
     p_nom=NOM.Turbine_HP.p_out,
     h_nom=NOM.Turbine_HP.h_out,
     h_start=INIT.Turbine_HP.h_out,
-    initType=ClaRa.Basics.Choices.Init.noInit,
     showExpertSummary=true,
-    m_flow_out_nom={NOM.join_HP.m_flow_2,NOM.join_HP.m_flow_3})
-                            annotation (Placement(transformation(
+    m_flow_out_nom={NOM.join_HP.m_flow_2,NOM.join_HP.m_flow_3},
+    initOption=0) annotation (Placement(transformation(
         extent={{10,-10},{-10,10}},
         rotation=0,
         origin={-86,18})));
 
   ClaRa.Components.HeatExchangers.HEXvle2vle_L3_2ph_CH_simple preheater_HP(
-    redeclare replaceable model WallMaterial =
-        TILMedia.SolidTypes.TILMedia_Steel,
-    initTypeTubes=ClaRa.Basics.Choices.Init.noInit,
+    redeclare replaceable model WallMaterial = TILMedia.SolidTypes.TILMedia_Steel,
     m_flow_nom_shell=NOM.preheater_HP.m_flow_tap,
     p_nom_shell=NOM.preheater_HP.p_tap,
     h_nom_shell=NOM.preheater_HP.h_tap_out,
@@ -304,22 +304,18 @@ end Regression;
     N_tubes=1081,
     diameter=2.6,
     showExpertSummary=true,
-    initTypeWall=ClaRa.Basics.Choices.Init.steadyState,
     Tau_cond=0.3,
     Tau_evap=0.03,
     alpha_ph=50000,
-    redeclare model HeatTransferTubes =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2 (                      alpha_nom=3500),
-    initTypeShell=ClaRa.Basics.Choices.Init.steadyDensity,
+    redeclare model HeatTransferTubes = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2 (alpha_nom=3500),
     p_nom_tubes=NOM.preheater_HP.p_cond,
     p_start_tubes(displayUnit="bar") = INIT.preheater_HP.p_cond,
-    redeclare model HeatTransfer_Shell =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3 (                      alpha_nom={1650,10000}),
-    redeclare model PressureLossShell =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3 (            Delta_p_nom={1000,1000,1000}),
-    redeclare model PressureLossTubes =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L2 (             Delta_p_nom=10))
-                    annotation (Placement(transformation(
+    redeclare model HeatTransfer_Shell = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3 (alpha_nom={1650,10000}),
+    redeclare model PressureLossShell = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3 (Delta_p_nom={1000,1000,1000}),
+    redeclare model PressureLossTubes = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L2 (Delta_p_nom=10),
+    initOptionTubes=0,
+    initOptionShell=204,
+    initOptionWall=1) annotation (Placement(transformation(
         extent={{10,10},{-10,-10}},
         rotation=90,
         origin={-140,-40})));
@@ -348,8 +344,7 @@ end Regression;
   ClaRa.Visualisation.StatePoint_phTs statePoint_XRG
     annotation (Placement(transformation(extent={{-158,18},{-142,34}})));
   ClaRa.Components.HeatExchangers.HEXvle2vle_L3_2ph_CH_simple preheater_LP1(
-    redeclare replaceable model WallMaterial =
-        TILMedia.SolidTypes.TILMedia_Steel,
+    redeclare replaceable model WallMaterial = TILMedia.SolidTypes.TILMedia_Steel,
     m_flow_nom_shell=NOM.preheater_LP1.m_flow_tap,
     p_nom_shell=NOM.preheater_LP1.p_tap,
     h_nom_shell=NOM.preheater_LP1.h_tap_out,
@@ -362,29 +357,24 @@ end Regression;
     N_passes=1,
     N_tubes=500,
     Q_flow_nom=2e8,
-    initTypeShell=ClaRa.Basics.Choices.Init.steadyDensity,
     diameter=1.5,
     z_in_shell=preheater_LP1.length,
     z_in_tubes=preheater_LP1.diameter/2,
     z_out_tubes=preheater_LP1.diameter/2,
     length=13,
     z_out_shell=0.1,
-    redeclare model HeatTransferTubes =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2 (                      PL_alpha=[0,0.55; 0.5,0.65; 0.7,0.72; 0.8,0.77; 1,1], alpha_nom=3000),
-    redeclare model PressureLossTubes =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L2 (             Delta_p_nom=1000),
+    redeclare model HeatTransferTubes = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2 (PL_alpha=[0,0.55; 0.5,0.65; 0.7,0.72; 0.8,0.77; 1,1], alpha_nom=3000),
+    redeclare model PressureLossTubes = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L2 (Delta_p_nom=1000),
     T_w_start={300,320,340},
-    initTypeWall=ClaRa.Basics.Choices.Init.steadyState,
     Tau_cond=0.3,
     Tau_evap=0.03,
-    redeclare model HeatTransfer_Shell =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3 (                      alpha_nom={1500,8000}),
-    redeclare model PressureLossShell =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3 (            Delta_p_nom={100,100,100}),
+    redeclare model HeatTransfer_Shell = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3 (alpha_nom={1500,8000}),
+    redeclare model PressureLossShell = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3 (Delta_p_nom={100,100,100}),
     p_nom_tubes=NOM.preheater_LP1.p_cond,
     p_start_tubes(displayUnit="bar") = INIT.preheater_LP1.p_cond,
-    initTypeTubes=ClaRa.Basics.Choices.Init.noInit)
-                   annotation (Placement(transformation(
+    initOptionTubes=0,
+    initOptionShell=204,
+    initOptionWall=1) annotation (Placement(transformation(
         extent={{10,10},{-10,-10}},
         rotation=180,
         origin={162,-124})));
@@ -443,16 +433,15 @@ end Regression;
         extent={{-10,-6},{10,6}},
         rotation=180,
         origin={102,-122})));
-  ClaRa.Components.VolumesValvesFittings.Fittings.Join_L2_Y join_LP_main(
-    initType=ClaRa.Basics.Choices.Init.noInit,
+  ClaRa.Components.VolumesValvesFittings.Fittings.JoinVLE_L2_Y join_LP_main(
     useHomotopy=false,
     volume=0.2,
     m_flow_in_nom={NOM.join_LP_main.m_flow_1,NOM.join_LP_main.m_flow_2},
     p_nom=NOM.join_LP_main.p,
     h_nom=NOM.join_LP_main.h3,
     h_start=INIT.join_LP_main.h3,
-    p_start=INIT.join_LP_main.p)
-                annotation (Placement(transformation(
+    p_start=INIT.join_LP_main.p,
+    initOption=0) annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=180,
         origin={62,-122})));

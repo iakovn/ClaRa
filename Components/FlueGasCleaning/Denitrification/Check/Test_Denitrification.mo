@@ -1,7 +1,7 @@
-within ClaRa.Components.FlueGasCleaning.Denitrification.Check;
+ï»¿within ClaRa.Components.FlueGasCleaning.Denitrification.Check;
 model Test_Denitrification
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -16,16 +16,11 @@ model Test_Denitrification
 //___________________________________________________________________________//
   extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
   inner SimCenter simCenter(redeclare TILMedia.GasTypes.FlueGasTILMedia flueGasModel) annotation (Placement(transformation(extent={{80,80},{100,100}})));
-  Denitrification_L1 deNOx(
-    separationRate=0.9,
-    redeclare model Geometry =
-        ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry (
-          volume=5),
+  Denitrification_L2 deNOx(
     useHomotopy=simCenter.useHomotopy,
     use_dynamicMassbalance=true,
-    redeclare model HeatTransfer =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Adiabat_L2)
-    annotation (Placement(transformation(extent={{6,0},{26,20}})));
+    redeclare model HeatTransfer = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Adiabat_L2,
+    redeclare model ChemicalReactions = ClaRa.Basics.ControlVolumes.Fundamentals.ChemicalReactions.Denitrification_L2 (separationRate=0.9)) annotation (Placement(transformation(extent={{6,0},{26,20}})));
   ClaRa.Components.BoundaryConditions.BoundaryGas_Txim_flow idealGasFlowSource_XRG2(
     m_flow_const=10,
     variable_m_flow=true,
@@ -80,7 +75,7 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(fixedTemperatureTop1.port, deNOx.heat) annotation (Line(
-      points={{-66,58},{10.8,58},{10.8,19.6}},
+      points={{-66,58},{16,58},{16,20}},
       color={191,0,0},
       smooth=Smooth.None));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=false,extent={{-100,-40},{100,100}}),

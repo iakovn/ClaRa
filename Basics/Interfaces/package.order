@@ -29,3 +29,5 @@ DoubleDataInterface
 DataInterfaceVector
 Bus
 SteamSignal
+ElectricPortIn
+ElectricPortOut

@@ -1,7 +1,7 @@
-within ClaRa.Components.BoundaryConditions;
+ï»¿within ClaRa.Components.BoundaryConditions;
 model BoundaryVLE_Txim_flow "A boundary defining temperature, composition and mass flow"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -17,7 +17,7 @@ model BoundaryVLE_Txim_flow "A boundary defining temperature, composition and ma
 
   extends ClaRa.Basics.Icons.FlowSource;
   ClaRa.Basics.Interfaces.Connected2SimCenter connected2SimCenter(
-    powerIn=if massFlowIsLoss then 0 else min(0, steam_a.m_flow*actualStream(steam_a.h_outflow)),
+    powerIn=if massFlowIsLoss then 0 else max(0, -steam_a.m_flow*actualStream(steam_a.h_outflow)),
     powerOut=if massFlowIsLoss then 0 else max(0, steam_a.m_flow*actualStream(steam_a.h_outflow)),
     powerAux=0) if                                                                                                     contributeToCycleSummary;
 

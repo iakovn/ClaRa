@@ -4,7 +4,6 @@ partial model RealPhases "The phases are NOT in ideal thermodynamic equilibrium"
   extends ClaRa.Basics.Icons.RealPhases;
   parameter Real level_rel_start=0.5 "Start value for relative filling level (set by applying control volume)"
                                                                                           annotation(Dialog(enable=false, group="Initialisation"));
-  outer ClaRa.Basics.Choices.Init initType "Initialisation type";
   outer parameter Boolean useHomotopy "True, if homotopy method is used during initialisation";
 
   outer ClaRa.Basics.Records.IComVLE_L3_NPort iCom "Internal communication record";

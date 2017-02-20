@@ -1,7 +1,7 @@
-within ClaRa.Components.Mills.HardCoalMills;
+ï»¿within ClaRa.Components.Mills.HardCoalMills;
 model RollerBowlMill_L1 "A simple pulveriser without classifier based on Dolezal"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //

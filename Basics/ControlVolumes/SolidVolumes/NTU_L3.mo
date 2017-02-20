@@ -1,7 +1,7 @@
-within ClaRa.Basics.ControlVolumes.SolidVolumes;
+ï»¿within ClaRa.Basics.ControlVolumes.SolidVolumes;
 model NTU_L3 "Base heat exchanger wall model with liquid, vapour and 2ph zones"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -57,7 +57,10 @@ model NTU_L3 "Base heat exchanger wall model with liquid, vapour and 2ph zones"
 //______________Initialisation______________________________________________//
   parameter SI.Temperature T_w_i_start[3]= ones(3)*293.15 "|Initialisation||Initial temperature at inner phase";
   parameter SI.Temperature T_w_o_start[3] = ones(3)*293.15 "|Initialisation||Initial temperature at outer phase";
-  parameter ClaRa.Basics.Choices.Init initChoice=ClaRa.Basics.Choices.Init.noInit "|Initialisation||Init Option"                    annotation(Dialog(group="Initialisation"));
+  inner parameter Integer initOption=0 "Type of initialisation" annotation (Dialog(tab="Initialisation"), choices(
+      choice=0 "Use guess values",
+      choice=1 "Steady state",
+      choice=203 "Steady temperature"));
 
 protected
   final parameter Boolean smallShellFlow_start[3] = {not outerPhaseChange,not outerPhaseChange,not outerPhaseChange};
@@ -356,17 +359,17 @@ end when;
 initial equation
   yps=HEXtype.yps;
 
-  if initChoice == ClaRa.Basics.Choices.Init.steadyState then
+  if initOption == 1 then //steady state
     der(Q_flow_s)=zeros(3);
     der(T_w_i)=zeros(3);
     der(T_w_o)=zeros(3);
-  elseif initChoice == ClaRa.Basics.Choices.Init.steadyTemperature then
+   elseif initOption == 203 then //steady temperature
     der(T_w_i)=zeros(3);
     der(T_w_o)=zeros(3);
   else
     Q_flow_s=Q_flow;
-
-  end if;
+    assert(initOption == 0,"Invalid init option");
+   end if;
 
   annotation (Icon(coordinateSystem(
           preserveAspectRatio=false, initialScale=0.1)),

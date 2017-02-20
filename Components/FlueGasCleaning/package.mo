@@ -1,7 +1,7 @@
-within ClaRa.Components;
+﻿within ClaRa.Components;
 package FlueGasCleaning 
 //___________________________________________________________________________//
-// Package of the ClaRa library, version: 1.1.2                              //
+// Package of the ClaRa library, version: 1.2.0                              //
 // Models of the ClaRa library are tested under DYMOLA v2016 FD01.           //
 // It is planned to support alternative Simulators like SimulationX in the   //
 // future                                                                    //

@@ -8,7 +8,7 @@ model TestThreeWayGasValve
     height=1,
     offset=0)
     annotation (Placement(transformation(extent={{-40,22},{-20,42}})));
-  ThreeWayValveGas_L1 threeWayValve_Gas_L1(splitRatio_input=true, effectiveFlowArea=0.5) annotation (Placement(transformation(extent={{-10,-10},{10,8}})));
+  ThreeWayValveGas_L1 threeWayValve_Gas_L1(splitRatio_input=true, pressureLoss(effectiveFlowArea1=0.5)) annotation (Placement(transformation(extent={{-10,-10},{10,8}})));
   BoundaryConditions.BoundaryGas_pTxi pressureSink_ph2(
                                                       p_const=1e5) annotation (Placement(transformation(extent={{60,-10},{40,10}})));
   BoundaryConditions.BoundaryGas_pTxi pressureSink_ph3(p_const=1.005e5)

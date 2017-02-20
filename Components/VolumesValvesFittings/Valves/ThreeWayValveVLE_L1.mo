@@ -1,10 +1,10 @@
 within ClaRa.Components.VolumesValvesFittings.Valves;
 model ThreeWayValveVLE_L1 "Three way valve for vle media, not suitable for back flows!"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -26,12 +26,12 @@ model ThreeWayValveVLE_L1 "Three way valve for vle media, not suitable for back 
       ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticFrictionFlowAreaSymetric_TWV  constrainedby ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.TWV_L1 "Pressure loss model"
                                                                                             annotation(choicesAllMatching);
 
-public
-  parameter SI.Area effectiveFlowArea=7.85e-3 "Effective flow area for outlets"
-    annotation(Dialog(group="Valve Parameters"));
+//   parameter SI.Area effectiveFlowArea=7.85e-3 "Effective flow area for outlets"
+//     annotation(Dialog(group="Valve Parameters"));
 //   parameter SI.Area effectiveFlowArea2=effectiveFlowArea1 "Effective flow area for outlet 2"
 //     annotation(Dialog(group="Valve Parameters"));
 
+public
   parameter SI.PressureDifference Delta_p_smooth = 100 "Below this value, root function is approximated linearly"
                                                                                  annotation(Dialog(tab = "Expert Settings", group="Numerical Robustness"));
 
@@ -64,8 +64,7 @@ public
 
     PressureLoss pressureLoss(useStabilisedMassFlow=useStabilisedMassFlow,
                               Tau=Tau,
-                              Delta_p_smooth=Delta_p_smooth,
-                              effectiveFlowArea1=effectiveFlowArea) annotation (Placement(transformation(extent={{-40,-40},{-20,-20}})));
+                              Delta_p_smooth=Delta_p_smooth) annotation (Placement(transformation(extent={{-40,-40},{-20,-20}})));
 
 equation
   outlet1.m_flow = -pressureLoss.m_flow_1;

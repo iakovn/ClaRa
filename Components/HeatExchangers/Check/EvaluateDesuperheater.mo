@@ -1,7 +1,7 @@
-within ClaRa.Components.HeatExchangers.Check;
+ï»¿within ClaRa.Components.HeatExchangers.Check;
 model EvaluateDesuperheater "An evaluation scenario for the ShellAndTube_HEX_1 featuring part load. Comparing against an EBSILON model"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.2                        //
+  // Component of the ClaRa library, version: 1.2.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -72,20 +72,16 @@ model EvaluateDesuperheater "An evaluation scenario for the ShellAndTube_HEX_1 f
     variable_p=true,
     p_const=3000000) annotation (Placement(transformation(extent={{-42,-8},{-22,12}})));
   HEXvle2vle_L3_1ph_BU_ntu desuperheater_1(
-    initTypeShell=ClaRa.Basics.Choices.Init.steadyState,
-    initTypeTubes=ClaRa.Basics.Choices.Init.steadyState,
     Q_flow_nom=1e6,
     length=15.2,
     height=2,
     width=2,
     diameter_i=0.0189,
     N_tubes=217,
-    redeclare model WallMaterial =
-        TILMedia.SolidTypes.TILMedia_Aluminum,
+    redeclare model WallMaterial = TILMedia.SolidTypes.TILMedia_Aluminum,
     p_start_tubes=3200000,
     showExpertSummary=true,
-    redeclare model PressureLossTubes =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L2 (             Delta_p_nom=100000),
+    redeclare model PressureLossTubes = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L2 (Delta_p_nom=100000),
     z_in_tubes=0.1,
     m_nom_tubes=416,
     parallelTubes=false,
@@ -95,12 +91,11 @@ model EvaluateDesuperheater "An evaluation scenario for the ShellAndTube_HEX_1 f
     p_nom_shell=3e5,
     h_start_shell=3300e3,
     p_start_shell=2.5e5,
-    redeclare model HeatTransfer_Shell =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.IdealHeatTransfer_L2,
-    redeclare model HeatTransferTubes =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2 (                      PL_alpha=[0.01,0.5025; 0.4,0.6; 0.6,0.8; 1,1], alpha_nom=62.5),
-    redeclare model HeatExchangerType =
-        Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.CrossFlow)                   annotation (Placement(transformation(
+    redeclare model HeatTransfer_Shell = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.IdealHeatTransfer_L2,
+    redeclare model HeatTransferTubes = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2 (PL_alpha=[0.01,0.5025; 0.4,0.6; 0.6,0.8; 1,1], alpha_nom=62.5),
+    redeclare model HeatExchangerType = Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.CrossFlow,
+    initOptionShell=1,
+    initOptionTubes=1) annotation (Placement(transformation(
         extent={{10,-10},{-10,10}},
         rotation=270,
         origin={32,2})));
@@ -144,29 +139,26 @@ model EvaluateDesuperheater "An evaluation scenario for the ShellAndTube_HEX_1 f
     variable_p=true,
     p_const=3000000) annotation (Placement(transformation(extent={{-42,-72},{-22,-52}})));
   HEXvle2vle_L3_1ph_kA desuperheater_2(
-    initTypeShell=ClaRa.Basics.Choices.Init.steadyState,
-    initTypeTubes=ClaRa.Basics.Choices.Init.steadyState,
     h_start_tubes=3e6,
     h_start_shell=2990e3,
     Q_flow_nom=1e6,
-    redeclare model WallMaterial =
-        TILMedia.SolidTypes.TILMedia_Aluminum,
+    redeclare model WallMaterial = TILMedia.SolidTypes.TILMedia_Aluminum,
     kA=98365.519,
     CL_kA_mflow=[0.01,0.5025; 0.4,0.6; 0.6,0.8; 1,1],
     mass_struc=1,
     showExpertSummary=true,
     h_nom_shell=3500e3,
-    initWall=ClaRa.Basics.Choices.Init.noInit,
-    redeclare model PressureLossTubes =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L2 (             Delta_p_nom=100000),
+    redeclare model PressureLossTubes = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L2 (Delta_p_nom=100000),
     m_flow_nom_tubes=416,
     m_flow_nom_shell=21.627,
-    redeclare model HeatExchangerType =
-        ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.CrossFlow,
+    redeclare model HeatExchangerType = ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.CrossFlow,
     p_nom_shell=3500000,
     p_start_shell=250000,
     p_nom_tubes=40000000,
-    p_start_tubes=32000000) annotation (Placement(transformation(
+    p_start_tubes=32000000,
+    initOptionShell=1,
+    initOptionTubes=1,
+    initOptionWall=0) annotation (Placement(transformation(
         extent={{10,-10},{-10,10}},
         rotation=270,
         origin={32,-62})));

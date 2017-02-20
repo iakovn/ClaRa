@@ -1,7 +1,7 @@
-within ClaRa.Components.HeatExchangers;
+ï»¿within ClaRa.Components.HeatExchangers;
 model HEXvle2vle_L3_2ph_CU_simple "VLE 2 VLE | L3 | 2 phase at shell side | Cylinder shape | U-type | simple HT"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.2                        //
+  // Component of the ClaRa library, version: 1.2.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -108,8 +108,8 @@ model HEXvle2vle_L3_2ph_CU_simple "VLE 2 VLE | L3 | 2 phase at shell side | Cyli
   parameter Basics.Units.Pressure p_start_shell=1e5 "Start value of shell fluid pressure"
     annotation (Dialog(tab="Shell Side", group="Initialisation"));
   parameter Real level_rel_start=0.5 "Start value for relative filling Level" annotation (Dialog(tab="Shell Side", group="Initialisation"));
-  parameter Basics.Choices.Init initTypeShell=ClaRa.Basics.Choices.Init.noInit "Type of shell fluid initialisation"
-    annotation (Dialog(tab="Shell Side", group="Initialisation"));
+  inner parameter Integer initOptionShell = 211 "Type of initialisation"
+    annotation (Dialog(tab= "Shell Side", group="Initialisation"), choices(choice = 0 "Use guess values", choice = 209 "Steady in vapour pressure, enthalpies and vapour volume", choice=201 "Steady vapour pressure", choice = 202 "Steady enthalpy", choice=204 "Fixed volume fraction",  choice=211 "Fixed values in level, enthalpies and vapour pressure"));
 
   //*********************************** / TUBE SIDE \ ***********************************//
   //________________________________ Tubes fundamentals _______________________________//
@@ -161,7 +161,8 @@ model HEXvle2vle_L3_2ph_CU_simple "VLE 2 VLE | L3 | 2 phase at shell side | Cyli
   //________________________________ Tubes initialisation _______________________________________//
   parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_start_tubes=1e5 "Start value of tube fluid specific enthalpy" annotation (Dialog(tab="Tubes", group="Initialisation"));
   parameter ClaRa.Basics.Units.Pressure p_start_tubes=1e5 "Start value of tube fluid pressure" annotation (Dialog(tab="Tubes", group="Initialisation"));
-  parameter ClaRa.Basics.Choices.Init initTypeTubes=ClaRa.Basics.Choices.Init.noInit "Type of tube fluid initialisation" annotation (Dialog(tab="Tubes", group="Initialisation"));
+  parameter Integer initOptionTubes=0 "Type of initialisation at tube side"
+    annotation (Dialog(tab="Tubes", group="Initialisation"), choices(choice = 0 "Use guess values", choice = 1 "Steady state", choice=201 "Steady pressure", choice = 202 "Steady enthalpy"));
 
   //*********************************** / WALL \ ***********************************//
   //________________________________ Wall fundamentals _______________________________//
@@ -171,7 +172,11 @@ model HEXvle2vle_L3_2ph_CU_simple "VLE 2 VLE | L3 | 2 phase at shell side | Cyli
           "Fundamental Definitions"));
   //________________________________ Wall initialisation _______________________________________//
   parameter ClaRa.Basics.Units.Temperature T_w_start[3]=ones(3)*293.15 "Initial temperature at outer phase" annotation (Dialog(tab="Tube Wall", group="Initialisation"));
-  parameter ClaRa.Basics.Choices.Init initTypeWall=ClaRa.Basics.Choices.Init.noInit "Init option of Tube wall" annotation (Dialog(tab="Tube Wall", group="Initialisation"));
+  parameter Integer initOptionWall=0 "Init Option of Wall"
+    annotation (Dialog(tab="Tube Wall", group="Initialisation"), choices(
+      choice=0 "Use guess values",
+      choice=1 "Steady state",
+      choice=203 "Steady temperature"));
 
   //*********************************** / EXPERT Settings and Visualisation \ ***********************************//
   parameter ClaRa.Basics.Units.Time Tau_cond=0.3 "Time constant of condensation" annotation (Dialog(tab="Expert Settings", group="Zone Interaction at Shell Side"));
@@ -221,21 +226,19 @@ model HEXvle2vle_L3_2ph_CU_simple "VLE 2 VLE | L3 | 2 phase at shell side | Cyli
     final useHomotopy=useHomotopy,
     final h_start=h_start_tubes,
     final p_start=p_start_tubes,
-    final initType=initTypeTubes,
     redeclare model PressureLoss = PressureLossTubes,
     final showExpertSummary=showExpertSummary,
     redeclare model HeatTransfer = HeatTransferTubes,
-    redeclare model PhaseBorder =
-        Basics.ControlVolumes.Fundamentals.SpacialDistribution.IdeallyStirred,
-    redeclare model Geometry =
-        Basics.ControlVolumes.Fundamentals.Geometry.PipeGeometry (
+    redeclare model PhaseBorder = Basics.ControlVolumes.Fundamentals.SpacialDistribution.IdeallyStirred,
+    redeclare model Geometry = Basics.ControlVolumes.Fundamentals.Geometry.PipeGeometry (
         final z_in={z_in_tubes},
         final z_out={z_out_tubes},
         final diameter=diameter_i,
         final N_tubes=N_tubes,
         final N_passes=N_passes,
-        final length=length_tubes))
-    annotation (Placement(transformation(extent={{10,10},{-10,-10}},
+        final length=length_tubes),
+    initOption=initOptionTubes) annotation (Placement(transformation(
+        extent={{10,10},{-10,-10}},
         rotation=270,
         origin={84,0})));
 
@@ -247,7 +250,6 @@ model HEXvle2vle_L3_2ph_CU_simple "VLE 2 VLE | L3 | 2 phase at shell side | Cyli
     final m_flow_nom=m_flow_nom_shell,
     final useHomotopy=useHomotopy,
     final p_start=p_start_shell,
-    final initType=initTypeShell,
     final level_rel_start=level_rel_start,
     final Tau_cond=Tau_cond,
     final Tau_evap=Tau_evap,
@@ -258,14 +260,12 @@ model HEXvle2vle_L3_2ph_CU_simple "VLE 2 VLE | L3 | 2 phase at shell side | Cyli
     final A_heat_ph=A_phaseBorder,
     final exp_HT_phases=expHT_phases,
     final heatSurfaceAlloc=2,
-    redeclare model PhaseBorder =
-        Basics.ControlVolumes.Fundamentals.SpacialDistribution.RealSeparated (
+    redeclare model PhaseBorder = Basics.ControlVolumes.Fundamentals.SpacialDistribution.RealSeparated (
         level_rel_start=level_rel_start,
         final radius_flange=radius_flange,
         final absorbInflow=absorbInflow,
         final smoothness=smoothness),
-    redeclare model Geometry =
-        Basics.ControlVolumes.Fundamentals.Geometry.HollowCylinderWithTubes (
+    redeclare model Geometry = Basics.ControlVolumes.Fundamentals.Geometry.HollowCylinderWithTubes (
         final z_out={z_out_shell},
         final length=length,
         final N_tubes=N_tubes,
@@ -284,7 +284,8 @@ model HEXvle2vle_L3_2ph_CU_simple "VLE 2 VLE | L3 | 2 phase at shell side | Cyli
         final parallelTubes=parallelTubes,
         final CF_geo={1,CF_geo},
         final flowOrientation=flowOrientation),
-    equalPressures=equalPressures)    annotation (Placement(transformation(
+    equalPressures=equalPressures,
+    initOption=initOptionShell) annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=270,
         origin={0,0})));
@@ -294,7 +295,7 @@ model HEXvle2vle_L3_2ph_CU_simple "VLE 2 VLE | L3 | 2 phase at shell side | Cyli
     diameter_i=diameter_i,
     N_tubes=N_tubes,
     diameter_o=diameter_o,
-    initChoice=initTypeWall,
+    initOption=initOptionWall,
     length=length_tubes*N_passes,
     N_rad=3,
     sizefunc=1,

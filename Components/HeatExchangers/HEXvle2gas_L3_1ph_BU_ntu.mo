@@ -1,7 +1,7 @@
-within ClaRa.Components.HeatExchangers;
+ï»¿within ClaRa.Components.HeatExchangers;
 model HEXvle2gas_L3_1ph_BU_ntu "VLE 2 gas | L3 | 1 phase on each side | Block shape | U-type | NTU ansatz"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.2                        //
+  // Component of the ClaRa library, version: 1.2.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -66,7 +66,13 @@ model HEXvle2gas_L3_1ph_BU_ntu "VLE 2 gas | L3 | 1 phase on each side | Block sh
   parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_nom1=10 "Nominal specific enthalpy on shell side" annotation (Dialog(tab="Shell Side", group="Nominal Values"));
   parameter ClaRa.Basics.Units.Temperature T_start_shell=273.15 + 100 "Start value of system Temperature" annotation (Dialog(tab="Shell Side", group="Initialisation"));
   parameter ClaRa.Basics.Units.Pressure p_start_shell=1e5 "Start value of sytsem pressure" annotation (Dialog(tab="Shell Side", group="Initialisation"));
-  parameter Basics.Choices.Init initTypeShell=ClaRa.Basics.Choices.Init.noInit "Type of initialisation" annotation (Dialog(tab="Shell Side", group="Initialisation"));
+  inner parameter Integer initOptionShell=0 "Type of shell initialisation" annotation (Dialog(tab="Shell Side", group="Initialisation"), choices(
+       choice=0 "Use guess values",
+       choice=1 "Steady state",
+       choice=201 "Steady pressure",
+       choice=202 "Steady enthalpy",
+       choice=208 "Steady pressure and enthalpy",
+       choice=210 "Steady density"));
   parameter ClaRa.Basics.Units.MassFraction xi_shell_start[medium1.nc - 1]=zeros(medium1.nc - 1) "|Shell Side|Initialisation|Start value of shell mass fraction";
 
   parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium2=simCenter.fluid1 "Medium to be used for water/steam flow"
@@ -105,12 +111,19 @@ model HEXvle2gas_L3_1ph_BU_ntu "VLE 2 gas | L3 | 1 phase on each side | Block sh
   parameter ClaRa.Basics.Units.HeatFlowRate Q_flow_nom=1e6 "Nominal heat flow rate" annotation (Dialog(tab="Tubes", group="Nominal Values"));
   parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_start_tubes=1e5 "Start value of sytsem specific enthalpy"  annotation (Dialog(tab="Tubes", group="Initialisation"));
   parameter ClaRa.Basics.Units.Pressure  p_start_tubes=1e5 "Start value of sytsem pressure" annotation (Dialog(tab="Tubes", group="Initialisation"));
-  parameter Basics.Choices.Init initTypeTubes=ClaRa.Basics.Choices.Init.noInit "Type of initialisation" annotation (Dialog(tab="Tubes", group="Initialisation"));
+  parameter Integer initOptionTubes=0 "Type of initialisation at tube side"
+    annotation (Dialog(tab="Tubes", group="Initialisation"), choices(choice = 0 "Use guess values", choice = 1 "Steady state",
+                                                                                              choice=201 "Steady pressure",
+                                                                                              choice = 202 "Steady enthalpy"));
 
   replaceable model WallMaterial = TILMedia.SolidTypes.TILMedia_Aluminum
     constrainedby TILMedia.SolidTypes.BaseSolid "Material of the cylinder"
     annotation (choicesAllMatching=true, Dialog(tab="Tube Wall", group="Fundamental Definitions"));
-  parameter Basics.Choices.Init initWall=ClaRa.Basics.Choices.Init.noInit "Initialisation option for the walls" annotation (Dialog(tab="Tube Wall", group="Initialisation"));
+  parameter Integer initOptionWall=0 "Init Option of Wall"
+    annotation (Dialog(tab="Tube Wall", group="Initialisation"), choices(
+      choice=0 "Use guess values",
+      choice=1 "Steady state",
+      choice=203 "Steady temperature"));
   parameter Basics.Units.Temperature T_w_i_start=293.15 "Initial wall temperature at inner phase" annotation (Dialog(tab="Tube Wall", group="Initialisation"));
   parameter Basics.Units.Temperature T_w_a_start=293.15 "Initial wall temperature at outer phase" annotation (Dialog(tab="Tube Wall", group="Initialisation"));
 
@@ -146,7 +159,7 @@ model HEXvle2gas_L3_1ph_BU_ntu "VLE 2 gas | L3 | 1 phase on each side | Block sh
     cp_mean_a=(shell.flueGasInlet.cp + shell.flueGasOutlet.cp)/2,
     T_w_i_start=T_w_i_start,
     T_w_a_start=T_w_a_start,
-    initChoice=initWall,
+    initOption=initOptionWall,
     showExpertSummary=showExpertSummary,
     CF_geo=CF_geo,
     redeclare model HeatExchangerType = HeatExchangerType) annotation (Placement(transformation(extent={{-10,-10},{10,10}},
@@ -161,7 +174,6 @@ model HEXvle2gas_L3_1ph_BU_ntu "VLE 2 gas | L3 | 1 phase on each side | Block sh
     useHomotopy=useHomotopy,
     h_start=h_start_tubes,
     p_start=p_start_tubes,
-    initType=initTypeTubes,
     redeclare model HeatTransfer = HeatTransferTubes,
     redeclare model PressureLoss = PressureLossTubes,
     redeclare model PhaseBorder =
@@ -174,8 +186,9 @@ model HEXvle2gas_L3_1ph_BU_ntu "VLE 2 gas | L3 | 1 phase on each side | Block sh
         diameter=diameter_i,
         N_tubes=N_tubes,
         N_passes=N_passes,
-        length = if flowOrientation==ClaRa.Basics.Choices.GeometryOrientation.vertical then if parallelTubes then height else width else if parallelTubes then length else height))
-    annotation (Placement(transformation(extent={{10,10},{-10,-10}},
+        length=if flowOrientation == ClaRa.Basics.Choices.GeometryOrientation.vertical then if parallelTubes then height else width else if parallelTubes then length else height),
+    initOption=initOptionTubes) annotation (Placement(transformation(
+        extent={{10,10},{-10,-10}},
         rotation=270,
         origin={70,0})));
 
@@ -189,7 +202,6 @@ model HEXvle2gas_L3_1ph_BU_ntu "VLE 2 gas | L3 | 1 phase on each side | Block sh
     useHomotopy=useHomotopy,
     T_start=T_start_shell,
     p_start=p_start_shell,
-    initType=initTypeShell,
     xi_start=xi_shell_start,
     redeclare model Geometry =
         Basics.ControlVolumes.Fundamentals.Geometry.HollowBlockWithTubes (
@@ -208,7 +220,8 @@ model HEXvle2gas_L3_1ph_BU_ntu "VLE 2 gas | L3 | 1 phase on each side | Block sh
         Delta_z_ort=Delta_z_ort,
         staggeredAlignment=staggeredAlignment,
         N_rows=N_rows),
-    heatSurfaceAlloc=2) annotation (Placement(transformation(
+    heatSurfaceAlloc=2,
+    initOption=initOptionShell) annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=270,
         origin={0,0})));

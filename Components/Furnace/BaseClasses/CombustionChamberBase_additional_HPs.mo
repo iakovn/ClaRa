@@ -12,7 +12,7 @@ partial model CombustionChamberBase_additional_HPs
 
  //________________________/ replacable modells for heat transfer, pressure loss and geometry \________________________
   replaceable model HeatTransfer_CarrierTubes =
-      ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Convection.Convection_carrierTubes_L2
+      ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Convection.Convection_carrierTubes_turbulent_L2
   constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.HeatTransferBaseGas "1st: choose geometry definition | 2nd: edit corresponding record"
     annotation (Dialog(group="Heat Transfer"), choicesAllMatching=
         true);

@@ -1,10 +1,10 @@
 within ClaRa.Components.Furnace.FlameRoom;
 model FlameRoomWithTubeBundle_L2_Static "Model for a combustion chamber section with inner tube bundle heating surfaces"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -76,7 +76,7 @@ protected
       T_out=flueGasOutlet.T,
       h_out=flueGasOutlet.h),
     inlet(
-      flueGas(
+      flueGas(mediumModel=flueGas,
         m_flow=inlet.flueGas.m_flow,
         T=actualStream(inlet.flueGas.T_outflow),
         p=inlet.flueGas.p,
@@ -93,7 +93,7 @@ protected
         T=actualStream(inlet.slag.T_outflow),
         p=inlet.slag.p)),
     outlet(
-      flueGas(
+      flueGas(mediumModel=flueGas,
         m_flow=-outlet.flueGas.m_flow,
         T=actualStream(outlet.flueGas.T_outflow),
         p=outlet.flueGas.p,

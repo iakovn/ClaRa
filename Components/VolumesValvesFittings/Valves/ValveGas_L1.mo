@@ -1,10 +1,10 @@
 within ClaRa.Components.VolumesValvesFittings.Valves;
 model ValveGas_L1 "Valve for gas flows with replaceable flow models"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -113,14 +113,14 @@ public
             PR = outlet.p/inlet.p,
             PR_crit = (2/(pressureLoss.gamma+1))^(pressureLoss.gamma/(max(1e-3,pressureLoss.gamma)-1)),
             opening_ = iCom.opening_),
-    inlet(
+    inlet(mediumModel=medium,
       m_flow=inlet.m_flow,
       T=gasIn.T,
       p=inlet.p,
       h=gasIn.h,
       xi=gasIn.xi,
       H_flow=gasIn.h*inlet.m_flow),
-    outlet(
+    outlet(mediumModel=medium,
       m_flow=-outlet.m_flow,
       T=gasOut.T,
       p=outlet.p,

@@ -1,7 +1,7 @@
-within ClaRa.Basics.ControlVolumes.FluidVolumes;
+ï»¿within ClaRa.Basics.ControlVolumes.FluidVolumes;
 model VolumeVLE_3_TwoZones "A volume element balancing liquid and vapour phase"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.2                        //
+  // Component of the ClaRa library, version: 1.2.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -109,8 +109,9 @@ model VolumeVLE_3_TwoZones "A volume element balancing liquid and vapour phase"
   parameter Real level_rel_start=0.5 "Start value for relative filling level"
     annotation (Dialog(tab="Initialisation"));
 
-  inner parameter ClaRa.Basics.Choices.Init initType=ClaRa.Basics.Choices.Init.noInit "Type of initialisation"
-    annotation (Dialog(tab="Initialisation"), choicesAllMatching);
+  inner parameter Integer initOption = 0 "Type of initialisation"
+    annotation (Dialog(tab="Initialisation"), choices(choice = 0 "Use guess values", choice = 209 "Steady in vapour pressure, enthalpies and vapour volume", choice=201 "Steady vapour pressure", choice = 202 "Steady enthalpy", choice=204 "Fixed volume fraction",  choice=211 "Fixed values in level, enthalpies and vapour pressure"));
+
   //  parameter Modelica.SIunits.Length radius_flange=0.05 "Flange radius" annotation(Dialog(group="Geometry"));
 
   parameter Boolean showExpertSummary=false "|Summary and Visualisation||True, if expert summary should be applied";
@@ -362,29 +363,34 @@ equation
   //___________________________________________________
   //______Initial Equations____________________________
 initial equation
-  if initType == ClaRa.Basics.Choices.Init.steadyState then
+
+  if initOption == 209 then
     der(h_liq) = 0;
     der(h_vap) = 0;
     der(p_vap) = 0;
     der(volume_vap) = 0;
 
-  elseif initType == ClaRa.Basics.Choices.Init.steadyPressure then
+  elseif initOption == 201 then
     der(p_vap) = 0;
-  elseif initType == ClaRa.Basics.Choices.Init.steadyEnthalpy then
+
+  elseif initOption == 202 then
     der(h_liq) = 0;
     der(h_vap) = 0;
-    //der(volume_vap)=0;
-  elseif initType == ClaRa.Basics.Choices.Init.steadyDensity then
-    //    der(y)=0;
+
+  elseif initOption == 204 then
     phaseBorder.level_rel = phaseBorder.level_rel_start;
-  elseif initType == ClaRa.Basics.Choices.Init.steadyDensityPressure then
-    //phaseBorder.relLevel=phaseBorder.level_rel_start;
-    //der(volume_vap)=0;
-  elseif initType == ClaRa.Basics.Choices.Init.noInit then
-//     phaseBorder.relLevel = phaseBorder.level_rel_start;
-//     h_liq = h_liq_start;
-//     h_vap = h_vap_start;
-//     p = p_start;
+
+  elseif initOption == 0 then
+    //do nothing
+
+  elseif initOption == 211 then
+    phaseBorder.level_rel = phaseBorder.level_rel_start;
+    h_liq = h_liq_start;
+    h_vap = h_vap_start;
+    p_vap = p_start;
+
+  else
+    assert(false, "Unknown initialisation option in " + getInstanceName());
   end if;
 
 equation

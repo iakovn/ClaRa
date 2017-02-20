@@ -2,10 +2,10 @@ within ClaRa.Components.TurboMachines.Compressors;
 model CompressorGas_L1_stageStacked "Advanced compressor or fan for ideal gas mixtures using the stage stacking method according to N. Gasparovic"
   import ClaRa;
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -312,13 +312,13 @@ public
    Y = Y,
    m_flow_rel = m_flow_corr_rel_st[1],
    Pi_rel=Pi/Pi_nom),
-    inlet(m_flow = inlet.m_flow,
+    inlet(mediumModel=medium, m_flow = inlet.m_flow,
           T = inStream(inlet.T_outflow),
           p = inlet.p,
           h = flueGas_inlet.h,
           xi = inStream(inlet.xi_outflow),
           H_flow = inlet.m_flow* flueGas_inlet.h),
-    outlet(m_flow = -outlet.m_flow,
+    outlet(mediumModel=medium, m_flow = -outlet.m_flow,
           T = outlet.T_outflow,
           p = outlet.p,
           h = flueGas_outlet.h,

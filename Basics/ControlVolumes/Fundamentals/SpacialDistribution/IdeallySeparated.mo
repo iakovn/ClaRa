@@ -1,7 +1,7 @@
-within ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution;
+ï»¿within ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution;
 model IdeallySeparated "Separation | Ideal | outlet states depending on filling Level | All geometries"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.2                        //
+  // Component of the ClaRa library, version: 1.2.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,15 +15,13 @@ model IdeallySeparated "Separation | Ideal | outlet states depending on filling 
   // XRG Simulation GmbH (Hamburg, Germany).                                   //
   //___________________________________________________________________________//
 
-  extends ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.IdealPhases;
+  extends ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.IdealPhases(final modelType="IdeallySeparated");
   extends ClaRa.Basics.Icons.IdealSeparation;
 
   import ClaRa.Basics.Functions.Stepsmoother;
 
   outer ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry geo;
 
-  outer ClaRa.Basics.Choices.Init initType;
-  //  outer SI.Pressure p;
   outer parameter Boolean useHomotopy;
 
   parameter SI.Length radius_flange=0.05 "Flange radius";
@@ -46,8 +44,8 @@ protected
   SI.DensityMassSpecific rho_bubble;
   SI.DensityMassSpecific rho_bulk;
   SI.MassFraction steamQuality_bulk;
-equation
 
+equation
   //_________________________Required Media Data__________________________________
   h_dew = TILMedia.VLEFluidObjectFunctions.dewSpecificEnthalpy_pxi(
     iCom.p_bulk,
@@ -118,16 +116,9 @@ equation
   Delta_p_geo_in = (level_abs - geo.z_in[1])*Modelica.Constants.g_n*noEvent(if level_abs > geo.z_in[1] then rho_bubble else rho_dew);
   Delta_p_geo_out = (level_abs - geo.z_out[1])*Modelica.Constants.g_n*noEvent(if level_abs > geo.z_out[1] then rho_bubble else rho_dew);
 
-initial equation
-  //more initialisation options may be used in the applying class
-  if initType == ClaRa.Basics.Choices.Init.steadyDensity then
-    //    der(y)=0;
-    level_rel = level_rel_start;
-  elseif initType == ClaRa.Basics.Choices.Init.steadyDensityPressure then
-    //der(y)=0;
-    level_rel = level_rel_start;
-    der(iCom.p_bulk) = 0;
-  end if;
+// initial equation
+// The equations introduced here previously for initialisation have been moved to ClaRa.Basics.ControlVolumes.FluidVolumes.VolumeVLE_2.
+// This was done to allow more thoroughly checking of the user parameters and for the sake of transparency. //FG
 
   annotation (Icon(graphics));
 end IdeallySeparated;

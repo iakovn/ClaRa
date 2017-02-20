@@ -1,10 +1,10 @@
 within ClaRa.Components.VolumesValvesFittings.Valves;
 model ThreeWayValveVLE_L2 "A voluminous three way valve for VLE media"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -55,8 +55,8 @@ end Summary;
   parameter SI.EnthalpyMassSpecific h_start= 1e5 "Start value of sytsem specific enthalpy"
                                              annotation(Dialog(tab="Initialisation"));
   parameter SI.Pressure p_start= 1e5 "Start value of sytsem pressure"               annotation(Dialog(tab="Initialisation"));
-  parameter ClaRa.Basics.Choices.Init initType=ClaRa.Basics.Choices.Init.noInit "Type of initialisation"
-                             annotation(Dialog(tab="Initialisation"), choicesAllMatching);
+  inner parameter Integer  initOption=0 "Type of initialisation" annotation(Dialog(tab="Initialisation"), choices(choice = 0 "Use guess values", choice = 1 "Steady state", choice=201 "Steady pressure", choice = 202 "Steady enthalpy", choice=204 "Fixed rel.level (for phaseBorder = idealSeparated only)",  choice=205 "Fixed rel.level and steady pressure (for phaseBorder = idealSeparated only)"));
+
   parameter Boolean showExpertSummary=simCenter.showExpertSummary "|Summary and Visualisation||True, if expert summary should be applied";
   parameter Boolean showData=true "|Summary and Visualisation||True, if a data port containing p,T,h,s,m_flow shall be shown, else false";
   parameter Boolean preciseTwoPhase = true "|Expert Settings||True, if two-phase transients should be capured precisely";
@@ -125,13 +125,17 @@ equation
     inlet.h_outflow=h;
 
 initial equation
-  if initType == ClaRa.Basics.Choices.Init.steadyState then
+  if initOption == 208 then
     der(h)=0;
     der(p)=0;
-  elseif initType == ClaRa.Basics.Choices.Init.steadyPressure then
+  elseif initOption == 201 then
     der(p)=0;
-  elseif initType == ClaRa.Basics.Choices.Init.steadyEnthalpy then
+  elseif initOption == 202 then
     der(h)=0;
+  elseif initOption == 0 then //no init
+    // do nothing
+  else
+    assert(false, "Unknown initialisation option in "+ getInstanceName());
   end if;
 
 equation

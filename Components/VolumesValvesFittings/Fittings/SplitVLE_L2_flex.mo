@@ -1,7 +1,7 @@
-within ClaRa.Components.VolumesValvesFittings.Fittings;
+ï»¿within ClaRa.Components.VolumesValvesFittings.Fittings;
 model SplitVLE_L2_flex "A voluminous split for an arbitrary number of inputs NOT CAPABLE FOR PHASE-CHANGE"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -42,7 +42,7 @@ end Summary;
     annotation(Evaluate=true, Dialog(tab="General",group="Fundamental Definitions"));//connectorSizing=true,
   parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation"
                                                               annotation(Dialog(tab="Initialisation"));
-   parameter Modelica.SIunits.Volume V(min=1e-6)=0.1 "System Volume"                               annotation(Dialog(tab="General", group="Geometry"));
+   parameter Modelica.SIunits.Volume volume(min=1e-6)=0.1 "System Volume"                               annotation(Dialog(tab="General", group="Geometry"));
   parameter Modelica.SIunits.MassFlowRate m_flow_out_nom[N_ports_out]= {10} "Nominal mass flow rates at inlet"
                                         annotation(Dialog(tab="General", group="Nominal Values"));
   parameter Modelica.SIunits.Pressure p_nom=1e5 "Nominal pressure"                    annotation(Dialog(group="Nominal Values"));
@@ -51,10 +51,9 @@ end Summary;
   parameter Modelica.SIunits.SpecificEnthalpy h_start= 1e5 "Start value of sytsem specific enthalpy"
                                              annotation(Dialog(tab="Initialisation"));
   parameter Modelica.SIunits.Pressure p_start= 1e5 "Start value of sytsem pressure" annotation(Dialog(tab="Initialisation"));
-  parameter ClaRa.Basics.Choices.Init initType=ClaRa.Basics.Choices.Init.noInit "Type of initialisation"
-                             annotation(Dialog(tab="Initialisation"), choicesAllMatching);
-  final parameter Boolean  showSummary=false "True, if a summary shall be shown, else false"
-                                                                                      annotation(Dialog(tab="Summary and Visualisation"));
+  parameter Integer initOption=0 "Type of initialisation"
+    annotation (Dialog(tab="Initialisation"), choices(choice = 0 "Use guess values", choice = 208 "Steady pressure and enthalpy", choice=201 "Steady pressure", choice = 202 "Steady enthalpy"));
+
     parameter Boolean showExpertSummary=false "True, if a summary shall be shown, else false"
                                                                                       annotation(Dialog(tab="Summary and Visualisation"));
   parameter Boolean showData=true "True, if a data port containing p,T,h,s,m_flow shall be shown, else false"
@@ -62,7 +61,7 @@ end Summary;
   parameter Boolean preciseTwoPhase = true "|Expert Stettings||True, if two-phase transients should be capured precisely";
 protected
     parameter Modelica.SIunits.Density rho_nom= TILMedia.VLEFluidFunctions.density_phxi(medium, p_nom, h_nom) "Nominal density";
-    Modelica.SIunits.Power Hdrhodt =  if preciseTwoPhase then h*V*drhodt else 0 "h*V*drhodt";
+    Modelica.SIunits.Power Hdrhodt =  if preciseTwoPhase then h*volume*drhodt else 0 "h*V*drhodt";
 public
   Modelica.SIunits.EnthalpyFlowRate H_flow_in;
   Modelica.SIunits.EnthalpyFlowRate H_flow_out[N_ports_out];
@@ -71,7 +70,7 @@ public
   Real drhodt;//(unit="kg/(m3s)");
   Modelica.SIunits.Pressure p(start=p_start, stateSelect=StateSelect.prefer) "System pressure";
 
-   Summary summary(N_ports_out=N_ports_out,outline(volume_tot = V),
+   Summary summary(N_ports_out=N_ports_out,outline(volume_tot = volume),
                    inlet(showExpertSummary = showExpertSummary,m_flow=inlet.m_flow,  T=fluidIn.T, p=inlet.p, h=fluidIn.h,s=fluidIn.s, steamQuality=fluidIn.q, H_flow=fluidIn.h .* inlet.m_flow, rho=fluidIn.d),
                    fluid(showExpertSummary = showExpertSummary, mass=mass, p=p, h=h, T=bulk.T,s=bulk.s, steamQuality=bulk.q, H=h*mass, rho=bulk.d, T_sat=bulk.VLE.T_l, h_dew=bulk.VLE.h_v, h_bub=bulk.VLE.h_l),
                    outlet(each showExpertSummary = showExpertSummary,m_flow = -outlet.m_flow, T=fluidOut.T, p=outlet.p, h=fluidOut.h, s=fluidOut.s, steamQuality=fluidOut.q, H_flow=-fluidOut.h .* outlet.m_flow, rho=fluidOut.d))
@@ -88,17 +87,17 @@ TILMedia.VLEFluid_ph fluidOut[N_ports_out](each vleFluidType =    medium,    p =
 equation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Asserts ~~~~~~~~~~~~~~~~~~~
-  assert(V>0, "The system volume must be greater than zero!");
+  assert(volume>0, "The system volume must be greater than zero!");
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // System definition ~~~~~~~~
-   mass= if useHomotopy then V*homotopy(bulk.d,rho_nom) else V*bulk.d;
+   mass= if useHomotopy then volume*homotopy(bulk.d,rho_nom) else volume*bulk.d;
 
-   drhodt*V=sum(inlet.m_flow) + sum(outlet.m_flow) "Mass balance";
+   drhodt*volume=sum(inlet.m_flow) + sum(outlet.m_flow) "Mass balance";
    drhodt=der(p)*bulk.drhodp_hxi
                              + der(h)*bulk.drhodh_pxi;
                                                    //calculating drhodt from state variables
 
-   der(h) = 1/mass*(H_flow_in + sum(H_flow_out)  + V*der(p) -Hdrhodt) "Energy balance, decoupled from the mass balance to avoid heavy mass fluctuations during phase change or flow reversal. The term '-h*V*drhodt' is ommited";
+   der(h) = 1/mass*(H_flow_in + sum(H_flow_out)  + volume*der(p) -Hdrhodt) "Energy balance, decoupled from the mass balance to avoid heavy mass fluctuations during phase change or flow reversal. The term '-h*V*drhodt' is ommited";
 //~~~~~~~~~~~~~~~~~~~~~~~~~
 // Boundary conditions ~~~~
   for i in 1:N_ports_out loop
@@ -119,13 +118,17 @@ equation
   end for;
 
 initial equation
-  if initType == ClaRa.Basics.Choices.Init.steadyState then
+  if initOption == 208 then
     der(h)=0;
     der(p)=0;
-  elseif initType == ClaRa.Basics.Choices.Init.steadyPressure then
+  elseif initOption == 201 then
     der(p)=0;
-  elseif initType == ClaRa.Basics.Choices.Init.steadyEnthalpy then
+  elseif initOption == 202 then
     der(h)=0;
+  elseif initOption ==0 then
+    // do nothing
+  else
+    assert(false, "Unknown initialisation type in " + getInstanceName());
   end if;
 
 equation

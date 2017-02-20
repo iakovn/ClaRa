@@ -1,10 +1,10 @@
 within ClaRa.Components.VolumesValvesFittings.Fittings;
 model SplitGas_L2_flex "Adiabatic junction volume"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -43,8 +43,13 @@ extends ClaRa.Basics.Icons.ComplexityLevel(complexity="L2");
    ClaRa.Basics.Records.FlangeGas outlet[N_ports_out];
  end Summary;
 
-inner parameter ClaRa.Basics.Choices.Init initType=ClaRa.Basics.Choices.Init.noInit "Type of initialisation"
-                             annotation(Dialog(tab="Initialisation"), choicesAllMatching);
+inner parameter Integer initOption=0 "Type of initialisation" annotation (Dialog(tab="Initialisation"), choices(
+      choice=0 "Use guess values",
+      choice=1 "Steady state",
+      choice=201 "Steady pressure",
+      choice=202 "Steady enthalpy",
+      choice=208 "Steady pressure and enthalpy",
+      choice=210 "Steady density"));
 
 // ***************************** defintion of medium used in cell *************************************************
 inner parameter TILMedia.GasTypes.BaseGas medium = simCenter.flueGasModel "Medium to be used in tubes"
@@ -109,23 +114,31 @@ public
   Real drhodt "Density derivative";
 
 public
-  inner Summary    summary(N_ports_out=N_ports_out,inlet(m_flow=inlet.m_flow,  T=gasInlet.T, p=inlet.p, h=gasInlet.h, xi=gasInlet.xi, H_flow=inlet.m_flow*gasInlet.h),
-                           outlet(m_flow=outlet.m_flow,  T=gasOutlet.T, p=outlet.p, h=gasOutlet.h, xi=gasOutlet.xi, each H_flow=outlet.m_flow*gasOutlet.h),
+  inner Summary    summary(N_ports_out=N_ports_out,inlet(mediumModel=medium, m_flow=inlet.m_flow,  T=gasInlet.T, p=inlet.p, h=gasInlet.h, xi=gasInlet.xi, H_flow=inlet.m_flow*gasInlet.h),
+                           outlet(each mediumModel=medium, m_flow=outlet.m_flow,  T=gasOutlet.T, p=outlet.p, h=gasOutlet.h, xi=gasOutlet.xi, each H_flow=outlet.m_flow*gasOutlet.h),
                    gas(m=mass, T=bulk.T, p=p, h=h, H=h*mass, rho=bulk.d))
     annotation (Placement(transformation(extent={{-60,-102},{-40,-82}})));
 
 initial equation
 
-  if initType == ClaRa.Basics.Choices.Init.steadyState then
-    der(h)=0;
-    der(p)=0;
-  elseif initType == ClaRa.Basics.Choices.Init.steadyPressure then
-    der(p)=0;
-  elseif initType == ClaRa.Basics.Choices.Init.steadyEnthalpy then
-    der(h)=0;
-  elseif initType == ClaRa.Basics.Choices.Init.steadyDensity then
-    drhodt=0;
-  end if;
+    if initOption == 1 then //steady state
+      der(h)=0;
+      der(p)=0;
+      der(xi)=zeros(medium.nc-1);
+    elseif initOption == 201 then //steady pressure
+      der(p)=0;
+    elseif initOption == 202 then //steady enthalpy
+      der(h)=0;
+    elseif initOption == 208 then // steady pressure and enthalpy
+      der(h)=0;
+      der(p)=0;
+    elseif initOption == 210 then //steady density
+      drhodt=0;
+    elseif initOption == 0 then //no init
+    // do nothing
+    else
+     assert(initOption == 0,"Invalid init option");
+    end if;
 
 equation
 

@@ -1,7 +1,7 @@
-within ClaRa.Components.MechanicalSeparation;
+ï»¿within ClaRa.Components.MechanicalSeparation;
 model FeedWaterTank_L3 "Feedwater tank : separated volume approach | level-dependent phase separation"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -21,7 +21,7 @@ extends ClaRa.Components.MechanicalSeparation.FeedWaterTank_base;
   extends ClaRa.Basics.Icons.ComplexityLevel(complexity="L3");
   parameter Modelica.SIunits.Length radius_flange=0.05 "Flange radius" annotation(Dialog(group="Geometry"));
   parameter SI.Time Tau_cond=10 "Time constant of condensation" annotation (Dialog(tab="Phase Separation", group="Mass Transfer Between Phases"));
-  parameter SI.Time tau_evap=Tau_cond*1000 "Time constant of evaporation" annotation (Dialog(tab="Phase Separation", group="Mass Transfer Between Phases"));
+  parameter SI.Time Tau_evap=Tau_cond*1000 "Time constant of evaporation" annotation (Dialog(tab="Phase Separation", group="Mass Transfer Between Phases"));
   parameter Real absorbInflow=1 "Absorption of incoming mass flow to the zones 1: perfect in the allocated zone, 0: perfect according to steam quality"
                                                                                               annotation (Dialog(tab="Phase Separation", group="Mass Transfer Between Phases"));
   parameter SI.Area A_phaseBorder=volume.geo.A_hor*100 "Heat transfer area at phase border" annotation (Dialog(tab="Phase Separation", group="Heat Transfer Between Phases"));
@@ -41,6 +41,8 @@ extends ClaRa.Components.MechanicalSeparation.FeedWaterTank_base;
   replaceable model HeatTransfer =
       ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3 (                      alpha_nom={3000,3000})                              constrainedby Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.HeatTransfer_L3 "Heat transfer to the walls"
                                                                                               annotation (Dialog(group="Fundamental Definitions"),choicesAllMatching=true);
+  inner parameter Integer initOption = 0 "Type of initialisation"
+    annotation (Dialog(tab= "Initialisation"), choices(choice = 0 "Use guess values", choice = 209 "Steady in vapour pressure, enthalpies and vapour volume", choice=201 "Steady vapour pressure", choice = 202 "Steady enthalpy", choice=204 "Fixed volume fraction",  choice=211 "Fixed values in level, enthalpies and vapour pressure"));
 
  model Outline
    extends ClaRa.Basics.Icons.RecordIcon;
@@ -150,37 +152,33 @@ extends ClaRa.Components.MechanicalSeparation.FeedWaterTank_base;
     m_flow_nom=m_flow_cond_nom + m_flow_heat_nom,
     p_nom=p_nom,
     p_start=p_start,
-    initType=initType,
     level_rel_start=level_rel_start,
     Tau_cond=Tau_cond,
     showExpertSummary=showExpertSummary,
-    redeclare model HeatTransfer =
-        HeatTransfer,
+    redeclare model HeatTransfer = HeatTransfer,
     h_liq_start=h_liq_start,
     h_vap_start=h_vap_start,
-    Tau_evap=tau_evap,
+    Tau_evap=Tau_evap,
     alpha_ph=alpha_ph,
     A_heat_ph=A_phaseBorder,
-    redeclare model PhaseBorder =
-        ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.RealSeparated (
+    redeclare model PhaseBorder = ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.RealSeparated (
         level_rel_start=level_rel_start,
         smoothness=smoothness,
-        radius_flange=
-                 radius_flange,
+        radius_flange=radius_flange,
         absorbInflow=absorbInflow),
-    redeclare model Geometry =
-        ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowCylinder (
+    redeclare model Geometry = ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowCylinder (
         orientation=orientation,
         diameter=diameter,
         length=length,
         z_in={z_in},
         z_out={z_out}),
-    equalPressures=equalPressures)  annotation (Placement(transformation(extent={{12,-30},{-8,-10}})));
+    equalPressures=equalPressures,
+    initOption=initOption)  annotation (Placement(transformation(extent={{12,-30},{-8,-10}})));
 
   ClaRa.Basics.ControlVolumes.SolidVolumes.ThickWall_L4 wall(
     sizefunc=+1,
     N_tubes=1,
-    initChoice=ClaRa.Basics.Choices.Init.steadyState,
+    initOption=1,
     length=length,
     N_rad=3,
     diameter_i=diameter,

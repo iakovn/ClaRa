@@ -1,7 +1,7 @@
-within ClaRa.Components.TurboMachines.Turbines;
+ï»¿within ClaRa.Components.TurboMachines.Turbines;
 model SteamTurbineVLE_L1 "A steam turbine model based on STODOLA's law"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -24,11 +24,16 @@ model SteamTurbineVLE_L1 "A steam turbine model based on STODOLA's law"
     powerAux=inlet.m_flow*(fluidIn.h - fluidOut.h) + P_t) if                                                                                                     contributeToCycleSummary;
   extends ClaRa.Basics.Icons.ComplexityLevel(complexity="L1");
 
+//_______________________ Mechanics ________________________________________
+  parameter Boolean useMechanicalPort=false "True, if a mechenical flange should be used" annotation (Dialog(tab="Mechanical and Efficiency Settings", group = "Mechanics"));
+  parameter Boolean steadyStateTorque=true "True, if steady state mechanical momentum shall be used" annotation (Dialog(tab="Mechanical and Efficiency Settings", group = "Mechanics", enable = useMechanicalPort));
+  parameter ClaRa.Basics.Units.RPM rpm_fixed = 3000 "Constant rotational speed of turbine" annotation (Dialog(tab="Mechanical and Efficiency Settings", group = "Mechanics", enable = not useMechanicalPort));
+  parameter Modelica.SIunits.Inertia J=10 "Moment of Inertia" annotation(Dialog(tab="Mechanical and Efficiency Settings",group="Mechanics", enable= not steadyStateTorque and useMechanicalPort));
+
+//_______________________ Visualisation ________________________________________
   parameter Boolean showExpertSummary = simCenter.showExpertSummary "True, if expert summary should be applied"  annotation(Dialog(tab="Summary and Visualisation"));
-  parameter Boolean showData=true "True, if a data port containing p,T,h,s,m_flow shall be shown, else false"
-                                                                                            annotation(Dialog(tab="Summary and Visualisation"));
-  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary "True if component shall contribute to automatic efficiency calculation"
-                                                                                            annotation(Dialog(tab="Summary and Visualisation"));
+  parameter Boolean showData=true "True, if a data port containing p,T,h,s,m_flow shall be shown, else false"  annotation(Dialog(tab="Summary and Visualisation"));
+  parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary "True if component shall contribute to automatic efficiency calculation" annotation(Dialog(tab="Summary and Visualisation"));
 
 //_______________________ Nominal values ___________________________________
   parameter Modelica.SIunits.Pressure p_nom= 300e5 "Nominal inlet perssure" annotation(Dialog(group="Nominal values"));
@@ -36,41 +41,42 @@ model SteamTurbineVLE_L1 "A steam turbine model based on STODOLA's law"
   parameter Real Pi=5000/300e5 "Nominal pressure ratio" annotation(Dialog(group="Nominal values"));
   parameter Modelica.SIunits.Density rho_nom=10 "Nominal inlet density" annotation(Dialog(group="Nominal values"));
 
-//_______________________ Mechanics ________________________________________
-  parameter Boolean useMechanicalPort=false "True, if a mechenical flange should be used" annotation (Dialog( group = "Mechanics"));
-  parameter Boolean steadyStateTorque=true "True, if steady state mechanical momentum shall be used" annotation (Dialog( group = "Mechanics", enable = useMechanicalPort));
-  parameter ClaRa.Basics.Units.RPM rpm_fixed = 3000 "Constant rotational speed of turbine" annotation (Dialog( group = "Mechanics", enable = not useMechanicalPort));
-  parameter Modelica.SIunits.Inertia J=10 "Moment of Inertia" annotation(Dialog(group="Mechanics", enable= not steadyStateTorque and useMechanicalPort));
-
-//_______________________ Start values ___________________________________
-  parameter Modelica.SIunits.Pressure p_in_0=p_nom "Start value for inlet pressure" annotation(Dialog(group="Initialisation"));
-  parameter Modelica.SIunits.Pressure p_out_0=p_nom*Pi "Start value for outlet pressure"   annotation(Dialog(group="Initialisation"));
+//_______________________ Initialisation ___________________________________
+  parameter Modelica.SIunits.Pressure p_in_start=p_nom "Start value for inlet pressure" annotation(Dialog(tab="Initialisation"));
+  parameter Modelica.SIunits.Pressure p_out_start=p_nom*Pi "Start value for outlet pressure"   annotation(Dialog(tab="Initialisation"));
+  parameter Boolean allowFlowReversal = simCenter.steamCycleAllowFlowReversal "True to allow flow reversal during initialisation"
+                                                        annotation(Evaluate=true, Dialog(tab="Initialisation"));
 
 //_______________________ Efficiency _____________________________
-  parameter Real eta_mech=0.98 "Mechanical efficiency" annotation(Dialog(group="Nominal values"));
+  parameter Real eta_mech=0.98 "Mechanical efficiency" annotation(Dialog(tab="Mechanical and Efficiency Settings",group="Turbine Efficiency"));
 
-  parameter Boolean allowFlowReversal = simCenter.steamCycleAllowFlowReversal "True to allow flow reversal during initialisation"
-                                                        annotation(Evaluate=true, Dialog(group="Initialisation"));
+  replaceable model Efficiency=ClaRa.Components.TurboMachines.Fundamentals.EfficiencyModels.TableMassFlow constrainedby ClaRa.Components.TurboMachines.Fundamentals.EfficiencyModels.EfficiencyModelBase "Calculation of isentropic efficiency"
+                                                                                            annotation(Dialog(tab="Mechanical and Efficiency Settings",group="Turbine Efficiency"),choicesAllMatching);
 
 //_______________________ Expert Settings _____________________________
   parameter Boolean chokedFlow=false "With a large number of turbine stages the influence of supercritical flow conditions can be neglected"
                                                                                             annotation(Dialog(group="Expert Settings"));
 
 public
-  parameter Real CL_eta_mflow[:,2]=[0.0, 0.94; 1, 0.94] "Characteristic line eta = f(m_flow/m_flow_nom)"
-                                                     annotation(Dialog(group="Part Load Definition"));
-
   final parameter Real Kt = (m_flow_nom*sqrt(p_nom))/(sqrt(p_nom^2-p_nom^2*Pi^2)*sqrt(rho_nom)) "Kt coefficient of Stodola's law";
 
 //______________________ Variables _____________________________________
   Modelica.SIunits.SpecificEnthalpy h_is "Isentropic outlet enthalpy";
   Modelica.SIunits.Power P_t "Turbine hydraulic power";
-  Modelica.SIunits.Pressure p_in(start=p_in_0);
-  Modelica.SIunits.Pressure p_out(start=p_out_0);
+  Modelica.SIunits.Pressure p_in(start=p_in_start);
+  Modelica.SIunits.Pressure p_out(start=p_out_start);
   Real eta_is "Isentropic efficiency";
   Modelica.SIunits.EntropyFlowRate S_irr "Entropy production rate";
   Modelica.SIunits.Pressure p_l "Laval pressure";
-   ClaRa.Basics.Units.RPM rpm(start=3000);
+   ClaRa.Basics.Units.RPM rpm;
+
+   inner Fundamentals.ICom iCom(m_flow_in=inlet.m_flow, m_flow_nom=m_flow_nom,
+    rho_nom=rho_nom,
+    rho_in=fluidIn.d,
+    rpm=rpm,
+    Delta_h_is=fluidIn.h - h_is)
+                                annotation (Placement(transformation(extent={{-40,-100},{-20,-80}})));
+
 model Outline
   extends ClaRa.Basics.Icons.RecordIcon;
   input ClaRa.Basics.Units.PressureDifference Delta_p;
@@ -122,25 +128,23 @@ protected
     p=inlet.p, d(start=rho_nom))
     annotation (Placement(transformation(extent={{-44,48},{-24,68}})));
 
-  Modelica.Blocks.Tables.CombiTable1D HydraulicEfficiency(columns={2}, table=
-        CL_eta_mflow)
-    annotation (Placement(transformation(extent={{-40,-60},{-20,-40}})));
-
 public
 Summary summary(outline(showExpertSummary = showExpertSummary,p_nom= p_nom,m_flow_nom=m_flow_nom,rho_nom=rho_nom,Pi=Pi,Delta_p=p_out-p_in,P_mech=-P_t,eta_isen=eta_is,eta_mech=eta_mech,h_isen=h_is,rpm=rpm),
                 inlet(showExpertSummary = showExpertSummary,m_flow=inlet.m_flow,  T=fluidIn.T, p=inlet.p, h=fluidIn.h,s=fluidIn.s, steamQuality=fluidIn.q, H_flow=fluidIn.h*inlet.m_flow, rho=fluidIn.d),
                 outlet(showExpertSummary = showExpertSummary,m_flow = -outlet.m_flow, T=fluidOut.T, p=outlet.p, h=fluidOut.h, s=fluidOut.s, steamQuality=fluidOut.q, H_flow=-fluidOut.h*outlet.m_flow, rho=fluidOut.d)) annotation(Placement(
-        transformation(extent={{-80,-102},{-60,-82}})));
+        transformation(extent={{-60,-100},{-40,-80}})));
   Modelica.Mechanics.Rotational.Interfaces.Flange_a shaft_a if useMechanicalPort
     annotation (Placement(transformation(extent={{-110,-10},{-90,10}}), iconTransformation(extent={{-110,-10},{-90,10}})));
   Modelica.Mechanics.Rotational.Interfaces.Flange_b shaft_b if useMechanicalPort
     annotation (Placement(transformation(extent={{70,-10},{90,10}})));
 public
   ClaRa.Basics.Interfaces.EyeOut eye if showData annotation (Placement(transformation(extent={{40,-70},{60,-50}}), iconTransformation(extent={{40,-70},{60,-50}})));
+
+    Efficiency efficiency "Efficiency model" annotation (Placement(transformation(extent={{-40,-60},{-20,-40}})));
 protected
   ClaRa.Basics.Interfaces.EyeIn eye_int annotation (Placement(transformation(extent={{25,-61},{27,-59}})));
-equation
 
+equation
   rpm = der(getInputsRotary.shaft_a.phi)*60/(2*Modelica.Constants.pi);
 //~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~~Mechanics~~~~~~~~~~~~~
@@ -159,8 +163,7 @@ equation
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~
 // Efficiency ~~~~~~~~~~~~~
-  eta_is=HydraulicEfficiency.y[1];
-  HydraulicEfficiency.u[1]=inlet.m_flow/m_flow_nom;
+  eta_is=efficiency.eta;
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~
 // Boundary conditions ~~~~

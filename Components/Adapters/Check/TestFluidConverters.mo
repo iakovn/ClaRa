@@ -1,4 +1,4 @@
-within ClaRa.Components.Adapters.Check;
+﻿within ClaRa.Components.Adapters.Check;
 model TestFluidConverters
   extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
   Fluid2ClaRa fluid2ClaRa
@@ -66,8 +66,8 @@ model TestFluidConverters
                                                        annotation (Placement(transformation(extent={{-80,24},{-100,44}})));
   Modelica.Blocks.Interaction.Show.RealValue realValue1(significantDigits=3)
                                                         annotation (Placement(transformation(extent={{-114,34},{-134,54}})));
-  Sensors.vleMassflowSensor Flow annotation (Placement(transformation(extent={{34,24},{14,44}})));
-  Sensors.Temperature Temperature annotation (Placement(transformation(extent={{24,24},{4,4}})));
+  Sensors.SensorVLE_L1_m_flow Flow annotation (Placement(transformation(extent={{34,24},{14,44}})));
+  Sensors.SensorVLE_L1_T Temperature annotation (Placement(transformation(extent={{24,24},{4,4}})));
   Modelica.Blocks.Math.Feedback feedback annotation (Placement(transformation(extent={{-54,44},{-74,24}})));
   Modelica.Blocks.Sources.RealExpression realExpression(y=273.15) annotation (Placement(transformation(extent={{-100,40},{-80,60}})));
   Modelica.Blocks.Interaction.Show.RealValue realValue2(significantDigits=4)
@@ -76,20 +76,16 @@ model TestFluidConverters
                                          annotation (Placement(transformation(extent={{-86,-38},{-66,-58}})));
   Modelica.Blocks.Sources.RealExpression realExpression1(
                                                         y=273.15) annotation (Placement(transformation(extent={{-116,-40},{-96,-20}})));
-  Sensors.Temperature Temperature1(unitOption=2)
-                                  annotation (Placement(transformation(extent={{10,-58},{-10,-38}})));
-  Sensors.vleMassflowSensor Flow1
-                                 annotation (Placement(transformation(extent={{34,-58},{14,-38}})));
+  Sensors.SensorVLE_L1_T Temperature1(unitOption=2) annotation (Placement(transformation(extent={{10,-58},{-10,-38}})));
+  Sensors.SensorVLE_L1_m_flow Flow1 annotation (Placement(transformation(extent={{34,-58},{14,-38}})));
   Modelica.Blocks.Interaction.Show.RealValue realValue3(significantDigits=4)
                                                        annotation (Placement(transformation(extent={{46,-152},{66,-132}})));
   Modelica.Blocks.Math.Feedback feedback2
                                          annotation (Placement(transformation(extent={{22,-132},{42,-152}})));
   Modelica.Blocks.Sources.RealExpression realExpression2(
                                                         y=273.15) annotation (Placement(transformation(extent={{66,-136},{46,-116}})));
-  Sensors.vleMassflowSensor Flow2
-                                 annotation (Placement(transformation(extent={{-106,-152},{-86,-132}})));
-  Sensors.Temperature Temperature2(unitOption=2)
-                                  annotation (Placement(transformation(extent={{-78,-152},{-58,-132}})));
+  Sensors.SensorVLE_L1_m_flow Flow2 annotation (Placement(transformation(extent={{-106,-152},{-86,-132}})));
+  Sensors.SensorVLE_L1_T Temperature2(unitOption=2) annotation (Placement(transformation(extent={{-78,-152},{-58,-132}})));
   inner Modelica.Fluid.System system annotation (Placement(transformation(extent={{-150,-214},{-130,-194}})));
 equation
   connect(ramp.y, massFlowSource_T.m_flow) annotation (Line(

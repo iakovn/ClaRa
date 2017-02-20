@@ -1,7 +1,7 @@
-within ClaRa.StaticCycles.Check.StaticCycleExamples;
+ï»¿within ClaRa.StaticCycles.Check.StaticCycleExamples;
 model InitSteamCycle_Rostock_HRO_20 "Helps you to find reasonable start values for steam cycles"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -26,7 +26,7 @@ model InitSteamCycle_Rostock_HRO_20 "Helps you to find reasonable start values f
 
 //__________________global parameter_______________________
   inner parameter Real P_target_= 1 "Value of load in p.u."    annotation(Dialog(group="Global parameter"));
-  inner parameter SI.MassFlowRate m_flow_nom=417 "Feedwater massflow rate at nominal point" annotation (Dialog(group="Global parameter"));
+  parameter SI.MassFlowRate m_flow_nom=417 "Feedwater massflow rate at nominal point" annotation (Dialog(group="Global parameter"));
   parameter SI.Temperature T_LS_nom=823 "Live steam temperature at nominal point" annotation (Dialog(group="Global parameter"));
   parameter SI.Temperature T_RS_nom=833 "Reheated steam temperature at nominal point" annotation (Dialog(group="Global parameter"));
   parameter String mediumName = "R718" annotation(Dialog(group="Global parameter"));
@@ -83,16 +83,10 @@ parameter ClaRa.Basics.Units.Pressure valve_LP1_dp_nominal=0.001e5   annotation(
 
 //parameter Real efficiency_Turb_LP2=1 "Efficiency of turbine" annotation(Dialog(tab="Turbines"));
 
-  ClaRa.StaticCycles.Pump pump_fw(efficiency=efficiency_Pump_FW)
-                                   annotation (Placement(transformation(extent={{-100,
-            -134},{-140,-94}})));
-  ClaRa.StaticCycles.Turbine turbine_HP(
-    efficiency=efficiency_Turb_HP) annotation (Placement(transformation(extent={{-150,
-            112},{-120,172}})));
-  ClaRa.StaticCycles.Turbine turbine_IP(efficiency=efficiency_Turb_IP)
-                                   annotation (Placement(transformation(extent={{-86,114},
-            {-56,174}})));
-  ClaRa.StaticCycles.Boiler boiler(
+  ClaRa.StaticCycles.Machines.Pump pump_fw(efficiency=efficiency_Pump_FW) annotation (Placement(transformation(extent={{-100,-134},{-140,-94}})));
+  ClaRa.StaticCycles.Machines.Turbine turbine_HP(efficiency=efficiency_Turb_HP) annotation (Placement(transformation(extent={{-150,112},{-120,172}})));
+  ClaRa.StaticCycles.Machines.Turbine turbine_IP(efficiency=efficiency_Turb_IP) annotation (Placement(transformation(extent={{-86,114},{-56,174}})));
+  Furnace.Boiler_simple boiler(
     p_LS_out_nom=p_LS_out_nom,
     p_RS_out_nom=p_RS_out_nom,
     CharLine_Delta_p_IP_mRS_=CharLine_dpIP_mRS_,
@@ -100,169 +94,151 @@ parameter ClaRa.Basics.Units.Pressure valve_LP1_dp_nominal=0.001e5   annotation(
     T_RS_nom=T_RS_nom,
     CharLine_Delta_p_HP_mLS_=CharLine_dpHP_mLS_,
     Delta_p_LS_nom=dp_LS_nom,
-    Delta_p_RS_nom=dp_RS_nom) annotation (Placement(transformation(extent={{-224,52},{-184,92}})));
+    Delta_p_RS_nom=dp_RS_nom,
+    m_flow_LS_nom=m_flow_nom,
+    m_flow_RS_nom=m_flow_nom) annotation (Placement(transformation(extent={{-224,52},{-184,92}})));
 
-  ClaRa.StaticCycles.Condenser condenser(p_condenser=p_condenser) annotation (Placement(transformation(extent={{210,-18},
-            {252,22}})));
-  ClaRa.StaticCycles.Valve_dp_nom1 valve_LP(Delta_p_nom=valve_IP_dp_nominal) annotation (Placement(transformation(
+  ClaRa.StaticCycles.HeatExchanger.Condenser condenser(p_condenser=p_condenser) annotation (Placement(transformation(extent={{210,-18},{252,22}})));
+  ClaRa.StaticCycles.ValvesConnects.Valve_dp_nom1 valve_LP(Delta_p_nom=valve_IP_dp_nominal) annotation (Placement(transformation(
         extent={{-10,-7},{10,7}},
         rotation=270,
         origin={-34,11})));
-  ClaRa.StaticCycles.Feedwatertank3 feedwatertank(p_FWT_nom=p_FWT, m_flow_nom=m_flow_FW) annotation (Placement(transformation(extent={{-8,-124},{-58,-96}})));
-  ClaRa.StaticCycles.Valve_dp_nom1 valve_LP1(Delta_p_nom=valve_LP1_dp_nominal) annotation (Placement(transformation(
+  ClaRa.StaticCycles.Storage.Feedwatertank3 feedwatertank(p_FWT_nom=p_FWT, m_flow_nom=m_flow_FW) annotation (Placement(transformation(extent={{-8,-124},{-58,-96}})));
+  ClaRa.StaticCycles.ValvesConnects.Valve_dp_nom1 valve_LP1(Delta_p_nom=valve_LP1_dp_nominal) annotation (Placement(transformation(
         extent={{-10,-7},{10,7}},
         rotation=270,
         origin={90,11})));
-  ClaRa.StaticCycles.Pump pump_cond(efficiency=efficiency_Pump_cond)
-    annotation (Placement(transformation(extent={{174,-134},{134,-94}})));
-  ClaRa.StaticCycles.Turbine turbine_LP1(
-    efficiency=efficiency_Turb_LP) annotation (Placement(transformation(extent={{12,114},
-            {42,174}})));
-  ClaRa.StaticCycles.Split1 split_LP annotation (Placement(transformation(extent={{-44,108},{-24,128}})));
-  ClaRa.StaticCycles.Split1 split_LP1 annotation (Placement(transformation(extent={{80,108},{100,128}})));
-  ClaRa.StaticCycles.Preheater1 preheater_LP1(p_tap=preheater_LP1_p_tap, m_flow_tap=preheater_LP1_m_flow_tap) annotation (Placement(transformation(extent={{114,-136},{68,-92}})));
-  ClaRa.StaticCycles.Turbine turbine_LP2(
-    efficiency=efficiency_Turb_LP) annotation (Placement(transformation(extent={{182,114},
-            {212,174}})));
-  ClaRa.StaticCycles.Preheater1 preheater_HP(m_flow_tap=preheater_HP_m_flow_tap, p_tap=preheater_HP_p_tap) annotation (Placement(transformation(
+  ClaRa.StaticCycles.Machines.Pump pump_cond(efficiency=efficiency_Pump_cond) annotation (Placement(transformation(extent={{174,-134},{134,-94}})));
+  ClaRa.StaticCycles.Machines.Turbine turbine_LP1(efficiency=efficiency_Turb_LP) annotation (Placement(transformation(extent={{12,114},{42,174}})));
+  ClaRa.StaticCycles.Fittings.Split1 split_LP annotation (Placement(transformation(extent={{-44,104},{-24,124}})));
+  ClaRa.StaticCycles.Fittings.Split1 split_LP1 annotation (Placement(transformation(extent={{80,104},{100,124}})));
+  ClaRa.StaticCycles.HeatExchanger.Preheater1 preheater_LP1(p_tap_nom=preheater_LP1_p_tap, m_flow_tap_nom=preheater_LP1_m_flow_tap) annotation (Placement(transformation(extent={{114,-136},{68,-92}})));
+  ClaRa.StaticCycles.Machines.Turbine turbine_LP2(efficiency=efficiency_Turb_LP) annotation (Placement(transformation(extent={{182,114},{212,174}})));
+  ClaRa.StaticCycles.HeatExchanger.Preheater1 preheater_HP(m_flow_tap_nom=preheater_HP_m_flow_tap, p_tap_nom=preheater_HP_p_tap) annotation (Placement(transformation(
         extent={{-20,20},{20,-20}},
         rotation=90,
         origin={-202,-22})));
-  ClaRa.StaticCycles.Split1 split_LP_turbine2 annotation (Placement(transformation(extent={{-98,8},{-118,28}})));
-  ClaRa.StaticCycles.Mixer1 mixer2 annotation (Placement(transformation(extent={{22,-126},{42,-106}})));
-  ClaRa.StaticCycles.Valve_cutPressure valve annotation (Placement(transformation(extent={{-104,-160},{-84,-144}})));
-  ClaRa.StaticCycles.Valve_dp_nom1 valve_dp_nom(Delta_p_nom=valve1_HP_dp_nominal) annotation (Placement(transformation(extent={{-132,-28},{-152,-12}})));
-  ClaRa.StaticCycles.Valve_cutPressure valve1 annotation (Placement(transformation(extent={{-152,12},{-172,26}})));
-  ClaRa.StaticCycles.Mixer2 mixer2_1
-    annotation (Placement(transformation(extent={{194,-126},{214,-106}})));
-  ClaRa.StaticCycles.Valve_cutPressure valve2 annotation (Placement(transformation(extent={{148,-166},{168,-150}})));
+  ClaRa.StaticCycles.Fittings.Split1 split_LP_turbine2 annotation (Placement(transformation(extent={{-98,3},{-118,23}})));
+  ClaRa.StaticCycles.Fittings.Mixer1 mixer2 annotation (Placement(transformation(extent={{42,-131},{22,-111}})));
+  ClaRa.StaticCycles.ValvesConnects.Valve_cutPressure1 valve annotation (Placement(transformation(extent={{-104,-160},{-84,-144}})));
+  ClaRa.StaticCycles.ValvesConnects.Valve_dp_nom1 valve_dp_nom(Delta_p_nom=valve1_HP_dp_nominal) annotation (Placement(transformation(extent={{-132,-28},{-152,-12}})));
+  ClaRa.StaticCycles.ValvesConnects.Valve_cutPressure1 valve1 annotation (Placement(transformation(extent={{-152,12},{-172,26}})));
+  ClaRa.StaticCycles.Fittings.Mixer2 mixer2_1 annotation (Placement(transformation(extent={{214,-130},{194,-110}})));
+  ClaRa.StaticCycles.ValvesConnects.Valve_cutPressure1 valve2 annotation (Placement(transformation(extent={{148,-166},{168,-150}})));
   Triple triple3 annotation (Placement(transformation(extent={{-96,-94},{-64,-66}})));
   Triple triple annotation (Placement(transformation(extent={{-28,-90},{4,-62}})));
   Triple triple1 annotation (Placement(transformation(extent={{-4,-94},{28,-66}})));
 equation
   connect(boiler.liveSteam, turbine_HP.inlet) annotation (Line(
-      points={{-204,92.8},{-204,154},{-147,154}},
-      color={0,131,169},
-      smooth=Smooth.None));
-  connect(boiler.reheat_out,turbine_IP. inlet) annotation (Line(
-      points={{-196,92.8},{-196,214},{-83,214},{-83,156}},
+      points={{-204,92.8},{-204,154},{-151.25,154}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(feedwatertank.cond_out, pump_fw.inlet) annotation (Line(
-      points={{-57,-114.667},{-78,-114.667},{-78,-114},{-99.2,-114}},
+      points={{-59.25,-114.667},{-78,-114.667},{-78,-114},{-99,-114}},
       color={0,131,169},
       smooth=Smooth.None));
 
   connect(preheater_LP1.cond_in, pump_cond.outlet) annotation (Line(
-      points={{114.92,-114},{133.2,-114}},
+      points={{115.15,-114},{133,-114}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(preheater_LP1.tap_in, valve_LP1.outlet) annotation (Line(
-      points={{91,-91.12},{91,0.2},{90,0.2}},
+      points={{91,-90.9},{91,-3.55271e-015},{90,-3.55271e-015}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(feedwatertank.tap_in, valve_LP.outlet) annotation (Line(
-      points={{-33,-96.9333},{-33,-44},{-34,-44},{-34,0.2}},
+      points={{-33,-94.8333},{-33,-44},{-34,-44},{-34,-3.55271e-015}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(turbine_LP2.outlet, condenser.inlet) annotation (Line(
-      points={{211,120},{218,120},{218,118},{231,118},{231,22.8}},
+      points={{213.25,120},{218,120},{218,118},{231,118},{231,23}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(turbine_IP.outlet, split_LP.inlet) annotation (Line(
-      points={{-57,120},{-50,120},{-50,124.667},{-43.4,124.667}},
+      points={{-54.75,120},{-50,120},{-50,120.667},{-45,120.667}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(split_LP.outlet_2, valve_LP.inlet) annotation (Line(
-      points={{-34,109},{-34,21.8},{-34,21.8}},
+      points={{-34,102.333},{-34,22}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(turbine_LP1.outlet, split_LP1.inlet) annotation (Line(
-      points={{41,120},{60,120},{60,124.667},{80.6,124.667}},
+      points={{43.25,120},{60,120},{60,120.667},{79,120.667}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(split_LP1.outlet_2, valve_LP1.inlet) annotation (Line(
-      points={{90,109},{90,109},{90,21.8},{90,21.8}},
+      points={{90,102.333},{90,22}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(split_LP1.outlet_1,turbine_LP2. inlet) annotation (Line(
-      points={{99.4,124.667},{170,124.667},{170,156},{185,156}},
-      color={0,131,169},
-      smooth=Smooth.None));
-  connect(boiler.feedwater, preheater_HP.cond_out) annotation (Line(
-      points={{-204,51.2},{-202,51.2},{-202,-1.2}},
+      points={{101,120.667},{170,120.667},{170,156},{180.75,156}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(preheater_HP.cond_in, pump_fw.outlet) annotation (Line(
-      points={{-202,-42.8},{-202,-114},{-140.8,-114}},
+      points={{-202,-43},{-202,-114},{-141,-114}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(split_LP_turbine2.inlet, turbine_HP.outlet) annotation (Line(
-      points={{-98.6,24.6667},{-78,24.6667},{-78,118},{-121,118}},
+      points={{-97,19.6667},{-78,19.6667},{-78,118},{-118.75,118}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(mixer2.outlet, feedwatertank.cond_in) annotation (Line(
-      points={{22.8,-109.333},{8,-109.333},{8,-114.667},{-9,-114.667}},
+      points={{21,-114.333},{8,-114.333},{8,-114.667},{-6.75,-114.667}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(valve.outlet, mixer2.inlet_2) annotation (Line(
-      points={{-83.2,-152},{32,-152},{32,-124.667}},
+      points={{-83,-152},{32,-152},{32,-132.667}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(valve.inlet, preheater_HP.tap_out) annotation (Line(
-      points={{-104.8,-152},{-232,-152},{-232,-22},{-222.8,-22}},
+      points={{-105,-152},{-232,-152},{-232,-22},{-223,-22}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(valve_dp_nom.inlet, split_LP_turbine2.outlet_2) annotation (Line(
-      points={{-131.2,-20},{-108,-20},{-108,9}},
+      points={{-131,-20},{-108,-20},{-108,1.33333}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(valve_dp_nom.outlet, preheater_HP.tap_in) annotation (Line(
-      points={{-152.8,-20},{-181.2,-20},{-181.2,-22}},
+      points={{-153,-20},{-181,-20},{-181,-22}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(valve1.inlet, split_LP_turbine2.outlet_1) annotation (Line(
-      points={{-151.2,19},{-133.8,19},{-133.8,24.6667},{-117.4,24.6667}},
-      color={0,131,169},
-      smooth=Smooth.None));
-  connect(valve1.outlet, boiler.reheat_in) annotation (Line(
-      points={{-172.8,19},{-196,19},{-196,51.2}},
+      points={{-151,19},{-133.8,19},{-133.8,19.6667},{-119,19.6667}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(turbine_LP1.inlet, split_LP.outlet_1) annotation (Line(
-      points={{15,156},{-8,156},{-8,124.667},{-24.6,124.667}},
+      points={{10.75,156},{-8,156},{-8,120.667},{-23,120.667}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(preheater_LP1.cond_out, mixer2.inlet_1) annotation (Line(
-      points={{67.08,-114},{54,-114},{54,-109.333},{41,-109.333}},
+      points={{66.85,-114},{54,-114},{54,-114.333},{43,-114.333}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(mixer2_1.outlet, pump_cond.inlet) annotation (Line(
-      points={{194.6,-109.333},{184,-109.333},{184,-114},{174.8,-114}},
+      points={{193,-113.333},{184,-113.333},{184,-114},{175,-114}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(mixer2_1.inlet_1, condenser.outlet) annotation (Line(
-      points={{213.4,-109.333},{231,-109.333},{231,-18.8}},
+      points={{215,-113.333},{231,-113.333},{231,-19}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(valve2.outlet, mixer2_1.inlet_2) annotation (Line(
-      points={{168.8,-158},{204,-158},{204,-125}},
+      points={{169,-158},{204,-158},{204,-131.667}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(valve2.inlet, preheater_LP1.tap_out) annotation (Line(
-      points={{147.2,-158},{91,-158},{91,-136.88}},
+      points={{147,-158},{91,-158},{91,-137.1}},
       color={0,131,169},
       smooth=Smooth.None));
-  connect(pump_fw.inlet, triple3.steamSignal) annotation (Line(points={{-99.2,-114},{-99.2,-99},{-97,-99},{-97,-83}}, color={0,131,169}));
-  connect(feedwatertank.tap_in, triple.steamSignal) annotation (Line(points={{-33,-96.9333},{-33,-87.4667},{-29,-87.4667},{-29,-79}}, color={0,131,169}));
-  connect(feedwatertank.cond_in, triple1.steamSignal) annotation (Line(points={{-9,-114.667},{-9,-98.3335},{-5,-98.3335},{-5,-83}}, color={0,131,169}));
+  connect(pump_fw.inlet, triple3.steamSignal) annotation (Line(points={{-99,-114},{-99,-99},{-97,-99},{-97,-83}},     color={0,131,169}));
+  connect(feedwatertank.tap_in, triple.steamSignal) annotation (Line(points={{-33,-94.8333},{-33,-87.4667},{-29,-87.4667},{-29,-79}}, color={0,131,169}));
+  connect(feedwatertank.cond_in, triple1.steamSignal) annotation (Line(points={{-6.75,-114.667},{-6.75,-98.3335},{-5,-98.3335},{-5,-83}},
+                                                                                            color={0,131,169}));
+  connect(boiler.hotReheat, turbine_IP.inlet) annotation (Line(points={{-192,92.8},{-192,92.8},{-192,198},{-87.25,198},{-87.25,156}}, color={0,131,169}));
+  connect(valve1.outlet, boiler.coldReheat) annotation (Line(points={{-173,19},{-196,19},{-196,51.2}}, color={0,131,169}));
+  connect(preheater_HP.cond_out, boiler.feedWater) annotation (Line(points={{-202,-1},{-204,-1},{-204,51.2}}, color={0,131,169}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=true, extent={{-100,
             -100},{100,100}}),
                    graphics),      Diagram(coordinateSystem(preserveAspectRatio=false,
-                 extent={{-240,-200},{280,260}})),
-    experiment(
-      StopTime=20000,
-      NumberOfIntervals=5000,
-      Tolerance=1e-005),
-    __Dymola_experimentSetupOutput);
+                 extent={{-240,-200},{280,260}})));
 end InitSteamCycle_Rostock_HRO_20;

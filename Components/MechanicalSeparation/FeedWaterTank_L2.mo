@@ -1,7 +1,7 @@
-within ClaRa.Components.MechanicalSeparation;
+ï»¿within ClaRa.Components.MechanicalSeparation;
 model FeedWaterTank_L2 "Feedwater tank : mixed volume approach | level-dependent phase separation"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -22,12 +22,15 @@ extends ClaRa.Components.MechanicalSeparation.FeedWaterTank_base;
       ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.NoFriction_L2
     constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.ShellType_L2 "Pressure loss model"
                           annotation(Dialog(group="Fundamental Definitions"), choicesAllMatching);
-  parameter Modelica.SIunits.SpecificEnthalpy h_start=xi_start*(TILMedia.VLEFluidFunctions.dewSpecificEnthalpy_pxi(medium, p_start) - TILMedia.VLEFluidFunctions.bubbleSpecificEnthalpy_pxi(medium, p_start)) + TILMedia.VLEFluidFunctions.bubbleSpecificEnthalpy_pxi(medium, p_start) "Start value of sytsem specific enthalpy"
+  parameter Modelica.SIunits.SpecificEnthalpy h_start=steamQuality_start*(TILMedia.VLEFluidFunctions.dewSpecificEnthalpy_pxi(medium, p_start) - TILMedia.VLEFluidFunctions.bubbleSpecificEnthalpy_pxi(medium, p_start)) + TILMedia.VLEFluidFunctions.bubbleSpecificEnthalpy_pxi(medium, p_start) "Start value of sytsem specific enthalpy"
                                                                                               annotation (Dialog(tab="Initialisation"));
   parameter Modelica.Blocks.Types.Smoothness smoothness=Modelica.Blocks.Types.Smoothness.LinearSegments "|Phase Separation|Numerical Robustness|Smoothness of table interpolation for calculation of filling level";
 
   parameter Modelica.SIunits.Length z_in=1 "Height of inlet ports" annotation(Dialog(group="Geometry"));
   parameter Modelica.SIunits.Length z_out=1 "Height of outlet ports"  annotation(Dialog(group="Geometry"));
+
+  parameter Integer initOption = 0 "Type of initialisation"
+                             annotation(Dialog(tab="Initialisation"), choices(choice = 0 "Use guess values", choice = 1 "Steady state", choice=201 "Steady pressure", choice = 202 "Steady enthalpy", choice=204 "Fixed rel.level",  choice=205 "Fixed rel.level and steady pressure"));
 
 protected
  model Outline
@@ -133,25 +136,18 @@ public
     p_nom=p_nom,
     h_nom=h_nom,
     p_start=p_start,
-    initType=initType,
     h_start=h_start,
-    redeclare model HeatTransfer =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.IdealHeatTransfer_L2,
+    redeclare model HeatTransfer = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.IdealHeatTransfer_L2,
     showExpertSummary=showExpertSummary,
-    redeclare model Geometry =
-        ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowCylinder (
+    redeclare model Geometry = ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowCylinder (
         z_in={z_in},
         z_out={z_out},
         orientation=orientation,
         diameter=diameter,
         length=length),
     final heatSurfaceAlloc=1,
-    redeclare model PhaseBorder =
-        ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.IdeallySeparated (
-         level_rel_start=
-                 level_rel_start,
-                          smoothness=smoothness))
-    annotation (Placement(transformation(extent={{0,-30},{-20,-10}})));
+    redeclare model PhaseBorder = ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.IdeallySeparated (level_rel_start=level_rel_start, smoothness=smoothness),
+    initOption=initOption) annotation (Placement(transformation(extent={{0,-30},{-20,-10}})));
 
   Modelica.Blocks.Interfaces.RealOutput level(value = if outputAbs then summary.outline.level_abs else summary.outline.level_rel) if levelOutput annotation (Placement(transformation(extent={{204,-126},{224,-106}}), iconTransformation(
         extent={{-10,-10},{10,10}},

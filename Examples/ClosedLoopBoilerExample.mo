@@ -1,10 +1,10 @@
 within ClaRa.Examples;
 model ClosedLoopBoilerExample
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -73,8 +73,9 @@ model ClosedLoopBoilerExample
     redeclare ClaRa.Basics.Media.Fuel.Slag_v2 slagModel,
     useHomotopy=false,
     redeclare TILMedia.GasTypes.FlueGasTILMedia flueGasModel,
-    redeclare TILMedia.VLEFluidTypes.TILMedia_SplineWater fluid1,
-    contributeToCycleSummary=true)                            annotation (Placement(transformation(extent={{420,360},{460,380}})));
+    contributeToCycleSummary=true,
+    redeclare TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1)
+                                                              annotation (Placement(transformation(extent={{420,360},{460,380}})));
 
   Components.Adapters.FuelSlagFlueGas_split                      coalSlagFlueGas_split_top
     annotation (Placement(transformation(extent={{-10,-10},{10,10}},
@@ -176,9 +177,6 @@ model ClosedLoopBoilerExample
     T_start_flueGas_out=780,
     redeclare model HeatTransfer_Top =
         ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Radiation.Radiation_gas2Gas_advanced_L2 (
-        emissivity_source_calculationType="Calculate",
-        emissivity_sink_calculationType="Calculate",
-        absorbance_source_calculationType="Calculate",
         suspension_calculationType="Gas calculated, particles fixed"),
     xi_start_flueGas_out={0.0103,0,0.2270,0.001,0.6999,0.0225,0,0.0393,0},
     redeclare model HeatTransfer_Wall =
@@ -382,7 +380,6 @@ model ClosedLoopBoilerExample
     length=80,
     z_out=80,
     frictionAtInlet=true,
-    initType=ClaRa.Basics.Choices.Init.noInit,
     redeclare model PressureLoss =
         ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.VLE_PL.QuadraticNominalPoint_L4,
     frictionAtOutlet=true,
@@ -395,7 +392,8 @@ model ClosedLoopBoilerExample
     p_start=linspace(
         296.9e5,
         290.2e5,
-        evap.N_cv)) annotation (Placement(transformation(
+        evap.N_cv),
+    initOption=0) annotation (Placement(transformation(
         extent={{-10,-6},{10,6}},
         rotation=90,
         origin={266,62})));
@@ -410,7 +408,6 @@ model ClosedLoopBoilerExample
     N_cv=3,
     frictionAtInlet=true,
     frictionAtOutlet=false,
-    initType=ClaRa.Basics.Choices.Init.noInit,
     redeclare model PressureLoss =
         ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.VLE_PL.QuadraticNominalPoint_L4,
     Delta_p_nom=2e5,
@@ -422,7 +419,8 @@ model ClosedLoopBoilerExample
     p_start=linspace(
         290.2e5,
         287.43e5,
-        ct.N_cv)) annotation (Placement(transformation(
+        ct.N_cv),
+    initOption=0) annotation (Placement(transformation(
         extent={{-10,6},{10,-6}},
         rotation=-90,
         origin={338,202})));
@@ -434,9 +432,9 @@ model ClosedLoopBoilerExample
     N_ax=evap.N_cv,
     diameter_o=evap.diameter_i + 0.01,
     T_start=ones(evap_wall.N_ax)*(273.15 + 300),
-    initChoice=ClaRa.Basics.Choices.Init.steadyTemperature,
     suppressChattering="True",
-    stateLocation=3)            annotation (Placement(transformation(
+    stateLocation=3,
+    initOption=203) annotation (Placement(transformation(
         extent={{-12,-4.00036},{12,4.00035}},
         rotation=90,
         origin={232,62})));
@@ -449,8 +447,8 @@ model ClosedLoopBoilerExample
     length=ct.length,
     N_tubes=ct.N_tubes,
     T_start=ones(ct_wall.N_ax)*(273.15 + 395),
-    initChoice=ClaRa.Basics.Choices.Init.steadyTemperature,
-    suppressChattering="False") annotation (Placement(transformation(
+    suppressChattering="False",
+    initOption=203) annotation (Placement(transformation(
         extent={{-12,-4.00036},{12,4.00035}},
         rotation=90,
         origin={292,202})));
@@ -464,7 +462,6 @@ model ClosedLoopBoilerExample
     z_out=50,
     frictionAtInlet=true,
     frictionAtOutlet=false,
-    initType=ClaRa.Basics.Choices.Init.noInit,
     redeclare model PressureLoss =
         ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.VLE_PL.QuadraticNominalPoint_L4,
     length=300,
@@ -477,7 +474,8 @@ model ClosedLoopBoilerExample
     p_start=linspace(
         287.43e5,
         275.699e5,
-        oh_1.N_cv)) annotation (Placement(transformation(
+        oh_1.N_cv),
+    initOption=0) annotation (Placement(transformation(
         extent={{-10,6},{10,-6}},
         rotation=-90,
         origin={338,112})));
@@ -491,7 +489,6 @@ model ClosedLoopBoilerExample
     z_out=70,
     frictionAtInlet=true,
     frictionAtOutlet=false,
-    initType=ClaRa.Basics.Choices.Init.noInit,
     redeclare model PressureLoss =
         ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.VLE_PL.QuadraticNominalPoint_L4,
     length=300,
@@ -504,7 +501,8 @@ model ClosedLoopBoilerExample
     p_start=linspace(
         275.699e5,
         260e5,
-        oh_2.N_cv)) annotation (Placement(transformation(
+        oh_2.N_cv),
+    initOption=0) annotation (Placement(transformation(
         extent={{10,6},{-10,-6}},
         rotation=-90,
         origin={398,158})));
@@ -517,8 +515,8 @@ model ClosedLoopBoilerExample
     length=oh_1.length,
     N_tubes=oh_1.N_tubes,
     T_start=ones(oh_1_wall.N_ax)*(273.15 + 330),
-    initChoice=ClaRa.Basics.Choices.Init.steadyTemperature,
-    suppressChattering="False") annotation (Placement(transformation(
+    suppressChattering="False",
+    initOption=203) annotation (Placement(transformation(
         extent={{-12,-4.00036},{12,4.00034}},
         rotation=90,
         origin={292,112})));
@@ -531,8 +529,8 @@ model ClosedLoopBoilerExample
     length=oh_2.length,
     N_tubes=oh_2.N_tubes,
     T_start=ones(oh_2_wall.N_ax)*(273.15 + 400),
-    initChoice=ClaRa.Basics.Choices.Init.steadyTemperature,
-    suppressChattering="False") annotation (Placement(transformation(
+    suppressChattering="False",
+    initOption=203) annotation (Placement(transformation(
         extent={{-12,-3.99984},{12,3.99984}},
         rotation=90,
         origin={292,158})));
@@ -589,7 +587,6 @@ model ClosedLoopBoilerExample
     z_out=70,
     frictionAtInlet=false,
     frictionAtOutlet=false,
-    initType=ClaRa.Basics.Choices.Init.noInit,
     redeclare model PressureLoss =
         ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.VLE_PL.QuadraticNominalPoint_L4,
     length=300,
@@ -602,7 +599,8 @@ model ClosedLoopBoilerExample
     p_start=linspace(
         297.3e5,
         296.9e5,
-        eco.N_cv)) annotation (Placement(transformation(
+        eco.N_cv),
+    initOption=0) annotation (Placement(transformation(
         extent={{-10,-6},{10,6}},
         rotation=90,
         origin={266,-20})));
@@ -615,8 +613,8 @@ model ClosedLoopBoilerExample
     N_tubes=eco.N_tubes,
     T_start=ones(eco_wall.N_ax)*(273.15 + 280),
     stateLocation=3,
-    initChoice=ClaRa.Basics.Choices.Init.steadyTemperature,
-    suppressChattering="False") annotation (Placement(transformation(
+    suppressChattering="False",
+    initOption=203) annotation (Placement(transformation(
         extent={{-12,-3.99985},{12,3.99985}},
         rotation=90,
         origin={232,-20})));
@@ -627,9 +625,7 @@ model ClosedLoopBoilerExample
         {0,0},
         eco.length,
         eco.N_cv)) annotation (Placement(transformation(extent={{192,-30},{212,-10}})));
-  Components.Sensors.Temperature
-                      oh_T
-    annotation (Placement(transformation(extent={{404,180},{424,202}})));
+  Components.Sensors.SensorVLE_L1_T oh_T annotation (Placement(transformation(extent={{404,180},{424,202}})));
   Components.Utilities.Blocks.LimPID PID_lambda(
     controllerType=Modelica.Blocks.Types.SimpleController.PI,
     Ni=0.90,
@@ -661,10 +657,8 @@ model ClosedLoopBoilerExample
     duration=1000,
     height=-0.03*15)
     annotation (Placement(transformation(extent={{-194,36},{-174,56}})));
-  Components.Mills.HardCoalMills.VerticalMill_L3 mill(initChoice=ClaRa.Basics.Choices.Init.steadyState)
-    annotation (Placement(transformation(extent={{-12,-6},{8,14}})));
-  Components.Mills.HardCoalMills.VerticalMill_L3 mill1(initChoice=ClaRa.Basics.Choices.Init.steadyState)
-    annotation (Placement(transformation(extent={{-34,24},{-14,44}})));
+  Components.Mills.HardCoalMills.VerticalMill_L3 mill(initOption=1) annotation (Placement(transformation(extent={{-12,-6},{8,14}})));
+  Components.Mills.HardCoalMills.VerticalMill_L3 mill1(initOption=1) annotation (Placement(transformation(extent={{-34,24},{-14,44}})));
   Components.BoundaryConditions.BoundaryGas_pTxi
     flueGasPressureSink2(p_const=101300)
     annotation (Placement(transformation(extent={{-172,160},{-192,180}})));
@@ -728,14 +722,14 @@ model ClosedLoopBoilerExample
 
   Components.TurboMachines.Turbines.SteamTurbineVLE_L1 turbine(
     eta_mech=0.9,
-    p_in_0(displayUnit="Pa") = 260e5,
     rho_nom=98,
     Pi=0.04/260,
-    p_out_0(displayUnit="Pa") = 0.04e5,
     m_flow_nom=275,
-    p_nom=26000000)
-                  annotation (Placement(transformation(extent={{502,110},{516,138}})));
-  Components.HeatExchangers.HEXvle_L3_2ph_BU    condenser(
+    p_nom=26000000,
+    p_in_start=260e5,
+    p_out_start=0.04e5)
+    annotation (Placement(transformation(extent={{502,110},{516,138}})));
+  Components.HeatExchangers.HEXvle_L3_2ph_BU condenser(
     width=5,
     showExpertSummary=true,
     z_in_shell=6,
@@ -746,7 +740,6 @@ model ClosedLoopBoilerExample
     length=15,
     h_liq_start=-10 + TILMedia.VLEFluidFunctions.dewSpecificEnthalpy_pxi(condenser.medium_shell, condenser.p_start_shell),
     h_vap_start=-3000 + TILMedia.VLEFluidFunctions.dewSpecificEnthalpy_pxi(condenser.medium_shell, condenser.p_start_shell),
-    initTypeShell=ClaRa.Basics.Choices.Init.noInit,
     p_start_shell=0.04e5,
     p_nom_shell=4000,
     redeclare model PressureLossShell =
@@ -762,11 +755,12 @@ model ClosedLoopBoilerExample
     z_out_shell=0,
     absorbInflow=1,
     z_in_aux2=1,
-    z_in_aux1=1)                        annotation (Placement(transformation(
+    z_in_aux1=1,
+    initOptionShell=211) annotation (Placement(transformation(
         extent={{-10,-11.5},{10,11.5}},
         rotation=0,
         origin={516,41.5})));
-  Components.Sensors.vlePressureSensor vlePressureSensor annotation (Placement(transformation(extent={{530,82},{550,102}})));
+  Components.Sensors.SensorVLE_L1_p vlePressureSensor annotation (Placement(transformation(extent={{530,82},{550,102}})));
   Components.Utilities.Blocks.LimPID       PI_CondPressure(
     Tau_d=1,
     controllerType=Modelica.Blocks.Types.SimpleController.PI,

@@ -6,7 +6,7 @@ LibraryInfoMenuCommand(
  category="libraries",
  text = "ClaRa",
  reference= "ClaRa",
- version="1.1.2",
+ version="1.2.0",
  isModel=true,
  description="Simulation of Clausius-Rankine Cycles",
  ModelicaVersion="3.2.1",

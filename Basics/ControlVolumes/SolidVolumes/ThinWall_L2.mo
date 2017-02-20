@@ -1,7 +1,7 @@
-within ClaRa.Basics.ControlVolumes.SolidVolumes;
+ï»¿within ClaRa.Basics.ControlVolumes.SolidVolumes;
 model ThinWall_L2 "A thin wall involving one volume element in heat flow direction"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -29,6 +29,11 @@ parameter ClaRa.Basics.Units.Length thickness_wall "Wall thickness"
 public
   parameter ClaRa.Basics.Units.Mass mass "Fixed mass"     annotation(Dialog(group="Geometry"));
   parameter ClaRa.Basics.Units.Temperature T_start=293.15 "Start values of wall temperature"  annotation(Dialog(group="Initialisation"));
+
+  inner parameter Integer initOption=0 "Type of initialisation" annotation (Dialog(group="Initialisation"), choices(
+      choice=0 "Use guess values",
+      choice=1 "Steady state",
+      choice=203 "Steady temperature"));
 
   parameter Integer stateLocation = 2 "Location of states" annotation(Dialog(group="Numerical Efficiency"), choices(choice=1 "Inner location of states",
                                     choice=2 "Central location of states",  choice=3 "Outer location of states"));
@@ -80,7 +85,15 @@ equation
   end if;
 
 initial equation
- T=T_start;
+    if initOption == 1 then //steady state
+      der(U)=0;
+    elseif initOption == 203 then //steady temperature
+      der(T)=0;
+    elseif initOption == 0 then //no init
+     T=T_start; // do nothing
+    else
+     assert(initOption == 0,"Invalid init option");
+    end if;
 
   annotation (Documentation(info="<html>
 </html>"), Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,

@@ -1,10 +1,10 @@
 within ClaRa.Components.Furnace.FlameRoom;
 model FlameRoomAdditionalAir_L2_Static "Model for a flame room section with additional secondary air inlet inside a combustion chamber"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -15,7 +15,7 @@ model FlameRoomAdditionalAir_L2_Static "Model for a flame room section with addi
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
 
-extends ClaRa.Components.Furnace.BaseClasses.CombustionChamberBase(
+extends ClaRa.Components.Furnace.BaseClasses.CombustionChamberBase(redeclare model Geometry = ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlock,
         geo(flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical));      //(flueGasCombustion(p = outlet.flueGas.p, xi = xi_flueGas));
 extends ClaRa.Basics.Icons.FlameRoom;
 
@@ -90,7 +90,7 @@ protected
       T_out=flueGasOutlet.T,
       h_out=flueGasOutlet.h),
     inlet(
-      flueGas(
+      flueGas(mediumModel=flueGas,
         m_flow=inlet.flueGas.m_flow,
         T=actualStream(inlet.flueGas.T_outflow),
         p=inlet.flueGas.p,
@@ -107,7 +107,7 @@ protected
         T=actualStream(inlet.slag.T_outflow),
         p=inlet.slag.p)),
     outlet(
-      flueGas(
+      flueGas(mediumModel=flueGas,
         m_flow=-outlet.flueGas.m_flow,
         T=actualStream(outlet.flueGas.T_outflow),
         p=outlet.flueGas.p,

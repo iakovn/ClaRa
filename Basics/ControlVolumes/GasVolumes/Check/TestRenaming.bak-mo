@@ -1,0 +1,16 @@
+within ClaRa.Basics.ControlVolumes.GasVolumes.Check;
+model TestRenaming
+  VolumeGas_L2 volumeGas_L2_1(initType=ClaRa.Basics.Choices.Init.noInit)
+    annotation (Placement(transformation(extent={{-68,56},{-48,76}})));
+  VolumeGas_L2 volumeGas_L2_2(initType=ClaRa.Basics.Choices.Init.steadyState)
+    annotation (Placement(transformation(extent={{10,60},{30,80}})));
+  VolumeGas_L2 volumeGas_L2_3(initType=ClaRa.Basics.Choices.Init.steadyPressure)
+    annotation (Placement(transformation(extent={{-62,-12},{-42,8}})));
+  VolumeGas_L2 volumeGas_L2_4(initType=ClaRa.Basics.Choices.Init.steadyEnthalpy)
+    annotation (Placement(transformation(extent={{28,-2},{48,18}})));
+  VolumeGas_L2 volumeGas_L2_5(initType=ClaRa.Basics.Choices.Init.steadyDensity)
+    annotation (Placement(transformation(extent={{6,-52},{26,-32}})));
+  inner SimCenter simCenter annotation (Placement(transformation(extent={{52,74},{92,94}})));
+  annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
+        coordinateSystem(preserveAspectRatio=false)));
+end TestRenaming;

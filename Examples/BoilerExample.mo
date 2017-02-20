@@ -1,7 +1,7 @@
-within ClaRa.Examples;
+ï»¿within ClaRa.Examples;
 model BoilerExample
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -366,7 +366,6 @@ model BoilerExample
     m_flow_nom=400,
     redeclare model PressureLoss =
         ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4,
-    initType=ClaRa.Basics.Choices.Init.steadyState,
     N_cv=8,
     redeclare model HeatTransfer =
         ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4 (                      alpha_nom=20000),
@@ -378,7 +377,8 @@ model BoilerExample
         evap.N_cv),
     p_start=ones(evap.N_cv)*270e5,
     frictionAtInlet=true,
-    frictionAtOutlet=true) annotation (Placement(transformation(
+    frictionAtOutlet=true,
+    initOption=208) annotation (Placement(transformation(
         extent={{-10,-6},{10,6}},
         rotation=90,
         origin={266,54})));
@@ -390,7 +390,6 @@ model BoilerExample
     m_flow_nom=400,
     redeclare model PressureLoss =
         ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4,
-    initType=ClaRa.Basics.Choices.Init.steadyState,
     length=30,
     redeclare model HeatTransfer =
         ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4 (                      alpha_nom=10000),
@@ -403,7 +402,8 @@ model BoilerExample
     p_start=ones(ct.N_cv)*270e5,
     N_cv=3,
     frictionAtInlet=true,
-    frictionAtOutlet=true) annotation (Placement(transformation(
+    frictionAtOutlet=true,
+    initOption=208) annotation (Placement(transformation(
         extent={{-10,6},{10,-6}},
         rotation=-90,
         origin={330,194})));
@@ -415,9 +415,9 @@ model BoilerExample
     N_ax=evap.N_cv,
     stateLocation=3,
     diameter_o=evap.diameter_i + 0.01,
-    initChoice=ClaRa.Basics.Choices.Init.noInit,
     T_start=ones(evap_wall.N_ax)*(273.15 + 300),
-    suppressChattering="False") annotation (Placement(transformation(
+    suppressChattering="False",
+    initOption=0) annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=90,
         origin={234,54})));
@@ -429,9 +429,9 @@ model BoilerExample
     diameter_i=ct.diameter_i,
     length=ct.length,
     N_tubes=ct.N_tubes,
-    initChoice=ClaRa.Basics.Choices.Init.noInit,
     T_start=ones(ct_wall.N_ax)*(273.15 + 395),
-    suppressChattering="False") annotation (Placement(transformation(
+    suppressChattering="False",
+    initOption=0) annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=90,
         origin={298,194})));
@@ -440,7 +440,6 @@ model BoilerExample
     m_flow_nom=400,
     redeclare model PressureLoss =
         ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4,
-    initType=ClaRa.Basics.Choices.Init.steadyState,
     N_cv=4,
     redeclare model HeatTransfer =
         ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4 (                      alpha_nom=10000),
@@ -454,7 +453,8 @@ model BoilerExample
         oh_1.N_cv),
     p_start=ones(oh_1.N_cv)*265e5,
     frictionAtInlet=true,
-    frictionAtOutlet=true) annotation (Placement(transformation(
+    frictionAtOutlet=true,
+    initOption=208) annotation (Placement(transformation(
         extent={{-10,6},{10,-6}},
         rotation=-90,
         origin={330,112})));
@@ -463,7 +463,6 @@ model BoilerExample
     m_flow_nom=400,
     redeclare model PressureLoss =
         ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4,
-    initType=ClaRa.Basics.Choices.Init.steadyState,
     N_cv=4,
     redeclare model HeatTransfer =
         ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4 (                      alpha_nom=10000),
@@ -477,7 +476,8 @@ model BoilerExample
         oh_2.N_cv),
     p_start=ones(oh_2.N_cv)*260e5,
     frictionAtInlet=true,
-    frictionAtOutlet=true) annotation (Placement(transformation(
+    frictionAtOutlet=true,
+    initOption=208) annotation (Placement(transformation(
         extent={{10,6},{-10,-6}},
         rotation=-90,
         origin={402,158})));
@@ -489,9 +489,9 @@ model BoilerExample
     diameter_i=oh_1.diameter_i,
     length=oh_1.length,
     N_tubes=oh_1.N_tubes,
-    initChoice=ClaRa.Basics.Choices.Init.noInit,
     T_start=ones(oh_1_wall.N_ax)*(273.15 + 330),
-    suppressChattering="False") annotation (Placement(transformation(
+    suppressChattering="False",
+    initOption=0) annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=90,
         origin={298,112})));
@@ -503,9 +503,9 @@ model BoilerExample
     diameter_i=oh_2.diameter_i,
     length=oh_2.length,
     N_tubes=oh_2.N_tubes,
-    initChoice=ClaRa.Basics.Choices.Init.noInit,
     T_start=ones(oh_2_wall.N_ax)*(273.15 + 400),
-    suppressChattering="False") annotation (Placement(transformation(
+    suppressChattering="False",
+    initOption=0) annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=90,
         origin={370,158})));
@@ -559,7 +559,6 @@ model BoilerExample
     m_flow_nom=400,
     redeclare model PressureLoss =
         ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4,
-    initType=ClaRa.Basics.Choices.Init.steadyState,
     redeclare model HeatTransfer =
         ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4 (                      alpha_nom=20000),
     N_tubes=150,
@@ -572,7 +571,8 @@ model BoilerExample
         eco.N_cv),
     p_start=ones(eco.N_cv)*270e5,
     frictionAtOutlet=true,
-    frictionAtInlet=false) annotation (Placement(transformation(
+    frictionAtInlet=false,
+    initOption=208) annotation (Placement(transformation(
         extent={{-10,-6},{10,6}},
         rotation=90,
         origin={266,-20})));
@@ -583,10 +583,10 @@ model BoilerExample
     diameter_i=eco.diameter_i,
     length=eco.length,
     N_tubes=eco.N_tubes,
-    initChoice=ClaRa.Basics.Choices.Init.noInit,
     T_start=ones(eco_wall.N_ax)*(273.15 + 280),
     stateLocation=3,
-    suppressChattering="False") annotation (Placement(transformation(
+    suppressChattering="False",
+    initOption=0) annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=90,
         origin={232,-20})));
@@ -597,15 +597,9 @@ model BoilerExample
         {0,0},
         eco.length,
         eco.N_cv)) annotation (Placement(transformation(extent={{192,-30},{212,-10}})));
-  Components.Sensors.Temperature
-                      eco_T
-    annotation (Placement(transformation(extent={{286,-10},{306,12}})));
-  Components.Sensors.Temperature
-                      evap_T
-    annotation (Placement(transformation(extent={{286,64},{306,86}})));
-  Components.Sensors.Temperature
-                      oh_T
-    annotation (Placement(transformation(extent={{418,168},{438,190}})));
+  Components.Sensors.SensorVLE_L1_T eco_T annotation (Placement(transformation(extent={{286,-10},{306,12}})));
+  Components.Sensors.SensorVLE_L1_T evap_T annotation (Placement(transformation(extent={{286,64},{306,86}})));
+  Components.Sensors.SensorVLE_L1_T oh_T annotation (Placement(transformation(extent={{418,168},{438,190}})));
   Components.Utilities.Blocks.LimPID PID_lambda(
     controllerType=Modelica.Blocks.Types.SimpleController.PI,
     Ni=0.90,
@@ -649,10 +643,8 @@ model BoilerExample
     duration=1000,
     startTime=4000)
     annotation (Placement(transformation(extent={{480,241},{460,261}})));
-  Components.Mills.HardCoalMills.VerticalMill_L3 mill(initChoice=ClaRa.Basics.Choices.Init.steadyState)
-    annotation (Placement(transformation(extent={{-20,-6},{0,14}})));
-  Components.Mills.HardCoalMills.VerticalMill_L3 mill1(initChoice=ClaRa.Basics.Choices.Init.steadyState)
-    annotation (Placement(transformation(extent={{-22,24},{-2,44}})));
+  Components.Mills.HardCoalMills.VerticalMill_L3 mill(initOption=1) annotation (Placement(transformation(extent={{-20,-6},{0,14}})));
+  Components.Mills.HardCoalMills.VerticalMill_L3 mill1(initOption=1) annotation (Placement(transformation(extent={{-22,24},{-2,44}})));
   Modelica.Blocks.Sources.Ramp classifierSpeed(
     duration=10,
     offset=1.50,
@@ -736,8 +728,8 @@ model BoilerExample
         extent={{-10,10},{10,-10}},
         rotation=180,
         origin={-265,6})));
-  Components.Sensors.vlePressureSensor ecoOut_p annotation (Placement(transformation(extent={{286,36},{306,56}})));
-  Components.Sensors.vleMassflowSensor vleMassflowSensor annotation (Placement(transformation(extent={{282,212},{302,232}})));
+  Components.Sensors.SensorVLE_L1_p ecoOut_p annotation (Placement(transformation(extent={{286,36},{306,56}})));
+  Components.Sensors.SensorVLE_L1_m_flow vleMassflowSensor annotation (Placement(transformation(extent={{282,212},{302,232}})));
   Modelica.Blocks.Sources.CombiTimeTable combiTimeTable(table=[0,0.661,0.0383,0.066,0.016,0.0057,0.135; 2000,0.661,0.0383,0.066,0.016,0.0057,0.135; 2100,0.68,0.04,0.05,0.01,0.0057,0.13; 3000,0.68,0.04,0.05,0.01,0.0057,0.13]) annotation (Placement(transformation(extent={{-196,10},{-176,30}})));
   Visualisation.QuadrupleGas quadrupleGas1(
     value1=1,

@@ -1,7 +1,7 @@
-within ClaRa.Components.Furnace.GeneralTransportPhenomena.ThermalCapacities;
+ï»¿within ClaRa.Components.Furnace.GeneralTransportPhenomena.ThermalCapacities;
 model ThermalLowPass "A simple thermal low pass with time constant tau"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //

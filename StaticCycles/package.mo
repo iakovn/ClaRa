@@ -12,33 +12,5 @@ package StaticCycles "Prepare initialisation even more easy!"
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 annotation ();
 end StaticCycles;

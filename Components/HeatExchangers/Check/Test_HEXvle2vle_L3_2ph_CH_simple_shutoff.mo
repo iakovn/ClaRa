@@ -26,15 +26,10 @@ model Regression
   Components.Utilities.Blocks.Integrator integrator3(u = T_shell_out, startTime=1000);
   Components.Utilities.Blocks.Integrator integrator4(u = p_shell_out, startTime=1000);
 end Regression;
-  HEXvle2vle_L3_2ph_CH_simple
-                           hex(
-    redeclare model WallMaterial =
-        TILMedia.SolidTypes.TILMedia_Aluminum,
-    redeclare model PressureLossTubes =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.VLE_PL.PressureLossCoeffcient_L2 (             Delta_p_smooth=100, zeta_TOT=5),
-    redeclare model PressureLossShell =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3,
-    initTypeTubes=ClaRa.Basics.Choices.Init.noInit,
+  HEXvle2vle_L3_2ph_CH_simple hex(
+    redeclare model WallMaterial = TILMedia.SolidTypes.TILMedia_Aluminum,
+    redeclare model PressureLossTubes = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.VLE_PL.PressureLossCoeffcient_L2 (Delta_p_smooth=100, zeta_TOT=5),
+    redeclare model PressureLossShell = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3,
     m_flow_nom_shell=78,
     p_start_shell=0.023e5,
     CF_geo=1,
@@ -45,12 +40,9 @@ end Regression;
     p_start_tubes=1e5,
     mass_struc=500,
     level_rel_start=0.2,
-    initTypeShell=ClaRa.Basics.Choices.Init.steadyDensity,
-    redeclare model HeatTransfer_Shell =
-        Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.Constant_L3_ypsDependent (                   alpha_nom={1000,5000}),
+    redeclare model HeatTransfer_Shell = Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.Constant_L3_ypsDependent (alpha_nom={1000,5000}),
     z_out_shell=0.05,
-    redeclare model HeatTransferTubes =
-        Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.NusseltPipe1ph_L2 (                          CF_alpha_tubes=0.5),
+    redeclare model HeatTransferTubes = Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.NusseltPipe1ph_L2 (CF_alpha_tubes=0.5),
     smoothness=Modelica.Blocks.Types.Smoothness.LinearSegments,
     z_in_shell=9.9,
     z_in_aux1=9.9,
@@ -60,8 +52,9 @@ end Regression;
     z_in_tubes=5,
     z_out_tubes=5,
     levelOutput=true,
-    equalPressures=false)
-                   annotation (Placement(transformation(extent={{0,-20},{20,0}})));
+    equalPressures=false,
+    initOptionTubes=0,
+    initOptionShell=204) annotation (Placement(transformation(extent={{0,-20},{20,0}})));
 
   Modelica.Blocks.Sources.Ramp h_steam(
     duration=600,

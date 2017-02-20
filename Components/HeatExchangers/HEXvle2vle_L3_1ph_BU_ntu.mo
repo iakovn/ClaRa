@@ -1,7 +1,7 @@
-within ClaRa.Components.HeatExchangers;
+ï»¿within ClaRa.Components.HeatExchangers;
 model HEXvle2vle_L3_1ph_BU_ntu "VLE 2 VLE | L3 | 1 phase on each side | Block shape | U-type | NTU Ansatz"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.2                        //
+  // Component of the ClaRa library, version: 1.2.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -134,14 +134,18 @@ model HEXvle2vle_L3_1ph_BU_ntu "VLE 2 VLE | L3 | 1 phase on each side | Block sh
     annotation (Dialog(tab="Tubes", group="Nominal Values"));
 
   //________________________________ Tubes initialisation _______________________________________//
-  parameter Basics.Choices.Init initTypeShell=ClaRa.Basics.Choices.Init.noInit "Type of initialisation"
-    annotation (Dialog(tab="Shell Side", group="Initialisation"));
+  parameter Integer initOptionShell=0 "Type of initialisation"
+    annotation (Dialog(tab="Shell Side", group="Initialisation"), choices(choice = 0 "Use guess values", choice = 1 "Steady state",
+                                                                                              choice=201 "Steady pressure",
+                                                                                              choice = 202 "Steady enthalpy"));
   parameter Basics.Units.EnthalpyMassSpecific h_start_tubes=100e3 "Start value of sytsem specific enthalpy"
     annotation (Dialog(tab="Tubes", group="Initialisation"));
   parameter Basics.Units.Pressure p_start_tubes=1e5 "Start value of sytsem pressure"
     annotation (Dialog(tab="Tubes", group="Initialisation"));
-  parameter Basics.Choices.Init initTypeTubes=ClaRa.Basics.Choices.Init.noInit "Type of initialisation"
-    annotation (Dialog(tab="Tubes", group="Initialisation"));
+  parameter Integer initOptionTubes=0 "Type of initialisation"
+    annotation (Dialog(tab="Tubes", group="Initialisation"), choices(choice = 0 "Use guess values", choice = 1 "Steady state",
+                                                                                              choice=201 "Steady pressure",
+                                                                                              choice = 202 "Steady enthalpy"));
 
   //*********************************** / WALL \ ***********************************//
   //________________________________ Wall fundamentals _______________________________//
@@ -151,7 +155,9 @@ model HEXvle2vle_L3_1ph_BU_ntu "VLE 2 VLE | L3 | 1 phase on each side | Block sh
           "Fundamental Definitions"));
   parameter Basics.Units.Mass mass_struc=25000 "Mass of inner structure elements, additional to the tubes itself"
        annotation (Dialog(tab="Tube Wall", group="Fundamental Definitions"));
-  parameter Basics.Choices.Init initWall=ClaRa.Basics.Choices.Init.noInit "|Initialisation option for wall"    annotation (Dialog(tab="Tube Wall", group="Initialisation"));
+  parameter Integer initOptionWall=0 "|Initialisation option for wall"    annotation (Dialog(tab="Tube Wall", group="Initialisation"), choices(
+      choice=0 "Use guess values",
+      choice=1 "Steady state"));
   parameter Basics.Units.Temperature T_w_i_start=293.15 "Initial wall temperature at inner side"    annotation (Dialog(tab="Tube Wall", group="Initialisation"));
   parameter Basics.Units.Temperature T_w_o_start=293.15 "Initial wall temperature at shell side"    annotation (Dialog(tab="Tube Wall", group="Initialisation"));
 
@@ -186,9 +192,9 @@ model HEXvle2vle_L3_1ph_BU_ntu "VLE 2 VLE | L3 | 1 phase on each side | Block sh
     cp_mean_a=(shell.fluidIn.cp + shell.fluidOut.cp)/2,
     T_w_i_start=T_w_i_start,
     T_w_a_start=T_w_o_start,
-    initChoice=initWall,
-    redeclare model HeatExchangerType = HeatExchangerType)
-                         annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+    redeclare model HeatExchangerType = HeatExchangerType,
+    initOption=initOptionWall) annotation (Placement(transformation(
+        extent={{-10,-10},{10,10}},
         rotation=90,
         origin={30,0})));
 
@@ -197,7 +203,6 @@ model HEXvle2vle_L3_1ph_BU_ntu "VLE 2 VLE | L3 | 1 phase on each side | Block sh
     useHomotopy=useHomotopy,
     h_start=h_start_tubes,
     p_start=p_start_tubes,
-    initType=initTypeTubes,
     redeclare model HeatTransfer = HeatTransferTubes,
     redeclare model PressureLoss = PressureLossTubes,
     redeclare model PhaseBorder =
@@ -213,8 +218,9 @@ model HEXvle2vle_L3_1ph_BU_ntu "VLE 2 VLE | L3 | 1 phase on each side | Block sh
         diameter=diameter_i,
         N_tubes=N_tubes,
         N_passes=N_passes,
-        length=if flowOrientation == ClaRa.Basics.Choices.GeometryOrientation.vertical then if parallelTubes == true then height else length else if parallelTubes == true then length else width))
-    annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+        length=if flowOrientation == ClaRa.Basics.Choices.GeometryOrientation.vertical then if parallelTubes == true then height else length else if parallelTubes == true then length else width),
+    initOption=initOptionTubes) annotation (Placement(transformation(
+        extent={{-10,-10},{10,10}},
         rotation=90,
         origin={70,0})));
 
@@ -225,7 +231,6 @@ model HEXvle2vle_L3_1ph_BU_ntu "VLE 2 VLE | L3 | 1 phase on each side | Block sh
     useHomotopy=useHomotopy,
     h_start=h_start_shell,
     p_start=p_start_shell,
-    initType=initTypeShell,
     m_flow_nom=m_nom_shell,
     p_nom=p_nom_shell,
     h_nom=h_nom_shell,
@@ -238,8 +243,7 @@ model HEXvle2vle_L3_1ph_BU_ntu "VLE 2 VLE | L3 | 1 phase on each side | Block sh
         height=height,
         width=width,
         length=length,
-        diameter_t=
-            diameter_o,
+        diameter_t=diameter_o,
         N_tubes=N_tubes,
         N_passes=N_passes,
         parallelTubes=parallelTubes,
@@ -248,7 +252,8 @@ model HEXvle2vle_L3_1ph_BU_ntu "VLE 2 VLE | L3 | 1 phase on each side | Block sh
         N_rows=N_rows,
         Delta_z_par=Delta_z_par,
         Delta_z_ort=Delta_z_ort),
-    final heatSurfaceAlloc=2) annotation (Placement(transformation(
+    final heatSurfaceAlloc=2,
+    initOption=initOptionShell) annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=270,
         origin={0,0})));

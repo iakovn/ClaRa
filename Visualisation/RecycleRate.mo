@@ -1,7 +1,7 @@
-within ClaRa.Visualisation;
+ï»¿within ClaRa.Visualisation;
 model RecycleRate "Diplays fraction of input mass flows"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //

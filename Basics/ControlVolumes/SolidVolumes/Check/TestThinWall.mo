@@ -6,5 +6,6 @@ model TestThinWall
     diameter_i=0.44,
     length=1,
     T_start=ones(thinWall.N_ax)*500.15,
-    initChoice=ClaRa.Basics.Choices.Init.steadyTemperature) annotation (Placement(transformation(extent={{-30,-4},{-2,6}})));
+    initOption=203)
+    annotation (Placement(transformation(extent={{-30,-4},{-2,6}})));
 end TestThinWall;

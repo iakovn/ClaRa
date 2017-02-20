@@ -12,9 +12,9 @@ input ClaRa.Basics.Units.MassFraction xi_flueGas[flueGas.nc - 1];
 parameter Real xi_slag = 0.1 "Fraction of Ash that leaves combustion chamber at bottom due to gravity"
                                                                               annotation (Dialog(group="Slag parameters"));
 
-parameter ClaRa.Basics.Units.DensityVolumeSpecific xi_NOx=1000e-6 "Volume specific density for NOx at outlet"
+parameter Real xi_NOx=1000e-6 "Fraction of burned fuel N being converted to NOx"
                                                        annotation(Dialog(group="Toxic substance in fluegas"));
-parameter ClaRa.Basics.Units.DensityVolumeSpecific xi_CO=1000e-6 "Volume specific density for CO at outlet"
+parameter Real xi_CO=1000e-6 "Fraction of burned fuel C being converted to CO"
                                                       annotation(Dialog(group="Toxic substance in fluegas"));
 
 //_________/Educts\__________________

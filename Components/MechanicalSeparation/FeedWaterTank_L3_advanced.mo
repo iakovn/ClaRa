@@ -1,7 +1,7 @@
-within ClaRa.Components.MechanicalSeparation;
+ï»¿within ClaRa.Components.MechanicalSeparation;
 model FeedWaterTank_L3_advanced "Feedwater tank : separated volume approach | level-dependent phase separation"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -49,6 +49,8 @@ extends ClaRa.Components.MechanicalSeparation.FeedWaterTank_base;
   replaceable model HeatTransfer =
       ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3 (                      alpha_nom={3000,3000})                              constrainedby Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.HeatTransfer_L3 "Heat transfer to the walls"
                                                                                               annotation (Dialog(group="Fundamental Definitions"),choicesAllMatching=true);
+  inner parameter Integer initOption = 211 "Type of initialisation"
+    annotation (Dialog(tab= "Initialisation"), choices(choice = 0 "Use guess values", choice = 209 "Steady in vapour pressure, enthalpies and vapour volume", choice=201 "Steady vapour pressure", choice = 202 "Steady enthalpy", choice=204 "Fixed volume fraction",  choice=211 "Fixed values in level, enthalpies and vapour pressure"));
 
  model Outline
    extends ClaRa.Basics.Icons.RecordIcon;
@@ -185,16 +187,14 @@ extends ClaRa.Components.MechanicalSeparation.FeedWaterTank_base;
     m_flow_nom=m_flow_cond_nom + m_flow_heat_nom,
     p_nom=p_nom,
     p_start=p_start,
-    initType=initType,
     level_rel_start=level_rel_start,
     Tau_cond=Tau_cond,
     showExpertSummary=showExpertSummary,
-    redeclare model HeatTransfer =HeatTransfer,
+    redeclare model HeatTransfer = HeatTransfer,
     Tau_evap=Tau_evap,
     h_liq_start=h_liq_start,
     h_vap_start=h_vap_start,
-    redeclare model Geometry =
-        ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry (
+    redeclare model Geometry = ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry (
         N_heat=1,
         A_heat={Modelica.Constants.pi*diameter*length},
         final A_hor=if orientation == ClaRa.Basics.Choices.GeometryOrientation.vertical then Modelica.Constants.pi/4*diameter^2 else diameter*length,
@@ -207,8 +207,7 @@ extends ClaRa.Components.MechanicalSeparation.FeedWaterTank_base;
         final A_front=if orientation == ClaRa.Basics.Choices.GeometryOrientation.vertical then Modelica.Constants.pi/4*diameter^2 else length*diameter,
         N_inlet=3,
         z_in={z_tapping,z_condensate,z_aux}),
-    redeclare model PhaseBorder =
-        ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.RealSeparated (
+    redeclare model PhaseBorder = ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.RealSeparated (
         level_rel_start=level_rel_start,
         radius_flange=radius_flange,
         absorbInflow=absorbInflow,
@@ -216,13 +215,13 @@ extends ClaRa.Components.MechanicalSeparation.FeedWaterTank_base;
     A_heat_ph=A_phaseBorder,
     exp_HT_phases=expHT_phases,
     alpha_ph=alpha_ph,
-    equalPressures=equalPressures)
-                                annotation (Placement(transformation(extent={{32,-30},{12,-10}})));
+    equalPressures=equalPressures,
+    initOption=initOption)  annotation (Placement(transformation(extent={{32,-30},{12,-10}})));
 
   ClaRa.Basics.ControlVolumes.SolidVolumes.ThickWall_L4 wall(
     sizefunc=+1,
     N_tubes=1,
-    initChoice=ClaRa.Basics.Choices.Init.steadyState,
+    initOption=1,
     length=length,
     N_rad=3,
     diameter_i=diameter,

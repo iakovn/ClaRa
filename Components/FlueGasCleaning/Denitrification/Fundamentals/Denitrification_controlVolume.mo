@@ -1,10 +1,10 @@
 within ClaRa.Components.FlueGasCleaning.Denitrification.Fundamentals;
 model Denitrification_controlVolume
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -77,8 +77,10 @@ Modelica.SIunits.HeatFlowRate Qdot "Heat flow to environment";
     xi=outlet.xi_outflow,
     gasType = medium)
     annotation (Placement(transformation(extent={{60,-70},{80,-50}})));
-
+    Real test;
 equation
+  test =(-flueGasMixture.xi[8]*flueGasMixture_m_flow - flueGasMixture.xi[5]*flueGasMixture_m_flow)*Delta_R_H/(-(4.0*flueGasMixture.M_i[5] + 6*flueGasMixture.M_i[8]));
+
   inlet.xi_outflow = zeros(medium.nc-1); // dummy values, flow reversal not allowed
   inlet.T_outflow = 273.15;
 
@@ -152,11 +154,11 @@ Delta_R_H = (4*Delta_f_H_NH3 + 4*Delta_f_H_NO  - 6*Delta_f_H_H2O);
 
 0 = -flueGasMixture_m_flow*(flueGasMixture.h
                         +flueGasMixture.xi[7]*Delta_f_H_NO/flueGasMixture.M_i[7]
-                        +(1-sum(flueGasMixture.xi))*Delta_f_H_NH3/flueGasMixture.M_i[9]
+                        +flueGasMixture.xi[9]*Delta_f_H_NH3/flueGasMixture.M_i[9]
                         +flueGasMixture.xi[8]*Delta_f_H_H2O/flueGasMixture.M_i[8])
       + outlet.m_flow*(flueGasOutlet.h
                        +flueGasOutlet.xi[7]*Delta_f_H_NO/flueGasOutlet.M_i[7]
-                       +(1-sum(flueGasOutlet.xi))*Delta_f_H_NH3/flueGasOutlet.M_i[9]
+                       +flueGasOutlet.xi[9]*Delta_f_H_NH3/flueGasOutlet.M_i[9]
                        +flueGasOutlet.xi[8]*Delta_f_H_H2O/flueGasOutlet.M_i[8]) - (Qdot);
 
 flueGasOutlet.T = flueGasMixture.T;

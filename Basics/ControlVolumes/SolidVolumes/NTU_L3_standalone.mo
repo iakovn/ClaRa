@@ -1,7 +1,7 @@
-within ClaRa.Basics.ControlVolumes.SolidVolumes;
+ï»¿within ClaRa.Basics.ControlVolumes.SolidVolumes;
 model NTU_L3_standalone "A three-zonal NTU cell model with internally calculated zone size"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -51,7 +51,10 @@ model NTU_L3_standalone "A three-zonal NTU cell model with internally calculated
                            T_w_i_start[3]= ones(3)*293.15 "|Initialisation||Initial temperature at inner phase";
   parameter Units.Temperature
                            T_w_o_start[3] = ones(3)*293.15 "|Initialisation||Initial temperature at outer phase";
-  parameter ClaRa.Basics.Choices.Init initChoice=ClaRa.Basics.Choices.Init.noInit "|Initialisation||Init Option"                    annotation(Dialog(group="Initialisation"));
+  inner parameter Integer initOption=0 "Type of initialisation" annotation (Dialog(tab="Initialisation"), choices(
+      choice=0 "Use guess values",
+      choice=1 "Steady state",
+      choice=203 "Steady temperature"));
 
 //______________Expert Settings____________________________________________//
   replaceable function HeatCapacityAveraging =
@@ -150,7 +153,6 @@ protected
     CF_geo=CF_geo,
     T_w_i_start=T_w_i_start,
     T_w_o_start=T_w_o_start,
-    initChoice=initChoice,
     redeclare function HeatCapacityAveraging = HeatCapacityAveraging,
     p_o=p_o,
     p_i=p_i,
@@ -165,7 +167,8 @@ protected
     yps_2ph=PI_2ph.y,
     gain_eff=gain_eff,
     showExpertSummary=showExpertSummary,
-    Tau_stab=Tau_stab)
+    Tau_stab=Tau_stab,
+    initOption=initOption)
     annotation (Placement(transformation(extent={{-14,-10},{14,12}})));
 public
   ClaRa.Basics.Interfaces.HeatPort_a

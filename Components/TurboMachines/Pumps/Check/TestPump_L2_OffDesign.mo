@@ -1,4 +1,4 @@
-within ClaRa.Components.TurboMachines.Pumps.Check;
+﻿within ClaRa.Components.TurboMachines.Pumps.Check;
 model TestPump_L2_OffDesign "Running the  L2 pump in off design, including reverse flow and zero mass flow through valve"
 //___________________________________________________________________________//
 // Component of the ClaRa library, version: 1.0.0                        //
@@ -72,14 +72,13 @@ model TestPump_L2_OffDesign "Running the  L2 pump in off design, including rever
     m_flow_nom=1,
     volume_fluid=0.02,
     useMechanicalPort=true,
-    initType=ClaRa.Basics.Choices.Init.noInit,
     eta_hyd_nom=0.82,
-    redeclare model PressureLoss =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.NoFriction_L2,
+    redeclare model PressureLoss = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.NoFriction_L2,
     h_start=150e3,
     p_start(displayUnit="Pa") = 12e5,
     Tau_stab=0.1,
-    Delta_p_eps=200)  annotation (Placement(transformation(extent={{-40,-130},{-20,-110}})));
+    Delta_p_eps=200,
+    initOption=0) annotation (Placement(transformation(extent={{-40,-130},{-20,-110}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi pressureSink_XRG4(p_const(displayUnit="bar") = 1200000)
                                                                                           annotation (Placement(transformation(extent={{-80,-130},{-60,-110}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi pressureSink_XRG5(

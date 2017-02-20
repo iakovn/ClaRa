@@ -1,7 +1,7 @@
-within ClaRa.Components.Adapters.Check;
+ï»¿within ClaRa.Components.Adapters.Check;
 model RowOfScalar2VectorHeatPorts
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -21,19 +21,17 @@ model RowOfScalar2VectorHeatPorts
     h_start=ones(pipe1.geo.N_cv)*1e5,
     m_flow_nom=5,
     Delta_p_nom=5e4,
-    redeclare model PressureLoss =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4,
+    redeclare model PressureLoss = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4,
     p_start=linspace(
         50,
         49.5,
         pipe1.N_cv)*1e5,
-    initType=ClaRa.Basics.Choices.Init.noInit,
     showExpertSummary=true,
-    redeclare model HeatTransfer =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4 (                      alpha_nom=10000),
+    redeclare model HeatTransfer = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4 (alpha_nom=10000),
     N_cv=10,
     frictionAtInlet=true,
-    frictionAtOutlet=true) annotation (Placement(transformation(extent={{-32,-67},{-4,-57}})));
+    frictionAtOutlet=true,
+    initOption=0) annotation (Placement(transformation(extent={{-32,-67},{-4,-57}})));
 
   ClaRa.Components.VolumesValvesFittings.Pipes.PipeFlowVLE_L4_Simple pipe2(
     length=20,
@@ -44,13 +42,12 @@ model RowOfScalar2VectorHeatPorts
         49.5,
         49,
         pipe2.geo.N_cv)*1e5,
-    initType=ClaRa.Basics.Choices.Init.noInit,
     h_start=ones(pipe2.N_cv)*1e5,
     showExpertSummary=true,
-    redeclare model HeatTransfer =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4 (                      alpha_nom=10000),
+    redeclare model HeatTransfer = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4 (alpha_nom=10000),
     frictionAtInlet=true,
-    frictionAtOutlet=true) annotation (Placement(transformation(extent={{13,-67},{39,-57}})));
+    frictionAtOutlet=true,
+    initOption=0) annotation (Placement(transformation(extent={{13,-67},{39,-57}})));
 
   BoundaryConditions.BoundaryVLE_pTxi pressureSink_pT(p_const=4900000) annotation (Placement(transformation(extent={{78,-72},{60,-52}})));
   Basics.ControlVolumes.SolidVolumes.ThinWall_L4 thinWall_1(
@@ -62,8 +59,8 @@ model RowOfScalar2VectorHeatPorts
     redeclare model Material = TILMedia.SolidTypes.TILMedia_Steel,
     Delta_x=pipe1.Delta_x,
     stateLocation=2,
-    initChoice=ClaRa.Basics.Choices.Init.noInit,
-    T_start=ones(thinWall_1.N_ax)*(528 + 273.15)) annotation (Placement(transformation(extent={{-28,-32},{-8,-24}})));
+    T_start=ones(thinWall_1.N_ax)*(528 + 273.15),
+    initOption=0) annotation (Placement(transformation(extent={{-28,-32},{-8,-24}})));
   Basics.ControlVolumes.SolidVolumes.ThinWall_L4 thinWall_2(
     N_ax=pipe2.N_cv,
     diameter_o=pipe2.diameter_i + 0.004,
@@ -73,8 +70,8 @@ model RowOfScalar2VectorHeatPorts
     redeclare model Material = TILMedia.SolidTypes.TILMedia_Steel,
     Delta_x=pipe2.Delta_x,
     stateLocation=2,
-    initChoice=ClaRa.Basics.Choices.Init.noInit,
-    T_start=ones(thinWall_2.N_ax)*(528 + 273.15)) annotation (Placement(transformation(extent={{16,-34},{36,-26}})));
+    T_start=ones(thinWall_2.N_ax)*(528 + 273.15),
+    initOption=0) annotation (Placement(transformation(extent={{16,-34},{36,-26}})));
   Scalar2VectorHeatPort scalar2VectorHeatPort(
     length=pipe1.length,
     N=pipe1.N_cv,

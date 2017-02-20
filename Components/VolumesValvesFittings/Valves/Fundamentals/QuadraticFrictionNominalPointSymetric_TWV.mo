@@ -6,8 +6,8 @@ model QuadraticFrictionNominalPointSymetric_TWV "| Quadratic Pressure Dependency
 
   import SI = ClaRa.Basics.Units;
 
-  parameter SI.Area effectiveFlowArea1=7.85e-3 "Effective flow area for straight outlet"
-    annotation(Dialog(group="Valve Characteristics"));
+//   parameter SI.Area effectiveFlowArea1=7.85e-3 "Effective flow area for straight outlet"
+//      annotation(Dialog(group="Valve Characteristics"));
 
   parameter SI.Pressure Delta_p_nom[2] = {1e5,1e5} "|Valve Characteristics|Nominal pressure difference for Kv definition";
   parameter SI.MassFlowRate m_flow_nom[2] = {1,1} "|Valve Characteristics|Nominal mass flow rate";

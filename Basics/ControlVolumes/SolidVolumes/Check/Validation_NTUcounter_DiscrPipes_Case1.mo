@@ -1,7 +1,7 @@
-within ClaRa.Basics.ControlVolumes.SolidVolumes.Check;
+ï»¿within ClaRa.Basics.ControlVolumes.SolidVolumes.Check;
 model Validation_NTUcounter_DiscrPipes_Case1 "Validation: NTU method vs. discretized tube models || counter current || evaporating inner side ||H2O"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.2                        //
+  // Component of the ClaRa library, version: 1.2.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -76,8 +76,7 @@ model Validation_NTUcounter_DiscrPipes_Case1 "Validation: NTU method vs. discret
         1328.89e3,
         1080.51e3,
         N_cv),
-    redeclare model PressureLoss =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4 (             Delta_p_nom(displayUnit="Pa") = 100),
+    redeclare model PressureLoss = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4 (Delta_p_nom(displayUnit="Pa") = 100),
     diameter_i=diameter_o,
     p_start=linspace(
         p_o + 100,
@@ -88,9 +87,8 @@ model Validation_NTUcounter_DiscrPipes_Case1 "Validation: NTU method vs. discret
         p_o,
         N_cv),
     m_flow_nom=m_flow_o,
-    redeclare model HeatTransfer =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4 (                      alpha_nom=alpha_o),
-    initType=ClaRa.Basics.Choices.Init.steadyState)                                                                              annotation (Placement(transformation(extent={{-84,-14},{-52,-26}})));
+    redeclare model HeatTransfer = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4 (alpha_nom=alpha_o),
+    initOption=208) annotation (Placement(transformation(extent={{-84,-14},{-52,-26}})));
   Components.VolumesValvesFittings.Pipes.PipeFlowVLE_L4_Simple pipe_InnerSide(
     length=length,
     N_tubes=N_tubes,
@@ -100,8 +98,7 @@ model Validation_NTUcounter_DiscrPipes_Case1 "Validation: NTU method vs. discret
         419240,
         450e3,
         N_cv),
-    redeclare model PressureLoss =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4 (             Delta_p_nom(displayUnit="Pa") = 100),
+    redeclare model PressureLoss = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4 (Delta_p_nom(displayUnit="Pa") = 100),
     diameter_i=diameter_i,
     p_start=linspace(
         p_i + 100,
@@ -112,14 +109,13 @@ model Validation_NTUcounter_DiscrPipes_Case1 "Validation: NTU method vs. discret
         p_i,
         N_cv),
     m_flow_nom=m_flow_i,
-    redeclare model HeatTransfer =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4 (                      alpha_nom=alpha_i),
+    redeclare model HeatTransfer = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4 (alpha_nom=alpha_i),
     frictionAtInlet=false,
-    initType=ClaRa.Basics.Choices.Init.steadyState,
     h_start=linspace(
         419240,
         2895e3,
-        N_cv))             annotation (Placement(transformation(extent={{-52,-72},{-84,-60}})));
+        N_cv),
+    initOption=208) annotation (Placement(transformation(extent={{-52,-72},{-84,-60}})));
   Components.BoundaryConditions.BoundaryVLE_Txim_flow OuterSide_in(
     variable_m_flow=false,
     variable_T=false,
@@ -138,8 +134,8 @@ model Validation_NTUcounter_DiscrPipes_Case1 "Validation: NTU method vs. discret
     Delta_p(displayUnit="Pa"),
     variable_p=false,
     p_const=p_i) annotation (Placement(transformation(extent={{-146,-76},{-126,-56}})));
-  ClaRa.Components.Sensors.Temperature OuterSide_outletTemp annotation (Placement(transformation(extent={{-42,-20},{-22,0}})));
-  ClaRa.Components.Sensors.Temperature InnerSide_outletTemp annotation (Placement(transformation(extent={{-106,-66},{-86,-46}})));
+  ClaRa.Components.Sensors.SensorVLE_L1_T OuterSide_outletTemp annotation (Placement(transformation(extent={{-42,-20},{-22,0}})));
+  ClaRa.Components.Sensors.SensorVLE_L1_T InnerSide_outletTemp annotation (Placement(transformation(extent={{-106,-66},{-86,-46}})));
   ClaRa.Basics.ControlVolumes.SolidVolumes.ThinWall_L4 thinWall(
     length=length,
     N_tubes=N_tubes,
@@ -151,7 +147,7 @@ model Validation_NTUcounter_DiscrPipes_Case1 "Validation: NTU method vs. discret
         T_o_in,
         T_i_in,
         N_cv),
-    initChoice=ClaRa.Basics.Choices.Init.steadyTemperature)
+    initOption=203)
                annotation (Placement(transformation(extent={{-78,-46},{-58,-38}})));
 
   Visualisation.Hexdisplay_3 hexdisplay_3_1(
@@ -168,9 +164,7 @@ model Validation_NTUcounter_DiscrPipes_Case1 "Validation: NTU method vs. discret
     N_p=N_passes,
     length=length,
     outerPhaseChange=false,
-    initChoice=ClaRa.Basics.Choices.Init.steadyTemperature,
-    redeclare function HeatCapacityAveraging =
-        ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.ArithmeticMean,
+    redeclare function HeatCapacityAveraging = ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.ArithmeticMean,
     radius_i=radius_i,
     radius_o=radius_o,
     p_o=p_o,
@@ -182,7 +176,8 @@ model Validation_NTUcounter_DiscrPipes_Case1 "Validation: NTU method vs. discret
     alpha_i=ones(3)*alpha_i,
     alpha_o=ones(3)*alpha_o,
     T_w_i_start=ones(3)*T_i_in,
-    T_w_o_start=ones(3)*T_o_in) annotation (Placement(transformation(extent={{4,-50},{24,-30}})));
+    T_w_o_start=ones(3)*T_o_in,
+    initOption=203) annotation (Placement(transformation(extent={{4,-50},{24,-30}})));
 
 equation
   for i in 1:pipe_InnerSide.N_cv loop

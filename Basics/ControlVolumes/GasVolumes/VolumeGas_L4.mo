@@ -1,10 +1,10 @@
 within ClaRa.Basics.ControlVolumes.GasVolumes;
 model VolumeGas_L4 "An array of flue gas cells."
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.2                        //
+  // Component of the ClaRa library, version: 1.2.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -86,7 +86,13 @@ public
       xi_nom) "Nominal density";
 
   //____Initialisation_____________________________________________________________________________________
-  parameter ClaRa.Basics.Choices.Init initType=ClaRa.Basics.Choices.Init.steadyState "|Initialisation|Model Settings|type of initialisation " annotation (choicesAllMatching);
+  inner parameter Integer initOption=0 "|Initialisation|Model Settings|type of initialisation"  annotation (Dialog(tab="Initialisation"), choices(
+      choice=0 "Use guess values",
+      choice=1 "Steady states",
+      choice=201 "Steady pressure",
+      choice=202 "Steady enthalpy",
+      choice=202 "Steady temperature",
+      choice=208 "Steady pressure and enthalpy"));
   inner parameter Boolean useHomotopy=simCenter.useHomotopy "|Initialisation|Model Settings|true, if homotopy method is used during initialisation";
 
   parameter Basics.Units.Temperature T_start[:]=293.15*ones(geo.N_cv) "|Initialisation||Initial temperature";
@@ -200,14 +206,14 @@ public
       Q_flow_tot=sum(heat.Q_flow),
       mass=mass,
       m_flow=m_flow),
-    inlet(
+    inlet(mediumModel=medium,
       m_flow=inlet.m_flow,
       T=inStream(inlet.T_outflow),
       p=inlet.p,
       h=fluidInlet.h,
       xi=inStream(inlet.xi_outflow),
       H_flow=inlet.m_flow*fluidInlet.h),
-    outlet(
+    outlet(mediumModel=medium,
       m_flow=-outlet.m_flow,
       T=outlet.T_outflow,
       p=outlet.p,
@@ -256,15 +262,25 @@ protected
   //initialisation
 initial equation
   // m_flow[1:geo.N_cv+1]=inlet.m_flow*ones(geo.N_cv+1);
-  if initType == ClaRa.Basics.Choices.Init.steadyState then
+  if initOption == 1 then  //steady state in pressure and enthalpy
     der(h) = zeros(geo.N_cv);
     der(outlet.p) = 0;
-  elseif initType == ClaRa.Basics.Choices.Init.steadyPressure then
+    for i in 1:geo.N_cv loop
+     der(xi[i,:])= zeros(medium.nc-1);
+    end for;
+  elseif initOption == 201 then  //steady pressure
     der(p) = zeros(geo.N_cv);
-  elseif initType == ClaRa.Basics.Choices.Init.steadyEnthalpy then
+  elseif initOption == 202 then  //steady enthalpy
     der(h) = zeros(geo.N_cv);
-  elseif initType == ClaRa.Basics.Choices.Init.steadyTemperature then
+  elseif initOption == 203 then //steady temperature
     T = T_start;
+  elseif initOption == 208 then  //steady state in pressure and enthalpy
+    der(h) = zeros(geo.N_cv);
+    der(outlet.p) = 0;
+  elseif initOption == 0 then //no init
+    // do nothing
+  else
+    assert(initOption == 0,"Invalid init option");
   end if;
 
   for i in 1:geo.N_cv loop

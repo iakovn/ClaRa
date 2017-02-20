@@ -1,10 +1,10 @@
 within ClaRa.Basics.ControlVolumes.GasVolumes;
 model VolumeGas_L2 "A 0-d control volume for flue gas"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -25,11 +25,11 @@ inner parameter TILMedia.GasTypes.BaseGas medium = simCenter.flueGasModel "Mediu
 // ************************* replacable models for heat transfer, pressure loss and geometry **********************
   replaceable model HeatTransfer =
       ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.IdealHeatTransfer_L2
-    constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.HeatTransfer_L2 "1st: choose geometry definition | 2nd: edit corresponding record"
+    constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.HeatTransfer_L2 "1st: heat transfer model | 2nd: edit corresponding record"
     annotation (Dialog(group="Fundamental Definitions"), choicesAllMatching=true);
     replaceable model PressureLoss =
       ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.NoFriction_L2
-    constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.PressureLoss_L2 "1st: choose geometry definition | 2nd: edit corresponding record"
+    constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.PressureLoss_L2 "1st: pressure loss model | 2nd: edit corresponding record"
     annotation (Dialog(group="Fundamental Definitions"), choicesAllMatching=true);
 
   replaceable model Geometry =
@@ -37,7 +37,7 @@ inner parameter TILMedia.GasTypes.BaseGas medium = simCenter.flueGasModel "Mediu
     constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry "1st: choose geometry definition | 2nd: edit corresponding record"
     annotation (Dialog(group="Geometry"), choicesAllMatching=true);
 
-// ********************************************* Parmeters *******************************************
+// ********************************************* Parameters *******************************************
 
 inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation"
                                                               annotation(Dialog(tab="Initialisation"));
@@ -51,8 +51,14 @@ inner parameter Modelica.SIunits.MassFlowRate m_flow_nom= 10 "Nominal mass flow 
   inner parameter Modelica.SIunits.Pressure p_nom=1e5 "Nominal pressure"                    annotation(Dialog(group="Nominal Values"));
   inner parameter Modelica.SIunits.SpecificEnthalpy h_nom=1e5 "Nominal specific enthalpy"      annotation(Dialog(group="Nominal Values"));
 
-inner parameter ClaRa.Basics.Choices.Init initType=ClaRa.Basics.Choices.Init.noInit "Type of initialisation"
-                             annotation(Dialog(tab="Initialisation"), choicesAllMatching);
+inner parameter Integer initOption=0 "Type of initialisation" annotation (Dialog(tab="Initialisation"), choices(
+      choice=0 "Use guess values",
+      choice=1 "Steady state",
+      choice=201 "Steady pressure",
+      choice=202 "Steady enthalpy",
+      choice=208 "Steady pressure and enthalpy",
+      choice=210 "Steady density"));
+
   parameter Modelica.SIunits.Temperature T_start= 273.15 + 100.0 "Start value of system temperature"
                                         annotation(Dialog(tab="Initialisation"));
   final parameter Modelica.SIunits.SpecificEnthalpy h_start=
@@ -74,12 +80,10 @@ protected
   Modelica.SIunits.MassFraction xi[medium.nc-1]( start=xi_start) "Mass fractions inside volume";
 public
   HeatTransfer heattransfer(heatSurfaceAlloc=heatSurfaceAlloc)
-    annotation (Placement(transformation(extent={{-80,60},{-60,80}})));
-  inner Geometry geo "Cell geometry"   annotation (Placement(transformation(extent={{-48,60},
-            {-28,80}})));
+    annotation (Placement(transformation(extent={{-28,60},{-8,80}})));
+  inner Geometry geo "Cell geometry"   annotation (Placement(transformation(extent={{-62,60},{-42,80}})));
 
-  PressureLoss pressureLoss "Pressure loss model" annotation (Placement(transformation(extent={{12,60},
-            {32,80}})));
+  PressureLoss pressureLoss "Pressure loss model" annotation (Placement(transformation(extent={{8,60},{28,80}})));
 
   ClaRa.Basics.Interfaces.GasPortIn inlet(Medium=medium, m_flow(min=if
           allow_reverseFlow then -Modelica.Constants.inf else 1e-5)) "Inlet port"
@@ -125,8 +129,8 @@ inner model Summary
 end Summary;
 
 inner Summary    summary(outline(volume_tot=geo.volume, A_heat=geo.A_heat[heatSurfaceAlloc], Q_flow_tot=heat.Q_flow, Delta_p=inlet.p-outlet.p, mass=mass, T=bulk.T, p=p, h=h, H=h*mass, rho=bulk.d),
-                   inlet(m_flow=inlet.m_flow,  T=inStream(inlet.T_outflow), p=inlet.p, h=flueGasInlet.h, xi=inStream(inlet.xi_outflow), H_flow=inlet.m_flow*flueGasInlet.h),
-                   outlet(m_flow=-outlet.m_flow,  T=outlet.T_outflow, p=outlet.p, h=flueGasOutlet.h, xi=outlet.xi_outflow, H_flow=-outlet.m_flow*flueGasOutlet.h))
+                   inlet(mediumModel=medium, m_flow=inlet.m_flow,  T=inStream(inlet.T_outflow), p=inlet.p, h=flueGasInlet.h, xi=inStream(inlet.xi_outflow), H_flow=inlet.m_flow*flueGasInlet.h),
+                   outlet(mediumModel=medium, m_flow=-outlet.m_flow,  T=outlet.T_outflow, p=outlet.p, h=flueGasOutlet.h, xi=outlet.xi_outflow, H_flow=-outlet.m_flow*flueGasOutlet.h))
     annotation (Placement(transformation(extent={{-60,-102},{-40,-82}})));
 
 //iCom
@@ -201,25 +205,34 @@ inlet.p=if useHomotopy then homotopy(p+pressureLoss.Delta_p + (geo.z_in-geo.z_ou
 //     else (inlet.m_flow*h_in + outlet.m_flow*h_out  + geo.V*der(p) + heat.Q_flow - h*geo.V*drhodt)/mass
 //     "Energy balance";
 
-  connect(heattransfer.heat, heat) annotation (Line(
-      points={{-60,70},{-60,90},{0,90},{0,100}},
-      color={0,0,255},
-      smooth=Smooth.None));
-
 initial equation
-  if initType == ClaRa.Basics.Choices.Init.steadyState then
-    der(h)=0;
-    der(p)=0;
-  elseif initType == ClaRa.Basics.Choices.Init.steadyPressure then
-    der(p)=0;
-  elseif initType == ClaRa.Basics.Choices.Init.steadyEnthalpy then
-    der(h)=0;
-  elseif initType == ClaRa.Basics.Choices.Init.steadyDensity then
-    drhodt=0;
-  end if;
+
+    if initOption == 1 then //steady state
+      der(h)=0;
+      der(p)=0;
+      der(xi)=zeros(medium.nc-1);
+    elseif initOption == 201 then //steady pressure
+      der(p)=0;
+    elseif initOption == 202 then //steady enthalpy
+      der(h)=0;
+    elseif initOption == 208 then // steady pressure and enthalpy
+      der(h)=0;
+      der(p)=0;
+    elseif initOption == 210 then //steady density
+      drhodt=0;
+    elseif initOption == 0 then //no init
+    // do nothing
+    else
+     assert(initOption == 0,"Invalid init option");
+    end if;
+
+equation
+  connect(heattransfer.heat, heat) annotation (Line(
+      points={{-8,70},{-8,70},{0,70},{0,100}},
+      color={167,25,48},
+      thickness=0.5));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,
-            -100},{100,100}}),
-                      graphics), Icon(coordinateSystem(preserveAspectRatio=true,
+            -100},{100,100}})),  Icon(coordinateSystem(preserveAspectRatio=true,
           extent={{-100,-100},{100,100}}),
                                       graphics));
 end VolumeGas_L2;

@@ -1,10 +1,10 @@
 within ClaRa.Components.HeatExchangers;
 model RegenerativeAirPreheaterPrimaryAndSecondaryAir_L4 "Model for a regenerative air preheater with primary and secondary air"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.2                        //
+  // Component of the ClaRa library, version: 1.2.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -90,11 +90,19 @@ model RegenerativeAirPreheaterPrimaryAndSecondaryAir_L4 "Model for a regenerativ
   inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation"
     annotation (Dialog(tab="Initialisation"));
 
-  inner parameter ClaRa.Basics.Choices.Init initType_cells=ClaRa.Basics.Choices.Init.noInit "Type of cell initialisation"
-    annotation (Dialog(tab="Initialisation", choicesAllMatching));
+  inner parameter Integer initOptionCells=0 "Type of gas cell initialisation" annotation (Dialog(tab="Initialisation"), choices(
+      choice=0 "Use guess values",
+      choice=1 "Steady state",
+      choice=201 "Steady pressure",
+      choice=202 "Steady enthalpy",
+      choice=202 "Steady temperature",
+      choice=208 "Steady pressure and enthalpy"));
 
-  inner parameter ClaRa.Basics.Choices.Init initType_wall=ClaRa.Basics.Choices.Init.noInit "Type of wall initialisation"
-    annotation (Dialog(tab="Initialisation", choicesAllMatching));
+  inner parameter Integer initOptionWall=0 "Init Option of Wall"
+    annotation (Dialog(tab="Initialisation"), choices(
+      choice=0 "Use guess values",
+      choice=1 "Steady state",
+      choice=203 "Steady temperature"));
 
   parameter ClaRa.Basics.Units.Temperature T_start_primaryAir[:]={293.15,293.15} "Start value of primary air system Temperature"
     annotation (Dialog(tab="Initialisation"));
@@ -284,7 +292,6 @@ public
     each xi_start=xi_start_flueGas,
     each xi_nom=xi_nom_flueGas,
     each useHomotopy=useHomotopy,
-    each initType=initType_cells,
     each m_flow_nom=m_flow_flueGas_nom*(1 - flueGas_split_ratio),
     each p_nom=p_flueGas_nom*ones(N_cv),
     each T_nom=293.15*ones(N_cv),
@@ -296,11 +303,11 @@ public
         N_heat=1,
         N_cv=N_cv,
         diameter_hyd=fill(d_gl, N_cv),
-        length=height_reg,
         volume=ones(N_cv)*volume_flueGas_secondary/N_cv,
         A_cross=ones(N_cv)*A_flueGas_secondary_free,
         A_heat=ones(N_cv, 1)*A_heat_secondary/N_cv),
-    redeclare model PressureLoss = PressureLoss) annotation (Placement(transformation(
+    redeclare model PressureLoss = PressureLoss,
+    initOption=initOptionCells) annotation (Placement(transformation(
         extent={{-14,-6},{14,6}},
         rotation=90,
         origin={-28,0})));
@@ -312,7 +319,6 @@ public
     each xi_start=xi_start_secondaryAir,
     each xi_nom=xi_nom_secondaryAir,
     each useHomotopy=useHomotopy,
-    each initType=initType_cells,
     each m_flow_nom=m_flow_secondaryAir_nom,
     each p_nom=p_secondaryAir_nom*ones(N_cv),
     each T_nom=293.15*ones(N_cv),
@@ -324,11 +330,11 @@ public
         N_heat=1,
         N_cv=N_cv,
         diameter_hyd=fill(d_gl, N_cv),
-        length=height_reg,
         volume=ones(N_cv)*volume_secondaryAir/N_cv,
         A_cross=ones(N_cv)*A_secondaryAir_free,
         A_heat=ones(N_cv, 1)*A_heat_secondary/N_cv),
-    redeclare model PressureLoss = PressureLoss) annotation (Placement(transformation(
+    redeclare model PressureLoss = PressureLoss,
+    initOption=initOptionCells) annotation (Placement(transformation(
         extent={{-14,-6},{14,6}},
         rotation=270,
         origin={-82,0})));
@@ -340,7 +346,6 @@ public
     each xi_start=xi_start_flueGas,
     each xi_nom=xi_nom_flueGas,
     each useHomotopy=useHomotopy,
-    each initType=initType_cells,
     each m_flow_nom=m_flow_flueGas_nom*flueGas_split_ratio,
     each p_nom=p_flueGas_nom*ones(N_cv),
     each T_nom=293.15*ones(N_cv),
@@ -352,11 +357,11 @@ public
         N_heat=1,
         N_cv=N_cv,
         diameter_hyd=fill(d_gl, N_cv),
-        length=height_reg,
         volume=ones(N_cv)*volume_flueGas_primary/N_cv,
         A_cross=ones(N_cv)*A_flueGas_primary_free,
         A_heat=ones(N_cv, 1)*A_heat_primary/N_cv),
-    redeclare model PressureLoss = PressureLoss) annotation (Placement(transformation(
+    redeclare model PressureLoss = PressureLoss,
+    initOption=initOptionCells) annotation (Placement(transformation(
         extent={{-14,-6},{14,6}},
         rotation=90,
         origin={80,0})));
@@ -368,7 +373,6 @@ public
     each xi_start=xi_start_primaryAir,
     each xi_nom=xi_nom_primaryAir,
     each useHomotopy=useHomotopy,
-    each initType=initType_cells,
     each m_flow_nom=m_flow_primaryAir_nom,
     each p_nom=p_primaryAir_nom*ones(N_cv),
     each T_nom=293.15*ones(N_cv),
@@ -380,11 +384,11 @@ public
         N_heat=1,
         N_cv=N_cv,
         diameter_hyd=fill(d_gl, N_cv),
-        length=height_reg,
         volume=ones(N_cv)*volume_primaryAir/N_cv,
         A_cross=ones(N_cv)*A_primaryAir_free,
         A_heat=ones(N_cv, 1)*A_heat_primary/N_cv),
-    redeclare model PressureLoss = PressureLoss) annotation (Placement(transformation(
+    redeclare model PressureLoss = PressureLoss,
+    initOption=initOptionCells) annotation (Placement(transformation(
         extent={{-14,-6},{14,6}},
         rotation=270,
         origin={30,1.77636e-015})));
@@ -394,6 +398,7 @@ public
     each mass=mass_primary/N_cv,
     each A_heat=A_heat_primary/N_cv,
     each thickness_wall=s_sp,
+    each initOption=initOptionWall,
     T_start=T_start_primary_wall_internal,
     each stateLocation=stateLocation) annotation (Placement(transformation(
         extent={{-10,-5},{10,5}},
@@ -405,6 +410,7 @@ public
     each mass=mass_secondary/N_cv,
     each A_heat=A_heat_secondary/N_cv,
     each thickness_wall=s_sp,
+    each initOption=initOptionWall,
     T_start=T_start_secondary_wall_internal,
     each stateLocation=stateLocation) annotation (Placement(transformation(
         extent={{-10,-5},{10,5}},
@@ -446,42 +452,42 @@ public
         origin={80,78})));
 
   Summary summary(
-    flueGasInlet(
+    flueGasInlet(mediumModel=medium,
       m_flow=flueGasCellPrimary.inlet.m_flow,
       T=inStream(flueGasCellPrimary.inlet.T_outflow),
       p=flueGasCellPrimary.inlet.p,
       h=flueGasCellPrimary.fluidInlet.h,
       xi = inStream(flueGasCellPrimary.inlet.xi_outflow),
       H_flow=flueGasCellPrimary.inlet.m_flow*flueGasCellPrimary.fluidInlet.h),
-    primaryAirInlet(
+    primaryAirInlet(mediumModel=medium,
       m_flow=primaryAirCell.inlet.m_flow,
       T=inStream(primaryAirCell.inlet.T_outflow),
       p=primaryAirCell.inlet.p,
       h=primaryAirCell.fluidInlet.h,
       xi = inStream(primaryAirCell.inlet.xi_outflow),
       H_flow=primaryAirCell.inlet.m_flow*primaryAirCell.fluidInlet.h),
-    secondaryAirInlet(
+    secondaryAirInlet(mediumModel=medium,
       m_flow=secondaryAirCell.inlet.m_flow,
       T=inStream(secondaryAirCell.inlet.T_outflow),
       p=secondaryAirCell.inlet.p,
       h=secondaryAirCell.fluidInlet.h,
       xi = inStream(secondaryAirCell.inlet.xi_outflow),
       H_flow=secondaryAirCell.inlet.m_flow*secondaryAirCell.fluidInlet.h),
-    flueGasOutlet(
+    flueGasOutlet(mediumModel=medium,
       m_flow=-secondaryLeakageJoin.portA.m_flow,
       T=secondaryLeakageJoin.portA.T_outflow,
       p=secondaryLeakageJoin.portA.p,
       h=secondaryLeakageJoin.flueGasPortA.h,
       xi = secondaryLeakageJoin.portA.xi_outflow,
       H_flow=-secondaryLeakageJoin.portA.m_flow*secondaryLeakageJoin.flueGasPortA.h),
-    primaryAirOutlet(
+    primaryAirOutlet(mediumModel=medium,
       m_flow=-primaryAirCell.outlet.m_flow,
       T=primaryAirCell.outlet.T_outflow,
       p=primaryAirCell.outlet.p,
       h=primaryAirCell.fluidOutlet.h,
       xi=primaryAirCell.outlet.xi_outflow,
       H_flow=-primaryAirCell.outlet.m_flow*primaryAirCell.fluidOutlet.h),
-    secondaryAirOutlet(
+    secondaryAirOutlet(mediumModel=medium,
       m_flow=-primaryLeakageJoin.portA.m_flow,
       T=primaryLeakageJoin.portA.T_outflow,
       p=primaryLeakageJoin.portA.p,
@@ -554,17 +560,17 @@ equation
   end for;
 
   connect(flueGasInlet, flueGasSplit.inlet) annotation (Line(
-      points={{80,-100},{80,-32},{76,-32}},
+      points={{80,-100},{80,-30},{76,-30}},
       color={118,106,98},
       thickness=0.5,
       smooth=Smooth.None));
   connect(flueGasSplit.outlet, flueGasCellPrimary.inlet) annotation (Line(
-      points={{56,-32},{52,-32},{52,-18},{80,-18},{80,-14}},
+      points={{56,-30},{52,-30},{52,-18},{80,-18},{80,-14}},
       color={118,106,98},
       thickness=0.5,
       smooth=Smooth.None));
   connect(flueGasSplit.outlet2, flueGasCellSecondary.inlet) annotation (Line(
-      points={{66,-42},{66,-46},{-28,-46},{-28,-14}},
+      points={{66,-40},{66,-46},{-28,-46},{-28,-14}},
       color={118,106,98},
       thickness=0.5,
       smooth=Smooth.None));
@@ -581,7 +587,7 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(primaryAirCell.outlet, primaryLeakage.inlet) annotation (Line(
-      points={{30,-14},{30,-60},{0,-60}},
+      points={{30,-14},{30,-58},{0,-58}},
       color={118,106,98},
       thickness=0.5,
       smooth=Smooth.None));
@@ -597,12 +603,12 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(primaryLeakage.outlet, primaryLeakageJoin.portC) annotation (Line(
-      points={{-20,-60},{-72,-60}},
+      points={{-20,-58},{-46,-58},{-46,-60},{-72,-60}},
       color={118,106,98},
       thickness=0.5,
       smooth=Smooth.None));
   connect(primaryLeakage.outlet2, primaryAirOutlet) annotation (Line(
-      points={{-10,-70},{-10,-78},{30,-78},{30,-100}},
+      points={{-10,-68},{-10,-78},{30,-78},{30,-100}},
       color={118,106,98},
       thickness=0.5,
       smooth=Smooth.None));
@@ -638,12 +644,12 @@ equation
       smooth=Smooth.None));
 
   connect(flueGasJoin.portA, valveGas_L1_1.inlet) annotation (Line(
-      points={{80,38},{80,43}},
+      points={{80,38},{80,42},{80,44},{81,44}},
       color={118,106,98},
       thickness=0.5,
       smooth=Smooth.None));
   connect(valveGas_L1_1.outlet, secondaryLeakageJoin.portB) annotation (Line(
-      points={{80,63},{80,68}},
+      points={{81,64},{81,66},{80,66},{80,68}},
       color={118,106,98},
       thickness=0.5,
       smooth=Smooth.None));

@@ -1,7 +1,7 @@
-within ClaRa.Basics.ControlVolumes.FluidVolumes;
+ï»¿within ClaRa.Basics.ControlVolumes.FluidVolumes;
 model VolumeVLEGas_L3 "A volume element balancing liquid and gas phase with n inlet and outlet ports"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.1.2                        //
+  // Component of the ClaRa library, version: 1.2.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
   // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -401,6 +401,8 @@ initial equation
     h_gas = h_gas_start;
     p = p_start;
     xi_gas=xi_start;
+   else
+     assert(false, "Unknown initialisation option in "+ getInstanceName());
    end if;
 
 equation

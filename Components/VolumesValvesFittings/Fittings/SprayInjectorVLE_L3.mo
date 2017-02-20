@@ -1,10 +1,10 @@
 within ClaRa.Components.VolumesValvesFittings.Fittings;
 model SprayInjectorVLE_L3 "A spray injector for i.e. temperature control"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -18,6 +18,34 @@ model SprayInjectorVLE_L3 "A spray injector for i.e. temperature control"
   extends ClaRa.Basics.Icons.ComplexityLevel(complexity="L3");
 
   outer ClaRa.SimCenter simCenter;
+
+  ///___________Summary Definitions________________________________________
+
+  model Outline
+    extends ClaRa.Basics.Icons.RecordIcon;
+    parameter Boolean showExpertSummary annotation (Dialog(hide));
+
+    input ClaRa.Basics.Units.PressureDifference Delta_p "Pressure difference between outlet and inlet of injector valve" annotation (Dialog);
+    input Real opening "Opening of injector valve" annotation (Dialog(show));
+  end Outline;
+
+  model Wall_L4
+    extends ClaRa.Basics.Icons.RecordIcon;
+    parameter Boolean showExpertSummary annotation (Dialog(hide));
+    parameter Integer N_wall "Number of wall segments" annotation (Dialog(hide));
+    input Basics.Units.Temperature T[N_wall] if showExpertSummary "Temperatures of wall segments" annotation (Dialog);
+    input Basics.Units.HeatFlowRate Q_flow if showExpertSummary "Heat flow through wall segment" annotation (Dialog);
+  end Wall_L4;
+
+  model Summary
+    extends ClaRa.Basics.Icons.RecordIcon;
+    Outline outline;
+    ClaRa.Basics.Records.FlangeVLE inlet1;
+    ClaRa.Basics.Records.FlangeVLE inlet2;
+    ClaRa.Basics.Records.FlangeVLE outlet;
+    Wall_L4 wall;
+  end Summary;
+
   parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium=
                                                       simCenter.fluid1 "Medium in the component"
                               annotation(Dialog(group="Fundamental Definitions"), choicesAllMatching);
@@ -44,7 +72,8 @@ model SprayInjectorVLE_L3 "A spray injector for i.e. temperature control"
   parameter Modelica.SIunits.SpecificEnthalpy h_start_Spray=1000e3 "|Initialisation|Fluid|Initial specific enthalpy at main inlet";
   parameter Modelica.SIunits.Pressure p_start=1e5 "|Initialisation|Fluid|Start value of sytsem pressure";
 
-  parameter ClaRa.Basics.Choices.Init initType=ClaRa.Basics.Choices.Init.noInit "|Initialisation|Fluid|Type of initialisation";
+  parameter Integer initOption=0 "Type of initialisation"
+    annotation (Dialog(tab="Initialisation", group="Fluid"), choices(choice = 0 "Use guess values", choice = 1 "Steady state", choice=201 "Steady pressure", choice = 202 "Steady enthalpy"));
 
   parameter Boolean useHomotopy=simCenter.useHomotopy "|Initialisation||True, if homotopy method is used during initialisation";
 
@@ -66,6 +95,50 @@ model SprayInjectorVLE_L3 "A spray injector for i.e. temperature control"
   parameter Boolean showExpertSummary=simCenter.showExpertSummary "|Summary and Visualisation||True, if expert summary should be applied";
   parameter Boolean showData=false "True, if a data port containing p,T,h,s,m_flow shall be shown, else false"
                                                                                             annotation(Dialog(tab="Summary and Visualisation"));
+
+  Summary summary(
+    outline(
+      showExpertSummary=showExpertSummary,
+      opening=opening,
+      Delta_p= valve.summary.outline.Delta_p),
+    inlet1(
+      showExpertSummary=showExpertSummary,
+      m_flow=inlet1.m_flow,
+      T=mixingZone.summary.inlet1.T,
+      p=mixingZone.summary.inlet1.p,
+      h=mixingZone.summary.inlet1.h,
+      s=mixingZone.summary.inlet1.s,
+      steamQuality=mixingZone.summary.inlet1.steamQuality,
+      H_flow=inlet1.m_flow*mixingZone.summary.inlet1.h,
+      rho=mixingZone.summary.inlet1.rho),
+    inlet2(
+      showExpertSummary=showExpertSummary,
+      m_flow=inlet2.m_flow,
+      T=valve.summary.inlet.T,
+      p=valve.summary.inlet.p,
+      h=valve.summary.inlet.h,
+      s=valve.summary.inlet.s,
+      steamQuality=valve.summary.inlet.steamQuality,
+      H_flow=inlet2.m_flow*valve.summary.inlet.h,
+      rho=valve.summary.inlet.rho),
+    outlet(
+      showExpertSummary=showExpertSummary,
+      m_flow=-outlet.m_flow,
+      T=outflowZone.fluidOut.T,
+      p=outflowZone.fluidOut.p,
+      h=outflowZone.fluidOut.h,
+      s=outflowZone.fluidOut.s,
+      steamQuality=outflowZone.fluidOut.q,
+      H_flow=-outlet.m_flow*outflowZone.fluidOut.h,
+      rho=outflowZone.fluidOut.d),
+    wall(
+      showExpertSummary=showExpertSummary,
+      N_wall=wall.N_rad,
+      T=wall.T,
+      Q_flow=outflowZone.heat.Q_flow)) annotation (Placement(transformation(extent={{-80,-39},{-60,-21}})));
+
+
+
 protected
   parameter Modelica.SIunits.SpecificEnthalpy h_nom_mix=(h_nom_Main*m_flow_nom_main+h_nom_Spray*m_flow_nom_spray)/(m_flow_nom_main+m_flow_nom_spray) "Nominal mix enthalpy";
   parameter Modelica.SIunits.SpecificEnthalpy h_start_mix=(h_start_Main*m_flow_nom_main+h_start_Spray*m_flow_nom_spray)/(m_flow_nom_main+m_flow_nom_spray) "Nominal mix enthalpy";
@@ -97,26 +170,19 @@ public
 
 public
   ClaRa.Basics.ControlVolumes.FluidVolumes.VolumeVLE_2 outflowZone(
-    redeclare model Geometry =
-        ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.PipeGeometry (
-        diameter=diameter_i,
-        length=length/2),
+    redeclare model Geometry = ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.PipeGeometry (diameter=diameter_i, length=length/2),
     medium=medium,
     useHomotopy=useHomotopy,
-    initType=initType,
     m_flow_nom=m_flow_nom_main + m_flow_nom_spray,
     h_nom=h_nom_mix,
     h_start=h_start_mix,
     p_nom=p_nom - Delta_p_nom,
-    redeclare model HeatTransfer =
-        ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.IdealHeatTransfer_L2,
-    redeclare model PhaseBorder =
-        ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.IdeallyStirred,
-    redeclare model PressureLoss =
-        PressureLoss_outflowZone,
+    redeclare model HeatTransfer = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.IdealHeatTransfer_L2,
+    redeclare model PhaseBorder = ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.IdeallyStirred,
+    redeclare model PressureLoss = PressureLoss_outflowZone,
     p_start=p_start,
-    showExpertSummary=showExpertSummary)
-    annotation (Placement(transformation(extent={{40,10},{60,30}})));
+    showExpertSummary=showExpertSummary,
+    initOption=initOption) annotation (Placement(transformation(extent={{40,10},{60,30}})));
 
   ClaRa.Basics.Interfaces.FluidPortIn inlet1(Medium=medium) "Inlet port" annotation (Placement(transformation(extent={{-110,10},{-90,30}}), iconTransformation(extent={{-110,10},{-90,30}})));
   ClaRa.Basics.Interfaces.FluidPortIn inlet2(Medium=medium) "Inlet port" annotation (Placement(transformation(extent={{-30,-110},{-10,-90}}), iconTransformation(extent={{-30,-110},{-10,-90}})));
@@ -128,9 +194,9 @@ public
     diameter_i=diameter_i,
     length=length,
     N_tubes=N,
-    initChoice=ClaRa.Basics.Choices.Init.steadyState,
     T_start=T_wall_start,
-    N_rad=N_wall) annotation (Placement(transformation(extent={{40,40},{60,60}})));
+    N_rad=N_wall,
+    initOption=1) annotation (Placement(transformation(extent={{40,40},{60,60}})));
 
   ClaRa.Components.VolumesValvesFittings.Valves.ValveVLE_L1   valve(
     medium=medium,
@@ -161,7 +227,7 @@ protected
   ClaRa.Basics.Interfaces.EyeIn eye_int
     annotation (Placement(transformation(extent={{45,-21},{47,-19}})));
 public
-  ClaRa.Components.VolumesValvesFittings.Fittings.Join_L2_Y mixingZone(
+  ClaRa.Components.VolumesValvesFittings.Fittings.JoinVLE_L2_Y mixingZone(
     volume=Modelica.Constants.pi/4*diameter_i^2*length/2*N,
     medium=medium,
     m_flow_in_nom={m_flow_nom_main,m_flow_nom_spray},
@@ -169,7 +235,7 @@ public
     h_nom=h_nom_mix,
     h_start=h_start_mix,
     p_start=p_start,
-    initType=initType,
+    initOption=initOption,
     useHomotopy=useHomotopy,
     preciseTwoPhase=preciseTwoPhase,
     showExpertSummary=showExpertSummary,

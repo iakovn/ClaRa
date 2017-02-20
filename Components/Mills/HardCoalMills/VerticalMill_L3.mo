@@ -1,10 +1,10 @@
 within ClaRa.Components.Mills.HardCoalMills;
 model VerticalMill_L3 "Vertical roller mill such as ball-and-race mill and roller-bowl mills"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -35,12 +35,12 @@ model VerticalMill_L3 "Vertical roller mill such as ball-and-race mill and rolle
   parameter Integer N_mills= 1 "Number of equal mills in parallel" annotation(Dialog(group="Mill Definition"));
 
 //________Initialisation____________
-  parameter Basics.Units.Temperature T_0 = simCenter.T_amb_start "Initial temperature in mill"  annotation(Dialog(group="Initialisation"));
-  parameter Basics.Units.Mass M_c_0= 1000 "Initial Mass of raw coal on the table" annotation(Dialog(group="Initialisation"));
-  parameter Basics.Units.Mass M_pf_0= 100 "Initial Mass of pulverized coal on the table" annotation(Dialog(group="Initialisation"));
-  parameter Basics.Units.Mass  M_cair_0= 100 "Initial Mass of pulverized coal in the air" annotation(Dialog(group="Initialisation"));
-  parameter SI.MassFraction xi_coal_0[coal.nc-1]=coal.defaultComposition "Initial coal composition" annotation(Dialog(group="Initialisation"));
-  parameter ClaRa.Basics.Choices.Init initChoice=ClaRa.Basics.Choices.Init.noInit "Initialisation option" annotation(Dialog(group="Initialisation"));
+  parameter Basics.Units.Temperature T_out_start = simCenter.T_amb_start "Initial temperature in mill"  annotation(Dialog(tab="Initialisation"));
+  parameter Basics.Units.Mass mass_rct_start= 1000 "Initial mass of Raw Coal on the Table" annotation(Dialog(tab="Initialisation"));
+  parameter Basics.Units.Mass mass_pct_start= 100 "Initial mass of Pulverized Coal on the Table" annotation(Dialog(tab="Initialisation"));
+  parameter Basics.Units.Mass  mass_pca_start= 100 "Initial mass of Pulverized Coal in the Air" annotation(Dialog(tab="Initialisation"));
+  parameter SI.MassFraction xi_wc_start[coal.nc-1]=coal.defaultComposition "Initial Wet Coal composition" annotation(Dialog(tab="Initialisation"));
+  inner parameter Integer  initOption=0 "Type of initialisation" annotation(Dialog(tab="Initialisation"), choices(choice = 0 "Use guess values", choice = 1 "Steady state", choice=203 "Steady temperature", choice = 801 "Steady masses"));
 
 //________Summary and Visualisation_
   parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary "True if component shall contribute to automatic efficiency calculation"
@@ -49,14 +49,15 @@ model VerticalMill_L3 "Vertical roller mill such as ball-and-race mill and rolle
 //________Expert Settings___________
   parameter Boolean applyGrindingDelay = false "True if grinding process introduces a dead time"
                                                                                                 annotation(Dialog(enable=applyGrindingDelay, tab="Expert Settings"));
-  parameter SI.Time Tau_grind = 120 "Grinding dead time" annotation(Dialog(enable=applyGrindingDelay, tab="Expert Settings"));
+  parameter SI.Time Tau_delay = 120 "Grinding dead time" annotation(Dialog(enable=applyGrindingDelay, tab="Expert Settings"));
+  parameter Boolean activateGrindingStatus=false "True, if Status input is activated which makes it possible to stop the grinding process" annotation(Dialog(group="Shutdown",tab="Expert Settings"));
 
 ///////////////// VARAIABLE DECLARATION ///////////////
 //_________Masses_______________
 protected
-  Basics.Units.Mass M_c(start=M_c_0) "Mass of ungrinded coal on the table //mass_rct";
-  Basics.Units.Mass M_pf(start=M_pf_0) "Mass of pulverized coal on the table //mass_pct";
-  Basics.Units.Mass M_cair(start=M_cair_0) "Mass of pulverized coal carried by primary air //mass_pca";
+  Basics.Units.Mass M_c(start=mass_rct_start) "Mass of ungrinded coal on the table //mass_rct";
+  Basics.Units.Mass M_pf(start=mass_pct_start) "Mass of pulverized coal on the table //mass_pct";
+  Basics.Units.Mass M_cair(start=mass_pca_start) "Mass of pulverized coal carried by primary air //mass_pca";
 
 //________Mass Flows___________
   Basics.Units.MassFlowRate m_flow_coal_in "Mass flow rate of raw coal entering the grinding table //m_flow_rct";
@@ -86,7 +87,7 @@ protected
   Basics.Units.Pressure Delta_p_pa(displayUnit="Pa") "Primary air difference pressure";
 
 //________Temperatures_________
-  Basics.Units.Temperature T_out(start=T_0) "Classifier Temperature (outlet temperature)";
+  Basics.Units.Temperature T_out(start=T_out_start) "Classifier Temperature (outlet temperature)";
   Basics.Units.Temperature T_coal_in "Coal inlet temperature";
   Basics.Units.Temperature T_air_in "Primary air inlet temperature";
 
@@ -111,6 +112,8 @@ protected
       TILMedia.VLEFluidTypes.TILMedia_SplineWater.nc_propertyCalculation,
       TILMedia.VLEFluidTypes.TILMedia_SplineWater.nc,
       TILMedia.Internals.redirectModelicaFormatMessage()) "Pointer to external medium memory for evaporation enthalpy and heat capacity";
+
+  Real grindingStatus_;
 
 public
   Modelica.Blocks.Interfaces.RealOutput Delta_p_mill(unit="Pa") "Pressure Difference between inlet and outlet connector"
@@ -159,24 +162,28 @@ public
                                                     annotation(Placement(transformation(extent={{100,22},
             {140,62}})));
 
+  Modelica.Blocks.Interfaces.RealInput grindingStatus(value=grindingStatus_) if (activateGrindingStatus) "Input to stop grinding process, when mill is shutdown" annotation (Placement(transformation(
+        extent={{-20,-20},{20,20}},
+        rotation=270,
+        origin={-40,108})));
 initial equation
-  xi_coal_mix = xi_coal_0;
+  xi_coal_mix = xi_wc_start;
 
-  if initChoice == ClaRa.Basics.Choices.Init.noInit then
+  if initOption == 0 then
   //do nothing
-  elseif initChoice == ClaRa.Basics.Choices.Init.steadyDensity then
+  elseif initOption == 801 then
     der(M_c)=0;
     der(M_cair)=0;
     der(M_pf)=0;
-  elseif initChoice == ClaRa.Basics.Choices.Init.steadyTemperature then
+  elseif initOption == 203 then
     der(T_out)=0;
-  elseif initChoice == ClaRa.Basics.Choices.Init.steadyState then
+  elseif initOption == 1 then
     der(M_c)=0;
     der(M_cair)=0;
     der(M_pf)=0;
     der(T_out)=0;
   else
-    assert(false,"Unknown initialisation option");
+    assert(false, "Unknown initialisation option in "+ getInstanceName());
   end if;
 
 equation
@@ -190,7 +197,13 @@ equation
   m_flow_coal_pf = millKoeff.K_5*m_flow_air*M_pf;
   m_flow_coal_out = millKoeff.K_4*M_cair*(1-min(rpm,millKoeff.K_6)/millKoeff.K_6);
   m_flow_coal_ret = millKoeff.K_9*M_cair;
-  m_flow_rcg = millKoeff.K_1*M_c;
+
+  // activateGrindingStatus == true the grinding process can be stopped by setting the input grindingStatus to zero
+
+  if not (activateGrindingStatus) then
+    grindingStatus_=1;
+  end if;
+    m_flow_rcg = millKoeff.K_1*M_c*grindingStatus_;
 
   //this is beyond Nimcyks model: a dead time taking particle transport
   //  from the entrance to the grinding table
@@ -199,7 +212,7 @@ equation
        pointer_W_c,
        time,
        W_c_,
-       time-Tau_grind);
+       time-Tau_delay);
   else
     m_flow_coal_in = W_c_;
   end if;
@@ -209,7 +222,10 @@ equation
 
 //_______Mass balances for the grinding table and the transport area:
   der(M_c) = m_flow_coal_in + m_flow_coal_ret - m_flow_rcg;
-  der(M_pf) = millKoeff.K_1*M_c - m_flow_coal_pf;
+
+  // activateGrindingStatus == true the grinding process can be stopped by setting the input grindingStatus to zero
+  der(M_pf) = millKoeff.K_1*M_c*grindingStatus_ - m_flow_coal_pf;
+
   der(M_cair) = m_flow_coal_pf - m_flow_coal_out - m_flow_coal_ret;
 
 //_______Species balance in grinding area
@@ -263,7 +279,10 @@ equation
 
 ////////////////////////////////////////////
 /// Effort for Grinding                  ///
-  P_grind = 0.01*(millKoeff.K_2*M_pf+millKoeff.K_3*M_c)+millKoeff.E_e;
+
+  // activateGrindingStatus == true the grinding process can be stopped by setting the input grindingStatus to zero
+  P_grind = (0.01*(millKoeff.K_2*M_pf+millKoeff.K_3*M_c)+millKoeff.E_e)*grindingStatus_;
+
   P_mills = millKoeff.P_nom*P_grind*N_mills;
 
 ////////////////////////////////////////////
@@ -303,5 +322,5 @@ equation
   outlet.flueGas.xi_outflow = xi_air_out;
   outlet.flueGas.m_flow = -m_flow_air_out*N_mills;
 
-annotation (Diagram(graphics), Icon(graphics));
+annotation (                   Icon(graphics));
 end VerticalMill_L3;

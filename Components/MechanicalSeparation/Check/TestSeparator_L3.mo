@@ -6,15 +6,14 @@ model TestSeparator_L3 "Check of normal operation and dry operation (Benson oper
     p_nom=100e5,
     p_start=101e5,
     smoothness=Modelica.Blocks.Types.Smoothness.ContinuousDerivative,
-    initType=ClaRa.Basics.Choices.Init.steadyDensity,
     z_out1=0.1,
     z_out2=19.9,
     radius_flange=0.1,
-    redeclare model PressureLoss =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3 (            Delta_p_nom={20000}),
+    redeclare model PressureLoss = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3 (Delta_p_nom={20000}),
     z_in=18,
     Tau_evap=0.3,
-    Tau_cond=0.03) annotation (Placement(transformation(extent={{-10,0},{10,20}})));
+    Tau_cond=0.03,
+    initOption=204) annotation (Placement(transformation(extent={{-10,0},{10,20}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_hxim_flow boundaryVLE_hxim_flow(variable_m_flow=true, variable_h=true,
     showData=true)                                                                                                     annotation (Placement(transformation(extent={{-60,0},{-40,20}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi boundaryVLE_phxi(variable_p=true) annotation (Placement(transformation(extent={{-38,74},{-18,94}})));
@@ -55,14 +54,13 @@ model TestSeparator_L3 "Check of normal operation and dry operation (Benson oper
     p_nom=100e5,
     p_start=101e5,
     smoothness=Modelica.Blocks.Types.Smoothness.ContinuousDerivative,
-    initType=ClaRa.Basics.Choices.Init.steadyDensity,
     z_out1=0.1,
     z_out2=19.9,
     radius_flange=0.1,
-    redeclare model PressureLoss =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3 (            Delta_p_nom={20000}),
+    redeclare model PressureLoss = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3 (Delta_p_nom={20000}),
     z_in=18,
-    Tau_evap=0.3) annotation (Placement(transformation(extent={{182,0},{202,20}})));
+    Tau_evap=0.3,
+    initOption=204) annotation (Placement(transformation(extent={{182,0},{202,20}})));
   BoundaryConditions.BoundaryVLE_hxim_flow                  boundaryVLE_hxim_flow1(
                                                                                   variable_m_flow=true, variable_h=true,
     showData=true)                                                                                                     annotation (Placement(transformation(extent={{130,0},{150,20}})));
@@ -194,8 +192,9 @@ equation
   connect(steamSeparator_controlled.eye_out2, quadruple8.eye) annotation (Line(points={{196,21},{196,21},{196,22},{196,23},{208,23}}, color={190,190,190}));
   connect(steamSeparator_controlled.eye_out1, quadruple9.eye) annotation (Line(points={{196,-1},{196,-1},{196,-7},{206,-7}}, color={190,190,190}));
   connect(realExpression.y, PID.u_s) annotation (Line(points={{240.7,40},{252,40},{252,30},{260,30}}, color={0,0,127}));
-  connect(dynamicBar.y, PID.u_m) annotation (Line(points={{215,0},{272,0},{272,18}}, color={0,0,127}));
-  connect(PID.y, valveVLE_L1_4.opening_in) annotation (Line(points={{282.9,30},{292,30},{292,-48},{201,-48}}, color={0,0,127}));
+  connect(dynamicBar.y, PID.u_m) annotation (Line(points={{215,0},{272.1,0},{272.1,18}},
+                                                                                     color={0,0,127}));
+  connect(PID.y, valveVLE_L1_4.opening_in) annotation (Line(points={{283,30},{292,30},{292,-48},{201,-48}},   color={0,0,127}));
   connect(timeTable_p.y, boundaryVLE_phxi2.p) annotation (Line(points={{-79,110},{22,110},{124,110},{124,90},{154,90}}, color={0,0,127}));
   connect(timeTable1.y, boundaryVLE_hxim_flow1.m_flow) annotation (Line(points={{-79,40},{-79,40},{-44,40},{110,40},{110,16},{128,16}}, color={0,0,127}));
   connect(timeTable2.y, boundaryVLE_hxim_flow1.h) annotation (Line(points={{-79,-20},{110,-20},{110,10},{128,10}}, color={0,0,127}));

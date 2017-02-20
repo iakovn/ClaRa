@@ -1,7 +1,7 @@
-within ClaRa.Components.Utilities.Blocks;
+ï»¿within ClaRa.Components.Utilities.Blocks;
 model TrackThreshold "A state based threshold observation with one possible switch"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                            //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //

@@ -1,7 +1,7 @@
-within ClaRa.Basics.ControlVolumes.GasVolumes.Check;
+ï»¿within ClaRa.Basics.ControlVolumes.GasVolumes.Check;
 model TestFlueGasCell
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,18 +15,19 @@ model TestFlueGasCell
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
   extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
-  VolumeGas_L2 flueGasCell(
+  ClaRa.Basics.ControlVolumes.GasVolumes.VolumeGas_L2 flueGasCell(
     redeclare model Geometry =
         ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry,
     allow_reverseFlow=true,
     use_dynamicMassbalance=true,
     redeclare model PressureLoss =
         ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L2,
-    initType=ClaRa.Basics.Choices.Init.noInit,
     T_start=273.15 + 200,
     redeclare model HeatTransfer =
-        Fundamentals.HeatTransport.Generic_HT.Constant_L2 (                           temperatureDifference="Arithmetic mean"))
-                                                                                          annotation (Placement(transformation(extent={{0,-10},{20,10}})));
+        Fundamentals.HeatTransport.Generic_HT.Constant_L2 (
+          temperatureDifference="Arithmetic mean"),
+    initOption=0)
+    annotation (Placement(transformation(extent={{0,-10},{20,10}})));
 
   Modelica.Blocks.Sources.Ramp massFlowRate(
     height=-1,

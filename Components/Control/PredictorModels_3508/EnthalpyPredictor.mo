@@ -1,7 +1,7 @@
-within ClaRa.Components.Control.PredictorModels_3508;
+ï»¿within ClaRa.Components.Control.PredictorModels_3508;
 model EnthalpyPredictor "Prediction of evaporator outlet enthalpy using characteristic lines and transfer functions"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //

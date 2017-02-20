@@ -2,15 +2,15 @@ within ClaRa.Components.Sensors.Check;
 model TestVLESensors
   extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb60;
   inner SimCenter simCenter annotation (Placement(transformation(extent={{-100,-100},{-60,-80}})));
-  Temperature temperature(unitOption=3) annotation (Placement(transformation(extent={{-12,10},{8,30}})));
+  SensorVLE_L1_T temperature(unitOption=3) annotation (Placement(transformation(extent={{-12,10},{8,30}})));
   BoundaryConditions.BoundaryVLE_hxim_flow boundaryVLE_hxim_flow(m_flow_const=10, h_const=2000e3,
     variable_m_flow=true,
     variable_h=false)                                                                             annotation (Placement(transformation(extent={{-60,0},{-40,20}})));
   BoundaryConditions.BoundaryVLE_phxi boundaryVLE_phxi(p_const=1e5,
     variable_p=true,
     h_const=10)                                                     annotation (Placement(transformation(extent={{76,0},{56,20}})));
-  vlePressureSensor pressure(unitOption=3) annotation (Placement(transformation(extent={{-38,10},{-18,30}})));
-  vleMassflowSensor flow_(unitOption=2) annotation (Placement(transformation(extent={{16,10},{36,30}})));
+  SensorVLE_L1_p pressure(unitOption=3) annotation (Placement(transformation(extent={{-38,10},{-18,30}})));
+  SensorVLE_L1_m_flow flow_(unitOption=2) annotation (Placement(transformation(extent={{16,10},{36,30}})));
   Modelica.Blocks.Sources.TimeTable timeTable(table=[0,10; 1,10; 1.1,-10; 2,-10; 2.1,10; 3,10]) annotation (Placement(transformation(extent={{-100,20},{-80,40}})));
   Modelica.Blocks.Sources.TimeTable timeTable1(table=[0,1e5; 3,1e5; 4,-1e5; 5,1e5; 6,1e5]) annotation (Placement(transformation(extent={{102,22},{82,42}})));
 protected

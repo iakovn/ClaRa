@@ -1,7 +1,7 @@
-within ClaRa.Components.VolumesValvesFittings.Fittings.Check;
+ï»¿within ClaRa.Components.VolumesValvesFittings.Fittings.Check;
 model Test_MixAndSplit
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -17,17 +17,17 @@ model Test_MixAndSplit
 
 extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb60;
 
-  ClaRa.Components.VolumesValvesFittings.Fittings.Join_L2_flex flxibleJoin(
+  ClaRa.Components.VolumesValvesFittings.Fittings.JoinVLE_L2_flex flxibleJoin(
     h_nom=1900e3,
     p_nom(displayUnit="Pa") = 5000,
     h_start=1800e3,
-    initType=ClaRa.Basics.Choices.Init.steadyState,
     N_ports_in=2,
     m_flow_in_nom={25,100},
     volume=0.05,
     preciseTwoPhase=false,
-    p_start=3000000,
-    showExpertSummary=true) annotation (Placement(transformation(extent={{-60,20},{-80,40}})));
+    showExpertSummary=true,
+    initOption=208,
+    p_start=3000000) annotation (Placement(transformation(extent={{-60,20},{-80,40}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi massFlowSource_XRG(h_const=800e3, p_const=3000000) annotation (Placement(transformation(extent={{20,20},{0,40}})));
   inner SimCenter simCenter(redeclare replaceable TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1) annotation (Placement(transformation(extent={{80,158},{100,178}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_hxim_flow massFlowSource_XRG2(
@@ -67,16 +67,16 @@ extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb60;
         rho_in_nom=if ((0) <> 0) then (0) else 10,
         Delta_p_eps=if ((0) > 0) then (0) else 100))
     annotation (Placement(transformation(extent={{-40,24},{-20,36}})));
-  ClaRa.Components.VolumesValvesFittings.Fittings.Join_L2_Y join_Y(
+  ClaRa.Components.VolumesValvesFittings.Fittings.JoinVLE_L2_Y join_Y(
     m_flow_in_nom={25,100},
     p_nom(displayUnit="Pa") = 5000,
     h_nom=1900e3,
     h_start=1800e3,
-    initType=ClaRa.Basics.Choices.Init.steadyState,
     volume=0.05,
     preciseTwoPhase=false,
     p_start=3000000,
-    showExpertSummary=true) annotation (Placement(transformation(
+    showExpertSummary=true,
+    initOption=208) annotation (Placement(transformation(
         extent={{-10,10},{10,-10}},
         rotation=180,
         origin={-70,-30})));
@@ -116,16 +116,16 @@ extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb60;
         rho_in_nom=if ((0) <> 0) then (0) else 10,
         Delta_p_eps=if ((0) > 0) then (0) else 100))
     annotation (Placement(transformation(extent={{-40,-96},{-20,-84}})));
-  ClaRa.Components.VolumesValvesFittings.Fittings.Split_L2_Y split_Y(
+  ClaRa.Components.VolumesValvesFittings.Fittings.SplitVLE_L2_Y split_Y(
     p_nom(displayUnit="Pa") = 5000,
     h_nom=1900e3,
     h_start=1800e3,
-    initType=ClaRa.Basics.Choices.Init.steadyState,
     volume=0.05,
     m_flow_out_nom={25,100},
     preciseTwoPhase=false,
     p_start=3000000,
-    showExpertSummary=true) annotation (Placement(transformation(
+    showExpertSummary=true,
+    initOption=208) annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=180,
         origin={-70,-90})));
@@ -232,7 +232,7 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(join_Y.inlet1, valveLinear_1_XRG1.inlet) annotation (Line(
-      points={{-60,-30},{-49,-30},{-49,-30},{-40,-30}},
+      points={{-60,-30},{-40,-30}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));

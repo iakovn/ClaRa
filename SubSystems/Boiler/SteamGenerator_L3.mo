@@ -1,7 +1,7 @@
-within ClaRa.SubSystems.Boiler;
+ï»¿within ClaRa.SubSystems.Boiler;
 model SteamGenerator_L3 "A steam generation and reaheater model using lumped balance equations for mass and energy and two spray attemperators"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -60,14 +60,14 @@ public
   parameter Modelica.SIunits.SpecificEnthalpy h_LS_start=3000e3 "Initial value of life steam specific enthalpy" annotation(Dialog(tab="Initialisation", group="High pressure part"));
 
 //  parameter Real dotm_init_=1 "Initial mass flow rate in p.u." annotation(Dialog(group="Initialisation"));
-  parameter ClaRa.Basics.Choices.Init initHP=ClaRa.Basics.Choices.Init.noInit "Type of initialisation of steam generation"
-                                                  annotation(Dialog(tab="Initialisation", group="High pressure part"));
+  parameter Integer initOption_HP=0 "Type of initialisation of HP steam generation"
+                                                  annotation(Dialog(tab="Initialisation", group="High pressure part"), choices(choice = 0 "Use guess values", choice = 208 "Steady pressure and enthalpy", choice=201 "Steady pressure", choice = 202 "Steady enthalpy"));
 
   parameter Modelica.SIunits.Pressure p_RH_start=40e5 "Initial value of hot reheat pressure"  annotation(Dialog(tab="Initialisation", group="Reheat part"));
   parameter Modelica.SIunits.SpecificEnthalpy h_RH_start=3500e3 "Initial value of hot reheat specifc enthalpy"
                                                                                               annotation(Dialog(tab="Initialisation", group="Reheat part"));
-  parameter ClaRa.Basics.Choices.Init initIP=ClaRa.Basics.Choices.Init.noInit "Type of initialisation of reheater"
-                                         annotation(Dialog(tab="Initialisation", group="Reheat part"));
+  parameter Integer initOption_IP=0 "Type of initialisation of reheater"
+                                         annotation(Dialog(tab="Initialisation", group="Reheat part"), choices(choice = 0 "Use guess values", choice = 208 "Steady pressure and enthalpy", choice=201 "Steady pressure", choice = 202 "Steady enthalpy"));
 
   parameter Modelica.SIunits.Volume volume_tot_HP=1000 "Total volume of the live steam generator"  annotation(Dialog(group="Geometry"));
   parameter Modelica.SIunits.Volume volume_tot_IP=1000 "Total volume of the reheater" annotation(Dialog(group="Geometry"));
@@ -230,42 +230,30 @@ equation
 //___end define eye bus connectors________________________//
 initial equation
   heatRelease.y = QF_setl_;
-  if initHP == ClaRa.Basics.Choices.Init.steadyEnthalpy then
+  if initOption_HP == 202 then
     der(h_HP) = 0;
-  else
-    if initHP == ClaRa.Basics.Choices.Init.steadyPressure then
-      der(p_HP) = 0;
-    else
-      if initHP == ClaRa.Basics.Choices.Init.steadyState then
-        der(h_HP) = 0;
-        der(p_HP) = 0;
-      else
-        if initHP == ClaRa.Basics.Choices.Init.noInit then
+  elseif initOption_HP == 201 then
+    der(p_HP) = 0;
+  elseif initOption_HP == 208 then
+    der(h_HP) = 0;
+    der(p_HP) = 0;
+  elseif initOption_HP == 0 then
         //do nothing
-        else
-          assert(false, "Unsupported initialisation option");
-        end if;
-      end if;
-    end if;
+  else
+    assert(false, "Unsupported initialisation option for HP section in "+ getInstanceName());
   end if;
 
-  if initIP == ClaRa.Basics.Choices.Init.steadyEnthalpy then
+  if initOption_IP == 202 then
     der(h_IP) = 0;
+  elseif initOption_IP == 201 then
+    der(p_IP) = 0;
+  elseif initOption_IP == 208 then
+    der(h_IP) = 0;
+    der(p_IP) = 0;
+  elseif initOption_IP == 0 then
+    //do nothing
   else
-    if initIP == ClaRa.Basics.Choices.Init.steadyPressure then
-      der(p_IP) = 0;
-    else
-      if initIP == ClaRa.Basics.Choices.Init.steadyState then
-        der(h_IP) = 0;
-        der(p_IP) = 0;
-      else
-        if initIP == ClaRa.Basics.Choices.Init.noInit then
-        //do nothing
-        else
-          assert(false, "Unsupported initialisation option");
-        end if;
-      end if;
-    end if;
+    assert(false, "Unsupported initialisation option for IP section in " + getInstanceName());
   end if;
 
 equation

@@ -3,20 +3,14 @@ model Test_HEXvle2vle_L3_2ph_CU_simple
  extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
 
   HEXvle2vle_L3_2ph_CU_simple hex(
-    redeclare model WallMaterial =
-        TILMedia.SolidTypes.TILMedia_Aluminum,
-    redeclare model PressureLossTubes =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.QuadraticNominalPoint_L2,
-    redeclare model PressureLossShell =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3,
+    redeclare model WallMaterial = TILMedia.SolidTypes.TILMedia_Aluminum,
+    redeclare model PressureLossTubes = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.QuadraticNominalPoint_L2,
+    redeclare model PressureLossShell = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearParallelZones_L3,
     orientation=ClaRa.Basics.Choices.GeometryOrientation.horizontal,
-    redeclare model HeatTransfer_Shell =
-        Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3 (                            alpha_nom={2500,7500}),
+    redeclare model HeatTransfer_Shell = Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3 (alpha_nom={2500,7500}),
     z_in_shell=3,
     N_passes=2,
-    initTypeTubes=ClaRa.Basics.Choices.Init.steadyState,
-    redeclare model HeatTransferTubes =
-        Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L2 (                            alpha_nom=5000),
+    redeclare model HeatTransferTubes = Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L2 (alpha_nom=5000),
     z_in_aux2=1,
     z_in_aux1=1,
     length=5,
@@ -26,21 +20,19 @@ model Test_HEXvle2vle_L3_2ph_CU_simple
     p_nom_shell=1e5,
     h_nom_shell=3000e3,
     p_start_shell=1e5,
-    initTypeShell=ClaRa.Basics.Choices.Init.steadyDensity,
     m_flow_nom_tubes=300,
     p_nom_tubes=250e5,
     h_nom_tubes=300e3,
     h_start_tubes=300e3,
     p_start_tubes=250e5,
     length_tubes=5,
-    N_tubes=750)                                                                                                     annotation (Placement(transformation(extent={{14,-70},{34,-50}})));
+    N_tubes=750,
+    initOptionTubes=1,
+    initOptionShell=204) annotation (Placement(transformation(extent={{14,-70},{34,-50}})));
 
-  Sensors.Temperature                  Temp_Shell_in
-    annotation (Placement(transformation(extent={{14,16},{34,36}})));
-  Sensors.Temperature                  Temp_Tubes_in
-    annotation (Placement(transformation(extent={{82,-80},{62,-100}})));
-  Sensors.Temperature                  Temp_Tubes_out
-    annotation (Placement(transformation(extent={{54,-42},{74,-22}})));
+  Sensors.SensorVLE_L1_T Temp_Shell_in annotation (Placement(transformation(extent={{14,16},{34,36}})));
+  Sensors.SensorVLE_L1_T Temp_Tubes_in annotation (Placement(transformation(extent={{82,-80},{62,-100}})));
+  Sensors.SensorVLE_L1_T Temp_Tubes_out annotation (Placement(transformation(extent={{54,-42},{74,-22}})));
   Modelica.Blocks.Sources.Ramp h_hot(
     height=100e3,
     duration=600,
@@ -195,16 +187,17 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(hex.eye2, quadruple1.eye) annotation (Line(points={{35,-52},{36,-52},{36,-48},{38,-48}}, color={190,190,190}));
-  connect(hex.eye1, quadruple.eye) annotation (Line(points={{26.8,-69.8},{26.8,-77},{30,-77}}, color={190,190,190}));
+  connect(hex.eye1, quadruple.eye) annotation (Line(points={{28,-71},{28,-77},{30,-77}},       color={190,190,190}));
   connect(p_cold.y, pressureSink_ph1.p) annotation (Line(points={{139,-10},{130,-10},{130,-36},{120,-36}}, color={0,0,127}));
   connect(p_hot.y, pressureSink_ph.p) annotation (Line(points={{-79,-68},{-76,-68},{-76,-80},{-70,-80}}, color={0,0,127}));
-  connect(rampControllerSetpoint.y, PI.u_m) annotation (Line(points={{3.7,-79},{-11,-79},{-11,-76}}, color={0,0,127}));
+  connect(rampControllerSetpoint.y, PI.u_m) annotation (Line(points={{3.7,-79},{-11.05,-79},{-11.05,-76}},
+                                                                                            color={0,0,127}));
   connect(level_abs1.y, PI.u_s) annotation (Line(points={{13,-70},{-5,-70}}, color={0,0,127}));
   connect(valve_shell1.inlet, hex.Out1) annotation (Line(
       points={{-20,-86},{-4,-86},{24,-86},{24,-70}},
       color={0,131,169},
       thickness=0.5));
-  connect(PI.y, valve_shell1.opening_in) annotation (Line(points={{-16.45,-70},{-30,-70},{-30,-77}}, color={0,0,127}));
+  connect(PI.y, valve_shell1.opening_in) annotation (Line(points={{-16.5,-70},{-30,-70},{-30,-77}},  color={0,0,127}));
   annotation (Diagram(coordinateSystem(extent={{-100,-100},{160,100}},
           preserveAspectRatio=false,
         initialScale=0.1),            graphics={  Text(

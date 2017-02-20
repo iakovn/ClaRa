@@ -1,7 +1,7 @@
-within ClaRa.Components.Adapters.Check;
+ï»¿within ClaRa.Components.Adapters.Check;
 model TestScalar2VectorHeatPort
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.1.2                        //
+// Component of the ClaRa library, version: 1.2.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -23,8 +23,8 @@ model TestScalar2VectorHeatPort
     diameter_i=0.04,
     length=1,
     N_ax=5,
-    initChoice=ClaRa.Basics.Choices.Init.steadyState,
-    Delta_x={0.5,0.25,0.15,0.05,0.05}) annotation (Placement(transformation(
+    Delta_x={0.5,0.25,0.15,0.05,0.05},
+    initOption=1) annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=90,
         origin={28,20})));
@@ -32,7 +32,7 @@ model TestScalar2VectorHeatPort
     diameter_o=0.5,
     diameter_i=0.4,
     length=thinWall.length,
-    initChoice=ClaRa.Basics.Choices.Init.steadyState) annotation (Placement(transformation(extent={{-36,10},{-16,30}})));
+    initOption=1) annotation (Placement(transformation(extent={{-36,10},{-16,30}})));
   Modelica.Blocks.Sources.Ramp ramp(
     height=30,
     duration=1,
@@ -57,7 +57,7 @@ model TestScalar2VectorHeatPort
     length=1,
     N_ax=5,
     Delta_x={0.5,0.25,0.15,0.05,0.05},
-    initChoice=ClaRa.Basics.Choices.Init.noInit) annotation (Placement(transformation(
+    initOption=0) annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=90,
         origin={28,-22})));
@@ -65,7 +65,7 @@ model TestScalar2VectorHeatPort
     diameter_o=0.5,
     diameter_i=0.4,
     length=thinWall.length,
-    initChoice=ClaRa.Basics.Choices.Init.steadyState) annotation (Placement(transformation(extent={{-36,-30},{-16,-10}})));
+    initOption=1) annotation (Placement(transformation(extent={{-36,-30},{-16,-10}})));
   Modelica.Blocks.Sources.Ramp ramp1(
     height=30,
     duration=1,
@@ -93,7 +93,7 @@ model TestScalar2VectorHeatPort
     length=1,
     N_ax=5,
     Delta_x={0.5,0.25,0.15,0.05,0.05},
-    initChoice=ClaRa.Basics.Choices.Init.noInit) annotation (Placement(transformation(
+    initOption=0) annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=90,
         origin={28,-64})));
@@ -101,7 +101,7 @@ model TestScalar2VectorHeatPort
     diameter_o=0.5,
     diameter_i=0.4,
     length=thinWall.length,
-    initChoice=ClaRa.Basics.Choices.Init.steadyState) annotation (Placement(transformation(extent={{-36,-72},{-16,-52}})));
+    initOption=1) annotation (Placement(transformation(extent={{-36,-72},{-16,-52}})));
   Modelica.Blocks.Sources.Ramp ramp2(
     height=30,
     duration=1,

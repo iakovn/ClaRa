@@ -14,3 +14,4 @@ PrescribedHeatFlow
 PrescribedHeatFlowScalar
 GasCompositionByMassFractions
 GasCompositionByVolFractions
+BoundaryElectricFrequency
