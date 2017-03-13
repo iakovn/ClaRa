@@ -1,10 +1,10 @@
-ï»¿within ClaRa.Components.HeatExchangers.Check;
+within ClaRa.Components.HeatExchangers.Check;
 model Test_HEXvle2gas_L3_1ph_BU "Example 1 at page Ca 15 in VDI Waermeatlas, 9th edition "
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.0                            //
+  // Component of the ClaRa library, version: 1.2.1                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -311,8 +311,8 @@ NOTE:
 _________________________________________________________________________________________________________  
 LOOK AT:
 > The outlet temperatures of gas and water flow.
-> Outlet temperature of water according to literature: T_h2o_out = 78 °C
-> Outlet temperature of air according to literature: T_air_out =94 °C.
+> Outlet temperature of water according to literature: T_h2o_out = 78 C
+> Outlet temperature of air according to literature: T_air_out =94 C.
 > The simulation meets these data quite well.
 _________________________________________________________________________________________________________    
 ")}),

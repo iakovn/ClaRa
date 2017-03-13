@@ -1,10 +1,10 @@
-ï»¿within ClaRa.Components.BoundaryConditions;
+within ClaRa.Components.BoundaryConditions;
 model BoundaryGas_Txim_flow "A gas source defining mass flow, temperature and composition"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.0                            //
+// Component of the ClaRa library, version: 1.2.1                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -37,7 +37,7 @@ model BoundaryGas_Txim_flow "A gas source defining mass flow, temperature and co
   parameter Modelica.SIunits.MassFraction xi_const[medium.nc-1]=zeros(medium.nc-1) "Constant composition"
                            annotation(Dialog(group="Constant Boundaries", enable= not variable_xi));
    TILMedia.GasObjectFunctions.GasPointer GasPointer=
-        TILMedia.GasObjectFunctions.GasPointer(medium.concatGasName,8,medium.xi_default,medium.nc_propertyCalculation,medium.nc,medium.condensingIndex,0) "Pointer to external medium memory";
+        TILMedia.GasObjectFunctions.GasPointer(medium.concatGasName,0,medium.xi_default,medium.nc_propertyCalculation,medium.nc,medium.condensingIndex,0) "Pointer to external medium memory";
 
   outer ClaRa.SimCenter simCenter;
 protected

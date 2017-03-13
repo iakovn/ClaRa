@@ -1,7 +1,7 @@
 within ClaRa.Components.Furnace.Burner;
 model Burner_L2_Dynamic_fuelDrying "Model for a burner section inside a combustion chamber which is able to regard drying of unburnt fuel which contained water at burner inlet"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.0                            //
+// Component of the ClaRa library, version: 1.2.1                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -15,7 +15,7 @@ model Burner_L2_Dynamic_fuelDrying "Model for a burner section inside a combusti
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
 
-extends ClaRa.Components.Furnace.BaseClasses.CombustionChamberBase(redeclare model Geometry = ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlock,
+extends ClaRa.Components.Furnace.BaseClasses.CombustionChamberBase(redeclare replaceable model Geometry = ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlock,
         geo(flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical));
                                                                                 //(flueGasCombustion(p = outlet.flueGas.p, xi = xi_flueGas));
 extends ClaRa.Basics.Icons.Burner;

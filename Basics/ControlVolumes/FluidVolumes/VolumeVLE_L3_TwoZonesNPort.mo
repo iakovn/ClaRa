@@ -1,10 +1,10 @@
-ï»¿within ClaRa.Basics.ControlVolumes.FluidVolumes;
+within ClaRa.Basics.ControlVolumes.FluidVolumes;
 model VolumeVLE_L3_TwoZonesNPort "A volume element balancing liquid and vapour phase with n inlet and outlet ports"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.0                            //
+  // Component of the ClaRa library, version: 1.2.1                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -428,6 +428,7 @@ initial equation
   else
     assert(false, "Unknown initialisation option in " + getInstanceName());
   end if;
+
 
 equation
   connect(heattransfer.heat, heat) annotation (Line(

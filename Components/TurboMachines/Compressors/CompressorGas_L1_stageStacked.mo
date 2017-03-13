@@ -2,7 +2,7 @@ within ClaRa.Components.TurboMachines.Compressors;
 model CompressorGas_L1_stageStacked "Advanced compressor or fan for ideal gas mixtures using the stage stacking method according to N. Gasparovic"
   import ClaRa;
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.0                            //
+// Component of the ClaRa library, version: 1.2.1                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -232,71 +232,71 @@ protected
      TILMedia.GasObjectFunctions.GasPointer GasPointerRp2OutNom=
        TILMedia.GasObjectFunctions.GasPointer(
        medium.concatGasName,
-       8,
+       0,
        medium.xi_default,
        medium.nc_propertyCalculation,
        medium.nc,
-       0,
+       8,
        0) "Pointer to external medium memory";
 
      TILMedia.GasObjectFunctions.GasPointer GasPointerRp2Out=
        TILMedia.GasObjectFunctions.GasPointer(
        medium.concatGasName,
-       8,
+       0,
        medium.xi_default,
        medium.nc_propertyCalculation,
        medium.nc,
-       0,
+       8,
        0) "Pointer to external medium memory";
 
      TILMedia.GasObjectFunctions.GasPointer GasPointerInletNom=
        TILMedia.GasObjectFunctions.GasPointer(
        medium.concatGasName,
-       8,
+       0,
        medium.xi_default,
        medium.nc_propertyCalculation,
        medium.nc,
-       0,
+       8,
        0) "Pointer to external medium memory";
 
      TILMedia.GasObjectFunctions.GasPointer GasPointerOutletNom[i]=
       {TILMedia.GasObjectFunctions.GasPointer(
        medium.concatGasName,
-       8,
+       0,
        medium.xi_default,
        medium.nc_propertyCalculation,
        medium.nc,
-       0,
+       8,
        0) for dummy in 1:i};
 
      TILMedia.GasObjectFunctions.GasPointer GasPointerInlet=
        TILMedia.GasObjectFunctions.GasPointer(
        medium.concatGasName,
-       8,
+       0,
        medium.xi_default,
        medium.nc_propertyCalculation,
        medium.nc,
-       0,
+       8,
        0) "Pointer to external medium memory";
 
      TILMedia.GasObjectFunctions.GasPointer GasPointerOutlet[i]=
       {TILMedia.GasObjectFunctions.GasPointer(
        medium.concatGasName,
-       8,
+       0,
        medium.xi_default,
        medium.nc_propertyCalculation,
        medium.nc,
-       0,
+       8,
        0) for dummy in 1:i};
 
     TILMedia.GasObjectFunctions.GasPointer GasPointerOutletVigv[i]=
      {TILMedia.GasObjectFunctions.GasPointer(
       medium.concatGasName,
-      8,
+      0,
       medium.xi_default,
       medium.nc_propertyCalculation,
       medium.nc,
-      0,
+      8,
       0) for dummy in 1:i};
 
 public

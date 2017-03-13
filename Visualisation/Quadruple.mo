@@ -1,10 +1,10 @@
-ï»¿within ClaRa.Visualisation;
+within ClaRa.Visualisation;
 model Quadruple " Cross-shaped dynamic display of m_flow, p, T, h and m_flow"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.0                            //
+// Component of the ClaRa library, version: 1.2.1                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -15,7 +15,7 @@ model Quadruple " Cross-shaped dynamic display of m_flow, p, T, h and m_flow"
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
 
-//  parameter String unit="°C" "Variable unit";
+//  parameter String unit="C" "Variable unit";
   parameter Integer identifier= 0 "Identifier of the quadruple";
   DecimalSpaces decimalSpaces "Accuracy to be displayed" annotation(Dialog);
   parameter Boolean largeFonts= simCenter.largeFonts "True if visualisers shall be displayed as large as posible";
@@ -59,7 +59,7 @@ end DecimalSpaces;
           textString=DynamicSelect(" h ", String(eye.h,format = "1."+String(decimalSpaces.h)+"f") + " kJ/kg")),
         Text(
           extent=DynamicSelect({{0,0},{200,-100}},if largeFonts then {{0,0},{200,-100}} else {{0,-20},{200,-80}}),
-          textString=DynamicSelect(" T ", String(eye.T, format = "1."+String(decimalSpaces.T)+"f") + " °C"),
+          textString=DynamicSelect(" T ", String(eye.T, format = "1."+String(decimalSpaces.T)+"f") + " C"),
           fillColor={215,215,215},
           fillPattern=FillPattern.Solid,
           lineColor=DynamicSelect({230,230,230},if time>0 then {0,131,169} else {230,230,230})),

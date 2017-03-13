@@ -1,10 +1,10 @@
-ï»¿within ClaRa.Components.TurboMachines.Compressors.Check;
+within ClaRa.Components.TurboMachines.Compressors.Check;
 model Test_CompressorVLE_L1_stageStacked
 //___________________________________________________________________________//
 // Component of the ClaRa library, version: 0.1 alpha                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright © 2013, DYNCAP research team.                                   //
+// Copyright  2013, DYNCAP research team.                                   //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //

@@ -1,4 +1,4 @@
-ï»¿within ClaRa.Components.Adapters.Check;
+within ClaRa.Components.Adapters.Check;
 model TestFluidConverters
   extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
   Fluid2ClaRa fluid2ClaRa
@@ -44,7 +44,7 @@ model TestFluidConverters
     annotation (Placement(transformation(extent={{-32,-48},{-12,-68}})));
   Visualisation.DynDisplay dynDisplay2(
     varname="MSL.T",
-    unit="°C",
+    unit="C",
     x1=sensT.T - 273.15)
     annotation (Placement(transformation(extent={{-60,8},{-24,20}})));
   Visualisation.DynDisplay dynDisplay3(

@@ -1,10 +1,10 @@
-ï»¿within ClaRa.Visualisation;
+within ClaRa.Visualisation;
 model StatePointGas_phTs "Complete state definition for visualisation in ph, TS, hs-diagrams"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.0                            //
+// Component of the ClaRa library, version: 1.2.1                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -64,7 +64,7 @@ equation
           fillColor={0,131,169},
           fillPattern=FillPattern.Solid,
           horizontalAlignment=TextAlignment.Left,
-          textString=DynamicSelect("T", String(T-273.15,format="1.1f") + " °C")),
+          textString=DynamicSelect("T", String(T-273.15,format="1.1f") + " C")),
         Text(
           extent={{-90,260},{250,190}},
           lineColor={118,106,98},

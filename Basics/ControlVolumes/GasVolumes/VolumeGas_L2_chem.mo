@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.GasVolumes;
 model VolumeGas_L2_chem "A 0-d control volume for flue gas with chemical reactions"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.0                            //
+// Component of the ClaRa library, version: 1.2.1                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -274,6 +274,7 @@ initial equation
     else
      assert(initOption == 0,"Invalid init option");
     end if;
+
 
 
 

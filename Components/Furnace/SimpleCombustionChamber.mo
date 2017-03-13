@@ -1,10 +1,10 @@
-ï»¿within ClaRa.Components.Furnace;
+within ClaRa.Components.Furnace;
 model SimpleCombustionChamber
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.0                            //
+// Component of the ClaRa library, version: 1.2.1                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -173,7 +173,7 @@ equation
 
   slag_outlet.T_outflow = T_slag_bottom;
 
-  inlet.flueGas.xi_outflow = zeros(medium.nc-1); // Reverseföow not allowed, dummy zeros.
+  inlet.flueGas.xi_outflow = zeros(medium.nc-1); // Reversefow not allowed, dummy zeros.
   inlet.flueGas.T_outflow = T_flueGas_out;//dummy for flow reversal
 
   flueGas_outlet.T_outflow = T_flueGas_out;
@@ -228,7 +228,7 @@ equation
   M_NO =flueGasOutlet.M_i[7];
 
   // required mass flow rates for stochometric combustion
-  //m_flow_oxygen_req = (n_flow_C + n_flow_H/4.0 + n_flow_S  - n_flow_O/2.)*coal.M_O*2.0;  // hier Anteil von N abzeihen, der für überschüssige NO Bildung benötigt wird
+  //m_flow_oxygen_req = (n_flow_C + n_flow_H/4.0 + n_flow_S  - n_flow_O/2.)*coal.M_O*2.0;  // hier Anteil von N abzeihen, der fr berschssige NO Bildung bentigt wird
 
  // m_flow_oxygen_req = (n_flow_C + n_flow_H/4.0 + n_flow_S + n_flow_N/2. * (-flueGas_outlet.m_flow*xi_NOx*1e-6)/M_NO  - 0*n_flow_O/2.)*Constants.M_O2;
   m_flow_oxygen_req = (n_flow_C + n_flow_H/4.0 + n_flow_S + n_flow_NO) *ClaRa.Basics.Constants.M_O2;
@@ -236,7 +236,7 @@ equation
   lambda = (inlet.fuel.m_flow*xi_coal_in[3] + inlet.flueGas.m_flow*xi_gas_in[6])/m_flow_oxygen_req;
 
  // Molar flow rates of products (valid for stochiometric combustion)
-// Überdenke Vorzeichenkonvention für edukte/produkte
+// berdenke Vorzeichenkonvention fr edukte/produkte
   n_flow_CO2 = n_flow_C;
   n_flow_H2O_prod = 1/2.*n_flow_H;
   n_flow_SO2 = n_flow_S;

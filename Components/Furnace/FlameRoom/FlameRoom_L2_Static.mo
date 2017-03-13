@@ -1,7 +1,7 @@
 within ClaRa.Components.Furnace.FlameRoom;
 model FlameRoom_L2_Static "Model for a flame room section inside a combustion chamber"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.0                            //
+// Component of the ClaRa library, version: 1.2.1                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
 // Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
@@ -14,7 +14,7 @@ model FlameRoom_L2_Static "Model for a flame room section inside a combustion ch
 // TLK-Thermo GmbH (Braunschweig, Germany),                                  //
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
-extends ClaRa.Components.Furnace.BaseClasses.CombustionChamberBase(redeclare model Geometry = ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlock,
+extends ClaRa.Components.Furnace.BaseClasses.CombustionChamberBase(redeclare replaceable model Geometry = ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlock,
         geo(flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical, height_fill=-1));
 
 extends ClaRa.Basics.Icons.FlameRoom;

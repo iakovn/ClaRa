@@ -18,10 +18,17 @@ package ClaRa "Simulation of Clausius-Rankine Cycles"
 
 
 
-  annotation (preferedView="info",version="1.2.0",
+
+
+
+
+
+
+
+  annotation (preferedView="info",version="1.2.1",
                            uses(
-      ClaRa_Obsolete(version="1.2.0"),
-    TILMedia(version="1.2.0 ClaRa"),
+      ClaRa_Obsolete(version="1.2.1"),
+    TILMedia(version="1.2.1 ClaRa"),
     FluidDissipation(version="1.1.8"),
     Modelica(version="3.2.2")),  Icon(coordinateSystem(preserveAspectRatio=
           false, extent={{-100,-100},{100,100}})),
@@ -31,7 +38,7 @@ package ClaRa "Simulation of Clausius-Rankine Cycles"
     from(version="0.2.1 alpha",to="0.2.2 alpha", script="modelica://ClaRa/Scripts/ConvertFrom021.mos"),
     from(version="0.2.2 alpha",to="1.0.1", script="modelica://ClaRa/Scripts/ConvertFrom022.mos"),
     from(version="1.0.1",to="1.1.2", script="modelica://ClaRa/Scripts/ConvertFrom101.mos"),
-    from(version="1.1.2",to="1.2.0", script="modelica://ClaRa/Scripts/ConvertFrom112_to_120.mos")),
+    from(version="1.1.2",to="1.2.1", script="modelica://ClaRa/Scripts/ConvertFrom112_to_121.mos")),
   Documentation(info="<html>
 <p><img src=\"modelica://ClaRa/figures/ClaRaLibraryInfo.png\"/></p>
 </html>"));

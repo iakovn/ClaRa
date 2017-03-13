@@ -1,10 +1,10 @@
-ï»¿within ClaRa.Components.TurboMachines.Fundamentals.EfficiencyModels;
+within ClaRa.Components.TurboMachines.Fundamentals.EfficiencyModels;
 partial model EfficiencyModelBase
 //___________________________________________________________________________//
 // Component of the ClaRa library, version: 1.1.0                        //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //

@@ -1,10 +1,10 @@
-ï»¿within ClaRa.SubSystems.Boiler;
+within ClaRa.SubSystems.Boiler;
 model SteamGenerator_L3 "A steam generation and reaheater model using lumped balance equations for mass and energy and two spray attemperators"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.0                            //
+// Component of the ClaRa library, version: 1.2.1                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -255,6 +255,7 @@ initial equation
   else
     assert(false, "Unsupported initialisation option for IP section in " + getInstanceName());
   end if;
+
 
 equation
   connect(QF_setl_, heatRelease.u) annotation (Line(

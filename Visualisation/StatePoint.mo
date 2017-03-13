@@ -1,10 +1,10 @@
-ï»¿within ClaRa.Visualisation;
+within ClaRa.Visualisation;
 model StatePoint "State Point of fluid without visualisation"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.0                            //
+// Component of the ClaRa library, version: 1.2.1                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -15,14 +15,14 @@ model StatePoint "State Point of fluid without visualisation"
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
 
-//  parameter String unit="°C" "Variable unit";
+//  parameter String unit="C" "Variable unit";
   parameter Integer identifier= -1 "Identifier of the quadruple" annotation(Dialog(group="Indices"));
   parameter Integer stateViewerIndex=-1 "Index for StateViewer" annotation(Dialog(group="Indices"));
   parameter Boolean useEyeIn=true "True if connector shall be used" annotation(Dialog(group="Input"));
   Real p "Pressure in bar";
   Real h "Specific enthalpy in kJ/kg";
   Real s "Specific entropy in kJ/(kg*s)";
-  Real T "Temperature in °C";
+  Real T "Temperature in C";
   Real m_flow "Mass flow rate in kg/s";
   input ClaRa.Basics.Units.Pressure p_in=1e5 "Input pressure"
                                                              annotation(Dialog(group="Input", enable= not useEyeIn));

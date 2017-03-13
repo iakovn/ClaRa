@@ -1,10 +1,10 @@
-ï»¿within ClaRa.Components.TurboMachines.Pumps.Check;
+within ClaRa.Components.TurboMachines.Pumps.Check;
 model TestPump_L2_OffDesign "Running the  L2 pump in off design, including reverse flow and zero mass flow through valve"
 //___________________________________________________________________________//
 // Component of the ClaRa library, version: 1.0.0                        //
 //                                                                           //
 // Licensed by the DYNCAP research team under Modelica License 2.            //
-// Copyright © 2013-2015, DYNCAP research team.                                   //
+// Copyright  2013-2015, DYNCAP research team.                                   //
 //___________________________________________________________________________//
 // DYNCAP is a research project supported by the German Federal Ministry of  //
 // Economics and Technology (FKZ 03ET2009).                                  //

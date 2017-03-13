@@ -1,10 +1,10 @@
-ï»¿within ClaRa.Basics.ControlVolumes.FluidVolumes.Check;
-model Validation_VolumeVLE_L2_HeatTransfer_1ph_shell "Evaluation and validation scenario from VDI Wärmeatlas 9. Auflage 2002 Chapter Gg3"
+within ClaRa.Basics.ControlVolumes.FluidVolumes.Check;
+model Validation_VolumeVLE_L2_HeatTransfer_1ph_shell "Evaluation and validation scenario from VDI Wrmeatlas 9. Auflage 2002 Chapter Gg3"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.0                            //
+  // Component of the ClaRa library, version: 1.2.1                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -124,7 +124,7 @@ equation
 NOTE:
 Model is using outlet temperature for determination of fluid media properties. 
 When the media properties from literature are applied to the relevant fluidDissipation function the outlet temperature agrees very well.
-Literature values: kc= 7013.3 W/(m²K) ; T_out= 29.5 °C "),Text(
+Literature values: kc= 7013.3 W/(mK) ; T_out= 29.5 C "),Text(
           extent={{-140,160},{120,140}},
           lineColor={0,128,0},
           textString="VALIDATED!")}),

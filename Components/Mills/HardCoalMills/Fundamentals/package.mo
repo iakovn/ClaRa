@@ -1,6 +1,11 @@
 within ClaRa.Components.Mills.HardCoalMills;
-package Fundamentals 
+package Fundamentals
 extends ClaRa.Basics.Icons.PackageIcons.Components60;
+
+
+
+
+
 
 
 

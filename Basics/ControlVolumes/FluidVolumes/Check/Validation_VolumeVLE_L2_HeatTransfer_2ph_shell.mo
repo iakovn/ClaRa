@@ -1,10 +1,10 @@
-ï»¿within ClaRa.Basics.ControlVolumes.FluidVolumes.Check;
-model Validation_VolumeVLE_L2_HeatTransfer_2ph_shell "Validation scenario from VDI Wärmeatlas 9. Auflage 2002 Chapter Ja 13 Example 2"
+within ClaRa.Basics.ControlVolumes.FluidVolumes.Check;
+model Validation_VolumeVLE_L2_HeatTransfer_2ph_shell "Validation scenario from VDI Wrmeatlas 9. Auflage 2002 Chapter Ja 13 Example 2"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.0                            //
+// Component of the ClaRa library, version: 1.2.1                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -179,7 +179,7 @@ PURPOSE:
 _______________________________________________________________________________________
 Compare the following values of simulation with experimental data from literature:
 >>Nusselt number: Volume.heattransfer.Nu_2ph vs. Literature = 1285  vs. 1250
->>Heat transfer coefficient: Volume.heattransfer.alpha vs. Literature = 55636 vs. 53500 W/m²K
+>>Heat transfer coefficient: Volume.heattransfer.alpha vs. Literature = 55636 vs. 53500 W/mK
 
 
 ")}),

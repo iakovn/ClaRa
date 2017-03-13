@@ -1,5 +1,6 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.ChemicalReactions;
 model reactionsInput
+
   Modelica.Blocks.Interfaces.RealInput U_applied annotation (Placement(transformation(extent={{-12,56},{28,96}}), iconTransformation(
         extent={{-20,-20},{20,20}},
         rotation=-90,

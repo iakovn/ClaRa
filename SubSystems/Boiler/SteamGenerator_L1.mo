@@ -1,10 +1,10 @@
-ï»¿within ClaRa.SubSystems.Boiler;
+within ClaRa.SubSystems.Boiler;
 model SteamGenerator_L1 "A steam generation and reaheater model using characteristic lines and transfer functions"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.0                            //
+// Component of the ClaRa library, version: 1.2.1                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -235,6 +235,7 @@ initial equation
   heatRelease.y = QF_setl_;
   SteamStorage.y= QF_setl_;
   energyStroage_RH_IPLP_turbine.y= QF_setl_;
+
 
 equation
   connect(feedback.y, SteamStorage.u) annotation (Line(

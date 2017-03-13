@@ -1,4 +1,4 @@
-ï»¿within ClaRa.Components.HeatExchangers.Check;
+within ClaRa.Components.HeatExchangers.Check;
 model Test_HEXvle2vle_L3_2ph_BU_ntu
  extends ClaRa.Basics.Icons.PackageIcons.ExecutableRegressiong100;
 model Regression
@@ -111,7 +111,7 @@ end Regression;
     redeclare TILMedia.VLEFluidTypes.TILMedia_SplineWater fluid1,
     showExpertSummary=true) annotation (Placement(transformation(extent={{54,30},{74,50}})));
   Visualisation.Hexdisplay_3 hexdisplay_3_1(
-    Unit="HEX Temperature in °C",
+    Unit="HEX Temperature in C",
     y_min=0,
     y_max=100,
     T_o=hex.wall.summary.T_o - fill(273.15, 6),

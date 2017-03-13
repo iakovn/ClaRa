@@ -1,6 +1,10 @@
 within ClaRa.Components.Adapters;
-package Fundamentals 
+package Fundamentals
   extends ClaRa.Basics.Icons.PackageIcons.Components50;
+
+
+
+
 
 
 

@@ -1,6 +1,14 @@
 within ClaRa.StaticCycles;
-package Furnace 
+package Furnace
 extends ClaRa.Basics.Icons.PackageIcons.CycleInit80;
+
+
+
+
+
+
+
+
 
 
 

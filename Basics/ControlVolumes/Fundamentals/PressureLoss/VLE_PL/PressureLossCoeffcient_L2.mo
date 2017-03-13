@@ -1,10 +1,10 @@
-ï»¿within ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.VLE_PL;
+within ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.VLE_PL;
 model PressureLossCoeffcient_L2 "All geo || Quadratic pressure loss || constant pressure loss coefficient || density dependent "
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.0                            //
+  // Component of the ClaRa library, version: 1.2.1                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //

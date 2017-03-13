@@ -1,10 +1,10 @@
-ï»¿within ClaRa.Visualisation;
+within ClaRa.Visualisation;
 model RecycleRate "Diplays fraction of input mass flows"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.0                            //
+// Component of the ClaRa library, version: 1.2.1                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -20,7 +20,7 @@ model RecycleRate "Diplays fraction of input mass flows"
 //   input Real h=1 "Variable value" annotation (Dialog);
 //   input Real T=1 "Variable value" annotation (Dialog);
 
-//  parameter String unit="°C" "Variable unit";
+//  parameter String unit="C" "Variable unit";
   parameter Integer decimalSpaces=1 "Accuracy to be displayed";
   parameter Integer identifier= 0 "Identifier of the quadruple";
 Real rate "recyle rate";

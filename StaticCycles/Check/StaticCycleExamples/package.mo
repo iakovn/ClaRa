@@ -9,4 +9,11 @@ extends Basics.Icons.PackageIcons.CycleInitb80;
 
 
 
+
+
+
+
+
+
+
 end StaticCycleExamples;

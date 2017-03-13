@@ -1,10 +1,10 @@
-ï»¿within ClaRa.Basics.ControlVolumes.SolidVolumes.Check;
+within ClaRa.Basics.ControlVolumes.SolidVolumes.Check;
 model Validation_NTUcounter_DiscrPipes_Case1 "Validation: NTU method vs. discretized tube models || counter current || evaporating inner side ||H2O"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.0                            //
+  // Component of the ClaRa library, version: 1.2.1                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -259,8 +259,8 @@ SCENARIO:
 * both media: water
 ___________________________________________________________________________________________________
 LOOK AT:
-Outlet temperature of cooled liquid: OuterSide_outletTemp.T  vs. wall_NTU.summary.T_o[6]   = 248.31 °C  vs 248.29 °C
-Outlet temperature of evaporated water: InnerSide_outletTemp.T vs wall_NTU.summary.T_i[6]   = 215.55 °C vs 216.11 °C
+Outlet temperature of cooled liquid: OuterSide_outletTemp.T  vs. wall_NTU.summary.T_o[6]   = 248.31 C  vs 248.29 C
+Outlet temperature of evaporated water: InnerSide_outletTemp.T vs wall_NTU.summary.T_i[6]   = 215.55 C vs 216.11 C
 ___________________________________________________________________________________________________
 NOTE:
 * the results from the NTU method is slightly worse when the inlet media data are used instead of taken arethmetic mean

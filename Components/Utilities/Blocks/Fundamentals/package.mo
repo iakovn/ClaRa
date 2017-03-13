@@ -1,13 +1,13 @@
-ï»¿within ClaRa.Components.Utilities.Blocks;
+within ClaRa.Components.Utilities.Blocks;
 package Fundamentals "Fundamentals for the block package, containing the random package from Peter Fristzson's book"
 //___________________________________________________________________________//
-// Package of the ClaRa library, version: 1.2.0                              //
+// Package of the ClaRa library, version: 1.2.1                              //
 // Models of the ClaRa library are tested under DYMOLA v2016 FD01.           //
 // It is planned to support alternative Simulators like SimulationX in the   //
 // future                                                                    //
 //___________________________________________________________________________//
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // This Modelica package is free software and the use is completely at your  //
 // own risk; it can be redistributed and/or modified under the terms of the  //
@@ -34,6 +34,7 @@ import Modelica.Math;
 //Uniform distribution random function
 
 //Distribution uniform between 0 and 1.
+
 
 
 end Fundamentals;

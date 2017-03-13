@@ -1,4 +1,4 @@
-ï»¿within ClaRa.Components.HeatExchangers.Check;
+within ClaRa.Components.HeatExchangers.Check;
 model Test_HEXvle2vle_L3_2ph_CH_ntu
  extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
 
@@ -76,7 +76,7 @@ model Test_HEXvle2vle_L3_2ph_CH_ntu
   Visualisation.Hexdisplay_3 hexdisplay_3_1(
     T_o=hex.wall.summary.T_o - fill(273.15, 6),
     T_i=hex.wall.summary.T_i - fill(273.15, 6),
-    Unit="HEX Temperature in °C",
+    Unit="HEX Temperature in C",
     z_o=hex.wall.summary.eCom.z_o,
     z_i=hex.wall.summary.eCom.z_i,
     y_min=200,

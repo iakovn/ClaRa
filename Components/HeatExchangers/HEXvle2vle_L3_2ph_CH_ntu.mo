@@ -1,10 +1,10 @@
-ï»¿within ClaRa.Components.HeatExchangers;
+within ClaRa.Components.HeatExchangers;
 model HEXvle2vle_L3_2ph_CH_ntu "VLE 2 VLE | L3 | 2 phase at shell side | Cylinder shape | Header type | simple HT"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.0                            //
+  // Component of the ClaRa library, version: 1.2.1                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -373,6 +373,7 @@ equation
 
 initial equation
   //        wall.T=(tubes.bulk.T+shell.bulk.T)/2;
+
 
 equation
   connect(tubes.inlet, In2) annotation (Line(

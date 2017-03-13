@@ -1,10 +1,10 @@
-ï»¿within ClaRa.Components.Utilities.Blocks;
+within ClaRa.Components.Utilities.Blocks;
 model Convert2StateDiscrete "Converts a flaoting value to a discrete one. Value is changed when a certain threshold is violated"
   //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.0                            //
+// Component of the ClaRa library, version: 1.2.1                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright © 2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -37,6 +37,7 @@ initial equation
   if smoothValue then
     y=u;
   end if;
+
 
 equation
   connect(y, y) annotation (Line(

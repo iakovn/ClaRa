@@ -1,7 +1,7 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals;
 package ChemicalReactions
 //___________________________________________________________________________//
-// Package of the ClaRa library, version: 1.2.0                              //
+// Package of the ClaRa library, version: 1.2.1                              //
 // Models of the ClaRa library are tested under DYMOLA v2016 FD01.           //
 // It is planned to support alternative Simulators like SimulationX in the   //
 // future                                                                    //
@@ -27,5 +27,15 @@ package ChemicalReactions
 
 extends ClaRa.Basics.Icons.PackageIcons.Basics50;
 import SI = ClaRa.Basics.Units;
+
+
+
+
+
+
+
+
+
+
 
 end ChemicalReactions;
