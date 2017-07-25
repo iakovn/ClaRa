@@ -1,10 +1,10 @@
 within ClaRa.Basics.ControlVolumes.FluidVolumes;
 model VolumeVLE_2 "A lumped control volume for vapour/liquid equilibrium"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.1                            //
+// Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -209,7 +209,7 @@ equation
   inlet.h_outflow=phaseBorder.h_inflow;
   outlet.h_outflow=phaseBorder.h_outflow;
 
-  h_in= if useHomotopy then homotopy(actualStream(inlet.h_outflow), inStream(inlet.h_outflow)) else actualStream(inlet.h_outflow);
+  h_in= if useHomotopy then homotopy(noEvent(actualStream(inlet.h_outflow)), inStream(inlet.h_outflow)) else noEvent(actualStream(inlet.h_outflow));
   h_out= if useHomotopy then homotopy(actualStream(outlet.h_outflow), outlet.h_outflow) else actualStream(outlet.h_outflow);
   xi_in= if useHomotopy then homotopy(actualStream(inlet.xi_outflow), inStream(inlet.xi_outflow)) else actualStream(inlet.xi_outflow);
   xi_out= if useHomotopy then homotopy(actualStream(outlet.xi_outflow), outlet.xi_outflow) else actualStream(outlet.xi_outflow);

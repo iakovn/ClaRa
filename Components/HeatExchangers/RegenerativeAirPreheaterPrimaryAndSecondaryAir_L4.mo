@@ -1,10 +1,10 @@
 within ClaRa.Components.HeatExchangers;
 model RegenerativeAirPreheaterPrimaryAndSecondaryAir_L4 "Model for a regenerative air preheater with primary and secondary air"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.1                            //
+  // Component of the ClaRa library, version: 1.2.2                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -522,7 +522,7 @@ public
         rotation=0,
         origin={102,86})));
 protected
-  ClaRa.Basics.Interfaces.EyeIn eye_int_flueGas
+  ClaRa.Basics.Interfaces.EyeIn eye_int_flueGas[1]
                                                annotation (Placement(transformation(extent={{-1,-1},{1,1}},
         rotation=0,
         origin={86,82})));
@@ -539,11 +539,11 @@ equation
   eye_int_air[2].T = summary.secondaryAirOutlet.T - 273.15;
   eye_int_air[2].s = secondaryAirCell.fluidOutlet.s/1e3;
 
-  eye_int_flueGas.p = summary.flueGasOutlet.p/1e5;
-  eye_int_flueGas.h = summary.flueGasOutlet.h/1e3;
-  eye_int_flueGas.m_flow = summary.flueGasOutlet.m_flow;
-  eye_int_flueGas.T = summary.flueGasOutlet.T - 273.15;
-  eye_int_flueGas.s = 0;
+  eye_int_flueGas[1].p = summary.flueGasOutlet.p/1e5;
+  eye_int_flueGas[1].h = summary.flueGasOutlet.h/1e3;
+  eye_int_flueGas[1].m_flow = summary.flueGasOutlet.m_flow;
+  eye_int_flueGas[1].T = summary.flueGasOutlet.T - 273.15;
+  eye_int_flueGas[1].s = 0;
 
   for i in 1:(N_cv) loop
   connect(wallSecondaryAir[i].outerPhase, flueGasCellSecondary.heat[N_cv + 1 - i]) annotation (
@@ -659,7 +659,7 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(eye_air[:], eye_int_air[:]) annotation (Line(points={{-56,-102},{-56,-74}}, color={190,190,190}));
-  connect(eye_int_flueGas, eye_flueGas) annotation (Line(points={{86,82},{100,82}}, color={190,190,190}));
+  connect(eye_int_flueGas[1], eye_flueGas) annotation (Line(points={{86,82},{100,82}}, color={190,190,190}));
   annotation (
     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}})),
     Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}})),

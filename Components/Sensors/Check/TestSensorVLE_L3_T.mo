@@ -24,7 +24,8 @@ Real alpha;
     p_start=100e5,
     h_start=3500e3,
     thickness_sensor=4e-3,
-    redeclare model WallMaterial = TILMedia.SolidTypes.SteelX2CrNi19_11) annotation (Placement(transformation(extent={{-10,-20},{10,0}})));
+    redeclare model WallMaterial = TILMedia.SolidTypes.TILMedia_StainlessSteel)
+                                                                         annotation (Placement(transformation(extent={{-10,-20},{10,0}})));
   Modelica.Blocks.Sources.TimeTable timeTable2(table=[0.0,100e5; 300,100e5; 1000,1e5; 10000,1e5]) annotation (Placement(transformation(extent={{98,-6},{78,14}})));
   VolumesValvesFittings.Valves.ValveVLE_L1 valveVLE_L1_1 annotation (Placement(transformation(extent={{16,-26},{36,-14}})));
   VolumesValvesFittings.Valves.ValveVLE_L1 valveVLE_L1_2 annotation (Placement(transformation(extent={{14,14},{34,26}})));

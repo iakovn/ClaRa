@@ -1,10 +1,10 @@
 within ClaRa.Basics.ControlVolumes.GasVolumes;
 model VolumeGas_L2 "A 0-d control volume for flue gas"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.1                            //
+// Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -171,12 +171,9 @@ h_out=flueGasOutlet.h;
 
 mass = geo.volume * bulk.d;
 
-/*
-inlet.p=if useHomotopy then homotopy(p+pressureLoss.Delta_p + (geo.z_in-geo.z_out)*Modelica.Constants.g_n*bulk.d,
-                                         p+pressureLoss.Delta_p + (geo.z_in-geo.z_out)*Modelica.Constants.g_n*d_nom)
-            else p+pressureLoss.Delta_p + (geo.z_in-geo.z_out)*Modelica.Constants.g_n*bulk.d;*/
 
-   inlet.p =  p + pressureLoss.Delta_p;// + (geo.z_in-geo.z_out)*Modelica.Constants.g_n*bulk.d;
+
+   inlet.p =  p + pressureLoss.Delta_p;
    outlet.p = p;
 
 // Mass balance
@@ -199,11 +196,9 @@ inlet.p=if useHomotopy then homotopy(p+pressureLoss.Delta_p + (geo.z_in-geo.z_ou
              + bulk.drhodp_hxi * der(p);
   end if;
 
-  der(h) =  (inlet.m_flow*(h_in-h) + outlet.m_flow*(h_out-h)  + geo.volume*der(p) + heat.Q_flow)/mass "Energy balance";
+  //Energy balance
+  der(h) =  (inlet.m_flow*(h_in-h) + outlet.m_flow*(h_out-h)  + geo.volume*der(p) + heat.Q_flow)/mass;
 
-//     der(h) =  if useHomotopy then homotopy((inlet.m_flow*h_in + outlet.m_flow*h_out  + geo.V*der(p) + heat.Q_flow - h*geo.V*drhodt), (m_flow_nom*h_in -m_flow_nom*h_out  + geo.V*der(p) + heat.Q_flow - h*geo.V*drhodt))/mass
-//     else (inlet.m_flow*h_in + outlet.m_flow*h_out  + geo.V*der(p) + heat.Q_flow - h*geo.V*drhodt)/mass
-//     "Energy balance";
 
 initial equation
 
@@ -225,6 +220,8 @@ initial equation
     else
      assert(initOption == 0,"Invalid init option");
     end if;
+
+
 
 
 equation

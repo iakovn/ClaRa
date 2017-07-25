@@ -1,10 +1,10 @@
 within ClaRa.Examples;
 model BoilerExample
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.1                            //
+// Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -526,7 +526,6 @@ model BoilerExample
   Components.Furnace.FlameRoom.FlameRoomWithTubeBundle_L2_Dynamic flameRoom_eco(
     redeclare model HeatTransfer_Top =
         ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Adiabat_L2,
-    T_start_flueGas_out=650,
     xi_start_flueGas_out={0.01,0,0.25,0,0.7,0,0,0.04,0},
     redeclare model ReactionZone =
         ClaRa.Components.Furnace.ChemicalReactions.CoalReactionZone,
@@ -550,7 +549,8 @@ model BoilerExample
     redeclare model HeatTransfer_TubeBundle =
         ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Convection.Convection_tubeBank_L2 (
          CF_fouling=0.95),
-    showData=true)
+    showData=true,
+    T_start_flueGas_out=600)
     annotation (Placement(transformation(extent={{28,204},{88,224}})));
 
   Components.VolumesValvesFittings.Pipes.PipeFlowVLE_L4_Simple eco(

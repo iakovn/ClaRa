@@ -1,10 +1,10 @@
 within ClaRa.Basics.ControlVolumes.SolidVolumes;
 model ThickWall_L4 "A thick cylindric wall with radial descretisation"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.1                            //
+// Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -33,6 +33,7 @@ public
   parameter SI.Length diameter_i "Inner diameter" annotation(Dialog(group="Geometry"));
   parameter SI.Length length "Length of cylinder" annotation(Dialog(group="Geometry"));
   parameter Integer N_tubes= 1 "Number of tubes in parallel" annotation(Dialog(group="Geometry"));
+  parameter Units.Mass mass_struc = 0 "Mass of inner structure elements, additional to the tubes itself"             annotation(Dialog(group="Geometry"));
   parameter SI.Temperature T_start[N_rad]=ones(N_rad)*293.15 "Start values of wall temperature inner --> outer"
                                                                                             annotation(Dialog(group="Initialisation"));
   inner parameter Integer initOption=0 "Type of initialisation" annotation (Dialog(group="Initialisation"), choices(
@@ -40,7 +41,7 @@ public
       choice=1 "Steady state",
       choice=203 "Steady temperature"));
   final parameter SI.Mass mass_nominal = solid[N_rad].d*Modelica.Constants.pi/4*(diameter_o^2-diameter_i^2)*length*N_tubes "Wall mass (deprecated)";
-  final parameter SI.Mass mass = solid[N_rad].d*Modelica.Constants.pi/4*(diameter_o^2-diameter_i^2)*length*N_tubes "Wall mass";
+  final parameter SI.Mass mass = mass_struc+solid[N_rad].d*Modelica.Constants.pi/4*(diameter_o^2-diameter_i^2)*length*N_tubes "Wall mass";
   SI.Length Delta_radius[N_rad] "Thicknes of the volume elements";
   SI.Length radius[N_rad+1] "Radii of the heat transfer areas";
   SI.Temperature T[N_rad](start=T_start, nominal=300) "Solid material temperature";
@@ -114,9 +115,9 @@ equation
      A_heat[i]=radius_m[i]*2*Modelica.Constants.pi*length*N_tubes;
   end for;
 
- // Energy balamce:
+ // Energy balacce:
    for i in 1: N_rad loop
-     U[i]=solid[i].cp*solid[i].d * Modelica.Constants.pi*(radius[i+1]^2-radius[i]^2) * length *N_tubes * T[i];
+     U[i]=(mass_struc/N_rad*solid[i].cp+solid[i].cp*solid[i].d * Modelica.Constants.pi*(radius[i+1]^2-radius[i]^2) * length *N_tubes) * T[i];
      der(U[i]) = Q_flow[i]-Q_flow[i+1];
    end for;
 // boundary conditions:

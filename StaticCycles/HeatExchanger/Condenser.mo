@@ -1,10 +1,10 @@
 within ClaRa.StaticCycles.HeatExchanger;
 model Condenser "Condenser || par.: pressure, level_abs || blue |green"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.1                            //
+// Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -17,6 +17,23 @@ model Condenser "Condenser || par.: pressure, level_abs || blue |green"
   // Blue input:   Value of p is known in component and provided FOR neighbor component, values of m_flow and h are unknown and provided BY neighbor component.
   // Green output: Values of p, m_flow and h are known in component and provided FOR neighbor component.
   outer ClaRa.SimCenter simCenter;
+  //---------Summary Definition---------
+  model Summary
+    extends ClaRa.Basics.Icons.RecordIcon;
+    ClaRa.Basics.Records.StaCyFlangeVLE inlet;
+    ClaRa.Basics.Records.StaCyFlangeVLE outlet;
+  end Summary;
+
+  Summary summary(
+  inlet(
+     m_flow=inlet.m_flow,
+     h=inlet.h,
+     p=inlet.p),
+  outlet(
+     m_flow=outlet.m_flow,
+     h=outlet.h,
+     p=outlet.p));
+  //---------Summary Definition---------
   parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium = simCenter.fluid1 "Medium in the component"
     annotation(choices(choice=simCenter.fluid1 "First fluid defined in global simCenter",
                        choice=simCenter.fluid2 "Second fluid defined in global simCenter",

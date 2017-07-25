@@ -1,10 +1,10 @@
 within ClaRa.StaticCycles.ValvesConnects;
 model Tube3 " Tube || blue | blue"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.1                            //
+// Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -42,7 +42,7 @@ model Tube3 " Tube || blue | blue"
     TILMedia.VLEFluidFunctions.density_phxi(medium, p_out, h_in, xi) * Modelica.Constants.g_n * ( z_out - z_in) "Geostatic pressure difference";
   final parameter ClaRa.Basics.Units.Pressure p_out(fixed=false) "Outlet pressure";
 
-  final parameter ClaRa.Basics.Units.Pressure p[N_cv] = ClaRa_Dev.Basics.Functions.pressureInterpolation(p_in, p_out, Delta_x, frictionAtInlet, frictionAtOutlet) "Rprt: Discretisised pressure";
+  final parameter ClaRa.Basics.Units.Pressure p[N_cv] = ClaRa.Basics.Functions.pressureInterpolation(p_in, p_out, Delta_x, frictionAtInlet, frictionAtOutlet) "Rprt: Discretisised pressure";
   final parameter ClaRa.Basics.Units.PressureDifference Delta_p_fric(fixed=false) "Actual friction pressure loss";
 protected
   ClaRa.Components.Utilities.Blocks.ParameterizableTable1D table(table=CharLine_Delta_p_fric_P_target_, u = {P_target_});

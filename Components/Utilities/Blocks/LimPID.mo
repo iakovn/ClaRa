@@ -86,8 +86,8 @@ protected
                              controllerType==Modelica.Blocks.Types.SimpleController.PID annotation (HideResult=true);
   parameter Boolean with_D = controllerType==Modelica.Blocks.Types.SimpleController.PD or
                              controllerType==Modelica.Blocks.Types.SimpleController.PID annotation (HideResult=true);
-  Real resetValueP "Input to P part before controller activation";
-  Real resetValueID "Output of controller before activation";
+  Real resetValueP(start=0) "Input to P part before controller activation";
+  Real resetValueID(start=0) "Output of controller before activation";
 //  parameter Real y_in_start(fixed=false) "Start value of inlet pseudo state";
 //   parameter Real y_out_start(fixed=false) "Start value of outlet pseudo state";
 //   parameter Real y_aux_start(fixed=false) "Start value of auxilliary pseudo state";

@@ -130,7 +130,7 @@ end Regression;
     height=0,
     offset=1e5) annotation (Placement(transformation(extent={{120,-40},{100,-20}})));
   Visualisation.Quadruple quadruple2(
-                                    largeFonts=false) annotation (Placement(transformation(extent={{38,-75},{68,-65}})));
+                                    largeFonts=false) annotation (Placement(transformation(extent={{56,-91},{86,-81}})));
   Visualisation.Quadruple quadruple1(
                                     largeFonts=false) annotation (Placement(transformation(extent={{-8,-83},{22,-73}})));
   Visualisation.Quadruple quadruple3(
@@ -213,7 +213,7 @@ equation
       points={{74,-62},{35.8,-62}},
       color={0,131,169},
       thickness=0.5));
-  connect(quadruple2.eye, massFlowSource_h1.eye) annotation (Line(points={{38,-70},{58,-70},{74,-70}}, color={190,190,190}));
+  connect(quadruple2.eye, massFlowSource_h1.eye) annotation (Line(points={{56,-86},{56,-70},{74,-70}}, color={190,190,190}));
   connect(quadruple1.eye, hex.eye1) annotation (Line(points={{-8,-78},{30,-78},{30,-69}},        color={190,190,190}));
   connect(massFlowSource_h.eye, quadruple3.eye) annotation (Line(points={{74,8},{36,8}}, color={190,190,190}));
   connect(level_abs1.y, PI.u_m) annotation (Line(points={{3,-68},{-2,-68},{-25.05,-68},{-25.05,-47}},

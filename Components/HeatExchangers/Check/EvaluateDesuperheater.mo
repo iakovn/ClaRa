@@ -1,10 +1,10 @@
 within ClaRa.Components.HeatExchangers.Check;
 model EvaluateDesuperheater "An evaluation scenario for the ShellAndTube_HEX_1 featuring part load. Comparing against an EBSILON model"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.1                            //
+  // Component of the ClaRa library, version: 1.2.2                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -95,7 +95,7 @@ model EvaluateDesuperheater "An evaluation scenario for the ShellAndTube_HEX_1 f
     redeclare model HeatTransferTubes = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L2 (PL_alpha=[0.01,0.5025; 0.4,0.6; 0.6,0.8; 1,1], alpha_nom=62.5),
     redeclare model HeatExchangerType = Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.CrossFlow,
     initOptionShell=1,
-    initOptionTubes=1) annotation (Placement(transformation(
+    initOptionTubes=0) annotation (Placement(transformation(
         extent={{10,-10},{-10,10}},
         rotation=270,
         origin={32,2})));
@@ -157,8 +157,9 @@ model EvaluateDesuperheater "An evaluation scenario for the ShellAndTube_HEX_1 f
     p_nom_tubes=40000000,
     p_start_tubes=32000000,
     initOptionShell=1,
-    initOptionTubes=1,
-    initOptionWall=0) annotation (Placement(transformation(
+    initOptionWall=0,
+    initOptionTubes=0)
+                      annotation (Placement(transformation(
         extent={{10,-10},{-10,10}},
         rotation=270,
         origin={32,-62})));

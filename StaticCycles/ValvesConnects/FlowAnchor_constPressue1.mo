@@ -1,10 +1,10 @@
 within ClaRa.StaticCycles.ValvesConnects;
 model FlowAnchor_constPressue1 "Flow Anchour || par.: m_flow_nom || red | blue"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.1                            //
+// Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -17,12 +17,28 @@ model FlowAnchor_constPressue1 "Flow Anchour || par.: m_flow_nom || red | blue"
 // Red input:    Values of p and m_flow are known in component and provided FOR neighbor component, value of h is unknown and provided BY neighbor component.
 // Blue output:  Value of p is unknown and provided BY neighbor component, values of m_flow and h are known in component and provided FOR neighbor component.
   outer parameter Real P_target_ "Target power in p.u.";
+  //---------Summary Definition---------
+  model Summary
+    extends ClaRa.Basics.Icons.RecordIcon;
+    ClaRa.Basics.Records.StaCyFlangeVLE inlet;
+    ClaRa.Basics.Records.StaCyFlangeVLE outlet;
+  end Summary;
 
-  parameter ClaRa.Basics.Units.MassFlowRate m_flow_nom "Nominal mass flow" annotation(Dialog(group="Fundamental Definitions"));
+  Summary summary(
+  inlet(
+     m_flow=inlet.m_flow,
+     h=inlet.h,
+     p=inlet.p),
+  outlet(
+     m_flow=outlet.m_flow,
+     h=outlet.h,
+     p=outlet.p));
+  //---------Summary Definition---------
+  parameter ClaRa.Basics.Units.MassFlowRate m_flow_nom=10 "Nominal mass flow" annotation(Dialog(group="Fundamental Definitions"));
   parameter Real CharLine_m_flow_P_target_[:,2] = [0,0;1,1] "Pressure drop depending on rel. power in p.u."
                                                                                               annotation(Dialog(group="Fundamental Definitions"));
 
-  final parameter ClaRa.Basics.Units.Pressure p_in=p_out "Inlet perssure";
+  final parameter ClaRa.Basics.Units.Pressure p_in=p_out "Inlet pressure";
   final parameter ClaRa.Basics.Units.Pressure p_out(fixed=false) "Outlet pressure";
   final parameter ClaRa.Basics.Units.MassFlowRate m_flow(fixed=false);
   final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_in(fixed=false) "Inlet spec. enthalpy";

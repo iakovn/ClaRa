@@ -36,5 +36,9 @@ model TestAsynchronousMotorWithPump
   annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(coordinateSystem(preserveAspectRatio=false), graphics={Rectangle(
           extent={{-100,100},{100,-100}},
           lineColor={115,150,0},
-          lineThickness=0.5)}));
+          lineThickness=0.5)}),
+    experiment(
+      StopTime=500,
+      __Dymola_NumberOfIntervals=1001,
+      Tolerance=1e-006));
 end TestAsynchronousMotorWithPump;

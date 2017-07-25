@@ -1,10 +1,10 @@
 within ClaRa.Components.Furnace.GeneralTransportPhenomena.ParticleMigration;
 model MeanMigrationSpeed "Determines the mean migration speed in dependence of the fluegas flow rates"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.1                            //
+// Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -25,7 +25,7 @@ initial equation
   w = w_initial;
 
 equation
- der(w) = 1/Tau*((V_flow_flueGas_in-V_flow_flueGas_out)/2.0/A_cross - w);
+ der(w) = 1/Tau*((abs(V_flow_flueGas_in)+abs(V_flow_flueGas_out))/2.0/A_cross - w);
 
   annotation (Documentation(info="<html>
 <p><b>Model description: </b>Model for a mean migration speed calculation according to flue gas volume flow rates</p>

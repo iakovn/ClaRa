@@ -1,10 +1,10 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Radiation;
 model Radiation_gas2Wall_advanced_L2 "All Geo || L2 || Radiation Between Gas And Wall (Advanced)"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.1                            //
+  // Component of the ClaRa library, version: 1.2.2                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -19,7 +19,7 @@ model Radiation_gas2Wall_advanced_L2 "All Geo || L2 || Radiation Between Gas And
   outer ClaRa.Basics.Records.IComGas_L2 iCom;
   extends ClaRa.Basics.Icons.Epsilon;
 
-  parameter Real CF_fouling=0.8 "Scaling factor accounting for the fouling of the wall";
+  input Real CF_fouling=0.8 "Scaling factor accounting for the fouling of the wall";
   parameter Real emissivity_wall=0.8 "Emissivity of the wall";
 
   parameter String suspension_calculationType="Fixed" "Calculation type" annotation (Dialog(group="Emissivity and absorbance factor calculation of the suspension volume"), choices(

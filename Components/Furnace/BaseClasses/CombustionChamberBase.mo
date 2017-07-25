@@ -131,12 +131,12 @@ partial model CombustionChamberBase
                                                                                             annotation(Dialog(tab="Initialisation"));
 
   constant Real T_0=298.15 "Reference temperature";
+  inner parameter ClaRa.Basics.Units.Time Tau = 0.001 "Time constant for heat transfer temperature delay" annotation(Dialog(tab="Expert Settings"));
 
 //## V A R I A B L E   P A R T##################################################################################
 
 protected
   inner ClaRa.Basics.Units.MassFraction xi_fuel "amount of fuel per flue gas mass";
-  inner constant ClaRa.Basics.Units.Time Tau = 0.001 "time constant for heat transfer temperature delay";
 
 //________________/ FlueGas Composition \_____________________
 public
@@ -257,7 +257,7 @@ public
             {-308,102}}),         iconTransformation(extent={{-290,70},{-310,90}})));
 protected
            ClaRa.Basics.Interfaces.EyeInGas
-                                   eye_int
+                                   eye_int[1]
                                 annotation (Placement(transformation(extent={{-254,84},
             {-266,96}}),      iconTransformation(extent={{240,-64},{232,-56}})));
 
@@ -306,7 +306,7 @@ equation
       color={167,25,48},
       thickness=0.5,
       smooth=Smooth.None));
-  connect(eye_int,eyeOut)
+  connect(eye_int[1],eyeOut)
                          annotation (Line(
       points={{-260,90},{-294,90}},
       color={190,190,190},

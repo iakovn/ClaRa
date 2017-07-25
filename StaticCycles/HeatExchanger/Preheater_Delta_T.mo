@@ -1,10 +1,10 @@
 within ClaRa.StaticCycles.HeatExchanger;
 model Preheater_Delta_T "1ph preheater || par.: shell pressure, shell m_flow, Delta_T"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.1                            //
+// Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -19,6 +19,33 @@ model Preheater_Delta_T "1ph preheater || par.: shell pressure, shell m_flow, De
   // Blue output:  Value of p is unknown and provided BY neighbor component, values of m_flow and h are known in component and provided FOR neighbor component.
   // Green output: Values of p, m_flow and h are known in component an provided FOR neighbor component.
   outer ClaRa.SimCenter simCenter;
+  //---------Summary Definition---------
+  model Summary
+    extends ClaRa.Basics.Icons.RecordIcon;
+    ClaRa.Basics.Records.StaCyFlangeVLE inlet_cond;
+    ClaRa.Basics.Records.StaCyFlangeVLE outlet_cond;
+    ClaRa.Basics.Records.StaCyFlangeVLE inlet_tap;
+    ClaRa.Basics.Records.StaCyFlangeVLE outlet_tap;
+  end Summary;
+  Summary summary(
+  inlet_cond(
+     m_flow=cond_in.m_flow,
+     h=cond_in.h,
+     p=cond_in.p),
+  outlet_cond(
+     m_flow=cond_out.m_flow,
+     h=cond_out.h,
+     p=cond_out.p),
+     inlet_tap(
+     m_flow=tap_in.m_flow,
+     h=tap_in.h,
+     p=tap_in.p),
+  outlet_tap(
+     m_flow=tap_out.m_flow,
+     h=tap_out.h,
+     p=tap_out.p));
+  //---------Summary Definition---------
+
   parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium = simCenter.fluid1 "Medium in the component"  annotation(choices(choice=simCenter.fluid1 "First fluid defined in global simCenter",
                        choice=simCenter.fluid2 "Second fluid defined in global simCenter",
                        choice=simCenter.fluid3 "Third fluid defined in global simCenter"),

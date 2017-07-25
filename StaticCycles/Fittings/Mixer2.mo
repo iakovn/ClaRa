@@ -1,10 +1,10 @@
 within ClaRa.StaticCycles.Fittings;
 model Mixer2 "Mixer || green | blue | green"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.1                            //
+// Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -17,6 +17,28 @@ model Mixer2 "Mixer || green | blue | green"
   // Green input: Values of p, m_flow and h are unknown and provided BY neighbor component.
   // Blue input:   Value of p is known in component and provided FOR neighbor component, values of m_flow and h are unknown and provided BY neighbor component.
   // Green output: Values of p, m_flow and h are known in component and provided FOR neighbor component.
+  //---------Summary Definition---------
+  model Summary
+    extends ClaRa.Basics.Icons.RecordIcon;
+    ClaRa.Basics.Records.StaCyFlangeVLE inlet1;
+    ClaRa.Basics.Records.StaCyFlangeVLE inlet2;
+    ClaRa.Basics.Records.StaCyFlangeVLE outlet;
+  end Summary;
+
+  Summary summary(
+  inlet1(
+     m_flow=inlet_1.m_flow,
+     h=inlet_1.h,
+     p=inlet_1.p),
+  inlet2(
+     m_flow=inlet_2.m_flow,
+     h=inlet_2.h,
+     p=inlet_2.p),
+  outlet(
+     m_flow=outlet.m_flow,
+     h=outlet.h,
+     p=outlet.p));
+  //---------Summary Definition---------
   final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h1(fixed=false) "Specific enthalpy of flow 1";
   final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h2(fixed=false) "Specific enthalpy of flow 2";
   final parameter ClaRa.Basics.Units.MassFlowRate m_flow_1(fixed=false) "Mass flow rate of flow 1";

@@ -1,10 +1,10 @@
 within ClaRa.StaticCycles.Storage;
 model Feedwatertank4 "Feedwatertank || par.: m_flow_FW, p_FW_nom || blue | blue | red | green"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.1                            //
+// Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -18,6 +18,33 @@ model Feedwatertank4 "Feedwatertank || par.: m_flow_FW, p_FW_nom || blue | blue 
   // Red input:    Values of p and m_flow are known in component and provided FOR neighbor component, value of h is unknown and provided BY neighbor component.
   // Green output: Values of p, m_flow and h are known in component and provided FOR neighbor component.
    outer parameter Real P_target_ "Target power in p.u.";
+  //---------Summary Definition---------
+  model Summary
+    extends ClaRa.Basics.Icons.RecordIcon;
+    ClaRa.Basics.Records.StaCyFlangeVLE inlet_cond;
+    ClaRa.Basics.Records.StaCyFlangeVLE outlet_cond;
+    ClaRa.Basics.Records.StaCyFlangeVLE inlet_tap1;
+    ClaRa.Basics.Records.StaCyFlangeVLE inlet_tap2;
+  end Summary;
+
+  Summary summary(
+  inlet_cond(
+     m_flow=cond_in.m_flow,
+     h=cond_in.h,
+     p=cond_in.p),
+  outlet_cond(
+     m_flow=cond_out.m_flow,
+     h=cond_out.h,
+     p=cond_out.p),
+  inlet_tap1(
+     m_flow=tap_in1.m_flow,
+     h=tap_in1.h,
+     p=tap_in1.p),
+  inlet_tap2(
+     m_flow=tap_in2.m_flow,
+     h=tap_in2.h,
+     p=tap_in2.p));
+  //---------Summary Definition---------
   outer ClaRa.SimCenter simCenter;
    parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium = simCenter.fluid1 "Medium in the component"
                                                        annotation(Dialog(group="Fundamental Definitions"), choices(choice=simCenter.fluid1 "First fluid defined in global simCenter",

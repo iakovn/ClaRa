@@ -1,10 +1,10 @@
 within ClaRa.StaticCycles.HeatExchanger;
 model Preheater_twoShell "Two cascade preheater || bubble state at shell outlets || par.: shell pressures, shell m_flows"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.1                            //
+// Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -19,6 +19,43 @@ model Preheater_twoShell "Two cascade preheater || bubble state at shell outlets
   // Blue output:  Value of p is unknown and provided BY neighbor component, values of m_flow and h are known in component and provided FOR neighbor component.
   // Green output: Values of p, m_flow and h are known in component an provided FOR neighbor component.
   outer ClaRa.SimCenter simCenter;
+  //---------Summary Definition---------
+    model Summary
+    extends ClaRa.Basics.Icons.RecordIcon;
+    ClaRa.Basics.Records.StaCyFlangeVLE inlet_cond;
+    ClaRa.Basics.Records.StaCyFlangeVLE outlet_cond;
+    ClaRa.Basics.Records.StaCyFlangeVLE inlet_1_tap;
+    ClaRa.Basics.Records.StaCyFlangeVLE outlet_1_tap;
+    ClaRa.Basics.Records.StaCyFlangeVLE inlet_2_tap;
+    ClaRa.Basics.Records.StaCyFlangeVLE outlet_2_tap;
+    end Summary;
+
+  Summary summary(
+  inlet_cond(
+     m_flow=cond_in.m_flow,
+     h=cond_in.h,
+     p=cond_in.p),
+  outlet_cond(
+     m_flow=cond_out.m_flow,
+     h=cond_out.h,
+     p=cond_out.p),
+  inlet_1_tap(
+     m_flow=tap_1_in.m_flow,
+     h=tap_1_in.h,
+     p=tap_1_in.p),
+  outlet_1_tap(
+     m_flow=tap_1_out.m_flow,
+     h=tap_1_out.h,
+     p=tap_1_out.p),
+  inlet_2_tap(
+     m_flow=tap_2_in.m_flow,
+     h=tap_2_in.h,
+     p=tap_2_in.p),
+  outlet_2_tap(
+     m_flow=tap_2_out.m_flow,
+     h=tap_2_out.h,
+     p=tap_2_out.p));
+  //---------Summary Definition---------
   parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium = simCenter.fluid1 "Medium in the component" annotation(choices(choice=simCenter.fluid1 "First fluid defined in global simCenter",
                        choice=simCenter.fluid2 "Second fluid defined in global simCenter",
                        choice=simCenter.fluid3 "Third fluid defined in global simCenter"),

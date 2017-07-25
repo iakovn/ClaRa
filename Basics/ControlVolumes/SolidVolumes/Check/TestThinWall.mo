@@ -1,5 +1,6 @@
 within ClaRa.Basics.ControlVolumes.SolidVolumes.Check;
 model TestThinWall
+  extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
 
   ThinWall_L4 thinWall(
     diameter_o=0.5,

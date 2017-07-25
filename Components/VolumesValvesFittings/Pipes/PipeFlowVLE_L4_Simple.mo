@@ -1,10 +1,10 @@
 within ClaRa.Components.VolumesValvesFittings.Pipes;
 model PipeFlowVLE_L4_Simple "A 1D tube-shaped control volume considering one-phase and two-phase heat transfer in a straight pipe with static momentum balance and simple energy balance."
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.1                            //
+// Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -54,10 +54,11 @@ model PipeFlowVLE_L4_Simple "A 1D tube-shaped control volume considering one-pha
   parameter Integer N_passes=1 "Number of passes of the tubes" annotation(Dialog(group="Geometry"));
 
 //____Discretisation_____________________________________________________________________________________
-    parameter Integer N_cv(min=3)=3 "|Discretisation|Number of finite volumes";
+    parameter Integer N_cv(min=3)=3 "Number of finite volumes" annotation(Dialog(group="Discretisation"));
 public
   parameter Basics.Units.Length
-                            Delta_x[N_cv]=ClaRa.Basics.Functions.GenerateGrid({0}, length*N_passes, N_cv) "|Discretisation|Discretisation scheme";
+                            Delta_x[N_cv]=ClaRa.Basics.Functions.GenerateGrid({0}, length*N_passes, N_cv) "Discretisation scheme"
+                             annotation(Dialog(group="Discretisation"));
 
 //________Summary_________________
   parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary "True if component shall contribute to automatic efficiency calculation"
@@ -65,7 +66,7 @@ public
   parameter Boolean heatFlowIsLoss = true "True if negative heat flow is a loss (not a process product)" annotation(Dialog(tab="Summary and Visualisation"));
 
 protected
-  Basics.Interfaces.EyeIn eye_int
+  Basics.Interfaces.EyeIn eye_int[1]
     annotation (Placement(transformation(extent={{85,-41},{87,-39}})));
 public
   Basics.Interfaces.EyeOut eye if showData
@@ -78,13 +79,13 @@ equation
 
   assert(abs(z_out-z_in) <= length, "Length of pipe less than vertical height", AssertionLevel.error);
   //Summary:
-  eye_int.m_flow=-outlet.m_flow;
-  eye_int.T= fluidOutlet.T-273.15;
-  eye_int.s=fluidOutlet.s/1e3;
-  eye_int.p=outlet.p/1e5;
-  eye_int.h=actualStream(outlet.h_outflow)/1e3;
+  eye_int[1].m_flow=-outlet.m_flow;
+  eye_int[1].T= fluidOutlet.T-273.15;
+  eye_int[1].s=fluidOutlet.s/1e3;
+  eye_int[1].p=outlet.p/1e5;
+  eye_int[1].h=noEvent(actualStream(outlet.h_outflow))/1e3;
          //fillColor={0,131,169};//DynamicSelect(if time > 0 then (if not FlowModel==FlowModelStructure.inlet_innerPipe_outlet and not FlowModel==FlowModelStructure.inlet_innerPipe_dp_outlet then {0,131,169} else {255,255,255}) else {255,255,255}),
-  connect(eye_int,eye)  annotation (Line(
+  connect(eye_int[1],eye)  annotation (Line(
       points={{86,-40},{140,-40}},
       color={255,204,51},
       smooth=Smooth.None,
@@ -110,6 +111,5 @@ annotation (Icon(coordinateSystem(preserveAspectRatio=false,
           fillPattern=FillPattern.Solid,
           visible=frictionAtOutlet)}),
         Diagram(coordinateSystem(preserveAspectRatio=false,
-          extent={{-140,-50},{140,50}}),
-                                      graphics));
+          extent={{-140,-50},{140,50}})));
 end PipeFlowVLE_L4_Simple;

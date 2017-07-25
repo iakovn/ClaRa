@@ -1,10 +1,10 @@
 within ClaRa.Components.VolumesValvesFittings.Valves;
 model ValveVLE_L1 "Valve for VLE fluid flows with replaceable flow models"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.1                            //
+// Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -90,8 +90,8 @@ protected
     p=outlet.p,
     vleFluidType=medium,
     h=if (checkValve == true and opening_leak_ <= 0) or opening_ <
-        opening_leak_ then outlet.h_outflow else actualStream(outlet.h_outflow),
-    xi=if (checkValve == true and opening_leak_ <= 0) or opening_ < opening_leak_ then outlet.xi_outflow else actualStream(outlet.xi_outflow))
+        opening_leak_ then outlet.h_outflow else noEvent(actualStream(outlet.h_outflow)),
+    xi=if (checkValve == true and opening_leak_ <= 0) or opening_ < opening_leak_ then outlet.xi_outflow else noEvent(actualStream(outlet.xi_outflow)))
     annotation (Placement(transformation(extent={{70,-10},{90,10}})));
 public
   PressureLoss pressureLoss
@@ -101,8 +101,8 @@ protected
     vleFluidType=medium,
     p=inlet.p,
     h=if (checkValve == true and opening_leak_ <= 0) or opening_ <
-        opening_leak_ then inStream(inlet.h_outflow) else actualStream(inlet.h_outflow),
-    xi=if (checkValve == true and opening_leak_ <= 0) or opening_ < opening_leak_ then inStream(inlet.xi_outflow) else actualStream(inlet.xi_outflow))
+        opening_leak_ then inStream(inlet.h_outflow) else noEvent(actualStream(inlet.h_outflow)),
+    xi=if (checkValve == true and opening_leak_ <= 0) or opening_ < opening_leak_ then inStream(inlet.xi_outflow) else noEvent(actualStream(inlet.xi_outflow)))
     annotation (Placement(transformation(extent={{-90,-10},{-70,10}})));
 public
   Summary summary(
@@ -165,7 +165,7 @@ public
     annotation (Placement(transformation(extent={{90,-68},{110,-48}}),
         iconTransformation(extent={{90,-50},{110,-30}})));
 protected
-  Basics.Interfaces.EyeIn eye_int
+  Basics.Interfaces.EyeIn eye_int[1]
     annotation (Placement(transformation(extent={{45,-59},{47,-57}})));
 
 equation
@@ -195,13 +195,13 @@ equation
   outlet.xi_outflow = inStream(inlet.xi_outflow);
 
 //______________Eye port variable definition________________________
-  eye_int.m_flow = -outlet.m_flow;
-  eye_int.T = fluidOut.T-273.15;
-  eye_int.s = fluidOut.s/1e3;
-  eye_int.p = outlet.p/1e5;
-  eye_int.h = fluidOut.h/1e3;
+  eye_int[1].m_flow = -outlet.m_flow;
+  eye_int[1].T = fluidOut.T-273.15;
+  eye_int[1].s = fluidOut.s/1e3;
+  eye_int[1].p = outlet.p/1e5;
+  eye_int[1].h = fluidOut.h/1e3;
 
-  connect(eye,eye_int)  annotation (Line(
+  connect(eye,eye_int[1])  annotation (Line(
       points={{100,-58},{46,-58}},
       color={255,204,51},
       thickness=0.5,

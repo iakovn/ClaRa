@@ -1,10 +1,10 @@
 within ClaRa.StaticCycles.ValvesConnects;
 model PressureAnchor_constFlow1 "Pressure fix point || blue | green"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.1                            //
+// Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -17,7 +17,23 @@ model PressureAnchor_constFlow1 "Pressure fix point || blue | green"
 // Green input: Values of p, m_flow and h are unknown and provided BY neighbor component.
 // Blue output: Value of p is unknown and provided BY neighbor component, values of m_flow and h are known in component and provided FOR neighbor component.
   parameter ClaRa.Basics.Units.Pressure p_nom "Pressure" annotation(Dialog(group= "Fundamental Definitions"));
+  //---------Summary Definition---------
+  model Summary
+    extends ClaRa.Basics.Icons.RecordIcon;
+    ClaRa.Basics.Records.StaCyFlangeVLE inlet;
+    ClaRa.Basics.Records.StaCyFlangeVLE outlet;
+  end Summary;
 
+  Summary summary(
+  inlet(
+     m_flow=inlet.m_flow,
+     h=inlet.h,
+     p=inlet.p),
+  outlet(
+     m_flow=outlet.m_flow,
+     h=outlet.h,
+     p=outlet.p));
+  //---------Summary Definition---------
   parameter Real CharLine_p_P_target_[:,:]=[0,1;1,1] "Characteristic line of pressure drop as function of mass flow rate" annotation(Dialog(group="Part Load Definition"));
 
   final parameter ClaRa.Basics.Units.Pressure p(fixed=false) "Pressure";

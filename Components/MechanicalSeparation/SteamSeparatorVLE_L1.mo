@@ -1,5 +1,20 @@
 within ClaRa.Components.MechanicalSeparation;
 model SteamSeparatorVLE_L1
+//___________________________________________________________________________//
+// Component of the ClaRa library, version: 1.2.2                            //
+//                                                                           //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+//___________________________________________________________________________//
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
+// Institute of Energy Systems (Hamburg University of Technology),           //
+// Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
+// TLK-Thermo GmbH (Braunschweig, Germany),                                  //
+// XRG Simulation GmbH (Hamburg, Germany).                                   //
+//___________________________________________________________________________//
+
   extends ClaRa.Basics.Icons.Cyclone;
   extends ClaRa.Basics.Icons.ComplexityLevel(complexity="L1");
   import SZT = ClaRa.Basics.Functions.SmoothZeroTransition;
@@ -97,10 +112,10 @@ model SteamSeparatorVLE_L1
                        annotation (Placement(transformation(extent={{-60,-60},{-80,-40}})));
 
 protected
-  ClaRa.Basics.Interfaces.EyeIn eye_int
+  ClaRa.Basics.Interfaces.EyeIn eye_int[1]
     annotation (Placement(transformation(extent={{39,-53},{41,-51}})));
 
-  ClaRa.Basics.Interfaces.EyeIn eye_int1
+  ClaRa.Basics.Interfaces.EyeIn eye_int1[1]
     annotation (Placement(transformation(extent={{39,77},{41,75}})));
 
 equation
@@ -132,23 +147,23 @@ equation
   // outlet1.m_flow = - inlet.m_flow*fluidIn.q;
   0 = inlet.m_flow + outlet1.m_flow + outlet2.m_flow;
 
-  eye_int.m_flow=-outlet2.m_flow;
-  eye_int.T=summary.outlet2.T-273.15;
-  eye_int.s=fluidOut2.s/1000;
-  eye_int.h=summary.outlet2.h/1000;
-  eye_int.p=summary.outlet2.p/100000;
+  eye_int[1].m_flow=-outlet2.m_flow;
+  eye_int[1].T=summary.outlet2.T-273.15;
+  eye_int[1].s=fluidOut2.s/1000;
+  eye_int[1].h=summary.outlet2.h/1000;
+  eye_int[1].p=summary.outlet2.p/100000;
 
-  eye_int1.m_flow=-outlet1.m_flow;
-  eye_int1.T=summary.outlet1.T-273.15;
-  eye_int1.s=fluidOut1.s/1000;
-  eye_int1.h=summary.outlet1.h/1000;
-  eye_int1.p=summary.outlet1.p/100000;
+  eye_int1[1].m_flow=-outlet1.m_flow;
+  eye_int1[1].T=summary.outlet1.T-273.15;
+  eye_int1[1].s=fluidOut1.s/1000;
+  eye_int1[1].h=summary.outlet1.h/1000;
+  eye_int1[1].p=summary.outlet1.p/100000;
 
-  connect(eye_int, eye_out2) annotation (Line(
+  connect(eye_int[1], eye_out2) annotation (Line(
       points={{40,-52},{40,-100}},
       color={190,190,190},
       smooth=Smooth.None));
-  connect(eye_int1, eye_out1) annotation (Line(
+  connect(eye_int1[1], eye_out1) annotation (Line(
       points={{40,76},{40,100}},
       color={190,190,190},
       smooth=Smooth.None));

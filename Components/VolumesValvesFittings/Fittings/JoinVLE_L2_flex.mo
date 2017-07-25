@@ -1,10 +1,10 @@
 within ClaRa.Components.VolumesValvesFittings.Fittings;
 model JoinVLE_L2_flex "A join for an arbitrary number of inputs"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.1                            //
+// Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -86,18 +86,18 @@ public
   ClaRa.Basics.Interfaces.EyeOut eye if showData      annotation(Placement(transformation(extent={{90,-90},
             {110,-70}})));
 protected
-  ClaRa.Basics.Interfaces.EyeIn eye_int
+  ClaRa.Basics.Interfaces.EyeIn eye_int[1]
     annotation (Placement(transformation(extent={{45,-81},{47,-79}})));
 protected
 TILMedia.VLEFluid_ph fluidIn[N_ports_in](
     each vleFluidType=medium,
-    h=actualStream(inlet.h_outflow),
+    h=noEvent(actualStream(inlet.h_outflow)),
     p=inlet.p)                                                           annotation (Placement(transformation(extent={{-86,-10},
             {-66,10}},                                                                                                  rotation=0)));
 protected
 TILMedia.VLEFluid_ph fluidOut(
     each vleFluidType=medium,
-    h=actualStream(outlet.h_outflow),
+    h=noEvent(actualStream(outlet.h_outflow)),
     p=outlet.p)                                                          annotation (Placement(transformation(extent={{70,-10},
             {90,10}},                                                                                                   rotation=0)));
 equation
@@ -127,13 +127,13 @@ equation
     outlet.p=p;
     outlet.h_outflow=h;
 
-    eye_int.m_flow=-outlet.m_flow;
-    eye_int.T= bulk.T-273.15;
-    eye_int.s=bulk.s/1e3;
-    eye_int.p=bulk.p/1e5;
-    eye_int.h=h/1e3;
+    eye_int[1].m_flow=-outlet.m_flow;
+    eye_int[1].T= bulk.T-273.15;
+    eye_int[1].s=bulk.s/1e3;
+    eye_int[1].p=bulk.p/1e5;
+    eye_int[1].h=h/1e3;
 
-  connect(eye,eye_int)  annotation (Line(
+  connect(eye,eye_int[1])  annotation (Line(
       points={{100,-80},{46,-80}},
       color={255,204,51},
       thickness=0.5,

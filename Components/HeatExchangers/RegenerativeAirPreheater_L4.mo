@@ -1,10 +1,10 @@
 within ClaRa.Components.HeatExchangers;
 model RegenerativeAirPreheater_L4 "Model for a regenerative air preheater"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.1                            //
+  // Component of the ClaRa library, version: 1.2.2                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -225,7 +225,6 @@ public
     each xi_start=xi_start_flueGas,
     each useHomotopy=useHomotopy,
     each m_flow_nom=m_flow_flueGas_nom,
-    each p_nom=p_freshAir_nom*ones(N_cv),
     each xi_nom=xi_nom_flueGas,
     each T_nom=293.15*ones(N_cv),
     T_start=T_start_flueGas[:],
@@ -243,7 +242,9 @@ public
         volume=ones(N_cv)*volume_flueGas/N_cv,
         A_cross=ones(N_cv)*A_flueGas_free,
         A_heat=ones(N_cv, 1)*A_heat/N_cv),
-    initOption=initOptionCells) annotation (Placement(transformation(
+    initOption=initOptionCells,
+    each p_nom=p_flueGas_nom*ones(N_cv))
+                                annotation (Placement(transformation(
         extent={{-14,-6},{14,6}},
         rotation=90,
         origin={46,-22})));

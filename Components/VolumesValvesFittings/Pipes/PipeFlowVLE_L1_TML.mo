@@ -1,10 +1,10 @@
 within ClaRa.Components.VolumesValvesFittings.Pipes;
 model PipeFlowVLE_L1_TML "Simple tube model based on transmission line equations. Can choose between Modelica and ClaRa Delay implementation."
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.1                            //
+  // Component of the ClaRa library, version: 1.2.2                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -281,7 +281,7 @@ model PipeFlowVLE_L1_TML "Simple tube model based on transmission line equations
     computeVLEAdditionalProperties=true) annotation (Placement(transformation(
           extent={{-80,20},{-60,40}}, rotation=0)));
 protected
-  ClaRa.Basics.Interfaces.EyeIn eye_int
+  ClaRa.Basics.Interfaces.EyeIn eye_int[1]
     annotation (Placement(transformation(extent={{71,-31},{73,-29}})));
 public
   ClaRa.Basics.Interfaces.EyeOut eye if showData
@@ -298,7 +298,7 @@ protected
 
   Real Alpha;
   Real Beta;
-  Real I_f[N_temp - 1](stateSelect=StateSelect.avoid);
+  Real I_f[N_temp - 1](each stateSelect=StateSelect.avoid);
   //integral part of Temperatures
 
   ClaRa.Basics.Functions.ClaRaDelay.ExternalTable pointer_T_wall[N_wall]={
@@ -408,7 +408,7 @@ initial equation
 equation
   assert(abs(z_out-z_in) <= length, "Length of pipe less than vertical height", AssertionLevel.error);
 
-  connect(eye, eye_int) annotation (Line(
+  connect(eye, eye_int[1]) annotation (Line(
       points={{146,-28},{110,-28},{110,-30},{72,-30}},
       color={255,204,51},
       thickness=0.5,
@@ -772,11 +772,11 @@ equation
 
   //-------------------------------------------
   //Summary:
-  eye_int.m_flow = -outlet.m_flow;
-  eye_int.T = fluidOutlet.T - 273.15;
-  eye_int.s = fluidOutlet.s/1e3;
-  eye_int.p = fluidOutlet.p/1e5;
-  eye_int.h = actualStream(outlet.h_outflow)/1e3;
+  eye_int[1].m_flow = -outlet.m_flow;
+  eye_int[1].T = fluidOutlet.T - 273.15;
+  eye_int[1].s = fluidOutlet.s/1e3;
+  eye_int[1].p = fluidOutlet.p/1e5;
+  eye_int[1].h = actualStream(outlet.h_outflow)/1e3;
 
   annotation (
     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-140,-50},{140,50}}),

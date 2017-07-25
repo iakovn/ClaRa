@@ -13,3 +13,6 @@ CalculateStateChangeFraction
 SmoothZeroTransition
 maxAbs
 minAbs
+pressureInterpolation
+vectorInterpolation
+InitialiseCombustionGas

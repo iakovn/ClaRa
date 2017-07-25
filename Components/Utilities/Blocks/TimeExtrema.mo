@@ -1,10 +1,10 @@
 within ClaRa.Components.Utilities.Blocks;
 model TimeExtrema "Calculates the minimum and maximum value in a given period of time"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.1                            //
+// Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -17,7 +17,7 @@ model TimeExtrema "Calculates the minimum and maximum value in a given period of
   parameter SI.Time startTime= 0 "Start time for min/max evaluation";
   parameter Integer initOption= 0 "Init option |initial u| y_min/max_start" annotation(Dialog(group="Initialisation"), choices(choice=0 "initial u", choice=1 "initial y_min/y_max"));
   parameter Real y_start[2]= {10,-10} "Y_min_start | y_max_start"  annotation(Dialog(group="Initialisation", enable=initOption==1));
-
+  parameter SI.Time samplingTime=1 "Sampling time for evaluating extremas";
 protected
   Real ymax;
   Real ymin;
@@ -30,8 +30,8 @@ public
   Modelica.Blocks.Interfaces.RealInput u
     annotation (Placement(transformation(extent={{-140,-20},{-100,20}})));
 equation
-  der(ymax)= if  time >= startTime then noEvent(if ymax<u then (u-ymax)/1 else 0) else 0;
-  der(ymin)= if  time >= startTime then noEvent(if ymin>u then (u-ymin)/1 else 0) else 0;
+  der(ymax)= if  time >= startTime then noEvent(if ymax<u then (u-ymax)/samplingTime else 0) else 0;
+  der(ymin)= if  time >= startTime then noEvent(if ymin>u then (u-ymin)/samplingTime else 0) else 0;
   y_max=ymax;
   y_min=ymin;
 initial equation

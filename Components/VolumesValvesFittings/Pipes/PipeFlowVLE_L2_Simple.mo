@@ -1,10 +1,10 @@
 within ClaRa.Components.VolumesValvesFittings.Pipes;
 model PipeFlowVLE_L2_Simple "A 1D tube-shaped control volume considering one-phase and two-phase heat transfer in a straight pipe with static momentum balance and simple energy balance."
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.1                            //
+// Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -36,18 +36,24 @@ model PipeFlowVLE_L2_Simple "A 1D tube-shaped control volume considering one-pha
 
 //____Geometric data_____________________________________________________________________________________
   parameter Basics.Units.Length
-                            length= 1 "|Geometry|Length of the pipe";
+                            length= 1 "Length of the pipe (one pass)"
+                                                                     annotation(Dialog(group="Geometry"));
   parameter Basics.Units.Length
-                            diameter_i= 0.1 "|Geometry|Inner diameter of the pipe";
+                            diameter_i= 0.1 "Inner diameter of the pipe"
+                                                                        annotation(Dialog(group="Geometry"));
   parameter Basics.Units.Length
-                            z_in = 0.1 "|Geometry|height of inlet above ground";
+                            z_in = 0.1 "Height of inlet above ground"
+                                                                     annotation(Dialog(group="Geometry"));
   parameter Basics.Units.Length
-                            z_out= 0.1 "|Geometry|height of outlet above ground";
+                            z_out= 0.1 "Height of outlet above ground"
+                                                                      annotation(Dialog(group="Geometry"));
 
-  parameter Integer N_tubes= 1 "|Geometry|Number Of parallel pipes";
+  parameter Integer N_tubes= 1 "Number Of parallel pipes"
+                                                         annotation(Dialog(group="Geometry"));
+  parameter Integer N_passes=1 "Number of passes of the tubes" annotation(Dialog(group="Geometry"));
+
   final parameter Integer N_cv=1;
   final parameter Basics.Units.Length Delta_x[N_cv] = {length*N_passes};
-  parameter Integer N_passes=1 "Number of passes of the tubes" annotation(Dialog(group="Geometry"));
 
 //____Discretisation_____________________________________________________________________________________
 
@@ -57,7 +63,7 @@ model PipeFlowVLE_L2_Simple "A 1D tube-shaped control volume considering one-pha
                                                                                             annotation(Dialog(tab="Summary and Visualisation"));
   parameter Boolean heatFlowIsLoss = true "True if negative heat flow is a loss (not a process product)" annotation(Dialog(tab="Summary and Visualisation"));
 protected
-  Basics.Interfaces.EyeIn eye_int
+  Basics.Interfaces.EyeIn eye_int[1]
     annotation (Placement(transformation(extent={{85,-41},{87,-39}})));
 public
   Basics.Interfaces.EyeOut eye if showData
@@ -69,13 +75,13 @@ public
 equation
   assert(abs(z_out-z_in) <= length, "Length of pipe less than vertical height", AssertionLevel.error);
   //Summary:
-  eye_int.m_flow=-outlet.m_flow;
-  eye_int.T= fluidOutlet.T-273.15;
-  eye_int.s=fluidOutlet.s/1e3;
-  eye_int.p=outlet.p/1e5;
-  eye_int.h=actualStream(outlet.h_outflow)/1e3;
+  eye_int[1].m_flow=-outlet.m_flow;
+  eye_int[1].T= fluidOutlet.T-273.15;
+  eye_int[1].s=fluidOutlet.s/1e3;
+  eye_int[1].p=outlet.p/1e5;
+  eye_int[1].h=noEvent(actualStream(outlet.h_outflow))/1e3;
          //fillColor={0,131,169};//DynamicSelect(if time > 0 then (if not FlowModel==FlowModelStructure.inlet_innerPipe_outlet and not FlowModel==FlowModelStructure.inlet_innerPipe_dp_outlet then {0,131,169} else {255,255,255}) else {255,255,255}),
-  connect(eye_int,eye)  annotation (Line(
+  connect(eye_int[1],eye)  annotation (Line(
       points={{86,-40},{140,-40}},
       color={255,204,51},
       smooth=Smooth.None,

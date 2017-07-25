@@ -1,10 +1,10 @@
 within ClaRa.Components.MechanicalSeparation;
 model FeedWaterTank_L3 "Feedwater tank : separated volume approach | level-dependent phase separation"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.1                            //
+// Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -16,14 +16,19 @@ model FeedWaterTank_L3 "Feedwater tank : separated volume approach | level-depen
 //___________________________________________________________________________//
 
 extends ClaRa.Components.MechanicalSeparation.FeedWaterTank_base;
-  parameter ClaRa.Basics.Units.Length thickness_wall=0.005*diameter "Thickness of the cylinder wall"  annotation(Dialog(group="Geometry"));
+  parameter ClaRa.Basics.Units.Length thickness_wall=0.005*diameter "Thickness of the cylinder wall"  annotation(Dialog(group="Geometry", groupImage="modelica://ClaRa/figures/ParameterDialog/FeedWaterTank_L3.png"));
+  parameter Boolean includeInsulation=false annotation(Dialog(group="Geometry"));
+  parameter ClaRa.Basics.Units.Length thickness_insulation= 0.02 "Thickness of the insulation"
+                                                                                              annotation(Dialog(group="Geometry", enable=includeInsulation));
   replaceable model material = TILMedia.SolidTypes.TILMedia_Steel constrainedby TILMedia.SolidTypes.TILMedia_Aluminum "Material of the walls"  annotation (Dialog(group="Fundamental Definitions"),choicesAllMatching);
+  replaceable model insulationMaterial=TILMedia.SolidTypes.TILMedia_StainlessSteel constrainedby TILMedia.SolidTypes.BaseSolid "Insulation material" annotation (choicesAllMatching, Dialog(group="Fundamental Definitions", enable=(includeInsulation==true)));
   extends ClaRa.Basics.Icons.ComplexityLevel(complexity="L3");
   parameter Modelica.SIunits.Length radius_flange=0.05 "Flange radius" annotation(Dialog(group="Geometry"));
   parameter SI.Time Tau_cond=10 "Time constant of condensation" annotation (Dialog(tab="Phase Separation", group="Mass Transfer Between Phases"));
   parameter SI.Time Tau_evap=Tau_cond*1000 "Time constant of evaporation" annotation (Dialog(tab="Phase Separation", group="Mass Transfer Between Phases"));
-  parameter Real absorbInflow=1 "Absorption of incoming mass flow to the zones 1: perfect in the allocated zone, 0: perfect according to steam quality"
-                                                                                              annotation (Dialog(tab="Phase Separation", group="Mass Transfer Between Phases"));
+  parameter Real absorbInflow=1 "Absorption of incoming mass flow to the zones 1: perfect in the allocated zone, 0: perfect according to steam quality"                                                                                              annotation (Dialog(tab="Phase Separation", group="Mass Transfer Between Phases"));
+  parameter ClaRa.Basics.Units.Mass mass_struc=0 "Mass of internal structure addtional to feedwater tank wall"
+                                                                                                              annotation(Dialog(group="Geometry"));
   parameter SI.Area A_phaseBorder=volume.geo.A_hor*100 "Heat transfer area at phase border" annotation (Dialog(tab="Phase Separation", group="Heat Transfer Between Phases"));
   parameter SI.CoefficientOfHeatTransfer alpha_ph=500 "HTC of the phase border" annotation (Dialog(tab="Phase Separation", group="Heat Transfer Between Phases"));
   //  parameter Real expHT_phases=0 "Exponent for volume dependency on inter phase HT" annotation (Dialog(tab="Phase Separation", group="Heat Transfer Between Phases"));
@@ -43,11 +48,29 @@ extends ClaRa.Components.MechanicalSeparation.FeedWaterTank_base;
                                                                                               annotation (Dialog(group="Fundamental Definitions"),choicesAllMatching=true);
   inner parameter Integer initOption = 0 "Type of initialisation"
     annotation (Dialog(tab= "Initialisation"), choices(choice = 0 "Use guess values", choice = 209 "Steady in vapour pressure, enthalpies and vapour volume", choice=201 "Steady vapour pressure", choice = 202 "Steady enthalpy", choice=204 "Fixed volume fraction",  choice=211 "Fixed values in level, enthalpies and vapour pressure"));
+  parameter Modelica.SIunits.Temperature T_wall_start[wall.N_rad]=ones(wall.N_rad)*293.15 "Start values of wall temperature inner --> outer" annotation(Dialog(tab="Initialisation", group="Wall"));
+  parameter Integer initOptionWall=1 "Initialisation option for wall" annotation(Dialog(tab="Initialisation", group="Wall"),choices(
+      choice=0 "Use guess values",
+      choice=1 "Steady state",
+      choice=203 "Steady temperature"));
+
+  parameter Integer initOptionInsulation=0 "Type of initialisation" annotation (Dialog(tab="Initialisation",group="Insulation", enable=includeInsulation), choices(
+      choice=0 "Use guess values",
+      choice=1 "Steady state",
+      choice=203 "Steady temperature"));
+  parameter ClaRa.Basics.Units.Temperature T_startInsulation=293.15 "Start values of wall temperature" annotation (Dialog(tab="Initialisation",group="Insulation", enable=includeInsulation));
+
+  parameter Boolean enableAmbientLosses=false "Include heat losses to environment "
+                                                                                   annotation(Dialog(tab="Heat Losses"));
+  input ClaRa.Basics.Units.CoefficientOfHeatTransfer alpha_prescribed=8 "Prescribed heat transfer coefficient" annotation(Dialog(tab="Heat Losses", enable=(enableAmbientLosses==true)));
+  input ClaRa.Basics.Units.Temperature T_amb=simCenter.T_amb "Temperature of surrounding medium"
+                                                                                                annotation(Dialog(tab="Heat Losses", enable=(enableAmbientLosses==true)));
 
  model Outline
    extends ClaRa.Basics.Icons.RecordIcon;
    input Basics.Units.Length level_abs "Absolute filling level";
    input Real level_rel "Relative filling level";
+   input ClaRa.Basics.Units.HeatFlowRate Q_loss "Heat flow rate from metal wall to insulation/ambient";
  end Outline;
 
  model Wall
@@ -65,7 +88,7 @@ extends ClaRa.Components.MechanicalSeparation.FeedWaterTank_base;
  end Summary;
 
   Summary summary(
-    outline(level_abs=volume.phaseBorder.level_abs, level_rel=volume.phaseBorder.level_rel),
+    outline(level_abs=volume.phaseBorder.level_abs, level_rel=volume.phaseBorder.level_rel,Q_loss = wall.outerPhase.Q_flow),
     wall(T_wall=wall.T),
     tapping(
       showExpertSummary=showExpertSummary,
@@ -178,24 +201,45 @@ extends ClaRa.Components.MechanicalSeparation.FeedWaterTank_base;
   ClaRa.Basics.ControlVolumes.SolidVolumes.ThickWall_L4 wall(
     sizefunc=+1,
     N_tubes=1,
-    initOption=1,
     length=length,
     N_rad=3,
     diameter_i=diameter,
     redeclare replaceable model Material = material,
-    diameter_o=diameter + 2*thickness_wall)
+    diameter_o=diameter + 2*thickness_wall,
+    initOption=initOptionWall,
+    T_start=T_wall_start,
+    mass_struc=mass_struc + 2*diameter^2/4*Modelica.Constants.pi*thickness_wall*wall.solid[1].d)
              annotation (Placement(transformation(extent={{-8,6},{12,26}})));
 
   Modelica.Blocks.Interfaces.RealOutput level(value = if outputAbs then summary.outline.level_abs else summary.outline.level_rel) if levelOutput annotation (Placement(transformation(extent={{204,-126},{224,-106}}), iconTransformation(
         extent={{-10,-10},{10,10}},
         rotation=270,
         origin={240,-110})));
+  Basics.ControlVolumes.SolidVolumes.ThinWall_L4        insulation(
+    redeclare model Material=insulationMaterial,
+    diameter_o=diameter + 2*thickness_wall + 2*thickness_insulation,
+    diameter_i=diameter + 2*thickness_wall,
+    length=length,
+    N_tubes=1,
+    N_ax=1,
+    stateLocation=2,
+    initOption=initOptionInsulation,
+    T_start=T_startInsulation*ones(1)) if                             includeInsulation annotation (Placement(transformation(extent={{-8,32},{12,40}})));
+  BoundaryConditions.PrescribedHeatFlow                  prescribedHeatFlow(
+    length=length,
+    N_axial=1,
+    Delta_x=ClaRa.Basics.Functions.GenerateGrid(
+        {0},
+        length,
+        1)) if         enableAmbientLosses==true annotation (Placement(transformation(extent={{-56,28},{-36,48}})));
+  Modelica.Blocks.Sources.RealExpression heatFlowRatePrescribedAlpha(y=if includeInsulation then -alpha_prescribed*(length*Modelica.Constants.pi*(diameter + 2*thickness_wall + 2*thickness_insulation) + Modelica.Constants.pi*(diameter + 2*thickness_wall + 2*thickness_insulation)^2/4*2)*(prescribedHeatFlow.port[1].T - T_amb) else -alpha_prescribed*(length*Modelica.Constants.pi*(diameter + 2*thickness_wall) + Modelica.Constants.pi*(diameter + 2*thickness_wall)^2/4*2)*(prescribedHeatFlow.port[1].T - T_amb)) if
+                       enableAmbientLosses==true annotation (Placement(transformation(extent={{-88,28},{-68,48}})));
 equation
-  eye_int.m_flow=-outlet.m_flow;
-  eye_int.T=volume.summary.outlet.T-273.15;
-  eye_int.s=volume.fluidOut.s/1000;
-  eye_int.h=volume.summary.outlet.h/1000;
-  eye_int.p=volume.summary.outlet.p/100000;
+  eye_int[1].m_flow=-outlet.m_flow;
+  eye_int[1].T=volume.summary.outlet.T-273.15;
+  eye_int[1].s=volume.fluidOut.s/1000;
+  eye_int[1].h=volume.summary.outlet.h/1000;
+  eye_int[1].p=volume.summary.outlet.p/100000;
 
   connect(volume.inlet, condensate) annotation (Line(
       points={{12,-20},{106,-20},{106,60},{200,60}},
@@ -216,7 +260,19 @@ equation
       points={{1.8,6.4},{2,6.4},{2,-10}},
       color={191,0,0},
       smooth=Smooth.None));
-  annotation (Icon(coordinateSystem(preserveAspectRatio=true, extent={{-300,
+    if includeInsulation then
+      connect(wall.outerPhase,insulation.innerPhase[1]);
+      if enableAmbientLosses then
+         connect(insulation.outerPhase[1],prescribedHeatFlow.port[1]);
+         connect(heatFlowRatePrescribedAlpha.y, prescribedHeatFlow.Q_flow);
+      end if;
+    else
+      if enableAmbientLosses then
+         connect(wall.outerPhase,prescribedHeatFlow.port[1]);
+         connect(heatFlowRatePrescribedAlpha.y, prescribedHeatFlow.Q_flow);
+      end if;
+    end if;
+   annotation (Icon(coordinateSystem(preserveAspectRatio=true, extent={{-300,
             -100},{300,100}}),
                    graphics={
                      Rectangle(extent={{220,-8},{260,-92}}, lineColor={27,36,42},
@@ -227,6 +283,48 @@ equation
                                lineColor={27,36,42},
                                fillColor={0,131,169},
                                fillPattern=FillPattern.Solid,
-                               visible=showLevel)}),          Diagram(coordinateSystem(
+                               visible=showLevel),        Line(
+          points={{0,1},{5.81374e-017,-73}},
+          color={162,29,33},
+          visible=DynamicSelect(false,if enableAmbientLosses==true then true else false),
+          thickness=0.5,
+          origin={-150,-13},
+          rotation=180),
+        Line(
+          points={{0,1},{5.81374e-017,-73}},
+          color={162,29,33},
+          visible=DynamicSelect(false,if enableAmbientLosses==true then true else false),
+          thickness=0.5,
+          origin={-120,-13},
+          rotation=180),
+        Line(
+          points={{0,1},{5.81374e-017,-73}},
+          color={162,29,33},
+          visible=DynamicSelect(false,if enableAmbientLosses==true then true else false),
+          thickness=0.5,
+          origin={-90,-13},
+          rotation=180),
+        Polygon(
+          points={{-156,60},{-144,60},{-150,72},{-156,60}},
+          lineColor={162,29,33},
+          visible=DynamicSelect(false,if enableAmbientLosses==true then true else false),
+          lineThickness=0.5,
+          fillColor={162,29,33},
+          fillPattern=FillPattern.Solid),
+        Polygon(
+          points={{-126,60},{-114,60},{-120,72},{-126,60}},
+          lineColor={162,29,33},
+          visible=DynamicSelect(false,if enableAmbientLosses==true then true else false),
+          lineThickness=0.5,
+          fillColor={162,29,33},
+          fillPattern=FillPattern.Solid),
+        Polygon(
+          points={{-96,60},{-84,60},{-90,72},{-96,60}},
+          lineColor={162,29,33},
+          visible=DynamicSelect(false,if enableAmbientLosses==true then true else false),
+          lineThickness=0.5,
+          fillColor={162,29,33},
+          fillPattern=FillPattern.Solid)}),
+                                         Diagram(coordinateSystem(
           preserveAspectRatio=true, extent={{-220,-120},{120,100}})));
 end FeedWaterTank_L3;

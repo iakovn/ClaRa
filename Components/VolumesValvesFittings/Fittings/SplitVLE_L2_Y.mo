@@ -1,10 +1,10 @@
 within ClaRa.Components.VolumesValvesFittings.Fittings;
 model SplitVLE_L2_Y "A voluminous split for 2 outputs"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.1                            //
+// Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -96,18 +96,18 @@ public
 protected
 TILMedia.VLEFluid_ph fluidOut1(
     each vleFluidType=medium,
-    h=actualStream(outlet1.h_outflow),
+    h=noEvent(actualStream(outlet1.h_outflow)),
     p=outlet1.p)                                                         annotation (Placement(transformation(extent={{70,-10},
             {90,10}},                                                                                                   rotation=0)));
 protected
 TILMedia.VLEFluid_ph fluidIn(
     each vleFluidType=medium,
-    h=actualStream(inlet.h_outflow),
+    h=noEvent(actualStream(inlet.h_outflow)),
     p=inlet.p)                                                           annotation (Placement(transformation(extent={{-90,-12},
             {-70,8}},                                                                                                   rotation=0)));
 TILMedia.VLEFluid_ph fluidOut2(
     each vleFluidType=medium,
-    h=actualStream(outlet2.h_outflow),
+    h=noEvent(actualStream(outlet2.h_outflow)),
     p=outlet2.p)                                                         annotation (Placement(transformation(extent={{-10,-70},
             {10,-50}},                                                                                                  rotation=0)));
 
@@ -134,14 +134,14 @@ equation
     pressureLossIn.m_flow=inlet.m_flow;
   pressureLossOut1.m_flow=-outlet1.m_flow;
   pressureLossOut2.m_flow=-outlet2.m_flow;
-    H_flow_out[1]=if useHomotopy then homotopy(actualStream(outlet1.h_outflow)*outlet1.m_flow, -h*m_flow_out_nom[1]) else actualStream(outlet1.h_outflow)*outlet1.m_flow;
-    H_flow_out[2]=if useHomotopy then homotopy(actualStream(outlet2.h_outflow)*outlet2.m_flow, -h*m_flow_out_nom[2]) else actualStream(outlet2.h_outflow)*outlet2.m_flow;
+    H_flow_out[1]=if useHomotopy then homotopy(noEvent(actualStream(outlet1.h_outflow))*outlet1.m_flow, -h*m_flow_out_nom[1]) else noEvent(actualStream(outlet1.h_outflow))*outlet1.m_flow;
+    H_flow_out[2]=if useHomotopy then homotopy(noEvent(actualStream(outlet2.h_outflow))*outlet2.m_flow, -h*m_flow_out_nom[2]) else noEvent(actualStream(outlet2.h_outflow))*outlet2.m_flow;
     outlet1.p=p - pressureLossOut1.dp;
     outlet1.h_outflow=h;
     outlet2.p=p - pressureLossOut2.dp;
     outlet2.h_outflow=h;
 
-    H_flow_in= if useHomotopy then homotopy(actualStream(inlet.h_outflow)*inlet.m_flow, inStream(inlet.h_outflow)*sum(m_flow_out_nom)) else actualStream(inlet.h_outflow)*inlet.m_flow;
+    H_flow_in= if useHomotopy then homotopy(noEvent(actualStream(inlet.h_outflow))*inlet.m_flow, inStream(inlet.h_outflow)*sum(m_flow_out_nom)) else noEvent(actualStream(inlet.h_outflow))*inlet.m_flow;
     inlet.p=p+pressureLossIn.dp;
     inlet.h_outflow=h;
   for i in 1:2 loop

@@ -1,10 +1,10 @@
 within ClaRa.Components.BoundaryConditions;
 model BoundaryVLE_Txim_flow "A boundary defining temperature, composition and mass flow"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.1                            //
+// Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -69,7 +69,7 @@ protected
     T=T_in,
     xi=xi_in) annotation (Placement(transformation(extent={{22,-20},{42,0}})));
 
-  Basics.Interfaces.EyeIn       eye_int
+  Basics.Interfaces.EyeIn       eye_int[1]
     annotation (Placement(transformation(extent={{45,-81},{47,-79}}),
         iconTransformation(extent={{45,-65},{47,-63}})));
 
@@ -92,13 +92,13 @@ equation
   end if;
   steam_a.xi_outflow=xi_in;
 
-  eye_int.m_flow = -steam_a.m_flow;
-  eye_int.T = fluidOut.T-273.15;
-  eye_int.s = fluidOut.s/1e3;
-  eye_int.p = steam_a.p/1e5;
-  eye_int.h = fluidOut.h/1e3;
+  eye_int[1].m_flow = -steam_a.m_flow;
+  eye_int[1].T = fluidOut.T-273.15;
+  eye_int[1].s = fluidOut.s/1e3;
+  eye_int[1].p = steam_a.p/1e5;
+  eye_int[1].h = fluidOut.h/1e3;
 
-  connect(eye,eye_int)  annotation (Line(
+  connect(eye,eye_int[1])  annotation (Line(
       points={{100,-80},{46,-80}},
       color={255,204,51},
       thickness=0.5,

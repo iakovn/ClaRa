@@ -86,7 +86,7 @@ equation
       color={0,0,127},
       smooth=Smooth.None));
   connect(speedSensor.w, PID.u_m) annotation (Line(
-      points={{0,-5},{0,20}},
+      points={{0,-5},{0,8},{0,20},{-0.1,20}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(speedSensor.flange, idealGear.flange_b) annotation (Line(

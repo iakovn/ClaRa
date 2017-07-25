@@ -1,10 +1,10 @@
 within ClaRa.Basics.ControlVolumes.GasVolumes;
 model VolumeGas_L2_chem "A 0-d control volume for flue gas with chemical reactions"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.1                            //
+// Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -185,7 +185,6 @@ protected
 public
   Fundamentals.ChemicalReactions.reactionsInput reactionsInput annotation (Placement(transformation(extent={{-64,90},{-56,98}})));
 
-Modelica.SIunits.SpecificEnthalpy test[chemicalReactions.i];
 equation
    if chemicalReactions.use_signal then
      U_applied=reactionsInput.U_applied;
@@ -193,7 +192,6 @@ equation
      U_applied=100;
    end if;
 
-test=h*ones(chemicalReactions.i);
 // Asserts ~~~~~~~~~~~~~~~~~~~
   assert(geo.volume>0, "The system volume must be greater than zero!");
   assert(geo.A_heat[heatSurfaceAlloc]>=0, "The area of heat transfer must be greater than zero!");
@@ -217,25 +215,15 @@ h_out=flueGasOutlet.h;
 
 mass = geo.volume * bulk.d;
 chemicalReactions.mass=mass;
-/*
-inlet.p=if useHomotopy then homotopy(p+pressureLoss.Delta_p + (geo.z_in-geo.z_out)*Modelica.Constants.g_n*bulk.d,
-                                         p+pressureLoss.Delta_p + (geo.z_in-geo.z_out)*Modelica.Constants.g_n*d_nom)
-            else p+pressureLoss.Delta_p + (geo.z_in-geo.z_out)*Modelica.Constants.g_n*bulk.d;*/
 
-   inlet.p =  p + pressureLoss.Delta_p;// + (geo.z_in-geo.z_out)*Modelica.Constants.g_n*bulk.d;
+   inlet.p =  p + pressureLoss.Delta_p;
    outlet.p = p;
+
 // Mass balance
   if use_dynamicMassbalance then
-    //inlet.m_flow + outlet.m_flow + sum(chemicalReactions.m_flow_reaction[chemicalReactions.i]) =  drhodt*geo.volume;
     chemicalReactions.m_flow_aux + outlet.m_flow + sum(chemicalReactions.m_flow_reaction) =  drhodt*geo.volume;
-
-//      der(xi) =
-//       1/mass * (inlet.m_flow*(flueGasInlet.xi - xi) + outlet.m_flow*(flueGasOutlet.xi - xi) + chemicalReactions.m_flow_reaction*(chemicalReactions.xi_sep - xi));
   else
-    //inlet.m_flow + outlet.m_flow + sum(chemicalReactions.m_flow_reaction[chemicalReactions.i]) = 0;
     chemicalReactions.m_flow_aux + outlet.m_flow + sum(chemicalReactions.m_flow_reaction) = 0;
-//      zeros(medium.nc-1) =
-//        (inlet.m_flow*(flueGasInlet.xi - xi) + outlet.m_flow*(flueGasOutlet.xi - xi) + chemicalReactions.m_flow_reaction*(chemicalReactions.xi_sep - xi));
   end if;
 
   if use_dynamicMassbalance then
@@ -247,12 +235,9 @@ inlet.p=if useHomotopy then homotopy(p+pressureLoss.Delta_p + (geo.z_in-geo.z_ou
              + bulk.drhodp_hxi * der(p);
   end if;
 
-  //der(h) =  (inlet.m_flow*(h_in-h) + outlet.m_flow*(h_out-h)  + geo.volume*der(p) + heat.Q_flow + chemicalReactions.Q_flow_chem + chemicalReactions.m_flow_reaction[chemicalReactions.i].*(chemicalReactions.h_reaction[chemicalReactions.i] - h))/mass "Energy balance";
-  der(h) =  (chemicalReactions.m_flow_aux*(chemicalReactions.h_aux-h) + outlet.m_flow*(h_out-h)  + geo.volume*der(p) + heat.Q_flow + chemicalReactions.Q_flow_reaction + chemicalReactions.m_flow_reaction*(chemicalReactions.h_reaction .- h*ones(chemicalReactions.i)))/mass "Energy balance";
+  //Energy balance
+  der(h) =  (chemicalReactions.m_flow_aux*(chemicalReactions.h_aux-h) + outlet.m_flow*(h_out-h)  + geo.volume*der(p) + heat.Q_flow + chemicalReactions.Q_flow_reaction + chemicalReactions.m_flow_reaction*(chemicalReactions.h_reaction .- h*ones(chemicalReactions.i)))/mass;
 
-//     der(h) =  if useHomotopy then homotopy((inlet.m_flow*h_in + outlet.m_flow*h_out  + geo.V*der(p) + heat.Q_flow - h*geo.V*drhodt), (m_flow_nom*h_in -m_flow_nom*h_out  + geo.V*der(p) + heat.Q_flow - h*geo.V*drhodt))/mass
-//     else (inlet.m_flow*h_in + outlet.m_flow*h_out  + geo.V*der(p) + heat.Q_flow - h*geo.V*drhodt)/mass
-//     "Energy balance";
 
 initial equation
 
@@ -274,6 +259,8 @@ initial equation
     else
      assert(initOption == 0,"Invalid init option");
     end if;
+
+
 
 
 

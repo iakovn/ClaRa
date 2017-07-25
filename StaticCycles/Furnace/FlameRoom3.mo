@@ -4,7 +4,7 @@ model FlameRoom3 "Fixed fluid outlet temperature | blue | blue || brown | brown"
 // Component of the ClaRa library, version: 1.1.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -23,6 +23,49 @@ model FlameRoom3 "Fixed fluid outlet temperature | blue | blue || brown | brown"
 
   outer ClaRa.SimCenter simCenter;
   outer parameter Real P_target_ "Target power in p.u." annotation(Dialog(group="Part Load Definition"));
+
+  //---------Summary Definition---------
+  model Summary
+    extends ClaRa.Basics.Icons.RecordIcon;
+    ClaRa.Basics.Records.StaCyFlangeVLE inlet_wall;
+    ClaRa.Basics.Records.StaCyFlangeVLE outlet_wall;
+    ClaRa.Basics.Records.StaCyFlangeVLE inlet_bundle;
+    ClaRa.Basics.Records.StaCyFlangeVLE outlet_bundle;
+    ClaRa.Basics.Records.StaCyFlangeGas inlet_fg;
+    ClaRa.Basics.Records.StaCyFlangeGas outlet_fg;
+  end Summary;
+
+  Summary summary(
+  inlet_wall(
+     m_flow=m_flow_vle_wall_in,
+     h=h_vle_wall_in,
+     p=p_vle_wall_in),
+  outlet_wall(
+     m_flow=m_flow_vle_wall_out,
+     h=h_vle_wall_out,
+     p=p_vle_wall_out),
+  inlet_bundle(
+     m_flow=m_flow_vle_bundle_in,
+     h=h_vle_bundle_in,
+     p=p_vle_bundle_in),
+  outlet_bundle(
+     m_flow=m_flow_vle_bundle,
+     h=h_vle_bundle_out,
+     p=p_vle_bundle_out),
+  inlet_fg(
+     mediumModel=flueGas,
+     m_flow=m_flow_fg,
+     T=T_fg_in,
+     p=p_fg_in,
+     xi=xi_fg_in),
+  outlet_fg(
+     mediumModel=flueGas,
+     m_flow=m_flow_fg,
+     T=T_fg_out,
+     p=p_fg_out,
+     xi=xi_fg_out));
+
+  //---------Summary Definition---------
 
   parameter TILMedia.VLEFluidTypes.BaseVLEFluid vleMedium = simCenter.fluid1 "vleMedium in the component" annotation(Dialog(group="Fundamental Definitions"));
   parameter TILMedia.GasTypes.BaseGas flueGas = simCenter.flueGasModel "Flue gas model used in component" annotation(Dialog(group="Fundamental Definitions"));
@@ -54,12 +97,12 @@ model FlameRoom3 "Fixed fluid outlet temperature | blue | blue || brown | brown"
   parameter Boolean frictionAtInlet_wall = false "True if pressure loss between first cell and inlet shall be considered - tube bundle side"
                                                                                               annotation(Dialog(group="Discretisation (for reporting only)"), choices(checkBox=false));
   parameter Boolean frictionAtOutlet_wall = false "True if pressure loss between last cell and outlet shall be considered - tube bundle side"
-                                                                                              annotation(Dialog(group="Discretisation (for reporting only)"), choices(checkBox=false));
+                                                                                                                                             annotation(Dialog(group="Discretisation (for reporting only)"), choices(checkBox=false));
+
 // _________GENERAL VALUES ___________
   final parameter Integer N_cv_bundle = size(Delta_x_bundle,1) "Number of finite volumes in tube bundle";
   final parameter Integer N_cv_wall = size(Delta_x_wall,1) "Number of finite volumes in wall";
   final parameter ClaRa.Basics.Units.HeatFlowRate Q_flow_bundle = m_flow_vle_bundle*(h_vle_bundle_out-h_vle_bundle_in) "Actual heat flow rate to tube bundle";
-  //final parameter ClaRa.Basics.Units.HeatFlowRate Q_flow_wall = Q_flow_bundle/Pi_Q_flow "Actual heat flow rate to evaporator";
   final parameter ClaRa.Basics.Units.HeatFlowRate Q_flow_wall = m_flow_vle_wall_in*(h_vle_wall_out-h_vle_wall_in) "Actual heat flow rate to evaporator";
 
   final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_bub_bundle = TILMedia.VLEFluidFunctions.bubbleSpecificEnthalpy_pxi(
@@ -83,7 +126,7 @@ model FlameRoom3 "Fixed fluid outlet temperature | blue | blue || brown | brown"
   final parameter ClaRa.Basics.Units.MassFlowRate m_flow_fg(fixed=false) "Mass flow rate flue gas";
 
   final parameter ClaRa.Basics.Units.TemperatureDifference Delta_T_U_bundle = ClaRa.Basics.Functions.maxAbs(T_fg_in - T_vle_bundle_out, T_fg_out - T_vle_bundle_in, 0.1) "Rprt: Upper temperatre difference";
-  final parameter ClaRa.Basics.Units.TemperatureDifference Delta_T_L_bundle = ClaRa.Basics.Functions.minAbs(T_fg_in - T_vle_bundle_out, T_fg_out - T_vle_bundle_in, 0.1) "Rprt: Lowert temperature difference";
+  final parameter ClaRa.Basics.Units.TemperatureDifference Delta_T_L_bundle = ClaRa.Basics.Functions.minAbs(T_fg_in - T_vle_bundle_out, T_fg_out - T_vle_bundle_in, 0.1) "Rprt: Lower temperature difference";
   final parameter ClaRa.Basics.Units.TemperatureDifference Delta_T_mean_bundle = SM(0.1,eps, abs(Delta_T_L_bundle))*SM(0.01,eps, Delta_T_U_bundle*Delta_T_L_bundle) * SZT((Delta_T_U_bundle - Delta_T_L_bundle)/log(abs(Delta_T_U_bundle)/(abs(Delta_T_L_bundle)+1e-9)),
                                                                                               Delta_T_L_bundle,
                                                                                               (abs(Delta_T_U_bundle)-abs(Delta_T_L_bundle))-0.01,
@@ -91,15 +134,15 @@ model FlameRoom3 "Fixed fluid outlet temperature | blue | blue || brown | brown"
   final parameter Real kA = Q_flow_bundle /(1e-5+Delta_T_mean_bundle) "Rprt: Heat Flow Resistance";
 
   final parameter ClaRa.Basics.Units.TemperatureDifference Delta_T_U_wall = ClaRa.Basics.Functions.maxAbs(T_fg_in - T_vle_wall_out, T_fg_out - T_vle_wall_in, 0.1) "Rprt: Upper temperatre difference";
-  final parameter ClaRa.Basics.Units.TemperatureDifference Delta_T_L_wall = ClaRa.Basics.Functions.minAbs(T_fg_in - T_vle_wall_out, T_fg_out - T_vle_wall_in, 0.1) "Rprt: Lowert temperature difference";
+  final parameter ClaRa.Basics.Units.TemperatureDifference Delta_T_L_wall = ClaRa.Basics.Functions.minAbs(T_fg_in - T_vle_wall_out, T_fg_out - T_vle_wall_in, 0.1) "Rprt: Lower temperature difference";
   final parameter ClaRa.Basics.Units.TemperatureDifference Delta_T_mean_wall = SM(0.1,eps, abs(Delta_T_L_wall))*SM(0.01,eps, Delta_T_U_wall*Delta_T_L_wall) * SZT((Delta_T_U_wall - Delta_T_L_wall)/log(abs(Delta_T_U_wall)/(abs(Delta_T_L_wall)+1e-9)),
                                                                                               Delta_T_L_wall,
                                                                                               (abs(Delta_T_U_wall)-abs(Delta_T_L_wall))-0.01,
                                                                                               0.001) "Rprt: Logarithmic temperature difference";
   final parameter Real kA_wall = Q_flow_wall /(1e-5 + Delta_T_mean_wall) "Rprt: Heat Flow Resistance";
 
-  final parameter ClaRa.Basics.Units.Pressure p_bundle[N_cv_bundle] = ClaRa_Dev.Basics.Functions.pressureInterpolation(p_vle_bundle_in, p_vle_bundle_out, Delta_x_bundle, frictionAtInlet_bundle, frictionAtOutlet_bundle) "Rprt: Discretisised pressure at tube bundle";
-  final parameter ClaRa.Basics.Units.Pressure p_wall[N_cv_wall] = ClaRa_Dev.Basics.Functions.pressureInterpolation(p_vle_wall_in, p_vle_wall_out, Delta_x_wall, frictionAtInlet_wall, frictionAtOutlet_wall) "Rprt: Discretisised pressure at tube bundle";
+  final parameter ClaRa.Basics.Units.Pressure p_bundle[N_cv_bundle] = ClaRa.Basics.Functions.pressureInterpolation(p_vle_bundle_in, p_vle_bundle_out, Delta_x_bundle, frictionAtInlet_bundle, frictionAtOutlet_bundle) "Rprt: Discretisised pressure at tube bundle";
+  final parameter ClaRa.Basics.Units.Pressure p_wall[N_cv_wall] = ClaRa.Basics.Functions.pressureInterpolation(p_vle_wall_in, p_vle_wall_out, Delta_x_wall, frictionAtInlet_wall, frictionAtOutlet_wall) "Rprt: Discretisised pressure at tube bundle";
 
   constant ClaRa.Basics.Units.MassFraction[:] xi=zeros(vleMedium.nc - 1) "VLE composition in component, pure fluids supported only!";
   final parameter ClaRa.Basics.Units.Pressure Delta_p_geo_wall=
@@ -158,7 +201,12 @@ model FlameRoom3 "Fixed fluid outlet temperature | blue | blue || brown | brown"
   final parameter ClaRa.Basics.Units.Temperature T_fg_out(fixed=false) "FG medium's outlet temperature";
   final parameter ClaRa.Basics.Units.MassFraction xi_fg_out[outletGas.flueGas.nc-1] = xi_fg_in "FG medium's outlet composition";
   final parameter ClaRa.Basics.Units.Pressure p_fg_out(fixed=false) "FG medium's outlet pressure";
-// ____________________________________
+
+ // ________WALL Temperature __________________
+
+  final parameter ClaRa.Basics.Units.Temperature T_wall_wall = ((T_fg_out+T_fg_in)/2 + (T_vle_wall_in + T_vle_wall_out)/2)/2 "Wall temperature of wall tubes";
+  final parameter ClaRa.Basics.Units.Temperature T_wall_bundle= ((T_fg_out+T_fg_in)/2 + (T_vle_bundle_in + T_vle_bundle_out)/2)/2 "Wall temperature of bundle tubes";
+ // ___________________________________________
 protected
   Modelica.Blocks.Tables.CombiTable1D table1(table=CharLine_Delta_p_P_target_, u = {P_target_});
   Modelica.Blocks.Tables.CombiTable1D table2(table=CharLine_h_bundle_P_target_, u = {P_target_});
@@ -211,10 +259,10 @@ initial equation
   Delta_p_vle_bundle =  Delta_p_vle_bundle_nom*table1.y[1];
   Delta_p_vle_wall = Delta_p_vle_wall_nom*table1.y[1];
   h_vle_bundle_out= h_vle_bundle_out_nom*table2.y[1];
+  h_vle_wall_out=h_vle_wall_out_nom*table3.y[1];
   h_vle_bundle_in = inletBundle.h;
   m_flow_vle_bundle = inletBundle.m_flow;
 
-  h_vle_wall_out=h_vle_wall_out_nom*table3.y[1];
   h_vle_wall_in=inletWall.h;
   m_flow_vle_wall_in=inletWall.m_flow;
   p_vle_wall_out=outletWall.p;
@@ -226,7 +274,9 @@ initial equation
   p_fg_out = outletGas.p;
 
   xi_fg_in = inletGas.xi;
-  annotation (Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,
+
+                                                                                              annotation(Dialog(group="Discretisation (for reporting only)"), choices(checkBox=false),
+              Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,
             -100},{100,100}})),                                                                               Icon(
         coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},{100,100}}),
         graphics={

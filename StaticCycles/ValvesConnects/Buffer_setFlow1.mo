@@ -4,7 +4,7 @@ model Buffer_setFlow1 "Flow Anchour || par.: m_flow_nom || green | green"
 // Component of the ClaRa library, version: 1.1.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -17,7 +17,23 @@ model Buffer_setFlow1 "Flow Anchour || par.: m_flow_nom || green | green"
 // Red input:    Values of p and m_flow are known in component and provided FOR neighbor component, value of h is unknown and provided BY neighbor component.
 // Blue output:  Value of p is unknown and provided BY neighbor component, values of m_flow and h are known in component and provided FOR neighbor component.
 //outer parameter Real P_target_ "Target power in p.u.";
+  //---------Summary Definition---------
+  model Summary
+    extends ClaRa.Basics.Icons.RecordIcon;
+    ClaRa.Basics.Records.StaCyFlangeVLE inlet;
+    ClaRa.Basics.Records.StaCyFlangeVLE outlet;
+  end Summary;
 
+  Summary summary(
+  inlet(
+     m_flow=inlet.m_flow,
+     h=inlet.h,
+     p=inlet.p),
+  outlet(
+     m_flow=outlet.m_flow,
+     h=outlet.h,
+     p=outlet.p));
+  //---------Summary Definition---------
   parameter ClaRa.Basics.Units.MassFlowRate m_flow_out "Nominal mass flow" annotation(Dialog(group= "Fundamental Definitions"));
 
   final parameter ClaRa.Basics.Units.Pressure p_in(fixed=false) "Inlet pressure";

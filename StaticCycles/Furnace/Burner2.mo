@@ -4,7 +4,7 @@ model Burner2
 // Component of the ClaRa library, version: 1.1.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -22,6 +22,53 @@ model Burner2
   import Modelica.Constants.eps;
 
   outer ClaRa.SimCenter simCenter;
+
+  //---------Summary Definition---------
+  model Summary
+    extends ClaRa.Basics.Icons.RecordIcon;
+    ClaRa.Basics.Records.StaCyFlangeVLE inlet_wall;
+    ClaRa.Basics.Records.StaCyFlangeVLE outlet_wall;
+    ClaRa.Basics.Records.StaCyFlangeGas inlet_fg;
+    ClaRa.Basics.Records.StaCyFlangeGas outlet_fg;
+    ClaRa.Basics.Records.StaCyFlangeGas inlet_pa;
+    ClaRa.Basics.Records.StaCyFlangeFuel inlet_fuel;
+  end Summary;
+
+  Summary summary(
+  inlet_wall(
+     m_flow=m_flow_vle_wall_out,
+     h=h_vle_wall_in,
+     p=p_vle_wall_in),
+  outlet_wall(
+     m_flow=m_flow_vle_wall_out,
+     h=h_vle_wall_out,
+     p=p_vle_wall_out),
+  inlet_fg(
+     mediumModel=flueGas,
+     m_flow=m_flow_fg_in,
+     T=T_fg_in,
+     p=p_fg_out,
+     xi=xi_fg_in),
+  outlet_fg(
+     mediumModel=flueGas,
+     m_flow=m_flow_fg_out,
+     T=T_fg_out,
+     p=p_fg_out,
+     xi=xi_fg_out),
+  inlet_pa(
+     mediumModel=flueGas,
+     m_flow=m_flow_pa_in,
+     T=T_pa_in,
+     p=p_fg_out,
+     xi=xi_pa_in),
+  inlet_fuel(
+     fuelModel=fuelType,
+     m_flow=m_flow_fuel,
+     LHV=LHV,
+     xi=xi_fuel));
+
+  //---------Summary Definition---------
+
   parameter TILMedia.VLEFluidTypes.BaseVLEFluid vleMedium = simCenter.fluid1 "Medium in the component" annotation(Dialog(group="Fundamental Definitions"));
   parameter TILMedia.GasTypes.BaseGas flueGas = simCenter.flueGasModel "Flue gas model used in component" annotation(Dialog(group="Fundamental Definitions"));
   parameter ClaRa.Basics.Media.Fuel.PartialFuel fuelType=simCenter.fuelModel1 "Coal elemental composition used for combustion" annotation(Dialog(group="Fundamental Definitions"));
@@ -56,7 +103,7 @@ model Burner2
                                                                                               (abs(Delta_T_U)-abs(Delta_T_L))-0.01,
                                                                                               0.001) "Rprt: Logarithmic temperature difference";
   final parameter Real kA = Q_flow /(1e-5+Delta_T_mean) "Rprt: Heat Flow Resistance";
-  final parameter ClaRa.Basics.Units.Pressure p_wall[N_cv_wall] = ClaRa_Dev.Basics.Functions.pressureInterpolation(p_vle_wall_in, p_vle_wall_out, Delta_x_wall, frictionAtInlet_wall, frictionAtOutlet_wall) "Rprt: Discretisised pressure at tube bundle";
+  final parameter ClaRa.Basics.Units.Pressure p_wall[N_cv_wall] = ClaRa.Basics.Functions.pressureInterpolation(p_vle_wall_in, p_vle_wall_out, Delta_x_wall, frictionAtInlet_wall, frictionAtOutlet_wall) "Rprt: Discretisised pressure at tube bundle";
 
   final parameter ClaRa.Basics.Units.Temperature T_vle_wall_in = TILMedia.VLEFluidFunctions.temperature_phxi(
       vleMedium,
@@ -138,7 +185,7 @@ model Burner2
   final parameter ClaRa.Basics.Units.Pressure p_vle_wall_in=p_vle_wall_out + Delta_p_vle + Delta_p_geo "Inlet pressure";
   final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_fg_in=(m_flow_fg_out*h_fg_out-m_flow_vle_wall_out*h_vle_wall_in+m_flow_vle_wall_out*h_vle_wall_out-m_flow_fuel*LHV-m_flow_pa_in*h_pa_in)/m_flow_fg_in "Inlet specific enthalpy flue gas";
   final parameter ClaRa.Basics.Units.MassFlowRate m_flow_fg_in=(m_flow_fg_out-m_flow_fuel-m_flow_pa_in) "Inlet mass flow flue gas";
-  final parameter ClaRa.Basics.Units.MassFraction xi_fg_out[flueGas.nc - 1]=ClaRa_Dev.Initialisation.Combustion.InitialiseCombustionGas(
+  final parameter ClaRa.Basics.Units.MassFraction xi_fg_out[flueGas.nc - 1]=ClaRa.Basics.Functions.InitialiseCombustionGas(
       xi_fuel,
       m_flow_fuel,
       ((m_flow_fg_in*xi_fg_in) + (m_flow_pa_in*xi_pa_in))/(m_flow_pa_in + m_flow_fg_in),

@@ -1,10 +1,10 @@
 within ClaRa.Components.VolumesValvesFittings.Fittings;
 model JoinVLE_L2_Y "A join for two inputs"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.1                            //
+// Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -95,7 +95,7 @@ public
   ClaRa.Basics.Interfaces.EyeOut eye if showData      annotation(Placement(transformation(extent={{90,-90},
             {110,-70}})));
 protected
-  ClaRa.Basics.Interfaces.EyeIn eye_int
+  ClaRa.Basics.Interfaces.EyeIn eye_int[1]
     annotation (Placement(transformation(extent={{45,-81},{47,-79}})));
 public
   ClaRa.Basics.Interfaces.FluidPortIn inlet2(each Medium=medium) "First inlet port"
@@ -104,17 +104,17 @@ public
 protected
 TILMedia.VLEFluid_ph fluidIn1(
     each vleFluidType=medium,
-    h=actualStream(inlet1.h_outflow),
+    h=noEvent(actualStream(inlet1.h_outflow)),
     p=inlet1.p)                                                          annotation (Placement(transformation(extent={{-90,-12},
             {-70,8}},                                                                                                   rotation=0)));
 TILMedia.VLEFluid_ph fluidIn2(
     each vleFluidType=medium,
-    h=actualStream(inlet2.h_outflow),
+    h=noEvent(actualStream(inlet2.h_outflow)),
     p=inlet2.p)                                                          annotation (Placement(transformation(extent={{-10,50},
             {10,70}},                                                                                                   rotation=0)));
 TILMedia.VLEFluid_ph fluidOut(
     each vleFluidType=medium,
-    h=actualStream(outlet.h_outflow),
+    h=noEvent(actualStream(outlet.h_outflow)),
     p=outlet.p)                                                          annotation (Placement(transformation(extent={{70,-12},
             {90,8}},                                                                                                    rotation=0)));
 equation
@@ -149,13 +149,13 @@ equation
   outlet.p=p - pressureLossOut.dp;
   outlet.h_outflow=h;
 
-  eye_int.m_flow=-outlet.m_flow;
-  eye_int.T= bulk.T-273.15;
-  eye_int.s=bulk.s/1e3;
-  eye_int.p=bulk.p/1e5;
-  eye_int.h=h/1e3;
+  eye_int[1].m_flow=-outlet.m_flow;
+  eye_int[1].T= bulk.T-273.15;
+  eye_int[1].s=bulk.s/1e3;
+  eye_int[1].p=bulk.p/1e5;
+  eye_int[1].h=h/1e3;
 
-  connect(eye,eye_int)  annotation (Line(
+  connect(eye,eye_int[1])  annotation (Line(
       points={{100,-80},{46,-80}},
       color={255,204,51},
       thickness=0.5,

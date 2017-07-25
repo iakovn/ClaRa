@@ -1,10 +1,10 @@
 within ClaRa.Components.HeatExchangers;
 model HEXvle2vle_L3_2ph_CH_ntu "VLE 2 VLE | L3 | 2 phase at shell side | Cylinder shape | Header type | simple HT"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.1                            //
+  // Component of the ClaRa library, version: 1.2.2                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -302,7 +302,7 @@ public
         rotation=0,
         origin={-50,-92})));
 protected
-   Basics.Interfaces.EyeIn eye_int2
+   Basics.Interfaces.EyeIn eye_int2[1]
      annotation (Placement(transformation(extent={{-51,-43},{-49,-41}})));
 public
    Basics.Interfaces.EyeOut eye2 if showData annotation (Placement(
@@ -314,7 +314,7 @@ public
         rotation=180,
         origin={-110,0})));
 protected
-   Basics.Interfaces.EyeIn eye_int1
+   Basics.Interfaces.EyeIn eye_int1[1]
      annotation (Placement(transformation(extent={{27,-59},{29,-57}})));
 public
    Basics.Interfaces.EyeOut eye1 if showData annotation (Placement(
@@ -387,17 +387,17 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
 
-   eye_int1.m_flow=-shell.outlet[1].m_flow;
-   eye_int1.T=shell.summary.outlet[1].T-273.15;
-   eye_int1.s=shell.fluidOut[1].s/1000;
-   eye_int1.h=shell.summary.outlet[1].h/1000;
-   eye_int1.p=shell.summary.outlet[1].p/100000;
+   eye_int1[1].m_flow=-shell.outlet[1].m_flow;
+   eye_int1[1].T=shell.summary.outlet[1].T-273.15;
+   eye_int1[1].s=shell.fluidOut[1].s/1000;
+   eye_int1[1].h=shell.summary.outlet[1].h/1000;
+   eye_int1[1].p=shell.summary.outlet[1].p/100000;
 
-   eye_int2.m_flow=-tubes.outlet.m_flow;
-   eye_int2.T=tubes.summary.outlet.T-273.15;
-   eye_int2.s=tubes.fluidOut.s/1000;
-   eye_int2.h=tubes.summary.outlet.h/1000;
-   eye_int2.p=tubes.summary.outlet.p/100000;
+   eye_int2[1].m_flow=-tubes.outlet.m_flow;
+   eye_int2[1].T=tubes.summary.outlet.T-273.15;
+   eye_int2[1].s=tubes.fluidOut.s/1000;
+   eye_int2[1].h=tubes.summary.outlet.h/1000;
+   eye_int2[1].p=tubes.summary.outlet.p/100000;
 
   connect(In1, shell.inlet[1]) annotation (Line(
       points={{0,98},{0,52},{1.77636e-015,52}},
@@ -436,8 +436,8 @@ equation
       color={167,25,48},
       thickness=0.5,
       smooth=Smooth.None));
-  connect(eye_int2, eye2) annotation (Line(points={{-50,-42},{-100,-42},{-100,-42}}, color={190,190,190}));
-  connect(eye_int1, eye1) annotation (Line(points={{28,-58},{28,-98},{28,-98}}, color={190,190,190}));
+  connect(eye_int2[1], eye2) annotation (Line(points={{-50,-42},{-100,-42},{-100,-42}}, color={190,190,190}));
+  connect(eye_int1[1], eye1) annotation (Line(points={{28,-58},{28,-98},{28,-98}}, color={190,190,190}));
   connect(wall.outerPhase, reallocateHeatFlows.heatVector) annotation (Line(
       points={{45,40},{42,40},{42,50},{36,50}},
       color={167,25,48},

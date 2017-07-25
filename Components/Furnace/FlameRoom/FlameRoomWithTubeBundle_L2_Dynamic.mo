@@ -1,10 +1,10 @@
 within ClaRa.Components.Furnace.FlameRoom;
 model FlameRoomWithTubeBundle_L2_Dynamic "Model for a combustion chamber section with inner tube bundle heating surfaces"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.1                            //
+// Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -97,36 +97,36 @@ public
     inlet(
       flueGas(mediumModel=flueGas,
         m_flow=inlet.flueGas.m_flow,
-        T=actualStream(inlet.flueGas.T_outflow),
+        T=noEvent(actualStream(inlet.flueGas.T_outflow)),
         p=inlet.flueGas.p,
         h=flueGasInlet.h,
-        xi=actualStream(inlet.flueGas.xi_outflow),
+        xi=noEvent(actualStream(inlet.flueGas.xi_outflow)),
         H_flow=flueGasInlet.h*inlet.flueGas.m_flow),
       fuel(
         m_flow=inlet.fuel.m_flow,
-        T=actualStream(inlet.fuel.T_outflow),
+        T=noEvent(actualStream(inlet.fuel.T_outflow)),
         p=inlet.fuel.p,
         cp=inlet.fuelType.cp),
       slag(
         m_flow=inlet.slag.m_flow,
-        T=actualStream(inlet.slag.T_outflow),
+        T=noEvent(actualStream(inlet.slag.T_outflow)),
         p=inlet.slag.p)),
     outlet(
       flueGas(mediumModel=flueGas,
         m_flow=-outlet.flueGas.m_flow,
-        T=actualStream(outlet.flueGas.T_outflow),
+        T=noEvent(actualStream(outlet.flueGas.T_outflow)),
         p=outlet.flueGas.p,
         h=h_flueGas_out,
-        xi=actualStream(outlet.flueGas.xi_outflow),
+        xi=noEvent(actualStream(outlet.flueGas.xi_outflow)),
         H_flow=-h_flueGas_out*outlet.flueGas.m_flow),
       fuel(
         m_flow=-outlet.fuel.m_flow,
-        T=actualStream(outlet.fuel.T_outflow),
+        T=noEvent(actualStream(outlet.fuel.T_outflow)),
         p=outlet.fuel.p,
         cp=outlet.fuelType.cp),
       slag(
         m_flow=outlet.slag.m_flow,
-        T=actualStream(outlet.slag.T_outflow),
+        T=noEvent(actualStream(outlet.slag.T_outflow)),
         p=outlet.slag.p))) annotation (Placement(transformation(extent={{274,-102},{300,-76}})));
 
 initial equation
@@ -278,12 +278,12 @@ equation
   outlet.flueGas.xi_outflow  = xi_flueGas_del;
 
   //______________Eye port variable definition________________________
-  eye_int.m_flow = -outlet.flueGas.m_flow;
-  eye_int.T = flueGasOutlet.T-273.15;
-  eye_int.s = flueGasOutlet.s/1e3;
-  eye_int.p = flueGasOutlet.p/1e5;
-  eye_int.h = flueGasOutlet.h/1e3;
-  eye_int.xi = flueGasOutlet.xi;
+  eye_int[1].m_flow = -outlet.flueGas.m_flow;
+  eye_int[1].T = flueGasOutlet.T-273.15;
+  eye_int[1].s = flueGasOutlet.s/1e3;
+  eye_int[1].p = flueGasOutlet.p/1e5;
+  eye_int[1].h = flueGasOutlet.h/1e3;
+  eye_int[1].xi = flueGasOutlet.xi;
 
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-300,-100},
             {300,100}}),

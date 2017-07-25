@@ -1,10 +1,10 @@
 within ClaRa.Components.HeatExchangers;
 model HEXvle2vle_L3_2ph_CU_simple "VLE 2 VLE | L3 | 2 phase at shell side | Cylinder shape | U-type | simple HT"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.1                            //
+  // Component of the ClaRa library, version: 1.2.2                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -85,7 +85,7 @@ model HEXvle2vle_L3_2ph_CU_simple "VLE 2 VLE | L3 | 2 phase at shell side | Cyli
   parameter SI.Length radius_flange=0.05 "Flange radius" annotation (Dialog(tab="Shell Side", group="Geometry"));
 
   parameter Integer N_baffle=0 "Number of baffles at shell side" annotation (Dialog(tab="Shell Side", group="Geometry"));
-  final parameter Basics.Units.Mass mass_struc=0 "Mass of inner structure elements, additional to the tubes itself" annotation (Dialog(tab="Shell Side", group="Geometry"));
+  parameter Basics.Units.Mass mass_struc=0 "Mass of inner structure elements, additional to the tubes itself" annotation (Dialog(tab="Shell Side", group="Geometry"));
 
   //________________________________ Shell nominal parameter _____________________________________//
   parameter Basics.Units.MassFlowRate m_flow_nom_shell=10 "Nominal mass flow at shell side"
@@ -299,7 +299,9 @@ model HEXvle2vle_L3_2ph_CU_simple "VLE 2 VLE | L3 | 2 phase at shell side | Cyli
     length=length_tubes*N_passes,
     N_rad=3,
     sizefunc=1,
-    T_start=T_w_start) "{shell.heattransfer.alpha[2],shell.heattransfer.alpha[2],shell.heattransfer.alpha[1]}"
+    T_start=T_w_start,
+    mass_struc=mass_struc)
+                       "{shell.heattransfer.alpha[2],shell.heattransfer.alpha[2],shell.heattransfer.alpha[1]}"
                                                                                               annotation (Placement(transformation(extent={{-10,-10},{10,10}},
         rotation=90,
         origin={58,0})));
@@ -335,9 +337,9 @@ public
         origin={40,-110})));
 
 protected
-  ClaRa.Basics.Interfaces.EyeIn eye_int1
+  ClaRa.Basics.Interfaces.EyeIn eye_int1[1]
     annotation (Placement(transformation(extent={{27,-59},{29,-57}})));
-  ClaRa.Basics.Interfaces.EyeIn eye_int2
+  ClaRa.Basics.Interfaces.EyeIn eye_int2[1]
     annotation (Placement(transformation(extent={{-51,-43},{-49,-41}})));
 
   Modelica.Blocks.Interfaces.RealOutput level(value = if outputAbs then shell.summary.outline.level_abs else shell.summary.outline.level_rel) if levelOutput annotation (Placement(transformation(extent={{204,-126},{224,-106}}), iconTransformation(
@@ -348,17 +350,17 @@ equation
   assert(diameter_o > diameter_i,
     "Outer diameter of tubes must be greater than inner diameter");
 
-  eye_int1.m_flow=-shell.outlet[1].m_flow;
-  eye_int1.T=shell.summary.outlet[1].T-273.15;
-  eye_int1.s=shell.fluidOut[1].s/1000;
-  eye_int1.h=shell.summary.outlet[1].h/1000;
-  eye_int1.p=shell.summary.outlet[1].p/100000;
+  eye_int1[1].m_flow=-shell.outlet[1].m_flow;
+  eye_int1[1].T=shell.summary.outlet[1].T-273.15;
+  eye_int1[1].s=shell.fluidOut[1].s/1000;
+  eye_int1[1].h=shell.summary.outlet[1].h/1000;
+  eye_int1[1].p=shell.summary.outlet[1].p/100000;
 
-eye_int2.m_flow=-tubes.outlet.m_flow;
-  eye_int2.T=tubes.summary.outlet.T-273.15;
-  eye_int2.s=tubes.fluidOut.s/1000;
-  eye_int2.h=tubes.summary.outlet.h/1000;
-  eye_int2.p=tubes.summary.outlet.p/100000;
+eye_int2[1].m_flow=-tubes.outlet.m_flow;
+  eye_int2[1].T=tubes.summary.outlet.T-273.15;
+  eye_int2[1].s=tubes.fluidOut.s/1000;
+  eye_int2[1].h=tubes.summary.outlet.h/1000;
+  eye_int2[1].p=tubes.summary.outlet.p/100000;
 
   connect(tubes.inlet, In2) annotation (Line(
       points={{84,-10},{84,-40},{100,-40}},
@@ -371,11 +373,11 @@ eye_int2.m_flow=-tubes.outlet.m_flow;
       thickness=0.5,
       smooth=Smooth.None));
 
-  connect(eye_int1, eye1) annotation (Line(
+  connect(eye_int1[1], eye1) annotation (Line(
       points={{28,-58},{28,-98}},
       color={190,190,190},
       smooth=Smooth.None));
-  connect(eye_int2, eye2)  annotation (Line(
+  connect(eye_int2[1], eye2)  annotation (Line(
       points={{-50,-42},{-50,-42},{-66,-42},{-66,-42},{-100,-42},{-100,-42}},
       color={190,190,190},
       smooth=Smooth.None));

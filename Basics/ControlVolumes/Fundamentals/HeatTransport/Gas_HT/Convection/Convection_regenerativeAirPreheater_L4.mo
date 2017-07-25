@@ -1,10 +1,10 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Convection;
 model Convection_regenerativeAirPreheater_L4 "Gas || Convection Air Preheater Channels"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.1                            //
+  // Component of the ClaRa library, version: 1.2.2                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -23,6 +23,7 @@ model Convection_regenerativeAirPreheater_L4 "Gas || Convection Air Preheater Ch
       choice=1 "Lateral surface",
       choice=2 "Inner heat transfer surface",
       choice=3 "Selection to be extended"));
+  parameter Real CF_fouling=1 "Scaling factor accounting for the fouling of the wall";
 
   Modelica.SIunits.CoefficientOfHeatTransfer alpha[iCom.N_cv] "Heat transfer coefficient";
   outer TILMedia.Gas_ph fluid[iCom.N_cv];
@@ -63,7 +64,7 @@ equation
     Re);
 
   for i in 1:iCom.N_cv loop
-    alpha[i] = smooth[i]*(0.0061*fluid[i].transp.lambda/geo.diameter_hyd[i]*Re[i]*fluid[i].transp.Pr^0.4) + (1 - smooth[i])*(0.029*fluid[i].transp.lambda/geo.diameter_hyd[i]*Re[i]^0.8*fluid[i].transp.Pr^0.4);
+    alpha[i] = CF_fouling*smooth[i]*(0.0061*fluid[i].transp.lambda/geo.diameter_hyd[i]*Re[i]*fluid[i].transp.Pr^0.4) + (1 - smooth[i])*(0.029*fluid[i].transp.lambda/geo.diameter_hyd[i]*Re[i]^0.8*fluid[i].transp.Pr^0.4);
   end for;
   //heat.Q_flow = alpha.*geo.A_heat_CF[heatSurfaceAlloc]./iCom.N_cv .*(heat.T - T_mean);
   heat.Q_flow = alpha .* geo.A_heat_CF[iCom.N_cv, heatSurfaceAlloc] .* (heat.T - T_mean);

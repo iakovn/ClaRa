@@ -1,10 +1,10 @@
 within ClaRa.Basics.ControlVolumes.FluidVolumes;
 model VolumeVLE_L4_Advanced "A 1D tube-shaped control volume considering one-phase and two-phase heat transfer in a straight pipe with detailed dynamic momentum and energy balance."
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.1                            //
+// Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -28,21 +28,10 @@ model VolumeVLE_L4_Advanced "A 1D tube-shaped control volume considering one-pha
     extends ClaRa.Basics.Icons.RecordIcon;
     parameter Boolean showExpertSummary annotation(Dialog(hide));
 
-    //     parameter Basics.Units.Length
-    //                         L "Length of pipe";
-    //     input Basics.Units.Area
-    //                   A_cross if  showExpertSummary "Cross sectional area" annotation(Dialog(show));
-    //     input Basics.Units.Area
-    //                   A_wall if  showExpertSummary "Total wall area" annotation(Dialog(show));
     input Basics.Units.Volume
                     volume_tot "Total volume of system" annotation(Dialog(show));
 
-    parameter Integer N_cv "|Discretisation|Number of finite volumes";
-    //     parameter Integer N_wall "|Discretisation|Number of wall elements";
-    //     input Basics.Units.Length
-    //                     dx[N_cv] if  showExpertSummary "Pipe discretisation" annotation(Dialog(show));
-    //     input Basics.Units.Volume
-    //                     volume[N_cv] if  showExpertSummary "|Discretisation|Cell volumes"       annotation(Dialog(show));
+    parameter Integer N_cv  "Number of finite volumes" annotation(Dialog(group="Discretisation"));
 
     input Basics.Units.Pressure
                       Delta_p "Pressure difference between outlet and inlet" annotation(Dialog);
@@ -93,61 +82,66 @@ protected
   cat(1,{0},{(geo.z[i]+geo.z[i+1])/2 for i in 1:geo.N_cv-1},{geo.z_out-geo.z_in}) "height of center of flow model cells == height of energy-grid cell borders (for an equidistant grid)";
 //____Media Data_____________________________________________________________________________________
 public
-  parameter TILMedia.VLEFluidTypes.BaseVLEFluid   medium=simCenter.fluid1 "|Fundamental Definitions|Medium in the component";
+  parameter TILMedia.VLEFluidTypes.BaseVLEFluid   medium=simCenter.fluid1 "Medium in the component" annotation(Dialog(group="Fundamental Definitions"));
 
 //____Physical Effects_____________________________________________________________________________________
-        // ___Advanced__________
-public
- parameter Boolean suppressHighFrequencyOscillations=false "|Fundamental Definitions|Suppress oscillations at frequencies greater than inverse travelling time of sound";
-  final parameter Real suppFreqCorr= if suppressHighFrequencyOscillations then 1 else 0;
- inner parameter Boolean frictionAtInlet=false "|Fundamental Definitions|True if pressure loss between first cell and inlet shall be considered"
-                                                                                            annotation (choices(checkBox=true));
-  inner parameter Boolean frictionAtOutlet=false "|Fundamental Definitions|True if pressure loss between last cell and outlet shall be considered"
-                                                                                            annotation (choices(checkBox=true));
-//   inner parameter FlowModelStructure FlowModel=FlowModelStructure.inlet_innerPipe_outlet
-//     "|Fundamental Definitions|Structure of flow model"      annotation(choicesAllMatching);
 
+public
+ inner parameter Boolean frictionAtInlet=false "True if pressure loss between first cell and inlet shall be considered"
+                                                                                            annotation (choices(checkBox=true),Dialog(group="Fundamental Definitions"));
+  inner parameter Boolean frictionAtOutlet=false "True if pressure loss between last cell and outlet shall be considered"
+                                                                                            annotation (choices(checkBox=true),Dialog(group="Fundamental Definitions"));
   replaceable model PressureLoss =
     ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4
-    constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.PressureLossBaseVLE_L4 "|Fundamental Definitions|Pressure loss model at the tubes side"
-    annotation(choicesAllMatching);
+    constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.PressureLossBaseVLE_L4 "Pressure loss model at the tubes side"
+    annotation(choicesAllMatching,Dialog(group="Fundamental Definitions"));
 
   replaceable model HeatTransfer =
      ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.CharLine_L4
-    constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.HeatTransferBaseVLE_L4 "|Fundamental Definitions|Heat transfer mode at the tubes side"
-   annotation(choicesAllMatching);
+    constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.HeatTransferBaseVLE_L4 "Heat transfer mode at the tubes side"
+   annotation(choicesAllMatching,Dialog(group="Fundamental Definitions"));
 
   replaceable model Geometry =
-      Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry_N_cv                          constrainedby Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry_N_cv "|Geometry|Pipe geometry"
-   annotation(choicesAllMatching);
+      Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry_N_cv                          constrainedby Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry_N_cv "Pipe geometry"
+   annotation(choicesAllMatching,Dialog(group="Geometry"));
 
 //____Nominal Values_________________________________________________________________________________
-  parameter Basics.Units.Pressure p_nom[geo.N_cv]= ones(geo.N_cv)*1e5 "|Nominal Values|Nominal pressure";
+  parameter Basics.Units.Pressure p_nom[geo.N_cv]= ones(geo.N_cv)*1e5 "Nominal pressure" annotation(Dialog(group="Nominal Values"));
   parameter Basics.Units.EnthalpyMassSpecific
-                                  h_nom[geo.N_cv]= ones(geo.N_cv)*1e5 "|Nominal Values|Nominal specific enthalpy for single tube";
+                                  h_nom[geo.N_cv]= ones(geo.N_cv)*1e5 "Nominal specific enthalpy for single tube" annotation(Dialog(group="Nominal Values"));
   inner parameter Basics.Units.MassFlowRate
-                                  m_flow_nom=100 "|Nominal Values|Nominal mass flow for single tube";
+                                  m_flow_nom=100 "Nominal mass flow for single tube" annotation(Dialog(group="Nominal Values"));
   inner parameter Basics.Units.Pressure
-                                 Delta_p_nom=1e4 "|Nominal Values|Nominal pressure loss w.r.t. all parallel tubes";
+                                 Delta_p_nom=1e4 "Nominal pressure loss w.r.t. all parallel tubes" annotation(Dialog(group="Nominal Values"));
 
   final parameter Basics.Units.DensityMassSpecific
                                    rho_nom[geo.N_cv]= TILMedia.VLEFluidFunctions.density_phxi(medium, p_nom, h_nom) "Nominal density";
 
 //____Initialisation_____________________________________________________________________________________
   parameter Integer initOption = 1 "Type of initialisation" annotation(Dialog(tab="Initialisation"), choices(choice = 0 "Use guess values", choice = 1 "Steady state", choice=201 "Steady pressure", choice = 202 "Steady enthalpy", choice=208 "steady presure and enthalpy"));
-  inner parameter Boolean useHomotopy=simCenter.useHomotopy "|Initialisation|Model Settings|true, if homotopy method is used during initialisation";
+  inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation" annotation(Dialog(tab="Initialisation",group="Model Settings"));
 
   parameter Basics.Units.EnthalpyMassSpecific
-                                    h_start[geo.N_cv]=ones(geo.N_cv)*800e3 "|Initialisation||Initial specific enthalpy for single tube";
+                                    h_start[geo.N_cv]=ones(geo.N_cv)*800e3 "Initial specific enthalpy for single tube" annotation(Dialog(tab="Initialisation"));
   parameter Basics.Units.Pressure
-                        p_start[geo.N_cv]=ones(geo.N_cv)*1e5 "|Initialisation||Initial pressure";
+                        p_start[geo.N_cv]=ones(geo.N_cv)*1e5 "Initial pressure" annotation(Dialog(tab="Initialisation"));
+  parameter Basics.Units.MassFlowRate
+                        m_flow_start[geo.N_cv+1]=ones(geo.N_cv+1)*100 "Initial mass flow rate" annotation(Dialog(tab="Initialisation"));
 protected
   parameter Basics.Units.Pressure
                         p_start_internal[geo.N_cv]=if size(p_start,1)==2 then linspace(p_start[1],p_start[2],geo.N_cv) else p_start "Internal p_start array which allows the user to either state p_inlet, p_outlet if p_start has length 2, otherwise the user can specify an individual pressure profile for initialisation";
 //____Summary and Visualisation_____________________________________________________________________________________
 public
-  parameter Boolean showExpertSummary=simCenter.showExpertSummary "|Summary and Visualisation||True, if a summary shall be shown, else false";
-  parameter Boolean showData=false "|Summary and Visualisation||True, if a data port containing p,T,h,s,m_flow shall be shown, else false";
+  parameter Boolean showExpertSummary=simCenter.showExpertSummary "True, if a summary shall be shown, else false"
+                                                                                                                 annotation(Dialog(tab="Summary and Visualisation"));
+  parameter Boolean showData=false "True, if a data port containing p,T,h,s,m_flow shall be shown, else false"
+                                                                                                              annotation(Dialog(tab="Summary and Visualisation"));
+
+//____Advanced_____________________________________________________________________________________
+ parameter Boolean suppressHighFrequencyOscillations=false "Suppress oscillations at frequencies greater than inverse travelling time of sound"
+                                                                                                                                               annotation(Dialog(tab="Expert Settings"));
+  final parameter Real suppFreqCorr= if suppressHighFrequencyOscillations then 1 else 0;
+
 
    Summary summary(
       outline(     showExpertSummary=showExpertSummary,
@@ -202,7 +196,7 @@ public
 
 //____Energy / Enthalpy_________________________________________________________________________________________
     Basics.Units.EnthalpyMassSpecific
-                            h[geo.N_cv](nominal=h_nom,start=h_start,stateSelect = StateSelect.prefer) "Cell enthalpy";
+                            h[geo.N_cv](nominal=h_nom,start=h_start,each stateSelect = StateSelect.prefer) "Cell enthalpy";
     Basics.Units.Energy
               E_kin[geo.N_cv] "Kinetic energy of fluid in cells";
     Basics.Units.Energy
@@ -211,11 +205,15 @@ public
              dE_kin_dt[geo.N_cv] "time derivative of kinetic energy";
     Basics.Units.Power
              dE_pot_dt[geo.N_cv] "time derivative of potential energy";
-protected
-  Basics.Units.EnthalpyMassSpecific[
-                          geo.N_cv + 1] h_FM;
+//    Basics.Units.EnthalpyMassSpecific[
+//                            geo.N_cv + 1] h_FM;
+
 
 //____Pressure__________________________________________________________________________________________________
+protected
+  Basics.Units.DensityMassSpecific[
+                           geo.N_cv + 1] rho_FM "Density at flow model states";
+
   Basics.Units.Pressure
               p[geo.N_cv](nominal=p_nom,start=p_start_internal) "Cell pressure";
 
@@ -225,9 +223,8 @@ protected
               Delta_p_fric[geo.N_cv+1](start=ones(geo.N_cv+1)*100) "Pressure difference due to friction";
   Basics.Units.Pressure
               Delta_p_grav[geo.N_cv+1] "pressure drop due to gravity";
-protected
-  Basics.Units.Pressure[
-              geo.N_cv + 1] p_FM;
+//    Basics.Units.Pressure[
+//                geo.N_cv + 1] p_FM;
 
 //____Mass and Density__________________________________________________________________________________________
 public
@@ -239,7 +236,7 @@ public
   Basics.Units.Power
                H_flow[geo.N_cv+1] "Enthalpy flow rate at cell borders";
   Basics.Units.MassFlowRate
-               m_flow[geo.N_cv+1](nominal=ones(geo.N_cv+1)*m_flow_nom, start=ones(geo.N_cv+1)*m_flow_nom);
+               m_flow[geo.N_cv+1](nominal=ones(geo.N_cv+1)*m_flow_nom, start=m_flow_start);
 
    Basics.Units.Velocity
                w[geo.N_cv] "flow velocities within cells of energy model == flow velocities across cell borders of flow model ";
@@ -267,9 +264,9 @@ public
   inner TILMedia.VLEFluid_ph  fluid[geo.N_cv](p=p, h=h, each vleFluidType =    medium,
     each computeTransportProperties=true)                       annotation (Placement(transformation(extent={{-10,-50},
             {10,-30}},                                                                                                   rotation=0)));
-  inner TILMedia.VLEFluid_ph  fluidFM[geo.N_cv + 1](p=p_FM, h=h_FM, each vleFluidType = medium)
-                                                        annotation (Placement(transformation(extent={{-10,-28},
-            {10,-8}},                                                                                                    rotation=0)));
+//    inner TILMedia.VLEFluid_ph  fluidFM[geo.N_cv + 1](p=p_FM, h=h_FM, each vleFluidType = medium)
+//                                                          annotation (Placement(transformation(extent={{-10,-28},
+//              {10,-8}},                                                                                                    rotation=0)));
   inner TILMedia.VLEFluid_ph fluidInlet(
     p=inlet.p,
     h=actualStream(inlet.h_outflow),
@@ -343,12 +340,75 @@ initial equation
   elseif initOption == 208 then
     der(h)=zeros(geo.N_cv);
     der(p)=zeros(geo.N_cv);
+    //   The following initOptions depend on the choice of the pressure loss model at in- and outlet and the pressure states of neighboring components.
+    //   Bad combination can lead to overestimated initial system of equation or underspecified initial conditions. Then Dymola sets automatically m_flow=m_flow_start
+    //   as missing equation. Intialisation is then very close to option 0 (Guess Values).
+//   elseif initOption == 212 then
+//      if not frictionAtInlet and not frictionAtOutlet then
+//          der(m_flow[2:geo.N_cv])=zeros(geo.N_cv-1);
+//      elseif frictionAtInlet and not frictionAtOutlet then
+//          der(m_flow[1:geo.N_cv])=zeros(geo.N_cv);
+//      elseif  not frictionAtInlet and frictionAtOutlet then
+//          der(m_flow[2:geo.N_cv+1])=zeros(geo.N_cv);
+//      else //inlet_dp_innerPipe_dp_outlet
+//          der(m_flow[2:geo.N_cv])=zeros(geo.N_cv-1);
+//      end if;
+//   elseif initOption == 213 then
+//      if not frictionAtInlet and not frictionAtOutlet then
+//          der(m_flow[2:geo.N_cv])=zeros(geo.N_cv-1);
+//      elseif frictionAtInlet and not frictionAtOutlet then
+//          der(m_flow[1:geo.N_cv])=zeros(geo.N_cv);
+//      elseif  not frictionAtInlet and frictionAtOutlet then
+//          der(m_flow[2:geo.N_cv+1])=zeros(geo.N_cv);
+//      else //inlet_dp_innerPipe_dp_outlet
+//          der(m_flow[2:geo.N_cv])=zeros(geo.N_cv-1);
+//      end if;
+//     der(h)=zeros(geo.N_cv);
+//   elseif initOption == 214 then
+//      if not frictionAtInlet and not frictionAtOutlet then
+//          der(m_flow[2:geo.N_cv])=zeros(geo.N_cv-1);
+//      elseif frictionAtInlet and not frictionAtOutlet then
+//          der(m_flow[1:geo.N_cv])=zeros(geo.N_cv);
+//      elseif  not frictionAtInlet and frictionAtOutlet then
+//          der(m_flow[2:geo.N_cv+1])=zeros(geo.N_cv);
+//      else //inlet_dp_innerPipe_dp_outlet
+//          der(m_flow[2:geo.N_cv])=zeros(geo.N_cv-1);
+//      end if;
+//     der(p)=zeros(geo.N_cv);
   elseif initOption ==0 then
     // do nothing
   else
     assert(false, "Unknown initialisation option in " + getInstanceName());
   end if;
 //--------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 equation
@@ -359,8 +419,8 @@ equation
 
 //-------------------------------------------
 //flow velocities at inlet and outlet
-  w_inlet=inlet.m_flow/(geo.A_cross_FM[1]*fluidFM[1].d);
-  w_outlet=-outlet.m_flow/(geo.A_cross_FM[geo.N_cv+1]*fluidFM[geo.N_cv+1].d);
+  w_inlet=inlet.m_flow/(geo.A_cross_FM[1]*rho_FM[1]);
+  w_outlet=-outlet.m_flow/(geo.A_cross_FM[geo.N_cv+1]*rho_FM[geo.N_cv+1]);
 
 //flow velocities in cells
   for i in 1:geo.N_cv loop
@@ -369,21 +429,26 @@ equation
 
 //flow velocities in FlowModel cells
   for i in 2:geo.N_cv loop
-     w_FM[i]=m_flow[i]/(geo.A_cross_FM[i]*fluidFM[i].d);
+     w_FM[i]=m_flow[i]/(geo.A_cross_FM[i]*rho_FM[i]);
   end for;
-  w_FM[1]=m_flow[1]/(geo.A_cross_FM[1]*fluidFM[1].d);
-  w_FM[geo.N_cv+1]=m_flow[geo.N_cv+1]/(geo.A_cross_FM[geo.N_cv+1]*fluidFM[geo.N_cv+1].d);
+  w_FM[1]=m_flow[1]/(geo.A_cross_FM[1]*rho_FM[1]);
+  w_FM[geo.N_cv+1]=m_flow[geo.N_cv+1]/(geo.A_cross_FM[geo.N_cv+1]*rho_FM[geo.N_cv+1]);
 
 //-------------------------------------------
-//definition of the FlowModel states
+//definition of the FlowModel density
+//compared to a previous version of the volume model, the density in the momentum cells is calculated by averaging the density in the energy cells
+//instead of averaging the states p and h and calculate the density in an additional fluidFM model
   for i in 2:geo.N_cv loop
-    p_FM[i]=1/2*(p[i-1]+p[i]);
-    h_FM[i]=(h[i-1]+h[i])/2;
+  rho_FM[i]=(fluid[i].d+fluid[i-1].d)/2;
+//      p_FM[i]=1/2*(p[i-1]+p[i]);
+//      h_FM[i]=(h[i-1]+h[i])/2;
   end for;
-  p_FM[1]=1/2*(inlet.p+p[1]);
-  h_FM[1]=(actualStream(inlet.h_outflow)+h[1])/2;
-  p_FM[geo.N_cv+1]=1/2*(outlet.p+p[geo.N_cv]);
-  h_FM[geo.N_cv+1]=(h[geo.N_cv]+actualStream(outlet.h_outflow))/2;
+  rho_FM[1]=(fluidInlet.d+fluid[1].d)/2;
+  rho_FM[geo.N_cv+1]=(fluidOutlet.d+fluid[geo.N_cv].d)/2;
+//    p_FM[1]=1/2*(inlet.p+p[1]);
+//    h_FM[1]=(actualStream(inlet.h_outflow)+h[1])/2;
+//    p_FM[geo.N_cv+1]=1/2*(outlet.p+p[geo.N_cv]);
+//    h_FM[geo.N_cv+1]=(h[geo.N_cv]+actualStream(outlet.h_outflow))/2;
 
 //-------------------------------------------
 //data exchange with friction model
@@ -412,78 +477,78 @@ equation
       Delta_p_adv[2] = 0;
     elseif not frictionAtInlet and frictionAtOutlet then
       Delta_p_grav[1] = 0;
-      Delta_p_grav[2] = fluidFM[2].d*g_n*(geo.z_out - geo.z_in);
+      Delta_p_grav[2] = rho_FM[2]*g_n*(geo.z_out - geo.z_in);
       Delta_p_adv[1] = 0;
       Delta_p_adv[2] = w_inlet*abs(w_inlet)*fluidInlet.d -w_outlet*abs(w_outlet)*fluidOutlet.d;
     elseif  frictionAtInlet and not frictionAtOutlet then
-      Delta_p_grav[1] = fluidFM[1].d*g_n*(geo.z_out - geo.z_in);
+      Delta_p_grav[1] = rho_FM[1]*g_n*(geo.z_out - geo.z_in);
       Delta_p_grav[2] = 0;
       Delta_p_adv[1] = w_inlet*abs(w_inlet)*fluidInlet.d -w_outlet*abs(w_outlet)*fluidOutlet.d;
       Delta_p_adv[2] = 0;
     else
       // frictionAtOutlet and frictionAtnlet
-      Delta_p_grav[1] = fluidFM[1].d*g_n*(geo.z[1] - geo.z_in);
-      Delta_p_grav[2] = fluidFM[2].d*g_n*(geo.z_out - geo.z[1]);
+      Delta_p_grav[1] = rho_FM[1]*g_n*(geo.z[1] - geo.z_in);
+      Delta_p_grav[2] = rho_FM[2]*g_n*(geo.z_out - geo.z[1]);
       Delta_p_adv[1] = w_inlet*abs(w_inlet)*fluidInlet.d -w[1]*abs(w[1])*fluid[1].d;
       Delta_p_adv[2] = w[1]*abs(w[1])*fluid[1].d -w_outlet*abs(w_outlet)*fluidOutlet.d;
     end if;
   elseif geo.N_cv==2 then
     if not frictionAtInlet and not frictionAtOutlet then
       Delta_p_grav[1] = 0;
-      Delta_p_grav[2] = fluidFM[2].d*g_n*(geo.z_out - geo.z_in);
+      Delta_p_grav[2] = rho_FM[2]*g_n*(geo.z_out - geo.z_in);
       Delta_p_grav[3] = 0;
       Delta_p_adv[1] = 0;
       Delta_p_adv[2] = w_inlet*abs(w_inlet)*fluidInlet.d -w_outlet*abs(w_outlet)*fluidOutlet.d;
       Delta_p_adv[3] = 0;
     elseif not frictionAtInlet and frictionAtOutlet then
       Delta_p_grav[1] = 0;
-      Delta_p_grav[2] = (fluidFM[2].d*geo.Delta_x_FM[2] + fluidFM[1].d*geo.Delta_x_FM[1])/(geo.Delta_x_FM[1]+geo.Delta_x_FM[2])*g_n*(geo.z[2] - geo.z_in);
-      Delta_p_grav[3] = fluidFM[3].d*g_n*(geo.z_out - geo.z[2]);
+      Delta_p_grav[2] = (rho_FM[2]*geo.Delta_x_FM[2] + rho_FM[1]*geo.Delta_x_FM[1])/(geo.Delta_x_FM[1]+geo.Delta_x_FM[2])*g_n*(geo.z[2] - geo.z_in);
+      Delta_p_grav[3] = rho_FM[3]*g_n*(geo.z_out - geo.z[2]);
       Delta_p_adv[1] = 0;
       Delta_p_adv[2] = w_inlet*abs(w_inlet)*fluidInlet.d -w[2]*abs(w[2])*fluid[2].d;
       Delta_p_adv[3] = w[2]*abs(w[2])*fluid[2].d -w_outlet*abs(w_outlet)*fluidOutlet.d;
     elseif  frictionAtInlet and not frictionAtOutlet then
-      Delta_p_grav[1] = fluidFM[1].d*g_n*(geo.z[1] - geo.z_in);
-      Delta_p_grav[2] = (fluidFM[2].d*geo.Delta_x_FM[2] + fluidFM[3].d*geo.Delta_x_FM[3])/(geo.Delta_x_FM[3]+geo.Delta_x_FM[2])*g_n*(geo.z_out - geo.z[1]);
+      Delta_p_grav[1] = rho_FM[1]*g_n*(geo.z[1] - geo.z_in);
+      Delta_p_grav[2] = (rho_FM[2]*geo.Delta_x_FM[2] + rho_FM[3]*geo.Delta_x_FM[3])/(geo.Delta_x_FM[3]+geo.Delta_x_FM[2])*g_n*(geo.z_out - geo.z[1]);
       Delta_p_grav[3] = 0;
       Delta_p_adv[1] = w_inlet*abs(w_inlet)*fluidInlet.d -w[1]*abs(w[1])*fluid[1].d;
       Delta_p_adv[2] = w[1]*abs(w[1])*fluid[1].d -w_outlet*abs(w_outlet)*fluidOutlet.d;
       Delta_p_adv[3] = 0;
     else
       // frictionAtOutlet and frictionAtnlet
-      Delta_p_grav[1] = fluidFM[1].d*g_n*(geo.z[1] - geo.z_in);
-      Delta_p_grav[2] = fluidFM[2].d*g_n*(geo.z[2] - geo.z[1]);
-      Delta_p_grav[3] = fluidFM[3].d*g_n*(geo.z_out - geo.z[2]);
+      Delta_p_grav[1] = rho_FM[1]*g_n*(geo.z[1] - geo.z_in);
+      Delta_p_grav[2] = rho_FM[2]*g_n*(geo.z[2] - geo.z[1]);
+      Delta_p_grav[3] = rho_FM[3]*g_n*(geo.z_out - geo.z[2]);
       Delta_p_adv[1] = w_inlet*abs(w_inlet)*fluidInlet.d -w[1]*abs(w[1])*fluid[1].d;
       Delta_p_adv[2] = w[1]*abs(w[1])*fluid[1].d -w[2]*abs(w[2])*fluid[2].d;
       Delta_p_adv[3] = w[2]*abs(w[2])*fluid[2].d -w_outlet*abs(w_outlet)*fluidOutlet.d;
     end if;
   else
     for i in 3:geo.N_cv-1 loop
-      Delta_p_grav[i] = fluidFM[i].d*g_n*(geo.z[i] - geo.z[i-1]);
+      Delta_p_grav[i] = rho_FM[i]*g_n*(geo.z[i] - geo.z[i-1]);
       Delta_p_adv[i]=w[i-1]*abs(w[i-1])*fluid[i-1].d -w[i]*abs(w[i])*fluid[i].d;
     end for;
 
     if frictionAtInlet then
-      Delta_p_grav[1] = fluidFM[1].d*g_n*(geo.z[1] - geo.z_in);
-      Delta_p_grav[2] = fluidFM[2].d*g_n*(geo.z[2] - geo.z[1]);
+      Delta_p_grav[1] = rho_FM[1]*g_n*(geo.z[1] - geo.z_in);
+      Delta_p_grav[2] = rho_FM[2]*g_n*(geo.z[2] - geo.z[1]);
       Delta_p_adv[1] = w_inlet*abs(w_inlet)*fluidInlet.d -w[1]*abs(w[1])*fluid[1].d;
       Delta_p_adv[2] = w[1]*abs(w[1])*fluid[1].d -w[2]*abs(w[2])*fluid[2].d;
     else
       Delta_p_grav[1] = 0;
-      Delta_p_grav[2] = (fluidFM[2].d*geo.Delta_x_FM[2] + fluidFM[1].d*geo.Delta_x_FM[1])/(geo.Delta_x_FM[1]+geo.Delta_x_FM[2])*g_n*(geo.z[2] - geo.z_in);
+      Delta_p_grav[2] = (rho_FM[2]*geo.Delta_x_FM[2] + rho_FM[1]*geo.Delta_x_FM[1])/(geo.Delta_x_FM[1]+geo.Delta_x_FM[2])*g_n*(geo.z[2] - geo.z_in);
       Delta_p_adv[1] = 0;
       Delta_p_adv[2] = w_inlet*abs(w_inlet)*fluidInlet.d -w[2]*abs(w[2])*fluid[2].d;
     end if;
 
     if frictionAtOutlet then
-      Delta_p_grav[geo.N_cv+1] = fluidFM[geo.N_cv+1].d*g_n*(geo.z_out - geo.z[geo.N_cv]);
-      Delta_p_grav[geo.N_cv]   = fluidFM[geo.N_cv].d*g_n*(geo.z[geo.N_cv] - geo.z[geo.N_cv-1]);
+      Delta_p_grav[geo.N_cv+1] = rho_FM[geo.N_cv+1]*g_n*(geo.z_out - geo.z[geo.N_cv]);
+      Delta_p_grav[geo.N_cv]   = rho_FM[geo.N_cv]*g_n*(geo.z[geo.N_cv] - geo.z[geo.N_cv-1]);
       Delta_p_adv[geo.N_cv] = w[geo.N_cv-1]*abs(w[geo.N_cv-1])*fluid[geo.N_cv-1].d -w[geo.N_cv]*abs(w[geo.N_cv])*fluid[geo.N_cv].d;
       Delta_p_adv[geo.N_cv+1] = w[geo.N_cv]*abs(w[geo.N_cv])*fluid[geo.N_cv].d -w_outlet*abs(w_outlet)*fluidOutlet.d;
     else
       Delta_p_grav[geo.N_cv+1] = 0;
-      Delta_p_grav[geo.N_cv] = (fluidFM[geo.N_cv].d*geo.Delta_x_FM[geo.N_cv] + fluidFM[geo.N_cv+1].d*geo.Delta_x_FM[geo.N_cv+1])/(geo.Delta_x_FM[geo.N_cv+1]+geo.Delta_x_FM[geo.N_cv])*g_n*(geo.z_out - geo.z[geo.N_cv-1]);
+      Delta_p_grav[geo.N_cv] = (rho_FM[geo.N_cv]*geo.Delta_x_FM[geo.N_cv] + rho_FM[geo.N_cv+1]*geo.Delta_x_FM[geo.N_cv+1])/(geo.Delta_x_FM[geo.N_cv+1]+geo.Delta_x_FM[geo.N_cv])*g_n*(geo.z_out - geo.z[geo.N_cv-1]);
       Delta_p_adv[geo.N_cv] = w[geo.N_cv-1]*abs(w[geo.N_cv-1])*fluid[geo.N_cv-1].d -w_outlet*abs(w_outlet)*fluidOutlet.d;
       Delta_p_adv[geo.N_cv+1] = 0;
     end if;
@@ -503,29 +568,29 @@ equation
 mass = geo.volume.*fluid.d;
 //-------------------------------------------
 // definition of the cells' states:
-// extended Energy balance including flow of potential/kinetic energy through cell borders
+// Energy balance without flow of potential/kinetic energy through cell borders
   for i in 1:geo.N_cv loop
 
      der(h[i])= (H_flow[i]- H_flow[i+1]
                  + heat[i].Q_flow
                  + der(p[i])*geo.volume[i]
                  - h[i]*geo.volume[i]*drhodt[i]
-                 - dE_kin_dt[i]
-                 - dE_pot_dt[i]
                  + m_flow[i]*(w_FM[i]^2/2+zFM[i]*g_n)
                  - m_flow[i+1]*(w_FM[i+1]^2/2+zFM[i+1]*g_n))
                   /mass[i];
+//                  -dE_kin_dt_[i]
+//                  -dE_pot_dt_[i]
+
 
     drhodt[i]*geo.volume[i]=m_flow[i]-m_flow[i+1] "Mass balance";
     fluid[i].drhodp_hxi
                    *der(p[i])=(drhodt[i]-der(h[i])*fluid[i].drhodh_pxi) "Calculate pressure from enthalpy and density derivative";
 
+
+
     dE_pot_dt[i]=drhodt[i]*geo.volume[i]*g_n*geo.z[i];//time derivative of potential energy
     dE_kin_dt[i]=drhodt[i]*geo.volume[i]/2*(m_flow[i]/(fluid[i].d*geo.A_cross[i]))^2
                  + mass[i]*m_flow[i]/(fluid[i].d*geo.A_cross[i])*(der(m_flow[i])/(fluid[i].d*geo.A_cross[i])-m_flow[i]/geo.A_cross[i]*drhodt[i]/fluid[i].d^2);
-    //E_kin is here still simplified in order to avoid index reduction...
-    // actually we should use w[i]^2 here. But this introduces
-    // non linear couplings between the m_flow variables
     E_kin[i]=(m_flow[i]/(fluid[i].d*geo.A_cross[i]))^2*mass[i]/2;
     E_pot[i]=mass[i]*g_n*geo.z[i];
 
@@ -541,7 +606,7 @@ mass = geo.volume.*fluid.d;
       geo.Delta_x_FM[i]/geo.A_cross_FM[i]*der(m_flow[i]) =if useHomotopy then
                           homotopy(p[i-1]+suppFreqCorr*der(p[i-1])*geo.Delta_x[i-1]/fluid[i].w/2 - p[i]-suppFreqCorr*der(p[i])*geo.Delta_x[i]/fluid[i].w/2 + Delta_p_adv[i]- Delta_p_fric[i] -Delta_p_grav[i],0)
                         else
-                          p[i-1] - p[i] + Delta_p_adv[i]- Delta_p_fric[i] -Delta_p_grav[i];
+                          p[i-1]+suppFreqCorr*der(p[i-1])*geo.Delta_x[i-1]/fluid[i].w/2 - p[i]-suppFreqCorr*der(p[i])*geo.Delta_x[i]/fluid[i].w/2 + Delta_p_adv[i]- Delta_p_fric[i] -Delta_p_grav[i];
                         end for;
   inlet.h_outflow=h[1];
   outlet.h_outflow=h[geo.N_cv];
@@ -585,5 +650,10 @@ end if;
                    graphics),
         Diagram(coordinateSystem(preserveAspectRatio=false,
           extent={{-140,-50},{140,50}}),
-                                      graphics));
+                                      graphics),
+    experiment(
+      StopTime=3000,
+      __Dymola_NumberOfIntervals=1000,
+      Tolerance=1e-008,
+      __Dymola_Algorithm="Dassl"));
 end VolumeVLE_L4_Advanced;

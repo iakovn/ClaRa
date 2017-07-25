@@ -1,10 +1,10 @@
 within ClaRa.Components.VolumesValvesFittings.Valves;
 model ValveFuelFlueGas_L1 "Valve for mixed fuel and flue gas flow with replaceable flow models"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.1                            //
+// Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -170,7 +170,7 @@ public
     annotation (Placement(transformation(extent={{90,-68},{110,-48}}),
         iconTransformation(extent={{90,-50},{110,-30}})));
 protected
-  Basics.Interfaces.EyeIn eye_int
+  Basics.Interfaces.EyeIn eye_int[1]
     annotation (Placement(transformation(extent={{45,-59},{47,-57}})));
 
 equation
@@ -211,13 +211,13 @@ equation
   outlet.fuel.cp_outflow = inStream(inlet.fuel.cp_outflow);
 
 //______________Eye port variable definition________________________
-  eye_int.m_flow = -outlet.flueGas.m_flow;
-  eye_int.T = gasOut.T-273.15;
-  eye_int.s = gasOut.s/1e3;
-  eye_int.p = outlet.flueGas.p/1e5;
-  eye_int.h = gasOut.h/1e3;
+  eye_int[1].m_flow = -outlet.flueGas.m_flow;
+  eye_int[1].T = gasOut.T-273.15;
+  eye_int[1].s = gasOut.s/1e3;
+  eye_int[1].p = outlet.flueGas.p/1e5;
+  eye_int[1].h = gasOut.h/1e3;
 
-  connect(eye,eye_int)  annotation (Line(
+  connect(eye,eye_int[1])  annotation (Line(
       points={{100,-58},{46,-58}},
       color={255,204,51},
       thickness=0.5,

@@ -2,7 +2,7 @@ within ClaRa.StaticCycles.Boundaries;
 model Source_grey "A boundary for power connections"
 
   parameter ClaRa.Basics.Units.Power P "Power from source" annotation(Dialog(enable = source));
-  ClaRa_Dev.StaticCycles.Fundamentals.PowerSignal_B outlet(power=P) annotation (Placement(transformation(extent={{92,-10},{100,10}})));
+  ClaRa.StaticCycles.Fundamentals.PowerSignal_B outlet(power=P) annotation (Placement(transformation(extent={{92,-10},{100,10}})));
 
   annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
         Text(

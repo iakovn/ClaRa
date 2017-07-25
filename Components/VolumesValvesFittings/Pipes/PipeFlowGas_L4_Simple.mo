@@ -1,10 +1,10 @@
 within ClaRa.Components.VolumesValvesFittings.Pipes;
 model PipeFlowGas_L4_Simple "A 1D tube-shaped control volume considering heat transfer in a straight pipe with static momentum balance and simple energy balance."
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.1                            //
+// Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -53,7 +53,7 @@ public
   parameter Boolean heatFlowIsLoss = true "True if negative heat flow is a loss (not a process product)" annotation(Dialog(tab="Summary and Visualisation"));
 
 protected
-  Basics.Interfaces.EyeIn eye_int
+  Basics.Interfaces.EyeIn eye_int[1]
     annotation (Placement(transformation(extent={{85,-41},{87,-39}})));
 public
   Basics.Interfaces.EyeOut eye if showData
@@ -64,13 +64,13 @@ public
 //-------------------------------------------
 equation
 
-  eye_int.m_flow=-outlet.m_flow;
-  eye_int.T= fluidOutlet.T-273.15;
-  eye_int.s=fluidOutlet.s/1e3;
-  eye_int.p=outlet.p/1e5;
-  eye_int.h=fluidOutlet.h/1e3;
+  eye_int[1].m_flow=-outlet.m_flow;
+  eye_int[1].T= fluidOutlet.T-273.15;
+  eye_int[1].s=fluidOutlet.s/1e3;
+  eye_int[1].p=outlet.p/1e5;
+  eye_int[1].h=fluidOutlet.h/1e3;
          //fillColor={0,131,169};//DynamicSelect(if time > 0 then (if not FlowModel==FlowModelStructure.inlet_innerPipe_outlet and not FlowModel==FlowModelStructure.inlet_innerPipe_dp_outlet then {0,131,169} else {255,255,255}) else {255,255,255}),
-  connect(eye_int,eye)  annotation (Line(
+  connect(eye_int[1],eye)  annotation (Line(
       points={{86,-40},{140,-40}},
       color={255,204,51},
       smooth=Smooth.None,

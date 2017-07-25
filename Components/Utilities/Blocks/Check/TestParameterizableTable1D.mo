@@ -1,10 +1,10 @@
 within ClaRa.Components.Utilities.Blocks.Check;
 model TestParameterizableTable1D
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.1                            //
+// Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -24,6 +24,8 @@ model TestParameterizableTable1D
 // instead of Modelica.Blocks.Tables.CombiTable1D.
 //
 // For a realworld example see: ClaRa.Examples.ClaRaClosedLoop, which uses ClaRa.SubSystems.Boiler.SteamGenerator_L3
+  extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
+
   parameter Real a(fixed=false);
   parameter Real b(fixed=false);
   // Modelica.Blocks.Tables.CombiTable1D table(table=[0,0;1,a]); // This line will fail with OpenModelica or SimulationX. Therefor use ParameterizableTable1D instead of CombiTable1D.

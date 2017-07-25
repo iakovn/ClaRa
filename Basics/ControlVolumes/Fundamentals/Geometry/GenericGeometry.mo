@@ -1,10 +1,10 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.Geometry;
 model GenericGeometry "All shapes || Base class"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.1                            //
+  // Component of the ClaRa library, version: 1.2.2                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -17,9 +17,9 @@ model GenericGeometry "All shapes || Base class"
 
   parameter Units.Volume volume(min=Modelica.Constants.eps) = 1 "|Essential Geometry Definition|Volume of the component";
   parameter Integer N_heat=2 "|Essential Geometry Definition|No. of heat transfer areas";
-  parameter Units.Area A_heat[N_heat](min=Modelica.Constants.eps) = ones(N_heat) "|Essential Geometry Definition|Heat transfer area: /1/ dedicated to lateral surface";
-  final parameter Units.Area A_heat_CF[N_heat](min=Modelica.Constants.eps) = {A_heat[i]*CF_geo[i] for i in 1:N_heat} "|Essential Geometry Definition|Corrected heat transfer area: /1/ dedicated to lateral surface";
-  parameter Real CF_geo[N_heat](min=Modelica.Constants.eps) = ones(N_heat) "|Essential Geometry Definition|Correction factor for heat transfer area: /1/ dedicated to lateral surface";
+  parameter Units.Area A_heat[N_heat](each min=Modelica.Constants.eps) = ones(N_heat) "|Essential Geometry Definition|Heat transfer area: /1/ dedicated to lateral surface";
+  final parameter Units.Area A_heat_CF[N_heat](each min=Modelica.Constants.eps) = {A_heat[i]*CF_geo[i] for i in 1:N_heat} "|Essential Geometry Definition|Corrected heat transfer area: /1/ dedicated to lateral surface";
+  parameter Real CF_geo[N_heat](each min=Modelica.Constants.eps) = ones(N_heat) "|Essential Geometry Definition|Correction factor for heat transfer area: /1/ dedicated to lateral surface";
   parameter Units.Area A_cross(min=Modelica.Constants.eps) = 1 "|Essential Geometry Definition|Cross section for mass flow";
   parameter Units.Area A_front(min=Modelica.Constants.eps) = 1 "|Essential Geometry Definition|Frontal area";
 

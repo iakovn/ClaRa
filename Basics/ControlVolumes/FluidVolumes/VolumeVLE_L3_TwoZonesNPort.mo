@@ -1,10 +1,10 @@
 within ClaRa.Basics.ControlVolumes.FluidVolumes;
 model VolumeVLE_L3_TwoZonesNPort "A volume element balancing liquid and vapour phase with n inlet and outlet ports"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.1                            //
+  // Component of the ClaRa library, version: 1.2.2                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -158,6 +158,7 @@ public
   SI.EnthalpyFlowRate Xi_flow_outvap[geo.N_outlet, medium.nc-1] "Enthalpy flow rate passing from outlet to vapour zone and vice versa";
 protected
   ClaRa.Basics.Units.Pressure p_bottom "Pressure at volume bottom";
+  Real level_abs_ "Additional state for decoupling large nonlinear system of equation if equal pressures == false";
 
 public
   ClaRa.Basics.Interfaces.FluidPortIn inlet[geo.N_inlet](each Medium=medium) "Inlet port"
@@ -173,20 +174,20 @@ public
   TILMedia.VLEFluid_ph fluidIn[geo.N_inlet](
     each vleFluidType=medium,
     final p=inlet.p,
-    final h={if useHomotopy then homotopy(actualStream(inlet[i].h_outflow), inStream(inlet[i].h_outflow)) else actualStream(inlet[i].h_outflow) for i in 1:geo.N_inlet},
-    xi={if useHomotopy then homotopy(actualStream(inlet[i].xi_outflow),
-        inStream(inlet[i].xi_outflow)) else actualStream(inlet[i].xi_outflow)
+    final h={if useHomotopy then homotopy(noEvent(actualStream(inlet[i].h_outflow)), inStream(inlet[i].h_outflow)) else noEvent(actualStream(inlet[i].h_outflow)) for i in 1:geo.N_inlet},
+    xi={if useHomotopy then homotopy(noEvent(actualStream(inlet[i].xi_outflow)),
+        inStream(inlet[i].xi_outflow)) else noEvent(actualStream(inlet[i].xi_outflow))
         for i in 1:geo.N_inlet})                                                                                                     annotation (Placement(transformation(extent={{-90,-10},{-70,
             10}}, rotation=0)));
 
   TILMedia.VLEFluid_ph fluidOut[geo.N_outlet](
     each vleFluidType=medium,
     final p=outlet.p,
-    final h={if useHomotopy then homotopy(actualStream(outlet[i].h_outflow),
-        outlet[i].h_outflow) else actualStream(outlet[i].h_outflow) for i in 1:
+    final h={if useHomotopy then homotopy(noEvent(actualStream(outlet[i].h_outflow)),
+        outlet[i].h_outflow) else noEvent(actualStream(outlet[i].h_outflow)) for i in 1:
         geo.N_outlet},
-    xi={if useHomotopy then homotopy(actualStream(outlet[i].xi_outflow), outlet[
-        i].xi_outflow) else actualStream(outlet[i].xi_outflow) for i in 1:geo.N_outlet})                annotation (Placement(transformation(extent={{70,-10},{90,10}},
+    xi={if useHomotopy then homotopy(noEvent(actualStream(outlet[i].xi_outflow)), outlet[
+        i].xi_outflow) else noEvent(actualStream(outlet[i].xi_outflow)) for i in 1:geo.N_outlet})                annotation (Placement(transformation(extent={{70,-10},{90,10}},
           rotation=0)));
 
   HeatTransfer heattransfer(
@@ -294,6 +295,11 @@ protected
     mediumModel=medium,
     xi={liq.xi,vap.xi}) "Internal communication record"
     annotation (Placement(transformation(extent={{-80,-102},{-60,-82}})));
+
+initial equation
+  if not equalPressures then
+    level_abs_=phaseBorder.level_abs;
+  end if;
 equation
 
   //_____________________________________________________
@@ -311,11 +317,15 @@ equation
   //calculating drhodt from state variables
   volume_liq = geo.volume - volume_vap;
 
+
+
   p_bottom = p_vap + phaseBorder.level_abs*liq.d*Modelica.Constants.g_n;
   if equalPressures then
     p_liq = p_vap;
+    level_abs_=-1;
   else
-    p_liq = p_vap + phaseBorder.level_abs*liq.d*Modelica.Constants.g_n/2;
+    p_liq = p_vap + level_abs_*liq.d*Modelica.Constants.g_n/2;
+    der(level_abs_)=(phaseBorder.level_abs-level_abs_)/0.001; //introduction of additional state
   end if;
   //_____________________________________________________
   //_______Mass Balances_________________________________
@@ -328,12 +338,12 @@ equation
   //_____________________________________________________
   //______Species Balances_______________________________
    for i in 1:medium.nc-1 loop
-     der(xi_liq[i]) = if mass_liq > 1e-6 then (sum(Xi_flow_inliq[:,i]) + sum(Xi_flow_outliq[:,i])
+     der(xi_liq[i]) = if noEvent(mass_liq > 1e-6) then (sum(Xi_flow_inliq[:,i]) + sum(Xi_flow_outliq[:,i])
                                            + m_flow_cond.*liq.VLE.xi_l[i]- m_flow_evap.*liq.VLE.xi_v[i]
                                            -liq.xi[i]*(drho_liqdt*volume_liq -liq.d*der(volume_vap)))
                                              ./ mass_liq
                    else der(xi_vap[i]);
-      der(xi_vap[i]) = if mass_vap > 1e-6 then (sum(Xi_flow_invap[:,i]) + sum(Xi_flow_outvap[:,i])
+      der(xi_vap[i]) = if noEvent(mass_vap > 1e-6) then (sum(Xi_flow_invap[:,i]) + sum(Xi_flow_outvap[:,i])
                                             - m_flow_cond.*vap.VLE.xi_l[i] + m_flow_evap.*vap.VLE.xi_v[i]
                                             -vap.xi[i].*(drho_vapdt*volume_vap +vap.d.*der(volume_vap)))
                                              ./ mass_vap
@@ -342,20 +352,20 @@ equation
 
   //_____________________________________________________
   //______Energy Balances________________________________
-  der(h_liq) = if mass_liq > 1e-6 then (sum(H_flow_inliq) + sum(H_flow_outliq) + m_flow_cond*vap.VLE.h_l - m_flow_evap*vap.VLE.h_v
+  der(h_liq) = if noEvent(mass_liq > 1e-6) then (sum(H_flow_inliq) + sum(H_flow_outliq) + m_flow_cond*vap.VLE.h_l - m_flow_evap*vap.VLE.h_v
      + volume_liq*der(p_liq) + p_liq*der(volume_liq) - h_liq*volume_liq*drho_liqdt -
     liq.d*h_liq*der(volume_liq) + Q_flow_phases + Q_flow[1])/
     mass_liq else der(h_vap);
 
-  der(h_vap) = if mass_vap > 1e-6 then (sum(H_flow_invap) + sum(H_flow_outvap) - m_flow_cond*vap.VLE.h_l + m_flow_evap*vap.VLE.h_v +
+  der(h_vap) = if noEvent(mass_vap > 1e-6) then (sum(H_flow_invap) + sum(H_flow_outvap) - m_flow_cond*vap.VLE.h_l + m_flow_evap*vap.VLE.h_v +
     volume_vap*der(p_vap) + p_vap*der(volume_vap) - h_vap*volume_vap*drho_vapdt - vap.d
     *h_vap*der(volume_vap) - Q_flow_phases + Q_flow[2])/
     mass_vap else der(h_liq);
 //________________________________________________________________________________
 //______Coupling of the Phases: Heat Transfer_____________________________________
   Q_flow_phases = noEvent(alpha_ph*A_heat_ph*max(1e-3,min((1e-6+iCom.volume[1])/(1e-6+iCom.volume[2]), (1e-6+iCom.volume[2])/(1e-6+iCom.volume[1])))^exp_HT_phases*(iCom.T[2] - iCom.T[1]));
-  Q_flow[1] = if mass_vap > 1e-6 then heattransfer.heat[1].Q_flow else sum(heattransfer.heat.Q_flow);
-  Q_flow[2] = if mass_liq > 1e-6 then heattransfer.heat[2].Q_flow else sum(heattransfer.heat.Q_flow);
+  Q_flow[1] = if noEvent(mass_vap > 1e-6) then heattransfer.heat[1].Q_flow else sum(heattransfer.heat.Q_flow);
+  Q_flow[2] = if noEvent(mass_liq > 1e-6) then heattransfer.heat[2].Q_flow else sum(heattransfer.heat.Q_flow);
 //________________________________________________________________________________
 //______Coupling of the Phases: Mass Transfer_____________________________________
   m_flow_cond = Stepsmoother(1e-1, 1e-3, mass_vap*(1 - vap.q))*Stepsmoother(-10, +10, h_vap - vap.VLE.h_v)*(1 - noEvent(max(0, min(1, vap.q))))*max(0, mass_vap)/Tau_cond;

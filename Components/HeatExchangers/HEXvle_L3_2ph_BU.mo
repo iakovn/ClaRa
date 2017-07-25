@@ -1,10 +1,10 @@
 within ClaRa.Components.HeatExchangers;
 model HEXvle_L3_2ph_BU "Single side: VLE | L3 | two phase at shell side | Block shape | U-type"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.1                            //
+  // Component of the ClaRa library, version: 1.2.2                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -254,7 +254,7 @@ public
         rotation=270,
         origin={40,-110})));
 protected
-   Basics.Interfaces.EyeIn eye_int1
+   Basics.Interfaces.EyeIn eye_int[1]
      annotation (Placement(transformation(extent={{27,-59},{29,-57}})));
 
 public
@@ -277,11 +277,11 @@ equation
 //   assert(diameter_o > d_i,
 //     "Outer diameter of tubes must be greater than inner diameter");
 
-   eye_int1.m_flow = shell.summary.outlet[1].m_flow;
-   eye_int1.T = shell.summary.outlet[1].T - 273.15;
-   eye_int1.s = shell.fluidOut[1].s/1e3;
-   eye_int1.p = shell.outlet[1].p/1e5;
-   eye_int1.h = shell.summary.outlet[1].h/1e3;
+   eye_int[1].m_flow = shell.summary.outlet[1].m_flow;
+   eye_int[1].T = shell.summary.outlet[1].T - 273.15;
+   eye_int[1].s = shell.fluidOut[1].s/1e3;
+   eye_int[1].p = shell.outlet[1].p/1e5;
+   eye_int[1].h = shell.summary.outlet[1].h/1e3;
 
   connect(inlet, shell.inlet[1])
                                annotation (Line(
@@ -316,7 +316,7 @@ equation
       color={167,25,48},
       thickness=0.5,
       smooth=Smooth.None));
-  connect(eye_int1, eye) annotation (Line(points={{28,-58},{28,-58},{28,-98},{28,-98}}, color={190,190,190}));
+  connect(eye_int[1], eye) annotation (Line(points={{28,-58},{28,-58},{28,-98},{28,-98}}, color={190,190,190}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
             -100},{100,100}})),
                               Diagram(coordinateSystem(preserveAspectRatio=false,

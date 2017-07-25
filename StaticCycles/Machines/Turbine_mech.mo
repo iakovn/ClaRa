@@ -4,7 +4,7 @@ model Turbine_mech "Turbine mith machanical flanges || par.: efficiency || green
 // Component of the ClaRa library, version: 1.1.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -17,13 +17,30 @@ model Turbine_mech "Turbine mith machanical flanges || par.: efficiency || green
   // Green input: Values of p, m_flow and h are unknown and provided BY neighbor component.
   // Blue output: Value of p is unknown and provided BY neighbor component, values of m_flow and h are known in component and provided FOR neighbor component.
   outer ClaRa.SimCenter simCenter;
+      //---------Summary Definition---------
+  model Summary
+    extends ClaRa.Basics.Icons.RecordIcon;
+    ClaRa.Basics.Records.StaCyFlangeVLE inlet;
+    ClaRa.Basics.Records.StaCyFlangeVLE outlet;
+  end Summary;
+
+  Summary summary(
+  inlet(
+     m_flow=inlet.m_flow,
+     h=inlet.h,
+     p=inlet.p),
+  outlet(
+     m_flow=outlet.m_flow,
+     h=outlet.h,
+     p=outlet.p));
+  //---------Summary Definition---------
   parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium = simCenter.fluid1 "Medium in the component"
     annotation(choices(choice=simCenter.fluid1 "First fluid defined in global simCenter",
                        choice=simCenter.fluid2 "Second fluid defined in global simCenter",
                        choice=simCenter.fluid3 "Third fluid defined in global simCenter"),
                                                           Dialog(group="Fundamental Definitions"));
 
-  parameter Real efficiency= 1 "|Fundamental Definitions|Hydraulic efficiency";
+  parameter Real efficiency= 1 "Hydraulic efficiency" annotation(Dialog(group="Fundamental Definitions"));
   final parameter ClaRa.Basics.Units.DensityMassSpecific rho_in =  TILMedia.VLEFluidFunctions.density_phxi(medium, p_in,h_in) "Inlet density";
   final parameter ClaRa.Basics.Units.Power P_turbine=(-h_out + h_in)*m_flow "Turbine power";
 
@@ -48,8 +65,8 @@ public
   ClaRa.StaticCycles.Fundamentals.SteamSignal_green_a inlet annotation (Placement(transformation(extent={{-70,30},{-60,50}}), iconTransformation(extent={{-70,30},{-60,50}})));
   ClaRa.StaticCycles.Fundamentals.SteamSignal_blue_b outlet(h=h_out, m_flow=m_flow) annotation (Placement(transformation(extent={{60,-90},{70,-70}}), iconTransformation(extent={{60,-90},{70,-70}})));
 
-  ClaRa_Dev.StaticCycles.Fundamentals.PowerSignal_A power_in annotation (Placement(transformation(extent={{-68,-10},{-60,10}}), iconTransformation(extent={{-68,-10},{-60,10}})));
-  ClaRa_Dev.StaticCycles.Fundamentals.PowerSignal_B power_out(power=P_in + P_turbine, s=power_in.s) annotation (Placement(transformation(extent={{60,-10},{68,10}}), iconTransformation(extent={{60,-10},{68,10}})));
+  ClaRa.StaticCycles.Fundamentals.PowerSignal_A power_in annotation (Placement(transformation(extent={{-68,-10},{-60,10}}), iconTransformation(extent={{-68,-10},{-60,10}})));
+  ClaRa.StaticCycles.Fundamentals.PowerSignal_B power_out(power=P_in + P_turbine, s=power_in.s) annotation (Placement(transformation(extent={{60,-10},{68,10}}), iconTransformation(extent={{60,-10},{68,10}})));
 initial equation
   inlet.m_flow=m_flow;
   inlet.p=p_in;

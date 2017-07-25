@@ -1,10 +1,10 @@
 within ClaRa.Components.HeatExchangers;
 model IdealShell_L2 "A desuperheater having an ideal cooling | block-shaped geometry"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.1                            //
+  // Component of the ClaRa library, version: 1.2.2                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -66,7 +66,7 @@ model IdealShell_L2 "A desuperheater having an ideal cooling | block-shaped geom
                                                                                               annotation(Dialog(tab="Summary and Visualisation"));
   parameter Boolean heatFlowIsLoss = true "True if heat flow is a loss (not a process product)" annotation(Dialog(tab="Summary and Visualisation"));
 protected
-  ClaRa.Basics.Interfaces.EyeIn eye_int
+  ClaRa.Basics.Interfaces.EyeIn eye_int[1]
     annotation (Placement(transformation(extent={{45,-81},{47,-79}})));
 
 public
@@ -74,12 +74,12 @@ public
     annotation (Placement(transformation(extent={{90,-90},{110,-70}})));
 
 equation
-  eye_int.p = outlet.p/1e5;
-  eye_int.h = fluidOut.h/1e3;
-  eye_int.m_flow = -outlet.m_flow;
-  eye_int.T = fluidOut.T - 273.15;
-  eye_int.s = fluidOut.s/1e3;
-  connect(eye, eye_int) annotation (Line(
+  eye_int[1].p = outlet.p/1e5;
+  eye_int[1].h = fluidOut.h/1e3;
+  eye_int[1].m_flow = -outlet.m_flow;
+  eye_int[1].T = fluidOut.T - 273.15;
+  eye_int[1].s = fluidOut.s/1e3;
+  connect(eye, eye_int[1]) annotation (Line(
       points={{100,-80},{46,-80}},
       color={255,204,51},
       thickness=0.5,

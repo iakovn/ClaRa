@@ -1,10 +1,10 @@
 within ClaRa.Components.HeatExchangers;
 model HEXvle2vle_L3_1ph_BU_ntu "VLE 2 VLE | L3 | 1 phase on each side | Block shape | U-type | NTU Ansatz"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.1                            //
+  // Component of the ClaRa library, version: 1.2.2                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -278,7 +278,7 @@ model HEXvle2vle_L3_1ph_BU_ntu "VLE 2 VLE | L3 | 1 phase on each side | Block sh
         rotation=180,
         origin={-100,-42})));
 protected
-  Basics.Interfaces.EyeIn eye_int2
+  Basics.Interfaces.EyeIn eye_int2[1]
     annotation (Placement(transformation(extent={{-51,-43},{-49,-41}})));
 public
   Basics.Interfaces.EyeOut eye1 if showData annotation (Placement(
@@ -290,23 +290,23 @@ public
         rotation=270,
         origin={28,-98})));
 protected
-  Basics.Interfaces.EyeIn eye_int1
+  Basics.Interfaces.EyeIn eye_int1[1]
     annotation (Placement(transformation(extent={{27,-59},{29,-57}})));
 
 equation
   assert(diameter_o > diameter_i,
     "Outer diameter of tubes must be greater than inner diameter");
 
-  eye_int1.m_flow = shell.summary.outlet.m_flow;
-  eye_int1.T = shell.summary.outlet.T - 273.15;
-  eye_int1.s = shell.fluidOut.s/1e3;
-  eye_int1.p = shell.outlet.p/1e5;
-  eye_int1.h = shell.summary.outlet.h/1e3;
-  eye_int2.m_flow = tubes.summary.outlet.m_flow;
-  eye_int2.T = tubes.summary.outlet.T - 273.15;
-  eye_int2.s = tubes.fluidOut.s/1e3;
-  eye_int2.p = tubes.outlet.p/1e5;
-  eye_int2.h = tubes.summary.outlet.h/1e3;
+  eye_int1[1].m_flow = shell.summary.outlet.m_flow;
+  eye_int1[1].T = shell.summary.outlet.T - 273.15;
+  eye_int1[1].s = shell.fluidOut.s/1e3;
+  eye_int1[1].p = shell.outlet.p/1e5;
+  eye_int1[1].h = shell.summary.outlet.h/1e3;
+  eye_int2[1].m_flow = tubes.summary.outlet.m_flow;
+  eye_int2[1].T = tubes.summary.outlet.T - 273.15;
+  eye_int2[1].s = tubes.fluidOut.s/1e3;
+  eye_int2[1].p = tubes.outlet.p/1e5;
+  eye_int2[1].h = tubes.summary.outlet.h/1e3;
 initial equation
   //        wall.T=(Tubes.bulk.T+shell.bulk.T)/2;
 
@@ -340,11 +340,11 @@ equation
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
-  connect(eye_int2, eye2) annotation (Line(
+  connect(eye_int2[1], eye2) annotation (Line(
       points={{-50,-42},{-100,-42}},
       color={190,190,190},
       smooth=Smooth.None));
-  connect(eye_int1, eye1) annotation (Line(
+  connect(eye_int1[1], eye1) annotation (Line(
       points={{28,-58},{28,-98}},
       color={190,190,190},
       smooth=Smooth.None));

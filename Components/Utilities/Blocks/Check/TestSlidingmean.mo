@@ -1,5 +1,6 @@
 within ClaRa.Components.Utilities.Blocks.Check;
 model TestSlidingmean
+  extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
 
   Components.Utilities.Blocks.Noise noise(
     startTime=0,

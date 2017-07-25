@@ -4,7 +4,7 @@ model FlameRoom2 "Fixed fluid outlet temperature | blue | green || brown | brown
 // Component of the ClaRa library, version: 1.1.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -23,6 +23,49 @@ model FlameRoom2 "Fixed fluid outlet temperature | blue | green || brown | brown
 
   outer ClaRa.SimCenter simCenter;
   outer parameter Real P_target_ "Target power in p.u." annotation(Dialog(group="Part Load Definition"));
+
+  //---------Summary Definition---------
+  model Summary
+    extends ClaRa.Basics.Icons.RecordIcon;
+    ClaRa.Basics.Records.StaCyFlangeVLE inlet_wall;
+    ClaRa.Basics.Records.StaCyFlangeVLE outlet_wall;
+    ClaRa.Basics.Records.StaCyFlangeVLE inlet_bundle;
+    ClaRa.Basics.Records.StaCyFlangeVLE outlet_bundle;
+    ClaRa.Basics.Records.StaCyFlangeGas inlet_fg;
+    ClaRa.Basics.Records.StaCyFlangeGas outlet_fg;
+  end Summary;
+
+  Summary summary(
+  inlet_wall(
+     m_flow=m_flow_vle_wall_in,
+     h=h_vle_wall_in,
+     p=p_vle_wall_in),
+  outlet_wall(
+     m_flow=m_flow_vle_wall_out,
+     h=h_vle_wall_out,
+     p=p_vle_wall_out),
+  inlet_bundle(
+     m_flow=m_flow_vle_bundle_in,
+     h=h_vle_bundle_in,
+     p=p_vle_bundle_in),
+  outlet_bundle(
+     m_flow=m_flow_vle_bundle,
+     h=h_vle_bundle_out,
+     p=p_vle_bundle_out),
+  inlet_fg(
+     mediumModel=flueGas,
+     m_flow=m_flow_fg,
+     T=T_fg_in,
+     p=p_fg_in,
+     xi=xi_fg_in),
+  outlet_fg(
+     mediumModel=flueGas,
+     m_flow=m_flow_fg,
+     T=T_fg_out,
+     p=p_fg_out,
+     xi=xi_fg_out));
+
+  //---------Summary Definition---------
 
   parameter TILMedia.VLEFluidTypes.BaseVLEFluid vleMedium = simCenter.fluid1 "vleMedium in the component" annotation(Dialog(group="Fundamental Definitions"));
   parameter TILMedia.GasTypes.BaseGas flueGas = simCenter.flueGasModel "Flue gas model used in component" annotation(Dialog(group="Fundamental Definitions"));
@@ -99,8 +142,8 @@ model FlameRoom2 "Fixed fluid outlet temperature | blue | green || brown | brown
                                                                                               0.001) "Rprt: Logarithmic temperature difference";
   final parameter Real kA_wall = Q_flow_wall /(1e-5 + Delta_T_mean_wall) "Rprt: Heat Flow Resistance of wall";
 
-  final parameter ClaRa.Basics.Units.Pressure p_bundle[N_cv_bundle] = ClaRa_Dev.Basics.Functions.pressureInterpolation(p_vle_bundle_in, p_vle_bundle_out, Delta_x_bundle, frictionAtInlet_bundle, frictionAtOutlet_bundle) "Rprt: Discretisised pressure at tube bundle";
-  final parameter ClaRa.Basics.Units.Pressure p_wall[N_cv_wall] = ClaRa_Dev.Basics.Functions.pressureInterpolation(p_vle_wall_in, p_vle_wall_out, Delta_x_wall, frictionAtInlet_wall, frictionAtOutlet_wall) "Rprt: Discretisised pressure at tube bundle";
+  final parameter ClaRa.Basics.Units.Pressure p_bundle[N_cv_bundle] = ClaRa.Basics.Functions.pressureInterpolation(p_vle_bundle_in, p_vle_bundle_out, Delta_x_bundle, frictionAtInlet_bundle, frictionAtOutlet_bundle) "Rprt: Discretisised pressure at tube bundle";
+  final parameter ClaRa.Basics.Units.Pressure p_wall[N_cv_wall] = ClaRa.Basics.Functions.pressureInterpolation(p_vle_wall_in, p_vle_wall_out, Delta_x_wall, frictionAtInlet_wall, frictionAtOutlet_wall) "Rprt: Discretisised pressure at tube bundle";
 
   constant ClaRa.Basics.Units.MassFraction[:] xi=zeros(vleMedium.nc - 1) "VLE composition in component, pure fluids supported only!";
   final parameter ClaRa.Basics.Units.Pressure Delta_p_geo_wall=
@@ -165,6 +208,11 @@ model FlameRoom2 "Fixed fluid outlet temperature | blue | green || brown | brown
   final parameter ClaRa.Basics.Units.Temperature T_fg_out(fixed=false) "FG medium's outlet temperature";
   final parameter ClaRa.Basics.Units.MassFraction xi_fg_out[outletGas.flueGas.nc-1] = xi_fg_in "FG medium's outlet composition";
   final parameter ClaRa.Basics.Units.Pressure p_fg_out(fixed=false) "FG medium's outlet pressure";
+
+// ________WALL Temperature __________________
+
+  final parameter ClaRa.Basics.Units.Temperature T_wall_wall = ((T_fg_out+T_fg_in)/2 + (T_vle_wall_in + T_vle_wall_out)/2)/2 "Wall temperature of wall tubes";
+  final parameter ClaRa.Basics.Units.Temperature T_wall_bundle= ((T_fg_out+T_fg_in)/2 + (T_vle_bundle_in + T_vle_bundle_out)/2)/2 "Wall temperature of bundle tubes";
 // ____________________________________
 protected
   Modelica.Blocks.Tables.CombiTable1D table1(table=CharLine_Delta_p_P_target_, u = {P_target_});

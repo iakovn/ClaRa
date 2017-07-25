@@ -1,10 +1,10 @@
 within ClaRa.Components.TurboMachines.Turbines;
 model TurbineGas_L1_stageStacked "Advanced gas turbine model using the stage stacking method according to N. Gasparovic"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.1                            //
+// Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -327,7 +327,7 @@ public
   Basics.Interfaces.EyeOut eyeOut annotation (Placement(transformation(extent={{20,-78},
             {60,-42}}),           iconTransformation(extent={{40,-70},{60,-50}})));
 protected
-  Basics.Interfaces.EyeIn eye_int annotation (Placement(transformation(extent={{8,-68},
+  Basics.Interfaces.EyeIn eye_int[1] annotation (Placement(transformation(extent={{8,-68},
             {-8,-52}}),           iconTransformation(extent={{90,-84},{84,-78}})));
 
 initial equation
@@ -857,13 +857,13 @@ end if;
   inlet.T_outflow = inStream(outlet.T_outflow);
 
   //______________Eye port variable definition________________________
-  eye_int.m_flow = -outlet.m_flow;
-  eye_int.T = flueGas_outlet.T-273.15;
-  eye_int.s = flueGas_outlet.s/1e3;
-  eye_int.p = flueGas_outlet.p/1e5;
-  eye_int.h = flueGas_outlet.h/1e3;
+  eye_int[1].m_flow = -outlet.m_flow;
+  eye_int[1].T = flueGas_outlet.T-273.15;
+  eye_int[1].s = flueGas_outlet.s/1e3;
+  eye_int[1].p = flueGas_outlet.p/1e5;
+  eye_int[1].h = flueGas_outlet.h/1e3;
 
-  connect(eye_int,eyeOut)  annotation (Line(
+  connect(eye_int[1],eyeOut)  annotation (Line(
       points={{0,-60},{40,-60}},
       color={190,190,190},
       smooth=Smooth.None));

@@ -2,10 +2,10 @@ within ClaRa.Components.TurboMachines.Compressors;
 model CompressorVLE_L1_stageStacked "Advanced compressor or fan for VLE mixtures using the stage stacking method  according to N. Gasparovic"
   import ClaRa;
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.1                            //
+// Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -396,7 +396,7 @@ public
   Basics.Interfaces.EyeOut eyeOut annotation (Placement(transformation(extent={{72,-78},
             {112,-42}}),          iconTransformation(extent={{92,-70},{112,-50}})));
 protected
-  Basics.Interfaces.EyeIn eye_int annotation (Placement(transformation(extent={{48,-68},
+  Basics.Interfaces.EyeIn eye_int[1] annotation (Placement(transformation(extent={{48,-68},
             {32,-52}}),           iconTransformation(extent={{90,-84},{84,-78}})));
 
 initial equation
@@ -1020,13 +1020,13 @@ end if;
   fluid_inlet.h_outflow = VLEFluid_inlet.h;
 
   //______________Eye port variable definition________________________
-  eye_int.m_flow = -fluid_outlet.m_flow;
-  eye_int.T = VLEFluid_outlet.T-273.15;
-  eye_int.s = VLEFluid_outlet.s/1e3;
-  eye_int.p = VLEFluid_outlet.p/1e5;
-  eye_int.h = VLEFluid_outlet.h/1e3;
+  eye_int[1].m_flow = -fluid_outlet.m_flow;
+  eye_int[1].T = VLEFluid_outlet.T-273.15;
+  eye_int[1].s = VLEFluid_outlet.s/1e3;
+  eye_int[1].p = VLEFluid_outlet.p/1e5;
+  eye_int[1].h = VLEFluid_outlet.h/1e3;
 
-  connect(eye_int,eyeOut)  annotation (Line(
+  connect(eye_int[1],eyeOut)  annotation (Line(
       points={{40,-60},{92,-60}},
       color={190,190,190},
       smooth=Smooth.None));

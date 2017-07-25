@@ -26,13 +26,16 @@ model SensorVLE_L3_T
 
   parameter Integer initOptionFluid=0 "Type of initialisation of pipe's fluid" annotation(Dialog(group="Initialisation"), choices(choice = 0 "Use guess values", choice = 1 "Steady state", choice=201 "Steady pressure", choice = 202 "Steady enthalpy", choice=204 "Fixed rel.level (for phaseBorder = idealSeparated only)",  choice=205 "Fixed rel.level and steady pressure (for phaseBorder = idealSeparated only)"));
 
-  ClaRa_Dev.Basics.ControlVolumes.ThinWall_L2 sensorWall(
+  Basics.ControlVolumes.SolidVolumes.ThinWall_L2
+                                              sensorWall(
     A_heat=A_sensor,
     T_start=T_sensor_start,
     thickness_wall=thickness_sensor,
     redeclare model Material = WallMaterial,
     initOption=203,
-    stateLocation=2)                         annotation (Placement(transformation(extent={{-10,-4},{10,6}})));
+    stateLocation=2,
+    mass=A_sensor*thickness_sensor*sensorWall.solid.d)
+                                             annotation (Placement(transformation(extent={{-10,-4},{10,6}})));
   ClaRa.Basics.ControlVolumes.FluidVolumes.VolumeVLE_2 fluidVolume(
     redeclare final model PhaseBorder = ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.IdeallyStirred,
     redeclare model PressureLoss = PressureLoss,

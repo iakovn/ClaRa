@@ -1,10 +1,10 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Convection;
 model Convection_tubeBank_L2 "Tube Geo || L2 || Convection Tube Bank"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.1                            //
+  // Component of the ClaRa library, version: 1.2.2                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -21,7 +21,7 @@ model Convection_tubeBank_L2 "Tube Geo || L2 || Convection Tube Bank"
   import SZT = ClaRa.Basics.Functions.SmoothZeroTransition;
 
   //Equations according to VDI-Waermeatlas
-  parameter Real CF_fouling=0.8 "Scaling factor accounting for the fouling of the wall";
+  input Real CF_fouling=0.8 "Scaling factor accounting for the fouling of the wall" annotation (Dialog);
   parameter Integer heatSurfaceAlloc=2 "To be considered heat transfer area" annotation (dialog(enable=false, tab="Expert Setting"), choices(
       choice=1 "Lateral surface",
       choice=2 "Inner heat transfer surface",
@@ -29,6 +29,7 @@ model Convection_tubeBank_L2 "Tube Geo || L2 || Convection Tube Bank"
   parameter String temperatureDifference="Logarithmic mean" "Temperature Difference" annotation (Dialog(group="Heat Transfer"), choices(
       choice="Arithmetic mean",
       choice="Logarithmic mean",
+      choice="Logarithmic mean - smoothed",
       choice="Inlet",
       choice="Outlet"));
 public
@@ -68,8 +69,8 @@ equation
 
   Delta_T_wi = heat.T - iCom.T_in;
   Delta_T_wo = heat.T - iCom.T_out;
-  Delta_T_U = max(Delta_T_wi, Delta_T_wo);
-  Delta_T_L = min(Delta_T_wi, Delta_T_wo);
+  Delta_T_U = ClaRa.Basics.Functions.maxAbs(Delta_T_wi, Delta_T_wo);
+  Delta_T_L = ClaRa.Basics.Functions.minAbs(Delta_T_wi, Delta_T_wo);
 
   if temperatureDifference == "Logarithmic mean" then
     //The following equation is only supported due to an backward compatibility issue - avoid its usage
@@ -90,7 +91,8 @@ equation
   zeros(iCom.mediumModel.nc - 1) = -xi_mean*(iCom.m_flow_in - iCom.m_flow_out) + (iCom.m_flow_in*iCom.xi_in - iCom.m_flow_out*iCom.xi_out);
   //logarithmic mean temperature between fluid inlet, outlet and tube wall
 
-  w = iCom.V_flow_in/geo.A_front;
+  w = if iCom.V_flow_in > 0.001 and iCom.V_flow_out < 0.001 then iCom.V_flow_in/geo.A_front elseif iCom.V_flow_in < 0.001 and iCom.V_flow_out > 0.001 then iCom.V_flow_out/geo.A_front else (abs(iCom.V_flow_out) + abs(iCom.V_flow_out))/2/geo.A_front;
+
   //undisturbed velocity at inlet is needed
   length_char = Modelica.Constants.pi/2*geo.diameter_t;
 

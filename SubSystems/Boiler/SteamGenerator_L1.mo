@@ -1,10 +1,10 @@
 within ClaRa.SubSystems.Boiler;
 model SteamGenerator_L1 "A steam generation and reaheater model using characteristic lines and transfer functions"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.1                            //
+// Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -168,7 +168,7 @@ public
         rotation=90,
         origin={-40,226})));
 protected
-  Basics.Interfaces.EyeIn eye_intLS
+  Basics.Interfaces.EyeIn eye_intLS[1]
     annotation (Placement(transformation(extent={{-31,159},{-29,161}})));
 public
   Basics.Interfaces.EyeOut eye_RH if    showData
@@ -179,7 +179,7 @@ public
         rotation=90,
         origin={100,226})));
 protected
-  Basics.Interfaces.EyeIn eye_intRH
+  Basics.Interfaces.EyeIn eye_intRH[1]
     annotation (Placement(transformation(extent={{97,167},{99,169}})));
 equation
   if not yTInputIsActive then
@@ -219,17 +219,17 @@ equation
 
   h_evap=liveSteam.VLE.h_v+ 50e3;
 
-  eye_intLS.p=livesteam.p/1e5;
-  eye_intLS.h=livesteam.h_outflow/1e3;
-  eye_intLS.m_flow=-livesteam.m_flow;
-  eye_intLS.T=liveSteam.T-273.15;
-  eye_intLS.s=liveSteam.s/1e3;
+  eye_intLS[1].p=livesteam.p/1e5;
+  eye_intLS[1].h=livesteam.h_outflow/1e3;
+  eye_intLS[1].m_flow=-livesteam.m_flow;
+  eye_intLS[1].T=liveSteam.T-273.15;
+  eye_intLS[1].s=liveSteam.s/1e3;
 
-  eye_intRH.p=reheat_out.p/1e5;
-  eye_intRH.h=reheat_out.h_outflow/1e3;
-  eye_intRH.m_flow=-reheat_out.m_flow;
-  eye_intRH.T=reheatedSteam.T-273.15;
-  eye_intRH.s=reheatedSteam.s/1e3;
+  eye_intRH[1].p=reheat_out.p/1e5;
+  eye_intRH[1].h=reheat_out.h_outflow/1e3;
+  eye_intRH[1].m_flow=-reheat_out.m_flow;
+  eye_intRH[1].T=reheatedSteam.T-273.15;
+  eye_intRH[1].s=reheatedSteam.s/1e3;
 
 initial equation
   heatRelease.y = QF_setl_;
@@ -304,13 +304,13 @@ equation
       points={{61,90},{98,90}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(eye_LS, eye_intLS)
+  connect(eye_LS, eye_intLS[1])
                         annotation (Line(
       points={{-28,188},{-28,160},{-30,160}},
       color={255,204,51},
       thickness=0.5,
       smooth=Smooth.None));
-  connect(eye_RH, eye_intRH)
+  connect(eye_RH, eye_intRH[1])
                         annotation (Line(
       points={{100,188},{100,168},{98,168}},
       color={255,204,51},

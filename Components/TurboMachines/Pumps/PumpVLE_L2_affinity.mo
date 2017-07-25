@@ -1,10 +1,10 @@
 within ClaRa.Components.TurboMachines.Pumps;
 model PumpVLE_L2_affinity "A pump for VLE mixtures with a finite fluid volume, based on affinity laws"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.1                            //
+// Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -116,7 +116,7 @@ public
         iconTransformation(extent={{100,-70},{120,-50}})));
 
 protected
-  Basics.Interfaces.EyeIn       eye_int
+  Basics.Interfaces.EyeIn       eye_int[1]
     annotation (Placement(transformation(extent={{45,-61},{47,-59}})));
 
   PumpVLE_L1_affinity pump(
@@ -200,11 +200,11 @@ public
 //   outlet.m_flow=m_flow_out_start;
 //   h_iso_start=pump.h_iso;
 equation
-  eye_int.m_flow = -outlet.m_flow;
-  eye_int.T = fluidOut.T-273.15;
-  eye_int.s = fluidOut.s/1e3;
-  eye_int.p = outlet.p/1e5;
-  eye_int.h = fluidOut.h/1e3;
+  eye_int[1].m_flow = -outlet.m_flow;
+  eye_int[1].T = fluidOut.T-273.15;
+  eye_int[1].s = fluidOut.s/1e3;
+  eye_int[1].p = outlet.p/1e5;
+  eye_int[1].h = fluidOut.h/1e3;
 
   connect(inlet, pump.inlet)                      annotation (Line(
       points={{-100,0},{-10,0}},
@@ -229,7 +229,7 @@ equation
       points={{0,9.9},{0,72}},
       color={0,0,0},
       smooth=Smooth.None));
-  connect(eye_int, eye) annotation (Line(points={{46,-60},{72,-60},{72,-60},{100,-60}}, color={190,190,190}));
+  connect(eye_int[1], eye) annotation (Line(points={{46,-60},{72,-60},{72,-60},{100,-60}}, color={190,190,190}));
   annotation (Icon(graphics),
       Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
             100}})));

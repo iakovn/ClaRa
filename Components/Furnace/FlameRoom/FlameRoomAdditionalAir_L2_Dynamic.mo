@@ -1,10 +1,10 @@
 within ClaRa.Components.Furnace.FlameRoom;
 model FlameRoomAdditionalAir_L2_Dynamic "Model for a flame room section with additional secondary air inlet inside a combustion chamber"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.1                            //
+// Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -222,7 +222,11 @@ equation
      LHV = inStream(inlet.fuel.LHV_outflow);
    end if;
 
-   cp = (inlet.fuel.m_flow*inStream(inlet.fuel.cp_outflow) + fuelFlueGas_inlet.fuel.m_flow*inStream(fuelFlueGas_inlet.fuel.cp_outflow))/(fuelFlueGas_inlet.fuel.m_flow + inlet.fuel.m_flow);
+   if fuelFlueGas_inlet.fuel.m_flow < 0 or fuelFlueGas_inlet.fuel.m_flow > 0 then
+     cp = (inlet.fuel.m_flow*inStream(inlet.fuel.cp_outflow) + fuelFlueGas_inlet.fuel.m_flow*inStream(fuelFlueGas_inlet.fuel.cp_outflow))/(fuelFlueGas_inlet.fuel.m_flow + inlet.fuel.m_flow);
+   else
+     cp = inStream(inlet.fuel.cp_outflow);
+   end if;
 
 //   if (inlet.fuel.m_flow < 0 or inlet.fuel.m_flow > 0) or (outlet.fuel.m_flow < 0 or outlet.fuel.m_flow > 0) or (fuelFlueGas_inlet.fuel.m_flow < 0 or fuelFlueGas_inlet.fuel.m_flow > 0) then
 //     LHV * (max(0,fuelFlueGas_inlet.fuel.m_flow) + max(0,inlet.fuel.m_flow) + max(0,outlet.fuel.m_flow)) = (max(0,fuelFlueGas_inlet.fuel.m_flow)*inStream(fuelFlueGas_inlet.fuel.LHV_outflow) + max(0,inlet.fuel.m_flow)*inStream(inlet.fuel.LHV_outflow) +  max(0,outlet.fuel.m_flow)*inStream(outlet.fuel.LHV_outflow));
@@ -319,12 +323,12 @@ equation
   outlet.flueGas.xi_outflow = xi_flueGas_del;
 
   //______________Eye port variable definition________________________
-  eye_int.m_flow = -outlet.flueGas.m_flow;
-  eye_int.T = flueGasOutlet.T-273.15;
-  eye_int.s = flueGasOutlet.s/1e3;
-  eye_int.p = flueGasOutlet.p/1e5;
-  eye_int.h = flueGasOutlet.h/1e3;
-  eye_int.xi = flueGasOutlet.xi;
+  eye_int[1].m_flow = -outlet.flueGas.m_flow;
+  eye_int[1].T = flueGasOutlet.T-273.15;
+  eye_int[1].s = flueGasOutlet.s/1e3;
+  eye_int[1].p = flueGasOutlet.p/1e5;
+  eye_int[1].h = flueGasOutlet.h/1e3;
+  eye_int[1].xi = flueGasOutlet.xi;
 
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-300,-100},
             {300,100}}),

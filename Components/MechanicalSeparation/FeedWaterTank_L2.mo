@@ -1,10 +1,10 @@
 within ClaRa.Components.MechanicalSeparation;
 model FeedWaterTank_L2 "Feedwater tank : mixed volume approach | level-dependent phase separation"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.1                            //
+// Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -155,11 +155,11 @@ public
         origin={240,-110})));
 equation
 
-  eye_int.m_flow=-outlet.m_flow;
-  eye_int.T=volume.fluidOut.T-273.15;
-  eye_int.s=volume.fluidOut.s/1000;
-  eye_int.h=volume.fluidOut.h/1000;
-  eye_int.p=volume.fluidOut.p/100000;
+  eye_int[1].m_flow=-outlet.m_flow;
+  eye_int[1].T=volume.fluidOut.T-273.15;
+  eye_int[1].s=volume.fluidOut.s/1000;
+  eye_int[1].h=volume.fluidOut.h/1000;
+  eye_int[1].p=volume.fluidOut.p/100000;
 
   connect(volume.inlet, condensate) annotation (Line(
       points={{0,-20},{100,-20},{100,60},{200,60}},

@@ -1,10 +1,10 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Gas_HT.Convection;
 model Convection_finnedTubes_L2 "Tube Geo || L2 || Convection Finned Tube Bank"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.1                            //
+  // Component of the ClaRa library, version: 1.2.2                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -21,16 +21,17 @@ model Convection_finnedTubes_L2 "Tube Geo || L2 || Convection Finned Tube Bank"
   import SZT = ClaRa.Basics.Functions.SmoothZeroTransition;
 
   //Equations according to VDI-Waermeatlas/Effenberger Dampferzeugung
-  parameter ClaRa.Basics.Units.Length h_f=0.04 "Fin heigth";
-  parameter ClaRa.Basics.Units.Length s_f=0.002 "Fin thickness";
-  parameter ClaRa.Basics.Units.Length t_f=0.01 "Fin spacing";
+  parameter ClaRa.Basics.Units.Length h_f=0.04 "Fin heigth" annotation (Dialog(group="Fin geometry"));
+  parameter ClaRa.Basics.Units.Length s_f=0.002 "Fin thickness" annotation (Dialog(group="Fin geometry"));
+  parameter ClaRa.Basics.Units.Length t_f=0.01 "Fin spacing" annotation (Dialog(group="Fin geometry"));
   parameter String finGeometryType="Circular fins" "Fin geometry" annotation (Dialog(group="Fin geometry"), choices(choice="Circular fins" "Circular fin geometry",
                                                                                       choice="Quadratic fins" "Quadratic fin geometry"));
 
-  parameter Real CF_fouling=0.8 "Scaling factor accounting for the fouling of the wall";
+  input Real CF_fouling=0.8 "Scaling factor accounting for the fouling of the wall" annotation (Dialog);
   parameter String temperatureDifference="Logarithmic mean" "Temperature Difference" annotation (Dialog(group="Heat Transfer"), choices(
       choice="Arithmetic mean",
       choice="Logarithmic mean",
+      choice="Logarithmic mean - smoothed",
       choice="Inlet",
       choice="Outlet"));
   parameter Integer heatSurfaceAlloc=2 "To be considered heat transfer area" annotation (dialog(enable=false, tab="Expert Setting"), choices(
@@ -93,8 +94,8 @@ equation
 
   Delta_T_wi = heat.T - iCom.T_in;
   Delta_T_wo = heat.T - iCom.T_out;
-  Delta_T_U = max(Delta_T_wi, Delta_T_wo);
-  Delta_T_L = min(Delta_T_wi, Delta_T_wo);
+  Delta_T_U = ClaRa.Basics.Functions.maxAbs(Delta_T_wi, Delta_T_wo);
+  Delta_T_L = ClaRa.Basics.Functions.minAbs(Delta_T_wi, Delta_T_wo);
 
   if temperatureDifference == "Logarithmic mean" then
     //The following equation is only supported due to an backward compatibility issue - avoid its usage
@@ -130,7 +131,7 @@ equation
   N_tubes_p = geo.N_tubes*geo.N_passes/(geo.N_rows);
   A_narrowed = (geo.A_front) - N_tubes_p*(length_tube*geo.diameter_t + h_f*s_f*N_f/(geo.N_tubes*geo.N_passes)*2);
 
-  w_0 = ((iCom.V_flow_in - iCom.V_flow_out)/2)/(geo.A_front);
+  w_0 = ((abs(iCom.V_flow_in) + abs(iCom.V_flow_out))/2)/geo.A_front;
   w = w_0*geo.A_front/A_narrowed;
 
   Re = properties.d*w*geo.diameter_t/properties.transp.eta;

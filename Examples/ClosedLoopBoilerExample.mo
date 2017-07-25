@@ -1,10 +1,10 @@
 within ClaRa.Examples;
 model ClosedLoopBoilerExample
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.1                            //
+// Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -1363,6 +1363,9 @@ NOTES
           lineColor={115,150,0},
           lineThickness=0.5)}),                                          Icon(
         coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=true)),
-    experiment(StopTime=10000, NumberOfIntervals=1001),
+    experiment(
+      StopTime=10000,
+      __Dymola_NumberOfIntervals=1001,
+      Tolerance=1e-005),
     __Dymola_experimentSetupOutput);
 end ClosedLoopBoilerExample;

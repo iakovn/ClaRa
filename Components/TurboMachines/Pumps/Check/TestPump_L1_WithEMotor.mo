@@ -49,7 +49,7 @@ model TestPump_L1_WithEMotor "A speed controlled pump driven by an e-motor"
     annotation (Placement(transformation(extent={{46,36},{38,44}})));
   Modelica.Blocks.Sources.TimeTable
                                ramp(                                    offset=
-        inletBoundary.p_const, table=[0,0; 100,38671020; 101,0; 200,38671020; 201,0; 300,38671020; 301,0; 400,38671020; 401,0; 500,38671020])
+        inletBoundary.p_const, table=[0,0; 100,38671020; 101,0; 200,38671020; 201,0; 300,38671020; 301,0; 400,38671020; 401,0; 500,38671020; 1000,38671020])
     annotation (Placement(transformation(extent={{98,-74},{78,-54}})));
   Modelica.Blocks.Sources.TimeTable
                                ramp1(table=[0,5000; 100,5000; 101,4500; 200,4500; 201,4000; 303,4000; 310,3500; 400,3500; 401,3000; 500,3000])

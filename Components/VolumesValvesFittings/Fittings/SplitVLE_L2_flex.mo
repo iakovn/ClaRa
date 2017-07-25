@@ -1,10 +1,10 @@
 within ClaRa.Components.VolumesValvesFittings.Fittings;
 model SplitVLE_L2_flex "A voluminous split for an arbitrary number of inputs NOT CAPABLE FOR PHASE-CHANGE"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.1                            //
+// Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -82,8 +82,8 @@ public
     annotation (Placement(transformation(extent={{90,-10},{110,10}})));
 protected
 TILMedia.VLEFluid_ph bulk(vleFluidType =    medium,    p = p, h=h) annotation (Placement(transformation(extent={{70,-10},{90,10}}, rotation=0)));
-TILMedia.VLEFluid_ph fluidIn(vleFluidType =    medium,    p = inlet.p, h=actualStream(inlet.h_outflow)) annotation (Placement(transformation(extent={{70,-10},{90,10}}, rotation=0)));
-TILMedia.VLEFluid_ph fluidOut[N_ports_out](each vleFluidType =    medium,    p = outlet.p, h=actualStream(outlet.h_outflow)) annotation (Placement(transformation(extent={{70,-10},{90,10}}, rotation=0)));
+TILMedia.VLEFluid_ph fluidIn(vleFluidType =    medium,    p = inlet.p, h=noEvent(actualStream(inlet.h_outflow))) annotation (Placement(transformation(extent={{20,-32},{40,-12}},rotation=0)));
+TILMedia.VLEFluid_ph fluidOut[N_ports_out](each vleFluidType =    medium,    p = outlet.p, h=noEvent(actualStream(outlet.h_outflow))) annotation (Placement(transformation(extent={{30,6},{50,26}},   rotation=0)));
 equation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Asserts ~~~~~~~~~~~~~~~~~~~

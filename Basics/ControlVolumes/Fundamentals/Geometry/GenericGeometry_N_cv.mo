@@ -1,10 +1,10 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.Geometry;
 model GenericGeometry_N_cv "Dicretized geometry base class|| All shapes"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.1                            //
+  // Component of the ClaRa library, version: 1.2.2                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -19,10 +19,10 @@ model GenericGeometry_N_cv "Dicretized geometry base class|| All shapes"
 
   parameter Units.Volume volume[N_cv](min=ones(N_cv)*Modelica.Constants.eps) = ones(N_cv) "Volume of the control volume" annotation(Dialog(group="Essential Geometry Definition"));
   parameter Integer N_heat=2 "No. of heat transfer areas" annotation(Dialog(group="Essential Geometry Definition"));
-  parameter Real CF_geo[N_heat](min=Modelica.Constants.eps) = ones(N_heat) "Correction factor for heat transfer area: /1/ dedicated to lateral surface"
+  parameter Real CF_geo[N_heat](each min=Modelica.Constants.eps) = ones(N_heat) "Correction factor for heat transfer area: /1/ dedicated to lateral surface"
                                                                                           annotation(Dialog(group="Essential Geometry Definition"));
-  parameter Units.Area A_heat[N_cv, N_heat](min=Modelica.Constants.eps) = ones(N_cv, N_heat) "Heat transfer area: /1/ dedicated to lateral surface" annotation(Dialog(group="Essential Geometry Definition"));
-  final parameter Units.Area A_heat_CF[N_cv, N_heat](min=Modelica.Constants.eps) = {{A_heat[j, i]*CF_geo[i] for i in 1:N_heat} for j in 1:N_cv} "Corrected heat transfer area: /1/ dedicated to lateral surface"
+  parameter Units.Area A_heat[N_cv, N_heat](each min=Modelica.Constants.eps) = ones(N_cv, N_heat) "Heat transfer area: /1/ dedicated to lateral surface" annotation(Dialog(group="Essential Geometry Definition"));
+  final parameter Units.Area A_heat_CF[N_cv, N_heat](each min=Modelica.Constants.eps) = {{A_heat[j, i]*CF_geo[i] for i in 1:N_heat} for j in 1:N_cv} "Corrected heat transfer area: /1/ dedicated to lateral surface"
                                                                                           annotation(Dialog(group="Essential Geometry Definition"));
   parameter Units.Area A_cross[N_cv](min=ones(N_cv)*Modelica.Constants.eps) = ones(N_cv)*1 "Cross section for mass flow" annotation(Dialog(group="Essential Geometry Definition"));
   final parameter Units.Area A_cross_FM[N_cv + 1](min=ones(N_cv+1)*Modelica.Constants.eps) = cat(
@@ -47,6 +47,12 @@ model GenericGeometry_N_cv "Dicretized geometry base class|| All shapes"
       {(Delta_x[i - 1] + Delta_x[i])/2 for i in 2:N_cv},
       {Delta_x[N_cv]/2}) "Discretisation scheme (Flow model)"
                                                              annotation(Dialog(group="Discretisation"));
+
+  parameter Units.Volume volume_FM[N_cv+1]=cat(
+    1,
+    {volume[1]/2},
+    {volume[i-1]*Delta_x[i-1]/2/Delta_x_FM[i] + volume[i]*Delta_x[i]/2/Delta_x_FM[i] for i in 2:N_cv},
+    {volume[N_cv]/2});
 
   annotation (Icon(graphics={Bitmap(
           extent={{-100,-100},{100,100}},

@@ -1,10 +1,10 @@
 within ClaRa.Components.HeatExchangers;
 model HEXvle2vle_L3_2ph_BU_simple "VLE 2 VLE | L3 | 2 phase at shell side | Block shape |  U-type | simple HT"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.1                            //
+  // Component of the ClaRa library, version: 1.2.2                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -77,7 +77,7 @@ model HEXvle2vle_L3_2ph_BU_simple "VLE 2 VLE | L3 | 2 phase at shell side | Bloc
   parameter ClaRa.Basics.Units.Length z_in_aux2=length/2 "Inlet position of auxilliary2 from bottom" annotation (Dialog(tab="Shell Side", group="Geometry"));
   parameter ClaRa.Basics.Units.Length z_out_shell=length/2 "Outlet position from bottom" annotation (Dialog(tab="Shell Side", group="Geometry"));
   parameter ClaRa.Basics.Units.Length radius_flange=0.05 "Flange radius of all flanges" annotation (Dialog(tab="Shell Side", group="Geometry"));
-  final parameter ClaRa.Basics.Units.Mass mass_struc=0 "Mass of inner structure elements, additional to the tubes itself" annotation (Dialog(tab="Shell Side", group="Geometry"));
+  parameter ClaRa.Basics.Units.Mass mass_struc=0 "Mass of inner structure elements, additional to the tubes itself" annotation (Dialog(tab="Shell Side", group="Geometry"));
 
   //*********************************** / HOTWELL \ ***********************************//
   parameter ClaRa.Basics.Units.Length height_hotwell=1 "Height of the hotwell"
@@ -277,7 +277,8 @@ model HEXvle2vle_L3_2ph_BU_simple "VLE 2 VLE | L3 | 2 phase at shell side | Bloc
     N_tubes=N_tubes,
     T_start=T_w_start,
     length=length*N_passes,
-    initOption=initOptionWall) annotation (Placement(transformation(
+    initOption=initOptionWall,
+    mass_struc=mass_struc)     annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=90,
         origin={33,45})));
@@ -294,7 +295,7 @@ public
         rotation=0,
         origin={-50,-92})));
 protected
-   ClaRa.Basics.Interfaces.EyeIn eye_int2 annotation (Placement(transformation(extent={{-51,-43},{-49,-41}})));
+   ClaRa.Basics.Interfaces.EyeIn eye_int2[1] annotation (Placement(transformation(extent={{-51,-43},{-49,-41}})));
 public
    ClaRa.Basics.Interfaces.EyeOut eye2 if showData annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
@@ -304,7 +305,7 @@ public
         rotation=180,
         origin={-110,0})));
 protected
-   ClaRa.Basics.Interfaces.EyeIn eye_int1 annotation (Placement(transformation(extent={{27,-59},{29,-57}})));
+   ClaRa.Basics.Interfaces.EyeIn eye_int1[1] annotation (Placement(transformation(extent={{27,-59},{29,-57}})));
 public
    ClaRa.Basics.Interfaces.EyeOut eye1 if showData annotation (Placement(transformation(
         extent={{100,10},{120,30}},
@@ -334,17 +335,17 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
 
-   eye_int1.m_flow=-shell.outlet[1].m_flow;
-   eye_int1.T=shell.summary.outlet[1].T-273.15;
-   eye_int1.s=shell.fluidOut[1].s/1000;
-   eye_int1.h=shell.summary.outlet[1].h/1000;
-   eye_int1.p=shell.summary.outlet[1].p/100000;
+   eye_int1[1].m_flow=-shell.outlet[1].m_flow;
+   eye_int1[1].T=shell.summary.outlet[1].T-273.15;
+   eye_int1[1].s=shell.fluidOut[1].s/1000;
+   eye_int1[1].h=shell.summary.outlet[1].h/1000;
+   eye_int1[1].p=shell.summary.outlet[1].p/100000;
 
-   eye_int2.m_flow=-tubes.outlet.m_flow;
-   eye_int2.T=tubes.summary.outlet.T-273.15;
-   eye_int2.s=tubes.fluidOut.s/1000;
-   eye_int2.h=tubes.summary.outlet.h/1000;
-   eye_int2.p=tubes.summary.outlet.p/100000;
+   eye_int2[1].m_flow=-tubes.outlet.m_flow;
+   eye_int2[1].T=tubes.summary.outlet.T-273.15;
+   eye_int2[1].s=tubes.fluidOut.s/1000;
+   eye_int2[1].h=tubes.summary.outlet.h/1000;
+   eye_int2[1].p=tubes.summary.outlet.p/100000;
 
   connect(In1, shell.inlet[1]) annotation (Line(
       points={{0,98},{0,56},{1.77636e-015,56}},
@@ -382,9 +383,8 @@ equation
       points={{52,30},{52,30},{52,44.8},{42.6,44.8}},
       color={167,25,48},
       thickness=0.5));
-  connect(eye_int2, eye2) annotation (Line(points={{-50,-42},{-100,-42},{-100,-40}}, color={190,190,190}));
-  connect(eye_int1, eye1) annotation (Line(points={{28,-58},{28,-58},{28,-110},{40,-110}},
-                                                                                         color={190,190,190}));
+  connect(eye_int2[1], eye2) annotation (Line(points={{-50,-42},{-100,-42},{-100,-40}}, color={190,190,190}));
+  connect(eye_int1[1], eye1) annotation (Line(points={{28,-58},{40,-58},{40,-110}},         color={190,190,190}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
             -100},{100,100}})),
                               Diagram(coordinateSystem(preserveAspectRatio=false,

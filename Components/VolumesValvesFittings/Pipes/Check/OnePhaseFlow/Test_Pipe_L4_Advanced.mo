@@ -1,10 +1,10 @@
 within ClaRa.Components.VolumesValvesFittings.Pipes.Check.OnePhaseFlow;
 model Test_Pipe_L4_Advanced
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.1                            //
+  // Component of the ClaRa library, version: 1.2.2                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -44,10 +44,12 @@ model Test_Pipe_L4_Advanced
     redeclare model PressureLoss = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4,
     redeclare model HeatTransfer = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4,
     p_start=ones(tube.N_cv)*1e5,
-    frictionAtInlet=true,
-    frictionAtOutlet=true,
     suppressHighFrequencyOscillations=true,
-    initOption=1) annotation (Placement(transformation(extent={{14,-63},{-8,-55}})));
+    frictionAtOutlet=true,
+    frictionAtInlet=true,
+    initOption=0,
+    m_flow_start=ones(tube.geo.N_cv + 1)*200)
+                  annotation (Placement(transformation(extent={{14,-64},{-14,-54}})));
 
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi massFlowSink(
     variable_p=true,
@@ -57,7 +59,7 @@ model Test_Pipe_L4_Advanced
     h_const=200e3) annotation (Placement(transformation(
         extent={{10,-10},{-10,10}},
         rotation=180,
-        origin={-46,-59})));
+        origin={-62,-59})));
   inner Modelica.Fluid.System system
     annotation (Placement(transformation(extent={{80,-140},{100,-120}})));
   Modelica.Blocks.Sources.Step inlet_pressure(
@@ -113,29 +115,19 @@ model Test_Pipe_L4_Advanced
     N_ax=tube.N_cv,
     T_start=320*ones(tube.N_cv),
     stateLocation=2,
-    initOption=0) annotation (Placement(transformation(extent={{-10,-42},{16,-32}})));
+    initOption=0) annotation (Placement(transformation(extent={{-13,-46},{13,-36}})));
 equation
   connect(multiSum.y, massFlowSource.m_flow) annotation (Line(
       points={{65.98,-54},{64,-54},{62,-53}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(massFlowSink.p, inlet_pressure.y) annotation (Line(
-      points={{-56,-65},{-79,-65}},
+      points={{-72,-65},{-79,-65}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(multiSum.u[1], mass_flow_1.y) annotation (Line(
       points={{79,-56.1},{79,-32},{69,-32},{69,-10},{61,-10}},
       color={0,0,127},
-      smooth=Smooth.None));
-  connect(tube.inlet, massFlowSource.steam_a) annotation (Line(
-      points={{14,-59},{40,-59}},
-      color={0,131,169},
-      thickness=0.5,
-      smooth=Smooth.None));
-  connect(massFlowSink.steam_a, tube.outlet) annotation (Line(
-      points={{-36,-59},{-8,-59}},
-      color={0,131,169},
-      thickness=0.5,
       smooth=Smooth.None));
   connect(T_wall.y, realInputMultiplyer.Signal) annotation (Line(
       points={{-77.95,-22.5},{-65.26,-22.5}},
@@ -154,15 +146,23 @@ equation
       color={0,0,127},
       smooth=Smooth.None));
   connect(thinWall1.innerPhase, tube.heat) annotation (Line(
-      points={{3,-42},{3,-55.8}},
+      points={{0,-46},{0,-55}},
       color={167,25,48},
       thickness=0.5,
       smooth=Smooth.None));
   connect(thinWall1.outerPhase, prescribedTemperature.port) annotation (Line(
-      points={{3,-32},{3,-22},{-28,-22}},
+      points={{0,-36},{0,-22},{-28,-22}},
       color={167,25,48},
       thickness=0.5,
       smooth=Smooth.None));
+  connect(massFlowSink.steam_a, tube.outlet) annotation (Line(
+      points={{-52,-59},{-14,-59}},
+      color={0,131,169},
+      thickness=0.5));
+  connect(tube.inlet, massFlowSource.steam_a) annotation (Line(
+      points={{14,-59},{14,-59},{40,-59}},
+      color={0,131,169},
+      thickness=0.5));
   annotation (
     Diagram(coordinateSystem(preserveAspectRatio=false,extent={{-100,-140},{100,
             120}}), graphics={Text(

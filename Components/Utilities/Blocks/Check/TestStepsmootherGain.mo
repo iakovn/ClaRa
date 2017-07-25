@@ -1,5 +1,6 @@
 within ClaRa.Components.Utilities.Blocks.Check;
 model TestStepsmootherGain
+  extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
 
   Modelica.Blocks.Sources.Sine sine(
     amplitude=1,

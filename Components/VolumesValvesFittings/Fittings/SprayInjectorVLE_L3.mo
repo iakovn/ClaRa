@@ -1,10 +1,10 @@
 within ClaRa.Components.VolumesValvesFittings.Fittings;
 model SprayInjectorVLE_L3 "A spray injector for i.e. temperature control"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.1                            //
+// Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -224,7 +224,7 @@ public
   ClaRa.Basics.Interfaces.EyeOut eye if showData      annotation(Placement(transformation(extent={{90,-30},
             {110,-10}})));
 protected
-  ClaRa.Basics.Interfaces.EyeIn eye_int
+  ClaRa.Basics.Interfaces.EyeIn eye_int[1]
     annotation (Placement(transformation(extent={{45,-21},{47,-19}})));
 public
   ClaRa.Components.VolumesValvesFittings.Fittings.JoinVLE_L2_Y mixingZone(
@@ -247,11 +247,11 @@ public
 equation
 //-------------------------------------------
 //Summary:
-    eye_int.m_flow=-outflowZone.outlet.m_flow;
-    eye_int.T= outflowZone.summary.outlet.T-273.15;
-    eye_int.s=outflowZone.fluidOut.s/1e3;
-    eye_int.p=outflowZone.outlet.p/1e5;
-    eye_int.h=actualStream(outflowZone.outlet.h_outflow)/1e3;
+    eye_int[1].m_flow=-outflowZone.outlet.m_flow;
+    eye_int[1].T= outflowZone.summary.outlet.T-273.15;
+    eye_int[1].s=outflowZone.fluidOut.s/1e3;
+    eye_int[1].p=outflowZone.outlet.p/1e5;
+    eye_int[1].h=actualStream(outflowZone.outlet.h_outflow)/1e3;
 
   connect(wall.innerPhase, outflowZone.heat)                  annotation (Line(
       points={{49.8,40.4},{49.8,30},{50,30}},
@@ -271,7 +271,7 @@ equation
       points={{-29,-46},{-40,-46},{-40,-100}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(eye,eye_int)  annotation (Line(
+  connect(eye,eye_int[1])  annotation (Line(
       points={{100,-20},{46,-20}},
       color={255,204,51},
       thickness=0.5,

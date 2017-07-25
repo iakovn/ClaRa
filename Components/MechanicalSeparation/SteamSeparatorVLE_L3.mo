@@ -1,5 +1,20 @@
 within ClaRa.Components.MechanicalSeparation;
 model SteamSeparatorVLE_L3
+//___________________________________________________________________________//
+// Component of the ClaRa library, version: 1.2.2                            //
+//                                                                           //
+// Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
+// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+//___________________________________________________________________________//
+// DYNCAP and DYNSTART are research projects supported by the German Federal //
+// Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
+// The research team consists of the following project partners:             //
+// Institute of Energy Systems (Hamburg University of Technology),           //
+// Institute of Thermo-Fluid Dynamics (Hamburg University of Technology),    //
+// TLK-Thermo GmbH (Braunschweig, Germany),                                  //
+// XRG Simulation GmbH (Hamburg, Germany).                                   //
+//___________________________________________________________________________//
+
   extends ClaRa.Basics.Icons.Cyclone;
   extends ClaRa.Basics.Icons.ComplexityLevel(complexity="L3");
 
@@ -116,8 +131,8 @@ model SteamSeparatorVLE_L3
         rotation=270,
         origin={40,110})));
 protected
-  ClaRa.Basics.Interfaces.EyeIn eye_int1 annotation (Placement(transformation(extent={{39,-53},{41,-51}})));
-  ClaRa.Basics.Interfaces.EyeIn eye_int2
+  ClaRa.Basics.Interfaces.EyeIn eye_int1[1] annotation (Placement(transformation(extent={{39,-53},{41,-51}})));
+  ClaRa.Basics.Interfaces.EyeIn eye_int2[1]
     annotation (Placement(transformation(extent={{39,77},{41,75}})));
 
   Modelica.Blocks.Interfaces.RealOutput level(value = if outputAbs then summary.outline.level_abs else summary.outline.level_rel) if levelOutput annotation (Placement(transformation(extent={{204,-126},{224,-106}}), iconTransformation(
@@ -125,17 +140,17 @@ protected
         rotation=270,
         origin={140,-110})));
 equation
-  eye_int2.m_flow=-outlet2.m_flow;
-  eye_int2.T=volume.summary.outlet[2].T-273.15;
-  eye_int2.s=volume.fluidOut[2].s/1000;
-  eye_int2.h=volume.summary.outlet[2].h/1000;
-  eye_int2.p=volume.summary.outlet[2].p/100000;
+  eye_int2[1].m_flow=-outlet2.m_flow;
+  eye_int2[1].T=volume.summary.outlet[2].T-273.15;
+  eye_int2[1].s=volume.fluidOut[2].s/1000;
+  eye_int2[1].h=volume.summary.outlet[2].h/1000;
+  eye_int2[1].p=volume.summary.outlet[2].p/100000;
 
-  eye_int1.m_flow=-outlet1.m_flow;
-  eye_int1.T=volume.summary.outlet[1].T-273.15;
-  eye_int1.s=volume.fluidOut[1].s/1000;
-  eye_int1.h=volume.summary.outlet[1].h/1000;
-  eye_int1.p=volume.summary.outlet[1].p/100000;
+  eye_int1[1].m_flow=-outlet1.m_flow;
+  eye_int1[1].T=volume.summary.outlet[1].T-273.15;
+  eye_int1[1].s=volume.fluidOut[1].s/1000;
+  eye_int1[1].h=volume.summary.outlet[1].h/1000;
+  eye_int1[1].p=volume.summary.outlet[1].p/100000;
 
   connect(inlet, volume.inlet[1]) annotation (Line(
       points={{-100,0},{-40,0}},
@@ -143,11 +158,11 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
 
-  connect(eye_int1, eye_out1) annotation (Line(
+  connect(eye_int1[1], eye_out1) annotation (Line(
       points={{40,-52},{40,-100}},
       color={190,190,190},
       smooth=Smooth.None));
-  connect(eye_int2,eye_out2)  annotation (Line(
+  connect(eye_int2[1],eye_out2)  annotation (Line(
       points={{40,76},{40,100}},
       color={190,190,190},
       smooth=Smooth.None));

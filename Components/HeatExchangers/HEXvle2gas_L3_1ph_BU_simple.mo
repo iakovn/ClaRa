@@ -1,10 +1,10 @@
 within ClaRa.Components.HeatExchangers;
 model HEXvle2gas_L3_1ph_BU_simple "VLE 2 gas | L3 | 1 phase on each side | Block shape | U-type |"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.1                            //
+  // Component of the ClaRa library, version: 1.2.2                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2016, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -92,7 +92,7 @@ model HEXvle2gas_L3_1ph_BU_simple "VLE 2 gas | L3 | 1 phase on each side | Block
   parameter Boolean parallelTubes=false "True, if tubes are parallel to shell flow orientation" annotation (Dialog(tab="Tubes", group="Geometry"));
   parameter ClaRa.Basics.Units.Length z_in_tubes=length/2 "Inlet position from bottom"  annotation (Dialog(tab="Tubes", group="Geometry"));
   parameter ClaRa.Basics.Units.Length z_out_tubes=length/2 "Outlet position from bottom" annotation (Dialog(tab="Tubes", group="Geometry"));
-  final parameter ClaRa.Basics.Units.Mass mass_struc=0 "Mass of inner structure elements, additional to the tubes itself" annotation (Dialog(tab="Shell Side", group="Geometry"));
+  parameter ClaRa.Basics.Units.Mass mass_struc=0 "Mass of inner structure elements, additional to the tubes itself" annotation (Dialog(tab="Shell Side", group="Geometry"));
 
   parameter Boolean staggeredAlignment=true "True, if the tubes are aligned staggeredly" annotation (Dialog(tab="Tubes", group="Geometry"));
   parameter Basics.Units.Length Delta_z_par=2*diameter_o "Distance between tubes parallel to flow direction" annotation (Dialog(tab="Tubes", group="Geometry"));
@@ -211,7 +211,7 @@ model HEXvle2gas_L3_1ph_BU_simple "VLE 2 gas | L3 | 1 phase on each side | Block
         rotation=180,
         origin={100,80})));
 protected
-  Basics.Interfaces.EyeIn eye_int
+  Basics.Interfaces.EyeIn eye_int[1]
     annotation (Placement(transformation(extent={{71,79},{73,81}})));
 
 public
@@ -227,7 +227,8 @@ public
     T_start=linspace(
         T_w_i_start,
         T_w_a_start,
-        wall.N_rad))                                              annotation (Placement(transformation(extent={{-10,-7.5},{10,7.5}},
+        wall.N_rad),
+    mass_struc=mass_struc)                                        annotation (Placement(transformation(extent={{-10,-7.5},{10,7.5}},
         rotation=90,
         origin={30.5,0})));
 
@@ -235,11 +236,11 @@ equation
   assert(diameter_o > diameter_i,
     "Outer diameter of tubes must be greater than inner diameter");
 
-  eye_int.m_flow = tubes.summary.outlet.m_flow;
-  eye_int.T = tubes.summary.outlet.T - 273.15;
-  eye_int.s = tubes.fluidOut.s/1e3;
-  eye_int.p = tubes.outlet.p/1e5;
-  eye_int.h = tubes.summary.outlet.h/1e3;
+  eye_int[1].m_flow = tubes.summary.outlet.m_flow;
+  eye_int[1].T = tubes.summary.outlet.T - 273.15;
+  eye_int[1].s = tubes.fluidOut.s/1e3;
+  eye_int[1].p = tubes.outlet.p/1e5;
+  eye_int[1].h = tubes.summary.outlet.h/1e3;
   connect(tubes.inlet, In2) annotation (Line(
       points={{70,-10},{70,-60},{100,-60}},
       color={0,131,169},
@@ -260,7 +261,7 @@ equation
       color={167,25,48},
       thickness=0.5,
       smooth=Smooth.None));
-  connect(eye_int, eye) annotation (Line(points={{72,80},{100,80}},          color={190,190,190}));
+  connect(eye_int[1], eye) annotation (Line(points={{72,80},{100,80}},          color={190,190,190}));
   connect(shell.outlet, Out1) annotation (Line(
       points={{0,-10},{0,-100}},
       color={118,106,98},
