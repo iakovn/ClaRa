@@ -20,17 +20,25 @@ model TestPump_L1_OffDesign "Running the  L1 pump in off design, including rever
   ClaRa.Components.TurboMachines.Pumps.PumpVLE_L1_affinity pump(
     steadyStateTorque=false,
     V_flow_max=2600/3600,
-    eta_hyd_nom=0.82,
     rpm_nom=4600,
-    clearSection=0.01,
-    exp_rpm=0.15,
-    exp_flow=2.8,
     showExpertSummary=true,
     J=1,
     rpm_fixed=4600,
-    Tau_stab=1e-2,
     useMechanicalPort=true,
-    Delta_p_max=100e5) annotation (Placement(transformation(extent={{-30,-150},{-10,-130}})));
+    Delta_p_max=100e5,
+    redeclare model Hydraulics = ClaRa.Components.TurboMachines.Fundamentals.PumpHydraulics.MetaStable_Q124 (
+        exp_hyd=(0.5),
+        drp_exp=(0),
+        Delta_p_eps=(100)),
+    redeclare model Losses = ClaRa.Components.TurboMachines.Fundamentals.PumpEfficiency.EfficiencyCurves_Q1 (
+        eta_hyd_nom=(0.82),
+        exp_rpm=(0.15),
+        V_flow_opt_=(0.6),
+        exp_flow=(2.8),
+        Delta_p_eps=(100),
+        V_flow_leak=(0.00002),
+        stabiliseDelta_p=(false),
+        Tau_stab=(1e-2))) annotation (Placement(transformation(extent={{-30,-150},{-10,-130}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_pTxi source(T_const=463.15, p_const=12e5) annotation (Placement(transformation(extent={{-78,-150},{-58,-130}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi sink(
     p_const=12e5,
@@ -42,9 +50,10 @@ model TestPump_L1_OffDesign "Running the  L1 pump in off design, including rever
     annotation (Placement(transformation(extent={{-78,-112},{-58,-92}})));
   ClaRa.Visualisation.DynDisplay dynDisplay(
     varname="Mechanic Power",
-    x1=pump.P_shaft/1e6,
     unit="MW",
-    decimalSpaces=3) annotation (Placement(transformation(extent={{-42,-170},{18,-154}})));
+    decimalSpaces=3,
+    x1=pump.summary.outline.P_shaft/1e6)
+                     annotation (Placement(transformation(extent={{-42,-170},{18,-154}})));
   Modelica.Blocks.Continuous.FirstOrder firstOrder(     initType=Modelica.Blocks.Types.Init.SteadyState,
     k=2*Modelica.Constants.pi/60,
     T=0.0001)
@@ -103,7 +112,7 @@ equation
           lineColor={0,128,0},
           fontSize=10,
           horizontalAlignment=TextAlignment.Left,
-          textString="TESTED -- 2016-03-18 //FG
+          textString="
 ______________________________________
 Purpose: Illustrate the capacities of the instantiated pump to run under non-design conditions, i.e. shut off, reverse flow due to insufficient shaft power, 
 ______________________________________

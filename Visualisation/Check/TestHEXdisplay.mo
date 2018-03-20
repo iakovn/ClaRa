@@ -1,10 +1,10 @@
 within ClaRa.Visualisation.Check;
 model TestHEXdisplay "Illustrates the capabilities of the HEXdisplay"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -48,37 +48,28 @@ extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb80;
       p_o,
       T.y);
 
-//    SI.HeatFlowRate Q_flow_tot;
-//    SI.HeatCapacityMassSpecific cp_h_m;
-//    SI.HeatCapacityMassSpecific cp_c_m;
-//    SI.HeatCapacityMassSpecific cp_h[N_cv];
-//    SI.HeatCapacityMassSpecific cp_c[N_cv];
-//
-//    Real x[N_cv];
-//    Real val = pipe_ColdSide.fluid[1].VLE.h_v;
-//    Integer Cell_hv "Zelle bei der Phasenwechsel auftritt";
-//    Integer Cells_hv_p1=Cell_hv+1;
+
 
   inner SimCenter simCenter(
     steamCycleAllowFlowReversal=true,
     useHomotopy=false,
-    redeclare TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1) annotation (Placement(transformation(extent={{-80,-100},{-60,-80}})));
+    redeclare TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1) annotation (Placement(transformation(extent={{-100,-120},{-60,-100}})));
 
   Visualisation.Hexdisplay_3 ConterFlowDisplay(
     y_min=373,
-    T_o=NTU.summary.T_o,
-    T_i=NTU.summary.T_i,
+    T_o=NTU_counter.summary.T_o,
+    T_i=NTU_counter.summary.T_i,
     Unit="CounterFlow",
     y_max=610,
-    z_i=NTU.summary.eCom.z_i,
-    z_o=NTU.summary.eCom.z_o) annotation (Placement(transformation(extent={{-18,-108},{94,-4}})));
+    z_i=NTU_counter.summary.eCom.z_i,
+    z_o=NTU_counter.summary.eCom.z_o) annotation (Placement(transformation(extent={{-18,-108},{94,-4}})));
 
-  ClaRa.Basics.ControlVolumes.SolidVolumes.NTU_L3_standalone NTU(
+  ClaRa.Basics.ControlVolumes.SolidVolumes.NTU_L3_standalone NTU_counter(
     N_t=N_tubes,
     N_p=N_passes,
     length=length,
     outerPhaseChange=false,
-    redeclare function HeatCapacityAveraging = ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.ArithmeticMean,
+    redeclare model HeatCapacityAveraging = ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Averaging_Cp.ArithmeticMean,
     radius_i=radius_i,
     radius_o=radius_o,
     p_o=p_o,
@@ -93,32 +84,32 @@ extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb80;
     T_w_o_start=ones(3)*T_o_in,
     redeclare model HeatExchangerType = ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.CounterFlow_L3,
     showExpertSummary=true,
-    PI_1ph_in(initType=Modelica.Blocks.Types.InitPID.NoInit),
-    PI_2ph(initType=Modelica.Blocks.Types.InitPID.NoInit),
-    initOption=203) annotation (Placement(transformation(extent={{74,-106},{94,-86}})));
+    initOption=204,
+    initOption_yps=4,
+    yps_start={0,0}) annotation (Placement(transformation(extent={{74,-106},{94,-86}})));
 
   Hexdisplay_3 hexdisplay_3_2(
     y_min=373,
-    T_i=wall_NTU.summary.T_i,
-    T_o=wall_NTU.summary.T_o,
+    T_i=NTU_parallel.summary.T_i,
+    T_o=NTU_parallel.summary.T_o,
     Unit="Parallel Flow",
     y_max=610,
-    z_i=wall_NTU.summary.eCom.z_i,
-    z_o=wall_NTU.summary.eCom.z_o) annotation (Placement(transformation(extent={{128,-108},{240,-4}})));
+    z_i=NTU_parallel.summary.eCom.z_i,
+    z_o=NTU_parallel.summary.eCom.z_o) annotation (Placement(transformation(extent={{128,-108},{240,-4}})));
   Hexdisplay_3 hexdisplay_3_3(
     y_min=373,
     Unit="Cross Flow",
-    T_o=wall_NTU1.summary.T_o,
-    T_i=wall_NTU1.summary.T_i,
+    T_o=NTU_cross.summary.T_o,
+    T_i=NTU_cross.summary.T_i,
     y_max=610,
-    z_i=wall_NTU1.summary.eCom.z_i,
-    z_o=wall_NTU1.summary.eCom.z_o) annotation (Placement(transformation(extent={{278,-108},{390,-4}})));
-  Basics.ControlVolumes.SolidVolumes.NTU_L3_standalone wall_NTU1(
+    z_i=NTU_cross.summary.eCom.z_i,
+    z_o=NTU_cross.summary.eCom.z_o) annotation (Placement(transformation(extent={{278,-108},{390,-4}})));
+  Basics.ControlVolumes.SolidVolumes.NTU_L3_standalone NTU_cross(
     N_t=N_tubes,
     N_p=N_passes,
     length=length,
     outerPhaseChange=false,
-    redeclare function HeatCapacityAveraging = ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.ArithmeticMean,
+    redeclare model HeatCapacityAveraging = ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Averaging_Cp.ArithmeticMean,
     radius_i=radius_i,
     radius_o=radius_o,
     p_o=p_o,
@@ -133,40 +124,19 @@ extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb80;
     T_w_o_start=ones(3)*T_o_in,
     redeclare model HeatExchangerType = ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.CrossFlow_L3,
     showExpertSummary=true,
-    PI_2ph(initType=Modelica.Blocks.Types.InitPID.NoInit),
-    PI_1ph_in(initType=Modelica.Blocks.Types.InitPID.NoInit),
-    initOption=203) annotation (Placement(transformation(extent={{368,-108},{388,-88}})));
+    initOption=204,
+    initOption_yps=4,
+    yps_start={0,0})
+                    annotation (Placement(transformation(extent={{368,-108},{388,-88}})));
   Modelica.Blocks.Sources.Ramp T(
     height=20,
     offset=T_o_in,
     duration=10,
     startTime=10)
     annotation (Placement(transformation(extent={{-80,-60},{-60,-40}})));
-equation
-//   for i in 1:pipe_InnerSide.nCells loop
-//
-//      //x[i]=pipe_ColdSide.fluid[i].h;
-//    end for;
-//
-// //   for i in 1:N_cv loop
-// //      if i>=Cell_hv then
-// //         cp_h[i]=pipe_HotSide.fluid[i].cp;
-// //         cp_c[i]=pipe_ColdSide.fluid[i].cp;
-// //      else
-// //         cp_h[i]=0;
-// //         cp_c[i]=0;
-// //      end if;
-// //    end for;
-//
-//   Q_flow_tot=sum(pipe_InnerSide.heat[i].Q_flow for i in 1:N_cv);
-
-//   cp_h_m=sum(cp_h)/(max(1,N_cv-Cell_hv));
-//   cp_c_m=sum(cp_c)/(max(1,N_cv-Cell_hv));
-
- // Cell_hv=integer(ClaRa.Basics.ControlVolumes.SolidVolumes.ValidateThermalElements.findValue_Case2(x,val));
 
 public
-  Basics.ControlVolumes.SolidVolumes.NTU_L3_standalone wall_NTU(
+  Basics.ControlVolumes.SolidVolumes.NTU_L3_standalone NTU_parallel(
     N_t=N_tubes,
     N_p=N_passes,
     length=length,
@@ -184,18 +154,31 @@ public
     T_w_i_start=ones(3)*T_i_in,
     T_w_o_start=ones(3)*T_o_in,
     redeclare model HeatExchangerType = ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes.ParallelFlow_L3,
-    redeclare function HeatCapacityAveraging = ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.ArithmeticMean,
-    PI_2ph(initType=Modelica.Blocks.Types.InitPID.NoInit),
-    PI_1ph_in(initType=Modelica.Blocks.Types.InitPID.NoInit),
-    initOption=203) annotation (Placement(transformation(extent={{220,-108},{240,-88}})));
+    redeclare model HeatCapacityAveraging = ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Averaging_Cp.ArithmeticMean,
+    initOption=204,
+    initOption_yps=4,
+    yps_start={0,0}) annotation (Placement(transformation(extent={{220,-108},{240,-88}})));
 
   annotation (                                                        Diagram(
         coordinateSystem(extent={{-100,-120},{400,100}}, preserveAspectRatio=true),
-        graphics),
+        graphics={Text(
+          extent={{-100,100},{292,58}},
+          lineColor={115,150,0},
+          horizontalAlignment=TextAlignment.Left,
+          textString="_______________________________________________________________________________________________________
+SCENARIO:
+* Comparison of NTU counter,parallel and cross flow
+* heating water at inner side, cooling steam at outer side
+* phase change at tube side
+_______________________________________________________________________________________________________
+LOOK AT:
+Outlet temperatures of heated liquid: NTU_counter.summary.T_i[6]>NTU_cross.summary.T_i[2]>NTU_parallel.summary.T_i[6]
+Outlet temperatures of cooled steam: NTU_counter.summary.T_o[6]<NTU_cross.summary.T_o[2]<NTU_parallel.summary.T_o[6]
+_______________________________________________________________________________________________________")}),
     experiment(
-      StopTime=30,
-      NumberOfIntervals=1500,
-      Algorithm="Dassl"),
+      StopTime=300,
+      __Dymola_NumberOfIntervals=1500,
+      __Dymola_Algorithm="Dassl"),
     __Dymola_experimentSetupOutput,
     Icon(coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=true),
         graphics));

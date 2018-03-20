@@ -1,10 +1,10 @@
 within ClaRa.Components.Mills.HardCoalMills.Check;
 model combineMillandFurnace
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -28,9 +28,7 @@ model combineMillandFurnace
     variable_xi=false,
     xi_const={0,0,0.0005,0,0.8,0.1985,0,0.001,0})
                     annotation (Placement(transformation(extent={{-50,-53},{-30,-33}})));
-  BoundaryConditions.BoundaryFuel_Txim_flow coalFlowSource(m_flow_const=2, variable_m_flow=true,
-    LHV_calculationType="Verbandsformel",
-    xi_const={0.732,0.05,0.05,0.05,0.025,0.025})                                                 annotation (Placement(transformation(extent={{-48,-16},{-28,4}})));
+  BoundaryConditions.BoundaryFuel_Txim_flow coalFlowSource(m_flow_const=2, variable_m_flow=true)                                                 annotation (Placement(transformation(extent={{-48,-16},{-28,4}})));
   Modelica.Blocks.Math.Gain gain2(k=1200e6/30e6) "INIT.boiler.Q_nom/combustionChamber.LHV_fixed"                 annotation (Placement(transformation(extent={{-66,-5},{-56,5}})));
   Modelica.Blocks.Sources.RealExpression m_Primary2(y=-1.1*coalFlowSource.fuel_a.m_flow
         *15) "combustionChamber.m_flow_air_req*1.1"
@@ -53,8 +51,8 @@ model combineMillandFurnace
         rotation=0,
         origin={8,-23})));
 
-  inner SimCenter simCenter(redeclare replaceable TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1, redeclare ClaRa.Basics.Media.Fuel.Coal_v2
-                                                                                          fuelModel1) annotation (Placement(transformation(extent={{-100,80},{-60,100}})));
+  inner SimCenter simCenter(redeclare replaceable TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1, redeclare Basics.Media.FuelTypes.Fuel_verbandsformel_v2 fuelModel1)
+                                                                                                      annotation (Placement(transformation(extent={{-100,80},{-60,100}})));
   Furnace.SimpleCombustionChamber combustionChamber(xi_NOx=0) annotation (Placement(transformation(extent={{60,-33},{80,-13}})));
   BoundaryConditions.BoundaryGas_pTxi flueGasPressureSink(                                  p_const=100000, xi_const={0,0,0,0,0.79,0.21,0,0,0})
                                                                                           annotation (Placement(transformation(

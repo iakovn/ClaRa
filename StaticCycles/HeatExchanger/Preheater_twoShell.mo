@@ -1,10 +1,10 @@
 within ClaRa.StaticCycles.HeatExchanger;
 model Preheater_twoShell "Two cascade preheater || bubble state at shell outlets || par.: shell pressures, shell m_flows"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -32,29 +32,29 @@ model Preheater_twoShell "Two cascade preheater || bubble state at shell outlets
 
   Summary summary(
   inlet_cond(
-     m_flow=cond_in.m_flow,
-     h=cond_in.h,
-     p=cond_in.p),
+     m_flow=m_flow_cond,
+     h=h_cond_in,
+     p=p_cond),
   outlet_cond(
-     m_flow=cond_out.m_flow,
-     h=cond_out.h,
-     p=cond_out.p),
+     m_flow=m_flow_cond,
+     h=h_cond_out,
+     p=p_cond),
   inlet_1_tap(
-     m_flow=tap_1_in.m_flow,
-     h=tap_1_in.h,
-     p=tap_1_in.p),
+     m_flow=m_flow_tap1,
+     h=h_tap1_in,
+     p=p_tap1),
   outlet_1_tap(
-     m_flow=tap_1_out.m_flow,
-     h=tap_1_out.h,
-     p=tap_1_out.p),
+     m_flow=m_flow_tap1,
+     h=h_tap1_out,
+     p=p_tap1),
   inlet_2_tap(
-     m_flow=tap_2_in.m_flow,
-     h=tap_2_in.h,
-     p=tap_2_in.p),
+     m_flow=m_flow_tap2,
+     h=h_tap2_in,
+     p=p_tap2),
   outlet_2_tap(
-     m_flow=tap_2_out.m_flow,
-     h=tap_2_out.h,
-     p=tap_2_out.p));
+     m_flow=m_flow_tap2,
+     h=h_tap2_out,
+     p=p_tap2));
   //---------Summary Definition---------
   parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium = simCenter.fluid1 "Medium in the component" annotation(choices(choice=simCenter.fluid1 "First fluid defined in global simCenter",
                        choice=simCenter.fluid2 "Second fluid defined in global simCenter",
@@ -83,7 +83,6 @@ model Preheater_twoShell "Two cascade preheater || bubble state at shell outlets
         rotation=0,
         origin={0,0})));
   Fundamentals.SteamSignal_blue_b tap_1_out(
-    p=p_tap1,
     m_flow=m_flow_tap1,
     h=h_tap1_out) annotation (Placement(transformation(
         extent={{-50,-110},{-30,-100}},

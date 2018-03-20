@@ -1,10 +1,10 @@
 within ClaRa.Components.Furnace;
 model SimpleCombustionChamber
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -42,15 +42,14 @@ model SimpleCombustionChamber
   ClaRa.Basics.Interfaces.Connected2SimCenter connected2SimCenter(
     powerIn=0,
     powerOut=0,
-    powerAux=inlet.fuel.m_flow*inStream(inlet.fuel.LHV_outflow)) if contributeToCycleSummary;
+    powerAux=inlet.fuel.m_flow*fuelObject.LHV) if contributeToCycleSummary;
 
 //__________________________/ Media definintions \______________________________________________
   outer ClaRa.SimCenter simCenter;
 // inner parameter ClaRa.Basics.Media.Coal.PartialCoal coal=simCenter.coalModel
 //    "Coal elemental composition used for combustion" annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"),Placement(transformation(extent={{-80,52},{-60,72}})));
- parameter ClaRa.Basics.Media.Fuel.PartialFuel fuelType=simCenter.fuelModel1 "Coal elemental composition used for combustion"
-                                                                                              annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
- parameter ClaRa.Basics.Media.Fuel.PartialSlag slagType = simCenter.slagModel "Slag properties" annotation(choicesAllMatching,Dialog(group="Fundamental Definitions"));
+  parameter ClaRa.Basics.Media.FuelTypes.BaseFuel fuelModel=simCenter.fuelModel1 "Coal elemental composition used for combustion" annotation (choicesAllMatching, Dialog(group="Fundamental Definitions"));
+  parameter ClaRa.Basics.Media.Slag.PartialSlag slagType=simCenter.slagModel "Slag properties" annotation (choicesAllMatching, Dialog(group="Fundamental Definitions"));
  inner parameter TILMedia.GasTypes.BaseGas medium = simCenter.flueGasModel "Medium to be used in tubes" annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
 
 //___________________________/ Parameters \_________________________________________________________
@@ -70,7 +69,7 @@ model SimpleCombustionChamber
                                                                                               annotation(Dialog(tab="Summary and Visualisation"));
 
 //______________________________________/ Connectors \__________________________________________
-  ClaRa.Basics.Interfaces.FuelFlueGas_inlet inlet(final fuelType=fuelType, final flueGas(Medium=medium)) annotation (Placement(transformation(extent={{-110,-10},{-90,10}})));
+  ClaRa.Basics.Interfaces.FuelFlueGas_inlet inlet(final fuelModel=fuelModel, final flueGas(Medium=medium)) annotation (Placement(transformation(extent={{-110,-10},{-90,10}})));
 
   ClaRa.Basics.Interfaces.Slag_outlet
                                     slag_outlet(final slagType=slagType)
@@ -92,7 +91,7 @@ protected
 //_____________/ Calculated quantities \_________________________________
 
 protected
-ClaRa.Basics.Units.MassFraction xi_coal_in[fuelType.nc-1];
+ClaRa.Basics.Units.MassFraction xi_coal_in[fuelModel.N_e-1];
 ClaRa.Basics.Units.MassFraction xi_gas_in[medium.nc-1];
 
 //Stoichometric coefficents
@@ -136,8 +135,7 @@ ClaRa.Basics.Units.MassFlowRate
 //ClaRa.Basics.Units.MassFlowRate m_flow_O2_SOx
 //    "O2 mass flow rate consumption for SOx fraction";
 
-// ClaRa.Basics.Units.EnthalpyMassSpecific
-//                                     LHV "LHV of the coal";
+
   Modelica.Blocks.Interfaces.RealOutput Q_flow_boiler annotation (Placement(transformation(extent={{100,-10},{120,10}})));
   Modelica.Blocks.Interfaces.RealOutput lambda "lambda of combustion given by O2in/O2req"
                                                 annotation (Placement(transformation(extent={{-10,-10},{10,10}}, rotation=180, origin={-110,-80})));
@@ -152,7 +150,7 @@ public
     m_flow_combustible_in=m_flow_combustible_in,
     m_flow_gas_in=inlet.flueGas.m_flow,
     m_flow_flueGas_out=flueGas_outlet.m_flow,
-    LHV=inStream(inlet.fuel.LHV_outflow),
+    LHV=fuelObject.LHV,
     Q_flow_boiler=Q_flow_boiler,
     m_flow_O2_req=m_flow_oxygen_req,
     m_flow_Air_req=m_flow_air_req,
@@ -163,13 +161,17 @@ public
 
 Real sum_xi;
 
+  ClaRa.Basics.Media.FuelObject fuelObject(fuelModel=fuelModel,
+    p=inlet.fuel.p,
+    T=inStream(inlet.fuel.T_outflow),
+    xi_c=inStream(inlet.fuel.xi_outflow)) annotation (Placement(transformation(extent={{-52,-12},{-32,8}})));
 equation
 //asserts for flow reversal
 
   inlet.fuel.p = slag_outlet.p;
 
   inlet.fuel.T_outflow = T_flueGas_out;//dummy for flow reversal
-  inlet.fuel.xi_outflow = zeros(fuelType.nc-1);
+  inlet.fuel.xi_outflow = zeros(fuelModel.N_c-1);
 
   slag_outlet.T_outflow = T_slag_bottom;
 
@@ -180,28 +182,24 @@ equation
 
   inlet.flueGas.p = flueGas_outlet.p;
 
-  xi_coal_in = inStream(inlet.fuel.xi_outflow); // eleemntal composition of the coal  {C,H,O,N,S,Ash,H2O}
+  xi_coal_in = fuelObject.xi_e;// eleemntal composition of the coal  {C,H,O,N,S,Ash,H2O}
   xi_gas_in = inStream(inlet.flueGas.xi_outflow);
 
   //_________________/ Mass balance \____________________________________________________
   inlet.fuel.m_flow + slag_outlet.m_flow + inlet.flueGas.m_flow + flueGas_outlet.m_flow = 0;
   slag_outlet.m_flow = - inlet.fuel.m_flow * xi_coal_in[6]*xi_slag;
 
-//   if calculate_LHV then
-//     LHV = (33907*xi_coal_in[1] + 142324*(xi_coal_in[2]-xi_coal_in[3]/8.) + 10465*xi_coal_in[5]- 2512*((1-sum({xi_coal_in[i] for i in 1:fuelType.nc-1})) + 9*xi_coal_in[2]))*1e3;
-//   else
-//     LHV = LHV_fixed;
-//   end if;
+
 
   //________________/ Energy balance \____________________________________________________
 
           -Q_flow_boiler = inlet.flueGas.m_flow*(gasInlet.h - flueGasOutlet.h)
 + slag_outlet.m_flow *slagType.cp *(inStream(inlet.fuel.T_outflow)-T_slag_bottom)
-+ inlet.fuel.m_flow * (1.0 - xi_coal_in[6] * xi_slag) * inStream(inlet.fuel.cp_outflow) * (inStream(inlet.fuel.T_outflow)-T_flueGas_out)
-     + inlet.fuel.m_flow * inStream(inlet.fuel.LHV_outflow);
++ inlet.fuel.m_flow * (1.0 - xi_coal_in[6] * xi_slag) * fuelObject.cp * (inStream(inlet.fuel.T_outflow)-T_flueGas_out)
+     + inlet.fuel.m_flow * fuelObject.LHV;
   //________________/ Chemical reaction/flueGas composition \_______________
   // calculation of the combustible mass flow rate
-  m_flow_combustible_in = inlet.fuel.m_flow * (1 - xi_coal_in[6] - (1-sum({xi_coal_in[i] for i in 1:fuelType.nc-1})));
+  m_flow_combustible_in = inlet.fuel.m_flow * (1 - xi_coal_in[6] - (1-sum({xi_coal_in[i] for i in 1:fuelModel.N_c-1})));
   // calculation of the Molar flow rate of coal comming into the chamber
   n_flow_C = xi_coal_in[1]*inlet.fuel.m_flow/ClaRa.Basics.Constants.M_C;
                                                       //   coal.M_C;
@@ -210,7 +208,7 @@ equation
   n_flow_N = xi_coal_in[4]*inlet.fuel.m_flow/ClaRa.Basics.Constants.M_N;
   n_flow_S = xi_coal_in[5]*inlet.fuel.m_flow/ClaRa.Basics.Constants.M_S;
   n_flow_Ash = xi_coal_in[6]*inlet.fuel.m_flow/ClaRa.Basics.Constants.M_Ash;
-  n_flow_H2O = (1.0-sum({xi_coal_in[i] for i in 1:fuelType.nc-1}))*inlet.fuel.m_flow/ClaRa.Basics.Constants.M_H2O;
+  n_flow_H2O = (1.0-sum({xi_coal_in[i] for i in 1:fuelModel.N_c-1}))*inlet.fuel.m_flow/ClaRa.Basics.Constants.M_H2O;
 
   // Molar Mass of the coal
   M_coal = n_flow_C/inlet.fuel.m_flow*ClaRa.Basics.Constants.M_C
@@ -273,13 +271,12 @@ equation
   flueGas_outlet.xi_outflow[7]*flueGas_outlet.m_flow = -(inlet.flueGas.m_flow*
     xi_gas_in[7] + n_flow_NO*M_NO);                                                                               //NO
   flueGas_outlet.xi_outflow[8]*flueGas_outlet.m_flow = -(inlet.flueGas.m_flow*
-    xi_gas_in[8] + (1.0 - sum({xi_coal_in[i] for i in 1:fuelType.nc - 1}))*
+    xi_gas_in[8] + (1.0 - sum({xi_coal_in[i] for i in 1:fuelModel.N_c - 1}))*
     inlet.fuel.m_flow + (n_flow_H2O_prod)*M_H2O);                                                                                                    //H20
   flueGas_outlet.xi_outflow[9]*flueGas_outlet.m_flow = -(inlet.flueGas.m_flow*
     xi_gas_in[9]);
     sum_xi =sum({flueGas_outlet.xi_outflow[i] for i in 1:medium.nc - 1});
-inlet.fuel.cp_outflow = inStream(inlet.fuel.cp_outflow);
-  inlet.fuel.LHV_outflow =inStream(inlet.fuel.LHV_outflow)
+
   annotation (Diagram(graphics), Icon(graphics={Bitmap(
           extent={{-102,-102},{102,100}},
           imageSource=
@@ -295,5 +292,5 @@ inlet.fuel.cp_outflow = inStream(inlet.fuel.cp_outflow);
                +
               "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",
           fileName=
-              "modelica://ClaRa/figures/Components/CombustionChamberIcon.png")}));
+              "modelica://ClaRa/Resources/Images/Components/CombustionChamberIcon.png")}));
 end SimpleCombustionChamber;

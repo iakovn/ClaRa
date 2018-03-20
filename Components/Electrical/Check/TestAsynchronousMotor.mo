@@ -37,7 +37,6 @@ model TestAsynchronousMotor "A simple test for the simple motor"
         origin={-62,-68})));
   ClaRa.Components.Utilities.Blocks.LimPID PID(
     u_ref=500,
-    initType=Modelica.Blocks.Types.InitPID.InitialOutput,
     y_max=100e3,
     Tau_d=500,
     controllerType=Modelica.Blocks.Types.SimpleController.PI,
@@ -45,7 +44,8 @@ model TestAsynchronousMotor "A simple test for the simple motor"
     y_ref=3.8e3,
     y_start=40,
     k=50,
-    Tau_i=0.05) annotation (Placement(transformation(extent={{10,22},{-10,42}})));
+    Tau_i=0.05,
+    initOption=796) annotation (Placement(transformation(extent={{10,22},{-10,42}})));
   Modelica.Thermal.HeatTransfer.Sources.FixedTemperature fixedTemperature(T=293.15)
     annotation (Placement(transformation(extent={{-9,-9},{9,9}},
         rotation=270,
@@ -133,11 +133,7 @@ equation
 PURPOSE:
 
 ______________________________________________________________________________________________
-"),                    Text(
-          extent={{-136,104},{64,84}},
-          lineColor={0,128,0},
-          fontSize=31,
-          textString="TESTED -- YYYY-MM-DD //XX"),Text(
+"),                                               Text(
           extent={{-96,60},{68,46}},
           lineColor={0,128,0},
           horizontalAlignment=TextAlignment.Left,

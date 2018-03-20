@@ -1,10 +1,10 @@
 within ClaRa.StaticCycles.Check.StaticCycleExamples;
 model InitSteamCycle_T_4_Pr_F1_C1_version2
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -64,13 +64,13 @@ model InitSteamCycle_T_4_Pr_F1_C1_version2
   parameter Real efficiency_Turb_LP2=1 annotation(Dialog(tab="Turbines"));
 
   HeatExchanger.Condenser condenser(p_condenser=p_condenser) annotation (Placement(transformation(extent={{74,-20},{94,0}})));
-  Machines.Pump Pump_cond(efficiency=efficiency_Pump_cond) annotation (Placement(transformation(extent={{80,-70},{60,-50}})));
+  Machines.Pump1 Pump_cond(efficiency=efficiency_Pump_cond) annotation (Placement(transformation(extent={{80,-70},{60,-50}})));
   HeatExchanger.Preheater1 preheater_LP1(p_tap_nom=preheater_LP1_p_tap, m_flow_tap_nom=preheater_LP1_m_flow_tap) annotation (Placement(transformation(extent={{54,-70},{34,-50}})));
-  Machines.Pump Pump_preheater_LP1(efficiency=efficiency_Pump_preheater_LP1) annotation (Placement(transformation(extent={{34,-90},{14,-70}})));
+  Machines.Pump1 Pump_preheater_LP1(efficiency=efficiency_Pump_preheater_LP1) annotation (Placement(transformation(extent={{34,-90},{14,-70}})));
   ValvesConnects.Valve_dp_nom3 valve_LP2(Delta_p_nom=valve_LP2_Delta_p_nom) annotation (Placement(transformation(extent={{24,-63},{14,-57}})));
   Storage.Feedwatertank4 feedwatertank(m_flow_nom=m_flow_nom*P_target_, p_FWT_nom=p_FWT) annotation (Placement(transformation(extent={{-11,-64},{-31,-52}})));
   Fittings.Mixer1 join_LP_main annotation (Placement(transformation(extent={{8,-65},{-2,-59}})));
-  Machines.Pump Pump_FW(efficiency=efficiency_Pump_FW) annotation (Placement(transformation(extent={{-40,-70},{-60,-50}})));
+  Machines.Pump1 Pump_FW(efficiency=efficiency_Pump_FW) annotation (Placement(transformation(extent={{-40,-70},{-60,-50}})));
   HeatExchanger.Preheater1 preheater_HP(m_flow_tap_nom=preheater_HP_m_flow_tap, p_tap_nom=preheater_HP_p_tap) annotation (Placement(transformation(
         extent={{-10,10},{10,-10}},
         rotation=90,
@@ -325,5 +325,6 @@ equation
   connect(boiler.hotReheat, triple3.steamSignal) annotation (Line(points={{-70,38.4},{-70,47.9286},{-70.375,47.9286}}, color={0,131,169}));
   connect(valve_cut.outlet, boiler.coldReheat) annotation (Line(points={{-67.55,3},{-72,3},{-72,17.6}}, color={0,131,169}));
   connect(preheater_HP.cond_out, boiler.feedWater) annotation (Line(points={{-76,-9.5},{-76,17.6}}, color={0,131,169}));
-  annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
+  annotation (Diagram(graphics,
+                      coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
 end InitSteamCycle_T_4_Pr_F1_C1_version2;

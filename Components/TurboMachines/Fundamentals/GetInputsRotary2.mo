@@ -8,5 +8,6 @@ model GetInputsRotary2 "Get enabled inputs and parameters of disabled inputs"
   Modelica.Mechanics.Rotational.Interfaces.Flange_b shaft_b
     annotation (Placement(transformation(extent={{90,-10},{110,10}},   rotation=
            0)));
-  annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
+  annotation (Diagram(graphics,
+                      coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
 end GetInputsRotary2;

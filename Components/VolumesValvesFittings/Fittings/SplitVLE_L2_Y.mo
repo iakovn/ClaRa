@@ -1,10 +1,10 @@
 within ClaRa.Components.VolumesValvesFittings.Fittings;
 model SplitVLE_L2_Y "A voluminous split for 2 outputs"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -36,7 +36,7 @@ model Summary
 end Summary;
 
   parameter TILMedia.VLEFluidTypes.BaseVLEFluid   medium=simCenter.fluid1 "Medium in the component"
-                               annotation(Dialog(group="Fundamental Definitions"));
+                               annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
 
 replaceable model PressureLossIn =
     Fundamentals.NoFriction constrainedby Fundamentals.BaseDp "Pressure loss model at inlet" annotation(Dialog(group="Fundamental Definitions"), choicesAllMatching);
@@ -55,6 +55,7 @@ replaceable model PressureLossIn =
   parameter SI.EnthalpyMassSpecific h_start= 1e5 "Start value of sytsem specific enthalpy"
                                              annotation(Dialog(tab="Initialisation"));
   parameter SI.Pressure p_start= 1e5 "Start value of sytsem pressure"               annotation(Dialog(tab="Initialisation"));
+  parameter ClaRa.Basics.Units.MassFraction  xi_start[medium.nc-1] = medium.xi_default annotation(Dialog(tab="Initialisation"));
   parameter Integer initOption=0 "Type of initialisation"
     annotation (Dialog(tab="Initialisation"), choices(choice = 0 "Use guess values", choice = 208 "Steady pressure and enthalpy", choice=201 "Steady pressure", choice = 202 "Steady enthalpy"));
 
@@ -65,6 +66,8 @@ replaceable model PressureLossIn =
 protected
     parameter SI.DensityMassSpecific rho_nom= TILMedia.VLEFluidFunctions.density_phxi(medium, p_nom, h_nom) "Nominal density";
     SI.Power Hdrhodt =  if preciseTwoPhase then h*volume*drhodt else 0 "h*volume*drhodt";
+    Real Xidrhodt[medium.nc-1]= if preciseTwoPhase then xi*volume*drhodt else zeros(medium.nc-1) "h*volume*drhodt";
+
 public
   SI.EnthalpyFlowRate H_flow_in;
   SI.EnthalpyFlowRate H_flow_out[2];
@@ -72,6 +75,9 @@ public
   SI.Mass mass "Total system mass";
   Real drhodt;//(unit="kg/(m3s)");
   SI.Pressure p(start=p_start, stateSelect=StateSelect.prefer) "System pressure";
+  ClaRa.Basics.Units.MassFlowRate Xi_flow_in[medium.nc-1] "Mass fraction flows at inlet";
+  ClaRa.Basics.Units.MassFlowRate Xi_flow_out[2,medium.nc-1] "Mass fraction flows at outlet";
+  ClaRa.Basics.Units.MassFraction xi[medium.nc-1](start=xi_start) "Mass fraction";
 
 public
    Summary summary(outline(volume_tot = volume),
@@ -124,11 +130,13 @@ equation
    mass= if useHomotopy then volume*homotopy(bulk.d,rho_nom) else volume*bulk.d;
 
    drhodt*volume=inlet.m_flow + outlet1.m_flow + outlet2.m_flow "Mass balance";
-   drhodt=der(p)*bulk.drhodp_hxi
-                             + der(h)*bulk.drhodh_pxi;
+   drhodt = der(p)*bulk.drhodp_hxi
+          + der(h)*bulk.drhodh_pxi
+          + sum(der(xi).*bulk.drhodxi_ph);
                                                    //calculating drhodt from state variables
 
    der(h) = 1/mass*(sum(H_flow_out) + H_flow_in  + volume*der(p) -Hdrhodt) "Energy balance, decoupled from the mass balance to avoid heavy mass fluctuations during phase change or flow reversal. The term '-h*volume*drhodt' is ommited";
+   der(xi) = {(sum(Xi_flow_out[:,i])+ Xi_flow_in[i]- Xidrhodt[i])/mass for i in 1:medium.nc-1} "Species balance";
 //~~~~~~~~~~~~~~~~~~~~~~~~~
 // Boundary conditions ~~~~
     pressureLossIn.m_flow=inlet.m_flow;
@@ -136,14 +144,22 @@ equation
   pressureLossOut2.m_flow=-outlet2.m_flow;
     H_flow_out[1]=if useHomotopy then homotopy(noEvent(actualStream(outlet1.h_outflow))*outlet1.m_flow, -h*m_flow_out_nom[1]) else noEvent(actualStream(outlet1.h_outflow))*outlet1.m_flow;
     H_flow_out[2]=if useHomotopy then homotopy(noEvent(actualStream(outlet2.h_outflow))*outlet2.m_flow, -h*m_flow_out_nom[2]) else noEvent(actualStream(outlet2.h_outflow))*outlet2.m_flow;
+    Xi_flow_out[1]=if useHomotopy then homotopy(noEvent(actualStream(outlet1.xi_outflow))*outlet1.m_flow, -xi*m_flow_out_nom[1]) else noEvent(actualStream(outlet1.xi_outflow))*outlet1.m_flow;
+    Xi_flow_out[2]=if useHomotopy then homotopy(noEvent(actualStream(outlet2.xi_outflow))*outlet2.m_flow, -xi*m_flow_out_nom[2]) else noEvent(actualStream(outlet2.xi_outflow))*outlet2.m_flow;
+
+
     outlet1.p=p - pressureLossOut1.dp;
     outlet1.h_outflow=h;
+    outlet1.xi_outflow=xi;
     outlet2.p=p - pressureLossOut2.dp;
     outlet2.h_outflow=h;
-
+    outlet2.xi_outflow=xi;
     H_flow_in= if useHomotopy then homotopy(noEvent(actualStream(inlet.h_outflow))*inlet.m_flow, inStream(inlet.h_outflow)*sum(m_flow_out_nom)) else noEvent(actualStream(inlet.h_outflow))*inlet.m_flow;
+    Xi_flow_in= if useHomotopy then homotopy(noEvent(actualStream(inlet.xi_outflow))*inlet.m_flow, inStream(inlet.xi_outflow)*sum(m_flow_out_nom)) else noEvent(actualStream(inlet.xi_outflow))*inlet.m_flow;
+
     inlet.p=p+pressureLossIn.dp;
     inlet.h_outflow=h;
+    inlet.xi_outflow=xi;
   for i in 1:2 loop
 
     eye[i].T= bulk.T-273.15;

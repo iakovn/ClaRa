@@ -128,13 +128,9 @@ equation
           fontSize=12,
           textString="________________________________________________________________
 PURPOSE:
->> Tester for a physical compressor model according to the stage stacking method"),
-                                Text(
-          extent={{-100,60},{-4,50}},
-          lineColor={0,128,0},
-          fontSize=34,
-          textString="TESTED -- 2014-10-08 //LN")}),
+>> Tester for a physical compressor model according to the stage stacking method")}),
     experiment(StopTime=20),
     __Dymola_experimentSetupOutput,
-    Icon(coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=false)));
+    Icon(graphics,
+         coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=false)));
 end Test_CompressorGas_L1_stageStacked;

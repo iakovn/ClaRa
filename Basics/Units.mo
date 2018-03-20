@@ -1,13 +1,13 @@
 within ClaRa.Basics;
 package Units
 //___________________________________________________________________________//
-// Package of the ClaRa library, version: 1.2.2                              //
-// Models of the ClaRa library are tested under DYMOLA v2016 FD01.           //
+// Package of the ClaRa library, version: 1.3.0                              //
+// Models of the ClaRa library are tested under DYMOLA v2018 FD01.           //
 // It is planned to support alternative Simulators like SimulationX in the   //
 // future                                                                    //
 //___________________________________________________________________________//
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // This Modelica package is free software and the use is completely at your  //
 // own risk; it can be redistributed and/or modified under the terms of the  //
@@ -31,6 +31,7 @@ package Units
   type Area = Real(final quantity= "Area", final unit="m2", displayUnit="m2", nominal= 1, min=0);
   type AreaFraction = Real(final quantity= "AreaFraction", final unit="m2/m2", displayUnit="m2/m2", nominal= 1, min=0);
   type CoefficientOfHeatTransfer = Real(final quantity= "CoefficientOfHeatTransfer", final unit="W/(m2.K)", displayUnit="W/(m2.K)", nominal= 1, min=0);
+  type DerivativeOfDensityMassSpecific = Real(final quantity= "DerivativeOfDensityVolumeSpecific", final unit="kg/(m3.s)", displayUnit="kg/(m3.s)", nominal= 1);
   type DensityMassSpecific = Real(final quantity= "DensityVolumeSpecific", final unit="kg/m3", displayUnit="kg/m3", nominal= 1000,min=0);
   type DensityMolSpecific = Real(final quantity= "DensityMolSpecific", final unit="mol/m3", displayUnit="mol/m3", nominal= 50,min=0);
   type DensityVolumeSpecific=Real(final quantity= "DensityVolumeSpecific", final unit="kg/m3", displayUnit="kg/m3", nominal= 1000,min=0);
@@ -71,11 +72,14 @@ package Units
   type Momentum =    Real(final quantity= "Momentum", final unit="kg.m/s", displayUnit="kg.m/s", nominal=1);
   type MomentumFlowRate = Real(final quantity= "MomentumFlowRate", final unit="kg.m/s2", displayUnit="N", nominal=1);
   type MomentOfInertia = Real (final quantity="MomentOfInertia", final unit="kg.m2");
+  type NusseltNumber = Real(final quantity= "NusseltNumber", final unit="1", displayUnit="1");
   type Power = Real(final quantity= "Power", final unit="W", displayUnit="W", nominal= 1e5);
+  type PrandtlNumber = Real(final quantity= "PrandtlNumber", final unit="1", displayUnit="1");
   type Pressure = Real(final quantity= "Pressure", final unit="Pa", displayUnit="Pa", nominal= 1e5, min=0);
   type PressureDifference = Real(final quantity= "PressureDifference", final unit="Pa", displayUnit="Pa", nominal= 0);
-  type RPM = Real(final quantity= "RotationsPerMinute", final unit="1/min", displayUnit="rpm", nominal= 0);
   type RelativeHumidity = Real(final quantity= "RelativeHumidity", final unit="1", displayUnit="1", nominal= 0, min=0);
+  type RPM = Real(final quantity= "RotationsPerMinute", final unit="1/min", displayUnit="rpm", nominal= 0);
+  type ReynoldsNumber = Real(final quantity= "ReynoldsNumber", final unit="1", displayUnit="1");
   type ShearModulus =     Real ( final quantity="ShearModulus", final unit="Pa", displayUnit="Pa", nominal=1e11);
   type Stress = Real ( final quantity="Stress", final unit="Pa", displayUnit="Pa", nominal=1e11);
   type SurfaceTension = Real ( final quantity="SurfaceTension", final unit="kg/s2", displayUnit="kg/s2", nominal=1e-3);

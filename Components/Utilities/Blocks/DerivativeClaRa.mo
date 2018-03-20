@@ -1,10 +1,10 @@
 within ClaRa.Components.Utilities.Blocks;
 block DerivativeClaRa "Derivative block ( can be adjusted to behave as ideal or approximated)"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -15,39 +15,45 @@ block DerivativeClaRa "Derivative block ( can be adjusted to behave as ideal or 
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
   import Modelica.Blocks.Types.Init;
-  parameter Real k(unit="1")=1 "Gains";
+  parameter Real k(unit="1")=1 "Gain";
   parameter Modelica.SIunits.Time Tau(min=Modelica.Constants.small)=0.01 "Time constant (Tau>0 for approxomated derivative; Tau=0 is ideal derivative block)";
-  parameter Modelica.Blocks.Types.Init initType=Modelica.Blocks.Types.Init.NoInit "Type of initialization (1: no init, 2: steady state, 3: initial state, 4: initial output)"
-                                                                                    annotation(Evaluate=true,
-      Dialog(group="Initialization"));
+  parameter Integer initOption = 501 "Initialisation option" annotation(choicesAllMatching,Dialog( group="Initialisation"), choices(choice = 501 "No init (y_start and x_start as guess values)",
+                                                                                                    choice=502 "Steady state",
+                                                                                                    choice=504 "Force y_start at output"));
+
   parameter Real x_start=0 "Initial or guess value of state"
-    annotation (Dialog(group="Initialization"));
+    annotation (Dialog(tab="Obsolete Settings", group="Initialization"));
   parameter Real y_start=0 "Initial value of output (= state)"
-    annotation(Dialog(enable=initType == Init.InitialOutput, group=
+    annotation(Dialog(enable=initOption == 504, group=
           "Initialization"));
-  extends Modelica.Blocks.Interfaces.SISO;
+  extends Modelica.Blocks.Interfaces.SISO(y(start=y_start));
 
   output Real x(start=x_start) "State of block";
 
 protected
   parameter Boolean zeroGain = abs(k) < Modelica.Constants.eps;
 initial equation
-  if initType == Init.SteadyState then
+  if initOption == 502 then
     der(x) = 0;
-  elseif initType == Init.InitialState then
+  elseif initOption == 799 then //initialisation with initial state
     x = x_start;
-  elseif initType == Init.InitialOutput then
+  elseif initOption == 504 then
     if zeroGain then
        x = u;
     else
        y = y_start;
     end if;
+  elseif initOption == 501 then
+      //Do nothing, use x_start and y_start as guess values
+  else
+    assert(false, "Unknown init option in derivative instance " + getInstanceName());
   end if;
+
 equation
-  der(x) = if zeroGain or Tau==0 then 0 else (u - x)/Tau;
+  der(x) = if zeroGain or Tau < Modelica.Constants.eps then 0 else (u - x)/Tau;
   if zeroGain then
     y=0;
-  elseif Tau==0 then
+  elseif Tau < Modelica.Constants.eps then
     y=k*der(u);
   else
     y =(k/Tau)*(u - x);

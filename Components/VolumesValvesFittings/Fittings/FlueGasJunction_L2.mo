@@ -1,10 +1,10 @@
 within ClaRa.Components.VolumesValvesFittings.Fittings;
 model FlueGasJunction_L2 "Adiabatic junction volume"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -86,6 +86,8 @@ parameter ClaRa.Basics.Units.Volume volume;
     stateSelectPreferForInputs=true)
     annotation (Placement(transformation(extent={{-10,-12},{10,8}})));
 
+  parameter Boolean showData=true "|Summary and Visualisation||True, if a data port containing p,T,h,s,m_flow shall be shown, else false";
+
   /****************** Initial values *******************/
 
 public
@@ -117,6 +119,28 @@ public
                    gas(m=mass, T=bulk.T, p=p, h=h, H=h*mass, rho=bulk.d))
     annotation (Placement(transformation(extent={{-60,-102},{-40,-82}})));
 
+public
+  Basics.Interfaces.EyeOutGas
+                           eye1(each medium=medium) if
+                                  showData
+    annotation (Placement(transformation(extent={{100,-60},{120,-40}}),
+        iconTransformation(extent={{-10,-10},{10,10}},
+        rotation=0,
+        origin={110,-50})));
+protected
+  Basics.Interfaces.EyeInGas
+                          eye_int[2](each medium=medium)
+    annotation (Placement(transformation(extent={{55,-51},{57,-49}})));
+public
+  Basics.Interfaces.EyeOutGas
+                           eye2(each medium=medium) if
+                                  showData
+    annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+        rotation=270,
+        origin={30,-110}),
+        iconTransformation(extent={{-10,-10},{10,10}},
+        rotation=270,
+        origin={40,-110})));
 initial equation
 
     if initOption == 1 then //steady state
@@ -167,6 +191,28 @@ equation
 
     portA.p - portB.p = 0 "Momentum balance";
     portA.p - portC.p = 0 "Momentum balance";
+
+   eye_int[1].T= flueGasPortB.T-273.15;
+    eye_int[1].s=flueGasPortB.s/1e3;
+    eye_int[1].p=flueGasPortB.p/1e5;
+    eye_int[1].h=flueGasPortB.h/1e3;
+    eye_int[2].T= flueGasPortC.T-273.15;
+    eye_int[2].s=flueGasPortC.s/1e3;
+    eye_int[2].p=flueGasPortC.p/1e5;
+    eye_int[2].h=flueGasPortC.h/1e3;
+    eye_int[1].m_flow=-portB.m_flow;
+    eye_int[2].m_flow=-portC.m_flow;
+    eye_int[1].xi=flueGasPortB.xi;
+    eye_int[2].xi=flueGasPortC.xi;
+
+  connect(eye_int[1],eye1)  annotation (Line(
+      points={{56,-50.5},{84,-50.5},{84,-50},{110,-50}},
+      color={190,190,190},
+      smooth=Smooth.None));
+  connect(eye_int[2],eye2)  annotation (Line(
+      points={{56,-49.5},{56,-90},{30,-90},{30,-110}},
+      color={190,190,190},
+      smooth=Smooth.None));
 
   annotation (Diagram(coordinateSystem(extent={{-100,-100},{100,100}},
           preserveAspectRatio=true),

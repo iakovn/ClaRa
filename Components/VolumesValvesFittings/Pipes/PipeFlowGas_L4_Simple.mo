@@ -1,10 +1,10 @@
 within ClaRa.Components.VolumesValvesFittings.Pipes;
 model PipeFlowGas_L4_Simple "A 1D tube-shaped control volume considering heat transfer in a straight pipe with static momentum balance and simple energy balance."
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -53,10 +53,12 @@ public
   parameter Boolean heatFlowIsLoss = true "True if negative heat flow is a loss (not a process product)" annotation(Dialog(tab="Summary and Visualisation"));
 
 protected
-  Basics.Interfaces.EyeIn eye_int[1]
+  Basics.Interfaces.EyeInGas
+                          eye_int[1](each medium=medium)
     annotation (Placement(transformation(extent={{85,-41},{87,-39}})));
 public
-  Basics.Interfaces.EyeOut eye if showData
+  Basics.Interfaces.EyeOutGas
+                           eye(each medium=medium) if showData
  annotation (Placement(transformation(extent={{130,-50},{150,-30}}),
         iconTransformation(extent={{136,-44},{156,-24}})));
 
@@ -69,6 +71,7 @@ equation
   eye_int[1].s=fluidOutlet.s/1e3;
   eye_int[1].p=outlet.p/1e5;
   eye_int[1].h=fluidOutlet.h/1e3;
+  eye_int[1].xi=fluidOutlet.xi;
          //fillColor={0,131,169};//DynamicSelect(if time > 0 then (if not FlowModel==FlowModelStructure.inlet_innerPipe_outlet and not FlowModel==FlowModelStructure.inlet_innerPipe_dp_outlet then {0,131,169} else {255,255,255}) else {255,255,255}),
   connect(eye_int[1],eye)  annotation (Line(
       points={{86,-40},{140,-40}},

@@ -1,10 +1,10 @@
 within ClaRa.Components.Adapters.Check;
 model TestScalar2VectorHeatPort
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -18,7 +18,7 @@ model TestScalar2VectorHeatPort
  Real Q_flow_sum=-sum(scalar2VectorHeatPort.heatVector.Q_flow);
   BoundaryConditions.PrescribedHeatFlowScalar prescribedHeatFlowScalar
     annotation (Placement(transformation(extent={{-64,10},{-44,30}})));
-  ClaRa.Basics.ControlVolumes.SolidVolumes.ThinWall_L4 thinWall(
+  ClaRa.Basics.ControlVolumes.SolidVolumes.CylindricalThinWall_L4 thinWall(
     diameter_o=0.05,
     diameter_i=0.04,
     length=1,
@@ -28,7 +28,7 @@ model TestScalar2VectorHeatPort
         extent={{-10,-10},{10,10}},
         rotation=90,
         origin={28,20})));
-  ClaRa.Basics.ControlVolumes.SolidVolumes.ThickWall_L4 thickWall(
+  ClaRa.Basics.ControlVolumes.SolidVolumes.CylindricalThickWall_L4 thickWall(
     diameter_o=0.5,
     diameter_i=0.4,
     length=thinWall.length,
@@ -51,7 +51,7 @@ model TestScalar2VectorHeatPort
     Delta_x=thinWall.Delta_x) annotation (Placement(transformation(extent={{-10,10},{10,30}})));
   BoundaryConditions.PrescribedHeatFlowScalar prescribedHeatFlowScalar1
     annotation (Placement(transformation(extent={{-64,-32},{-44,-12}})));
-  ClaRa.Basics.ControlVolumes.SolidVolumes.ThinWall_L4 thinWall1(
+  ClaRa.Basics.ControlVolumes.SolidVolumes.CylindricalThinWall_L4 thinWall1(
     diameter_o=0.05,
     diameter_i=0.04,
     length=1,
@@ -61,7 +61,7 @@ model TestScalar2VectorHeatPort
         extent={{-10,-10},{10,10}},
         rotation=90,
         origin={28,-22})));
-  ClaRa.Basics.ControlVolumes.SolidVolumes.ThickWall_L4 thickWall1(
+  ClaRa.Basics.ControlVolumes.SolidVolumes.CylindricalThickWall_L4 thickWall1(
     diameter_o=0.5,
     diameter_i=0.4,
     length=thinWall.length,
@@ -87,7 +87,7 @@ model TestScalar2VectorHeatPort
     Delta_x=thinWall.Delta_x) annotation (Placement(transformation(extent={{70,-32},{50,-12}})));
   BoundaryConditions.PrescribedHeatFlowScalar prescribedHeatFlowScalar2
     annotation (Placement(transformation(extent={{-64,-74},{-44,-54}})));
-  ClaRa.Basics.ControlVolumes.SolidVolumes.ThinWall_L4 thinWall2(
+  ClaRa.Basics.ControlVolumes.SolidVolumes.CylindricalThinWall_L4 thinWall2(
     diameter_o=0.05,
     diameter_i=0.04,
     length=1,
@@ -97,7 +97,7 @@ model TestScalar2VectorHeatPort
         extent={{-10,-10},{10,10}},
         rotation=90,
         origin={28,-64})));
-  ClaRa.Basics.ControlVolumes.SolidVolumes.ThickWall_L4 thickWall2(
+  ClaRa.Basics.ControlVolumes.SolidVolumes.CylindricalThickWall_L4 thickWall2(
     diameter_o=0.5,
     diameter_i=0.4,
     length=thinWall.length,
@@ -217,11 +217,7 @@ equation
 PURPOSE:
 
 ______________________________________________________________________________________________
-"),                    Text(
-          extent={{-134,102},{66,82}},
-          lineColor={0,128,0},
-          fontSize=31,
-          textString="TESTED -- YYYY-MM-DD //XX"),Text(
+"),                                               Text(
           extent={{-94,58},{70,44}},
           lineColor={0,128,0},
           horizontalAlignment=TextAlignment.Left,
@@ -237,5 +233,5 @@ ________________________________________________________________________________
 Scenario:  
 
 ______________________________________________________________________________________________
-")}));
+")}), experiment(StopTime=10));
 end TestScalar2VectorHeatPort;

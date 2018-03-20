@@ -1,10 +1,10 @@
 within ClaRa.StaticCycles.HeatExchanger;
 model Preheater_Delta_T "1ph preheater || par.: shell pressure, shell m_flow, Delta_T"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -29,21 +29,21 @@ model Preheater_Delta_T "1ph preheater || par.: shell pressure, shell m_flow, De
   end Summary;
   Summary summary(
   inlet_cond(
-     m_flow=cond_in.m_flow,
-     h=cond_in.h,
-     p=cond_in.p),
+     m_flow=m_flow_cond,
+     h=h_cond_in,
+     p=p_cond),
   outlet_cond(
-     m_flow=cond_out.m_flow,
-     h=cond_out.h,
-     p=cond_out.p),
-     inlet_tap(
-     m_flow=tap_in.m_flow,
-     h=tap_in.h,
-     p=tap_in.p),
+     m_flow=m_flow_cond,
+     h=h_cond_out,
+     p=p_cond),
+  inlet_tap(
+     m_flow=m_flow_tap,
+     h=h_tap_in,
+     p=p_tap),
   outlet_tap(
-     m_flow=tap_out.m_flow,
-     h=tap_out.h,
-     p=tap_out.p));
+     m_flow=m_flow_tap,
+     h=h_tap_out,
+     p=p_tap));
   //---------Summary Definition---------
 
   parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium = simCenter.fluid1 "Medium in the component"  annotation(choices(choice=simCenter.fluid1 "First fluid defined in global simCenter",

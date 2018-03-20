@@ -1,10 +1,10 @@
 within ClaRa.StaticCycles.Fittings;
 model Split2 "Split || blue | green | yellow"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -27,17 +27,17 @@ model Split2 "Split || blue | green | yellow"
 
   Summary summary(
   inlet(
-     m_flow=inlet.m_flow,
-     h=inlet.h,
-     p=inlet.p),
+     m_flow=m_flow_1,
+     h=h1,
+     p=p),
   outlet1(
-     m_flow=outlet_1.m_flow,
-     h=outlet_1.h,
-     p=outlet_1.p),
+     m_flow=m_flow_2,
+     h=h1,
+     p=p),
   outlet2(
-     m_flow=outlet_2.m_flow,
-     h=outlet_2.h,
-     p=outlet_2.p));
+     m_flow=m_flow_3,
+     h=h1,
+     p=p));
   //---------Summary Definition---------
   parameter ClaRa.Basics.Units.Pressure p_nom=1e5 "Nominal split pressure" annotation(Dialog(group="Fundamental Definitions"));
   parameter Real CharLine_p_P_target_[:,:]=[0,1;1,1] "Characteristic line of pressure drop as function of mass flow rate" annotation(Dialog(group="Part Load Definition"));

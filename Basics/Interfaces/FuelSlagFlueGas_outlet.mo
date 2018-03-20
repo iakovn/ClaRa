@@ -1,13 +1,7 @@
 within ClaRa.Basics.Interfaces;
 connector FuelSlagFlueGas_outlet "Port describing Coal,Slag and FlueGas flow"
 
- parameter ClaRa.Basics.Media.Fuel.PartialFuel fuelType;
- parameter ClaRa.Basics.Media.Fuel.PartialSlag slagType;
-  ClaRa.Basics.Interfaces.GasPortOut flueGas
-    annotation (Placement(transformation(extent={{40,-30},{100,30}})));
-  ClaRa.Basics.Interfaces.Fuel_outlet fuel(fuelType=fuelType)
-    annotation (Placement(transformation(extent={{-100,-30},{-40,30}})));
-  Slag_inlet slag(slagType = slagType) annotation (Placement(transformation(extent={{-30,-30},{30,30}})));
+extends ClaRa.Basics.Interfaces.FuelSlagFlueGas_inlet;
 
   annotation (Icon(graphics={
         Ellipse(

@@ -1,10 +1,10 @@
 within ClaRa.StaticCycles.Check.StaticCycleExamples;
 model InitSteamCycle_Rostock_3_1 "Helps you to find reasonable start values for steam cycles"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -69,7 +69,7 @@ parameter ClaRa.Basics.Units.Pressure valve_LP1_dp_nominal=0.001e5   annotation(
 
 //parameter Real efficiency_Turb_LP2=1 "Efficiency of turbine" annotation(Dialog(tab="Turbines"));
 
-  ClaRa.StaticCycles.Machines.Pump_real pump_fw(efficiency=efficiency_Pump_FW) annotation (Placement(transformation(extent={{-120,-98},{-140,-78}})));
+  ClaRa.StaticCycles.Machines.Pump1_real pump_fw(efficiency=efficiency_Pump_FW) annotation (Placement(transformation(extent={{-120,-98},{-140,-78}})));
   ClaRa.StaticCycles.Machines.Turbine turbine_HP(efficiency=efficiency_Turb_HP) annotation (Placement(transformation(extent={{-130,122},{-120,142}})));
   ClaRa.StaticCycles.Machines.Turbine turbine_LP(efficiency=efficiency_Turb_LP) annotation (Placement(transformation(extent={{-70,122},{-60,142}})));
   Furnace.Boiler_simple boiler(
@@ -94,13 +94,13 @@ parameter ClaRa.Basics.Units.Pressure valve_LP1_dp_nominal=0.001e5   annotation(
         extent={{-10,-7},{10,7}},
         rotation=270,
         origin={71,8})));
-  ClaRa.StaticCycles.Machines.Pump_real pump_cond(efficiency=efficiency_Pump_cond) annotation (Placement(transformation(extent={{124,-100},{104,-80}})));
+  ClaRa.StaticCycles.Machines.Pump1_real pump_cond(efficiency=efficiency_Pump_cond) annotation (Placement(transformation(extent={{124,-100},{104,-80}})));
   ClaRa.StaticCycles.Machines.Turbine turbine_LP1(efficiency=efficiency_Turb_LP) annotation (Placement(transformation(extent={{22,120},{32,140}})));
   ClaRa.StaticCycles.Machines.Turbine turbine_LP2(efficiency=efficiency_Turb_LP) annotation (Placement(transformation(extent={{108,108},{118,128}})));
   ClaRa.StaticCycles.Fittings.Split1 split_LP annotation (Placement(transformation(extent={{-50,116},{-30,126}})));
   ClaRa.StaticCycles.Fittings.Split1 split_LP1 annotation (Placement(transformation(extent={{62,112},{82,124}})));
   ClaRa.StaticCycles.HeatExchanger.Preheater1 preheater_LP1(p_tap_nom=p_shell_preheater, m_flow_tap_nom=14) annotation (Placement(transformation(extent={{81,-100},{61,-80}})));
-  ClaRa.StaticCycles.Machines.Pump_real pump_preheater(efficiency=efficiency_Pump_preheat) annotation (Placement(transformation(extent={{40,-120},{20,-100}})));
+  ClaRa.StaticCycles.Machines.Pump1_real pump_preheater(efficiency=efficiency_Pump_preheat) annotation (Placement(transformation(extent={{40,-120},{20,-100}})));
   ClaRa.StaticCycles.Fittings.Mixer1 mixer annotation (Placement(transformation(extent={{18,-98},{0,-88}})));
 equation
   connect(boiler.liveSteam, turbine_HP.inlet) annotation (Line(
@@ -175,7 +175,8 @@ equation
   connect(boiler.hotReheat, turbine_LP.inlet) annotation (Line(points={{-144,62.4},{-144,62.4},{-144,150},{-144,148},{-70.4167,148},{-70.4167,136}}, color={0,131,169}));
   connect(pump_fw.outlet, boiler.feedWater) annotation (Line(points={{-140.5,-88},{-150,-88},{-150,41.6}}, color={0,131,169}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false, initialScale=0.1),
-                   graphics),      Diagram(coordinateSystem(preserveAspectRatio=false,
+                   graphics),      Diagram(graphics,
+                                           coordinateSystem(preserveAspectRatio=false,
         initialScale=0.1,
         extent={{-160,-120},{180,160}})));
 end InitSteamCycle_Rostock_3_1;

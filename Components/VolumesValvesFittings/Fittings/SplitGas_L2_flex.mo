@@ -1,10 +1,10 @@
 within ClaRa.Components.VolumesValvesFittings.Fittings;
 model SplitGas_L2_flex "Adiabatic junction volume"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -15,6 +15,8 @@ model SplitGas_L2_flex "Adiabatic junction volume"
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
 
+extends ClaRa.Basics.Interfaces.DataInterfaceVectorGas(N_sets=N_ports_out, eye(
+                                                                           each medium =     medium));
 extends ClaRa.Basics.Icons.Adapter5_fw;
 extends ClaRa.Basics.Icons.ComplexityLevel(complexity="L2");
   outer ClaRa.SimCenter simCenter;
@@ -156,7 +158,7 @@ equation
 
   for i in 1:medium.nc - 1 loop
     //der(xi[i]) = 1/mass.*(inlet.m_flow.*(gasInlet.xi[i]-xi[i]) + sum(outlet.m_flow.*(gasOutlet.xi[i]-xi[i]*ones(N_ports_out)))) "Mass balance";
-   der(xi[i]) = if useHomotopy then homotopy(1/mass.*(inlet.m_flow.*(gasInlet.xi[i]-xi[i]) + sum(outlet.m_flow.*(gasOutlet.xi[i]-xi[i]*ones(N_ports_out)))), 1/mass.*(m_flow_out_nom[1].*(xi_nom[i]-xi[i]) +  sum(m_flow_out_nom.*(xi_nom[i]*ones(N_ports_out)-xi[i]*ones(N_ports_out))))) else 1/mass.*(inlet.m_flow.*(gasInlet.xi[i]-xi[i]) + sum(outlet.m_flow.*(gasOutlet.xi[i]-xi[i]*ones(N_ports_out)))) "Mass balance";
+   der(xi[i]) = if useHomotopy then homotopy(1/mass.*(inlet.m_flow.*(gasInlet.xi[i]-xi[i]) + sum(outlet.m_flow.*(gasOutlet[:].xi[i]-xi[i]*ones(N_ports_out)))), 1/mass.*(m_flow_out_nom[1].*(xi_nom[i]-xi[i]) +  sum(m_flow_out_nom.*(xi_nom[i]*ones(N_ports_out)-xi[i]*ones(N_ports_out))))) else 1/mass.*(inlet.m_flow.*(gasInlet.xi[i]-xi[i]) + sum(outlet.m_flow.*(gasOutlet[:].xi[i]-xi[i]*ones(N_ports_out)))) "Mass balance";
   end for;
 
       //______________ Balance euqations _______________________
@@ -169,7 +171,17 @@ equation
 
     inlet.p = p "Momentum balance";
 
-  annotation (Diagram(coordinateSystem(extent={{-100,-100},{100,100}},
+    for i in 1:N_ports_out loop
+    eye[i].m_flow=-outlet[i].m_flow;
+    eye[i].T= bulk.T-273.15;
+    eye[i].s=bulk.s/1e3;
+    eye[i].p=bulk.p/1e5;
+    eye[i].h=h/1e3;
+    eye[i].xi=bulk.xi;
+  end for;
+
+  annotation (Diagram(graphics,
+                      coordinateSystem(extent={{-100,-100},{100,100}},
           preserveAspectRatio=true)),
                                  Icon(coordinateSystem(extent={{-100,-100},{100,
             100}}, preserveAspectRatio=true),

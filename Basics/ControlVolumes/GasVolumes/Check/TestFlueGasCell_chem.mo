@@ -1,10 +1,10 @@
 within ClaRa.Basics.ControlVolumes.GasVolumes.Check;
 model TestFlueGasCell_chem
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -77,7 +77,8 @@ model TestFlueGasCell_chem
         extent={{-10,-10},{10,10}},
         rotation=0,
         origin={-14,50})));
-  VolumeGas_L2_chem volumeGas_L2_chem(redeclare model ChemicalReactions = Fundamentals.ChemicalReactions.E_Filter_L2_Detailed) annotation (Placement(transformation(extent={{0,-10},{20,10}})));
+  VolumeGas_L2_chem volumeGas_L2_chem(redeclare model ChemicalReactions = Fundamentals.ChemicalReactions.E_Filter_L2_Detailed, xi_start={0.7,0.1,0.1,0.05,0.01,0.02,0.01,0.01,0})
+                                                                                                                               annotation (Placement(transformation(extent={{0,-10},{20,10}})));
 equation
   connect(QFlow.y,prescribedHeatFlow. Q_flow) annotation (Line(
       points={{-63,42},{-56,42},{-56,20},{-40,20}},
@@ -118,11 +119,7 @@ LOOK AT:
 >> Outlet temperature of the flue gas cell
 
 
-"),                             Text(
-          extent={{-100,98},{30,88}},
-          lineColor={0,128,0},
-          fontSize=34,
-          textString="TESTED -- 2014-10-08 //LN")}),
+")}),
     experiment(StopTime=500),
     __Dymola_experimentSetupOutput);
 end TestFlueGasCell_chem;

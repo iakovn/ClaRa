@@ -17,11 +17,17 @@ model SourceP "Pressure source for water/steam flows"
   parameter SpecificEnthalpy h=1e5 "Nominal specific enthalpy";
   Pressure p "Actual pressure";
   FlangeB flange(redeclare package Medium=Medium)
-                 annotation (extent=[80, -20; 120, 20]);
+                 annotation (Placement(transformation(extent={{80,-20},{120,20}}, rotation=0)));
   Modelica.Blocks.Interfaces.RealInput in_p0
-    annotation (extent=[-60, 72; -20, 112], rotation=-90);
+    annotation (Placement(transformation(
+        origin={-40,92},
+        extent={{-20,-20},{20,20}},
+        rotation=270)));
   Modelica.Blocks.Interfaces.RealInput in_h
-    annotation (extent=[20, 70; 60, 110], rotation=-90);
+    annotation (Placement(transformation(
+        origin={40,90},
+        extent={{-20,-20},{20,20}},
+        rotation=270)));
 equation
   if R == 0 then
     flange.p = p;
@@ -39,19 +45,18 @@ equation
     in_h = h "Enthalpy set by parameter";
   end if;
   annotation (
-    Diagram,
-    Icon(Text(extent=[-106, 90; -52, 50], string="p0"), Text(extent=[66, 90;
-             98, 52], string="h"),
-      graphics={Ellipse(
-          extent={{-80,80},{80,-80}},
-          lineColor={0,0,255},
+    Icon(
+      graphics={
+        Text(extent={{-106,90},{-52,50}}, textString=
+                                                 "p0"),
+        Text(extent={{66,90},{98,52}}, textString=
+                             "h"),
+        Ellipse(
+          extent={{-60,60},{60,-60}},
+          lineColor={0,0,0},
           fillColor={0,0,255},
-          fillPattern=FillPattern.Solid), Text(
-          extent={{20,34},{-28,-26}},
-          lineColor={255,255,255},
-          fillColor={0,0,255},
-          fillPattern=FillPattern.Solid,
-          textString="P")}),
+          fillPattern=FillPattern.Sphere),
+        Line(points={{-2,0},{100,0}}, color={0,0,255})}),
     Documentation(info="<HTML>
 <p><b>Modelling options</b></p>
 <p>If <tt>R</tt> is set to zero, the pressure source is ideal; otherwise, the outlet pressure decreases proportionally to the outgoing flowrate.</p>

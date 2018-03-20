@@ -1,10 +1,10 @@
 ﻿within ClaRa.Components.VolumesValvesFittings.Pipes.Check.TwoPhaseFlow;
 model Test_Pipe_L4_Advanced
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.2                            //
+  // Component of the ClaRa library, version: 1.3.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -28,8 +28,8 @@ model Test_Pipe_L4_Advanced
     m_flow_nom=0,
     variable_h=true,
     p_nom=100000) annotation (Placement(transformation(extent={{64,-13},{44,7}})));
-  inner SimCenter simCenter(redeclare replaceable TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1, useHomotopy=false) annotation (Placement(transformation(extent={{-80,-80},{-60,-60}})));
-  PipeFlowVLE_L4_Advanced tube(
+  inner SimCenter simCenter(                                                                                useHomotopy=false) annotation (Placement(transformation(extent={{-80,-80},{-60,-60}})));
+  PipeFlowVLE_L4_Advanced                                                       tube(
     z_in=0,
     showExpertSummary=true,
     showData=true,
@@ -38,23 +38,20 @@ model Test_Pipe_L4_Advanced
     diameter_i=0.03,
     z_out=80,
     N_tubes=300,
-    m_flow_nom=400,
-    Delta_p_nom=400000,
     N_cv=40,
     p_start=linspace(
         2e7,
         1.9e7,
         tube.N_cv),
-    redeclare model PressureLoss = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4,
     frictionAtInlet=true,
-    frictionAtOutlet=true,
     initOption=0,
     h_start=linspace(
         1.4e6,
         1.4e6,
         tube.N_cv),
-    redeclare model HeatTransfer = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4 (alpha_nom=10000))
-                  annotation (Placement(transformation(extent={{24,-9},{-10,4}})));
+    redeclare model HeatTransfer = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4 (alpha_nom=10000),
+    frictionAtOutlet=false,
+    redeclare model PressureLoss = Basics.ControlVolumes.Fundamentals.PressureLoss.VLE_PL.QuadraticNominalPoint_L4) annotation (Placement(transformation(extent={{24,-9},{-10,4}})));
 
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi massFlowSink(
     variable_p=true,
@@ -93,7 +90,7 @@ model Test_Pipe_L4_Advanced
         origin={-12,33})));
   Utilities.Blocks.RealInputMultiplyer realInputMultiplyer(N=tube.N_cv) annotation (Placement(transformation(extent={{-52,24},{-38,43}})));
 
-  ClaRa.Basics.ControlVolumes.SolidVolumes.ThinWall_L4 thinWall(
+  ClaRa.Basics.ControlVolumes.SolidVolumes.CylindricalThinWall_L4 thinWall(
     length=tube.length,
     Delta_x=tube.Delta_x,
     N_ax=tube.N_cv,
@@ -166,10 +163,7 @@ equation
 PURPOSE:
 test the L4 advanced  pipe at evaporation scenario
 ______________________________________________________________________________________________
-"),Text(  extent={{-100,120},{100,100}},
-          lineColor={0,128,0},
-          fontSize=31,
-          textString="TESTED -- 2013-04-18 //JB"),Text(
+"),                                               Text(
           extent={{-98,88},{94,46}},
           lineColor={0,128,0},
           horizontalAlignment=TextAlignment.Left,
@@ -191,5 +185,6 @@ Scenario:  increase of outer wall temperature (at t=1000s 300°c --> 600 °C) ca
       Tolerance=1e-006,
       __Dymola_Algorithm="Dassl"),
     __Dymola_experimentSetupOutput(equdistant=false, events=false),
-    Icon(coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=true)));
+    Icon(graphics,
+         coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=true)));
 end Test_Pipe_L4_Advanced;

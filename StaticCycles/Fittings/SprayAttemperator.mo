@@ -1,10 +1,10 @@
 within ClaRa.StaticCycles.Fittings;
 model SprayAttemperator "Mixer || green | red | green"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -18,6 +18,29 @@ model SprayAttemperator "Mixer || green | red | green"
   // Red input:    Values of p and m_flow are known in component and provided FOR neighbor component, value of h is unknown and provided BY neighbor component.
   // Green output: Values of p, m_flow and h are known in component and provided FOR neighbor component.
   outer ClaRa.SimCenter simCenter;
+
+   //---------Summary Definition---------
+  model Summary
+    extends ClaRa.Basics.Icons.RecordIcon;
+    ClaRa.Basics.Records.StaCyFlangeVLE inlet1;
+    ClaRa.Basics.Records.StaCyFlangeVLE inlet2;
+    ClaRa.Basics.Records.StaCyFlangeVLE outlet;
+  end Summary;
+
+  Summary summary(
+  inlet1(
+     m_flow=m_flow_1,
+     h=h1,
+     p=p),
+  inlet2(
+     m_flow=m_flow_2,
+     h=h2,
+     p=p),
+  outlet(
+     m_flow=m_flow_3,
+     h=h3,
+     p=p));
+  //---------Summary Definition---------
   final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h1(fixed=false) "Specific enthalpy of flow 1";
   final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h2(fixed=false) "Specific enthalpy of flow 2";
   final parameter ClaRa.Basics.Units.MassFlowRate m_flow_1(fixed=false) "Mass flow rate of flow 1";

@@ -1,10 +1,10 @@
 within ClaRa.Components.VolumesValvesFittings.Valves.Check;
 model Test_GasValves
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -16,50 +16,7 @@ model Test_GasValves
 //___________________________________________________________________________//
   extends ClaRa.Basics.Icons.PackageIcons.ExecutableRegressiong100;
 
- model Regression
-  extends ClaRa.Basics.Icons.RegressionSummary;
 
-  Modelica.Blocks.Interfaces.RealInput Delta_p_Valve_1 "Pressure loss of valve 1";
-  Modelica.Blocks.Interfaces.RealInput Delta_p_Valve_2 "Pressure loss of valve 2";
-  Modelica.Blocks.Interfaces.RealInput Delta_p_Valve_3 "Pressure loss of valve 3";
-  Modelica.Blocks.Interfaces.RealInput Delta_p_Valve_4 "Pressure loss of valve 4";
-  Modelica.Blocks.Interfaces.RealInput Delta_p_Valve_5 "Pressure loss of valve 5";
-  Modelica.Blocks.Interfaces.RealInput Delta_p_Valve_6 "Pressure loss of valve 6";
-  Modelica.Blocks.Interfaces.RealInput Delta_p_coalDustValve_1 "Pressure loss of coalDustValve 1";
-  Modelica.Blocks.Interfaces.RealInput Delta_p_coalDustValve_2 "Pressure loss of coalDustValve 2";
-  Modelica.Blocks.Interfaces.RealInput Delta_p_coalDustValve_3 "Pressure loss of coalDustValve 3";
-  Modelica.Blocks.Interfaces.RealInput Delta_p_coalDustValve_4 "Pressure loss of coalDustValve 4";
-  Modelica.Blocks.Interfaces.RealInput Delta_p_coalDustValve_5 "Pressure loss of coalDustValve 5";
-  Modelica.Blocks.Interfaces.RealInput Delta_p_coalDustValve_6 "Pressure loss of coalDustValve 6";
-
-  Real y_Delta_p_Valve_1 = integrator_Delta_p_Valve_1.y;
-  Real y_Delta_p_Valve_2 = integrator_Delta_p_Valve_2.y;
-  Real y_Delta_p_Valve_3 = integrator_Delta_p_Valve_3.y;
-  Real y_Delta_p_Valve_4 = integrator_Delta_p_Valve_4.y;
-  Real y_Delta_p_Valve_5 = integrator_Delta_p_Valve_5.y;
-  Real y_Delta_p_Valve_6 = integrator_Delta_p_Valve_6.y;
-  Real y_Delta_p_coalDustValve_1 = integrator_Delta_p_coalDustValve_1.y;
-  Real y_Delta_p_coalDustValve_2 = integrator_Delta_p_coalDustValve_2.y;
-  Real y_Delta_p_coalDustValve_3 = integrator_Delta_p_coalDustValve_3.y;
-  Real y_Delta_p_coalDustValve_4 = integrator_Delta_p_coalDustValve_4.y;
-  Real y_Delta_p_coalDustValve_5 = integrator_Delta_p_coalDustValve_5.y;
-  Real y_Delta_p_coalDustValve_6 = integrator_Delta_p_coalDustValve_6.y;
-
-  protected
-  Components.Utilities.Blocks.Integrator integrator_Delta_p_Valve_1(u=Delta_p_Valve_1) annotation (Placement(transformation(extent={{-80,66},{-60,86}})));
-  Components.Utilities.Blocks.Integrator integrator_Delta_p_Valve_2(u=Delta_p_Valve_2) annotation (Placement(transformation(extent={{-80,-28},{-60,-8}})));
-  Components.Utilities.Blocks.Integrator integrator_Delta_p_Valve_3(u=Delta_p_Valve_3) annotation (Placement(transformation(extent={{-80,4},{-60,24}})));
-  Components.Utilities.Blocks.Integrator integrator_Delta_p_Valve_4(u=Delta_p_Valve_4) annotation (Placement(transformation(extent={{-80,-60},{-60,-40}})));
-  Components.Utilities.Blocks.Integrator integrator_Delta_p_Valve_5(u=Delta_p_Valve_5) annotation (Placement(transformation(extent={{-80,34},{-60,54}})));
-  Components.Utilities.Blocks.Integrator integrator_Delta_p_Valve_6(u=Delta_p_Valve_6) annotation (Placement(transformation(extent={{-78,-94},{-58,-74}})));
-  Components.Utilities.Blocks.Integrator integrator_Delta_p_coalDustValve_1(u=Delta_p_coalDustValve_1) annotation (Placement(transformation(extent={{14,-96},{34,-76}})));
-  Components.Utilities.Blocks.Integrator integrator_Delta_p_coalDustValve_2(u=Delta_p_coalDustValve_2) annotation (Placement(transformation(extent={{12,-62},{32,-42}})));
-  Components.Utilities.Blocks.Integrator integrator_Delta_p_coalDustValve_3(u=Delta_p_coalDustValve_3) annotation (Placement(transformation(extent={{12,-28},{32,-8}})));
-  Components.Utilities.Blocks.Integrator integrator_Delta_p_coalDustValve_4(u=Delta_p_coalDustValve_4) annotation (Placement(transformation(extent={{14,0},{34,20}})));
-  Components.Utilities.Blocks.Integrator integrator_Delta_p_coalDustValve_5(u=Delta_p_coalDustValve_5) annotation (Placement(transformation(extent={{14,34},{34,54}})));
-  Components.Utilities.Blocks.Integrator integrator_Delta_p_coalDustValve_6(u=Delta_p_coalDustValve_6) annotation (Placement(transformation(extent={{14,66},{34,86}})));
-
- end Regression;
 
   ValveGas_L1     valve1(
     openingInputIsActive=true,
@@ -241,19 +198,6 @@ model Test_GasValves
         ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.Quadratic_FlowFunction,
     useHomotopy=true) annotation (Placement(transformation(extent={{16,-322},{36,-310}})));
 
-  Regression regression(
-    Delta_p_Valve_1 = valve1.summary.outline.Delta_p,
-    Delta_p_Valve_2 = valve2.summary.outline.Delta_p,
-    Delta_p_Valve_3 = valve3.summary.outline.Delta_p,
-    Delta_p_Valve_4 = valve4.summary.outline.Delta_p,
-    Delta_p_Valve_5 = valve5.summary.outline.Delta_p,
-    Delta_p_Valve_6 = valve6.summary.outline.Delta_p,
-    Delta_p_coalDustValve_1 = coalDustValve1.summary.outline.Delta_p,
-    Delta_p_coalDustValve_2 = coalDustValve2.summary.outline.Delta_p,
-    Delta_p_coalDustValve_3 = coalDustValve3.summary.outline.Delta_p,
-    Delta_p_coalDustValve_4 = coalDustValve4.summary.outline.Delta_p,
-    Delta_p_coalDustValve_5 = coalDustValve5.summary.outline.Delta_p,
-    Delta_p_coalDustValve_6 = coalDustValve6.summary.outline.Delta_p) annotation (Placement(transformation(extent={{162,212},{182,232}})));
 equation
   connect(ramp.y, valve1.opening_in) annotation (Line(
       points={{-93,164},{-74,164},{-74,140}},
@@ -549,15 +493,11 @@ equation
 PURPOSE:
 >> Tester for gas valves
 _______________________________________
-"),                    Text(
-          extent={{-218,260},{94,228}},
-          lineColor={0,128,0},
-          fontSize=20,
-          textString="TESTED -- 2015-01-22 //LN"),
-        Rectangle(
+"),     Rectangle(
           extent={{-220,260},{200,-420}},
           lineColor={115,150,0},
           lineThickness=0.5)}),
-    Icon(coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=false)),
+    Icon(graphics,
+         coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=false)),
     experiment(StopTime=10));
 end Test_GasValves;

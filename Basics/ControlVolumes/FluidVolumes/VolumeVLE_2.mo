@@ -1,10 +1,10 @@
 within ClaRa.Basics.ControlVolumes.FluidVolumes;
 model VolumeVLE_2 "A lumped control volume for vapour/liquid equilibrium"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -107,8 +107,7 @@ protected
 
 public
   ClaRa.Basics.Units.Mass mass "Total system mass";
-  inner ClaRa.Basics.Units.Pressure
-                                p(start=p_start, stateSelect=StateSelect.prefer) "System pressure";
+  inner ClaRa.Basics.Units.Pressure p(start=p_start, stateSelect=StateSelect.prefer) "System pressure";
 public
   ClaRa.Basics.Interfaces.FluidPortIn      inlet(Medium=medium) "Inlet port"
     annotation (Placement(transformation(extent={{-110,-10},{-90,10}})));
@@ -204,15 +203,15 @@ equation
   else (inlet.m_flow*h_in + outlet.m_flow*h_out  + geo.volume*der(p) + heat.Q_flow - h*geo.volume*drhodt)/mass "Energy balance";
 
   der(xi) =  if useHomotopy then homotopy((inlet.m_flow*xi_in + outlet.m_flow*xi_out - xi*geo.volume*drhodt), (m_flow_nom*xi_in - m_flow_nom*xi_out  - xi*geo.volume*drhodt))/mass
-  else (inlet.m_flow*xi_in + outlet.m_flow*xi_out  - xi*geo.volume*drhodt)/mass "Energy balance";
+  else (inlet.m_flow*xi_in + outlet.m_flow*xi_out  - xi*geo.volume*drhodt)/mass "Species balance without chemical reactions";
 
   inlet.h_outflow=phaseBorder.h_inflow;
   outlet.h_outflow=phaseBorder.h_outflow;
 
   h_in= if useHomotopy then homotopy(noEvent(actualStream(inlet.h_outflow)), inStream(inlet.h_outflow)) else noEvent(actualStream(inlet.h_outflow));
-  h_out= if useHomotopy then homotopy(actualStream(outlet.h_outflow), outlet.h_outflow) else actualStream(outlet.h_outflow);
-  xi_in= if useHomotopy then homotopy(actualStream(inlet.xi_outflow), inStream(inlet.xi_outflow)) else actualStream(inlet.xi_outflow);
-  xi_out= if useHomotopy then homotopy(actualStream(outlet.xi_outflow), outlet.xi_outflow) else actualStream(outlet.xi_outflow);
+  h_out= if useHomotopy then homotopy(noEvent(actualStream(outlet.h_outflow)), outlet.h_outflow) else noEvent(actualStream(outlet.h_outflow));
+  xi_in= if useHomotopy then homotopy(noEvent(actualStream(inlet.xi_outflow)), inStream(inlet.xi_outflow)) else noEvent(actualStream(inlet.xi_outflow));
+  xi_out= if useHomotopy then homotopy(noEvent(actualStream(outlet.xi_outflow)), outlet.xi_outflow) else noEvent(actualStream(outlet.xi_outflow));
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //  In the following equations dividing the friction pressure loss into two parts located at the inlet and outlet side respectively leads
@@ -224,9 +223,8 @@ equation
   inlet.p  =p + pressureLoss.Delta_p + phaseBorder.Delta_p_geo_in;
   outlet.p =p + phaseBorder.Delta_p_geo_out "The friction term is lumped at the inlet side to avoid direct coupling of two flow models, this avoids aniteration of mass flow rates in some application cases";
 
-// No chemical reaction taking place:
-  inlet.xi_outflow   = inStream(outlet.xi_outflow);
-  outlet.xi_outflow  = inStream(inlet.xi_outflow);
+  inlet.xi_outflow   = xi;
+  outlet.xi_outflow  = xi;
 
 initial equation
   if initOption == 1 then //steady state

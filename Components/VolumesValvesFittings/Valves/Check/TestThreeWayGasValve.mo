@@ -47,11 +47,7 @@ PURPOSE:
 >> Tester for three way gas valve
 
 ______________________________________________________________________________________________
-"),                    Text(
-          extent={{-134,102},{66,82}},
-          lineColor={0,128,0},
-          fontSize=31,
-          textString="TESTED -- 2015-01-27 //LN")}),
+")}),
     experiment(StopTime=3),
     __Dymola_experimentSetupOutput);
 end TestThreeWayGasValve;

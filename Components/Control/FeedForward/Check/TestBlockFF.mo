@@ -1,10 +1,10 @@
 within ClaRa.Components.Control.FeedForward.Check;
 model TestBlockFF
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -18,8 +18,8 @@ model TestBlockFF
   Modelica.Blocks.Sources.Ramp PTarget(
     offset=1,
     duration=600,
-    startTime=6000,
-    height=-0.1)
+    height=-0.1,
+    startTime=600)
     annotation (Placement(transformation(extent={{-92,-58},{-72,-38}})));
   FeedForwardBlock_3508 feedForwardBlock_3508_1(CL_Valve_=[0,1; 1,1]) annotation (Placement(transformation(extent={{-50,-82},{-30,-62}})));
   Modelica.Blocks.Sources.Constant const2(k=1)
@@ -29,8 +29,9 @@ model TestBlockFF
   Modelica.Blocks.Sources.Ramp ramp2(
     duration=0.1,
     offset=0.02/60,
-    startTime=600,
-    height=0) annotation (Placement(transformation(extent={{62,-88},{40,-66}})));
+    height=0,
+    startTime=300)
+              annotation (Placement(transformation(extent={{62,-88},{40,-66}})));
 equation
   connect(PTarget.y, feedForwardBlock_3508_1.P_G_target_) annotation (Line(
       points={{-71,-48},{-44,-48},{-44,-60}},
@@ -66,11 +67,7 @@ equation
 PURPOSE:
 
 ______________________________________________________________________________________________
-"),                    Text(
-          extent={{-134,102},{66,82}},
-          lineColor={0,128,0},
-          fontSize=31,
-          textString="TESTED -- YYYY-MM-DD //XX"),Text(
+"),                                               Text(
           extent={{-94,58},{70,44}},
           lineColor={0,128,0},
           horizontalAlignment=TextAlignment.Left,
@@ -86,5 +83,5 @@ ________________________________________________________________________________
 Scenario:  
 
 ______________________________________________________________________________________________
-")}));
+")}), experiment(StopTime=2000));
 end TestBlockFF;

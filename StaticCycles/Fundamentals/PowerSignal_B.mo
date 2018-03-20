@@ -6,5 +6,6 @@ connector PowerSignal_B
           points={{-40,100},{40,60},{40,-60},{-40,-100},{-40,100}},
           lineColor={118,124,127},
           fillColor={221,222,223},
-          fillPattern=FillPattern.Solid)}),                      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-40,-100},{40,100}})));
+          fillPattern=FillPattern.Solid)}),                      Diagram(graphics,
+                                                                         coordinateSystem(preserveAspectRatio=false, extent={{-40,-100},{40,100}})));
 end PowerSignal_B;

@@ -1,10 +1,10 @@
 within ClaRa.Components.Mills.HardCoalMills.Check;
 model testRollerBowlMills
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -16,7 +16,8 @@ model testRollerBowlMills
 //___________________________________________________________________________//
   extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
   ClaRa.Components.Mills.HardCoalMills.VerticalMill_L3 Mill(applyGrindingDelay=true, Tau_delay=0,
-    activateGrindingStatus=true, m_flow_air_out(start=35))                                                                  annotation (Placement(transformation(extent={{30,10},{50,30}})));
+    activateGrindingStatus=true,
+    summary(                     m_flow_air_out(        start=35)))                                                                 annotation (Placement(transformation(extent={{30,10},{50,30}})));
   Modelica.Blocks.Sources.Ramp ramp(
     duration=10,
     offset=1.50,
@@ -24,26 +25,27 @@ model testRollerBowlMills
     startTime=10000)
     annotation (Placement(transformation(extent={{-36,62},{-16,82}})));
   ClaRa.Components.Mills.HardCoalMills.RollerBowlMill_L1 rollerBowlMill_01_XRG(Tau_m=100) annotation (Placement(transformation(extent={{30,80},{50,100}})));
-  ClaRa.Components.Mills.HardCoalMills.VerticalMill_L3    Mill1(m_flow_air_out(start=35))
+  ClaRa.Components.Mills.HardCoalMills.VerticalMill_L3    Mill1(summary(
+                                                                m_flow_air_out(        start=35)))
     annotation (Placement(transformation(extent={{30,-38},{50,-18}})));
-  ClaRa.Components.Mills.HardCoalMills.VerticalMill_L3    Mill2(N_mills=2, m_flow_air_out(start=35))
+  ClaRa.Components.Mills.HardCoalMills.VerticalMill_L3    Mill2(N_mills=2, summary(
+                                                                           m_flow_air_out(        start=35)))
     annotation (Placement(transformation(extent={{30,-86},{50,-66}})));
   BoundaryConditions.BoundaryFuel_Txim_flow coalFlowSource_XRG(m_flow_const=10, variable_m_flow=true,
-    xi_const={0.75,0.05,0.05,0.05,0.025,0.025},
-    LHV_calculationType="predefined")                                                                 annotation (Placement(transformation(extent={{-44,30},{-24,50}})));
+    xi_const={0.925,0.025})                                                                  annotation (Placement(transformation(extent={{-44,30},{-24,50}})));
   BoundaryConditions.BoundaryFuel_Txim_flow coalFlowSource_XRG2(m_flow_const=10, variable_m_flow=true,
-    xi_const={0.75,0.05,0.05,0.05,0.025,0.025},
-    LHV_calculationType="Verbandsformel")                                                              annotation (Placement(transformation(extent={{-44,-32},{-24,-12}})));
+    xi_const={0.925,0.025})                                                              annotation (Placement(transformation(extent={{-44,-32},{-24,-12}})));
   BoundaryConditions.BoundaryFuel_Txim_flow coalFlowSource_XRG3(m_flow_const=10, variable_m_flow=true,
-    xi_const={0.75,0.05,0.05,0.05,0.025,0.025})                                                        annotation (Placement(transformation(extent={{-48,-80},{-28,-60}})));
-  inner SimCenter simCenter annotation (Placement(transformation(extent={{80,80},{100,100}})));
+    xi_const={0.925,0.025})                                                        annotation (Placement(transformation(extent={{-48,-80},{-28,-60}})));
+  inner SimCenter simCenter(fuelModel1=ClaRa.Basics.Media.FuelTypes.Fuel_refvalues_v1(C_LHV={32565055.32432432,0,-2.45352e+06 + 3.5}, C_cp={1108.65,1000,4190}))
+                            annotation (Placement(transformation(extent={{80,80},{100,100}})));
   Modelica.Blocks.Sources.Ramp ramp1(
     duration=10,
     offset=10,
     startTime=10000,
     height=-10)
     annotation (Placement(transformation(extent={{-88,62},{-68,82}})));
-  BoundaryConditions.BoundaryFuel_pTxi coaSink_XRG2(xi_const={0.8,0.05,0.05,0.05,0.025,0.025}) annotation (Placement(transformation(extent={{100,-96},{78,-76}})));
+  BoundaryConditions.BoundaryFuel_pTxi coaSink_XRG2(xi_const={0.975,0.025})                    annotation (Placement(transformation(extent={{100,-96},{78,-76}})));
   ClaRa.Components.Adapters.FuelFlueGas_join coalGas_join_burner3 annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=0,
@@ -71,13 +73,13 @@ model testRollerBowlMills
         extent={{-10,-10},{10,10}},
         rotation=180,
         origin={66,-76})));
-  BoundaryConditions.BoundaryFuel_pTxi coaSink_XRG1(xi_const={0.8,0.05,0.05,0.05,0.025,0.025}) annotation (Placement(transformation(extent={{100,-48},{78,-28}})));
+  BoundaryConditions.BoundaryFuel_pTxi coaSink_XRG1(xi_const={0.975,0.025})                    annotation (Placement(transformation(extent={{100,-48},{78,-28}})));
   ClaRa.Components.BoundaryConditions.BoundaryGas_pTxi idealGasPressureSink_XRG1(p_const=100000) annotation (Placement(transformation(extent={{100,-24},{78,-4}})));
   ClaRa.Components.Adapters.FuelFlueGas_join coalGas_join_burner5 annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=180,
         origin={66,-28})));
-  BoundaryConditions.BoundaryFuel_pTxi coaSink_XRG3(xi_const={0.8,0.05,0.05,0.05,0.025,0.025}) annotation (Placement(transformation(extent={{100,0},{78,20}})));
+  BoundaryConditions.BoundaryFuel_pTxi coaSink_XRG3(xi_const={0.975,0.025})                    annotation (Placement(transformation(extent={{100,0},{78,20}})));
   ClaRa.Components.BoundaryConditions.BoundaryGas_pTxi idealGasPressureSink_XRG3(p_const=100000) annotation (Placement(transformation(extent={{100,24},{78,44}})));
   ClaRa.Components.Adapters.FuelFlueGas_join coalGas_join_burner6 annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
@@ -230,7 +232,8 @@ equation
 2.  compares RowlerBowlMill_3 with the simple mill model of type RollerBowlMill_1
 3. the mills are shutdown at t=10000 s, the input grindingStatus is used to stop the grinding process. 
 Compare the amount of raw coal on the table to the other mills without the input.")}),
-                                                     Icon(coordinateSystem(
+                                                     Icon(graphics,
+                                                          coordinateSystem(
           extent={{-100,-100},{100,100}}, preserveAspectRatio=false)),
     experiment(StopTime=12000),
     __Dymola_experimentSetupOutput);

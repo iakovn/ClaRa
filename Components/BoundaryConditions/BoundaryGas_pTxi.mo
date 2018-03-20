@@ -1,10 +1,10 @@
 within ClaRa.Components.BoundaryConditions;
 model BoundaryGas_pTxi "A gas source defining pressure, Temperature and composition"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -32,7 +32,7 @@ extends ClaRa.Basics.Icons.FlowSink;
 
   parameter SI.Pressure p_const=simCenter.p_amb_start "Constant pressure"                annotation(Dialog(group="Constant Boundaries", enable= not variable_p));
   parameter SI.Temperature T_const=simCenter.T_amb_start "Constant specific temperature of source"
-                                               annotation(Dialog(group="Constant Boundaries", enable= not hInputIsActive));
+                                               annotation(Dialog(group="Constant Boundaries", enable= not variable_T));
   parameter SI.MassFraction xi_const[medium.nc-1]=zeros(medium.nc-1) "Constant composition"
                             annotation(Dialog(group="Constant Boundaries", enable= not variable_xi));
 
@@ -60,7 +60,7 @@ public
         iconTransformation(extent={{90,-10},{110,10}})));
 equation
 
-    h_port = TILMedia.GasObjectFunctions.specificEnthalpy_pTxi(gas_a.p,actualStream(gas_a.T_outflow),actualStream(gas_a.xi_outflow),GasPointer);
+    h_port = TILMedia.GasObjectFunctions.specificEnthalpy_pTxi(gas_a.p,noEvent(actualStream(gas_a.T_outflow)),noEvent(actualStream(gas_a.xi_outflow)),GasPointer);
 
   if (not variable_p) then
     p_in=p_const;

@@ -4,7 +4,7 @@ model FlameRoom3 "Fixed fluid outlet temperature | blue | blue || brown | brown"
 // Component of the ClaRa library, version: 1.1.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -172,8 +172,8 @@ model FlameRoom3 "Fixed fluid outlet temperature | blue | blue || brown | brown"
   final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_vle_wall_in(fixed=false) "VLE medium's inlet specific enthalpy";
   final parameter ClaRa.Basics.Units.Temperature T_vle_wall_in = TILMedia.VLEFluidFunctions.temperature_phxi(
       vleMedium,
-      p_vle_bundle_in,
-      h_vle_bundle_in) "Rprt: VLE medium's inlet temperature";
+      p_vle_wall_in,
+      h_vle_wall_in) "Rprt: VLE medium's inlet temperature";
   final parameter ClaRa.Basics.Units.Pressure p_vle_wall_in = p_vle_wall_out + Delta_p_vle_wall + Delta_p_geo_wall " VLE medium's inlet pressure";
   final parameter ClaRa.Basics.Units.MassFlowRate m_flow_vle_wall_in(fixed=false) "VLE medium's inlet mass flow";
 
@@ -181,8 +181,8 @@ model FlameRoom3 "Fixed fluid outlet temperature | blue | blue || brown | brown"
   final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_vle_wall_out(fixed=false) "Outlet specific enthalpy";
   final parameter ClaRa.Basics.Units.Temperature T_vle_wall_out = TILMedia.VLEFluidFunctions.temperature_phxi(
       vleMedium,
-      p_vle_bundle_out,
-      h_vle_bundle_out) "VLE  medium's outlet temperature";
+      p_vle_wall_out,
+      h_vle_wall_out) "VLE  medium's outlet temperature";
   final parameter ClaRa.Basics.Units.Pressure p_vle_wall_out(fixed=false) "VLE  medium's outlet pressure";
   final parameter ClaRa.Basics.Units.MassFlowRate m_flow_vle_wall_out=m_flow_vle_wall_in "VLE medium's inlet mass flow";
 
@@ -276,7 +276,8 @@ initial equation
   xi_fg_in = inletGas.xi;
 
                                                                                               annotation(Dialog(group="Discretisation (for reporting only)"), choices(checkBox=false),
-              Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,
+              Diagram(graphics,
+                      coordinateSystem(preserveAspectRatio=true, extent={{-100,
             -100},{100,100}})),                                                                               Icon(
         coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},{100,100}}),
         graphics={
@@ -284,7 +285,7 @@ initial equation
           extent={{-100,100},{100,-100}},
           lineColor=DynamicSelect({118,106,98}, if Delta_T_L_wall*Delta_T_U_wall >= 0 or Delta_T_L_bundle*Delta_T_U_bundle >= 0 then {118,106,98} else {234,171,0}),
           fillColor={255,255,255},
-          fillPattern=DynamicSelect(FillPattern.Solid, if Delta_T_L_bundle*Delta_T_U_bundle >= 0 or Delta_T_L_bundle*Delta_T_U_bundle >= 0 then FillPattern.Solid else FillPattern.Backward)),
+          fillPattern=DynamicSelect(FillPattern.Solid, if Delta_T_L_wall*Delta_T_U_wall >= 0 or Delta_T_L_bundle*Delta_T_U_bundle >= 0 then FillPattern.Solid else FillPattern.Backward)),
         Line(
           points={{100,20},{-30,20},{40,0},{-30,-20},{100,-20}},
           color=DynamicSelect({0,131,169}, if h_vle_bundle_out - h_dew_bundle > 10 then {167,25,48} elseif h_vle_bundle_out - h_bub_bundle > -10 then {115,150,0} else {0,131,069}),

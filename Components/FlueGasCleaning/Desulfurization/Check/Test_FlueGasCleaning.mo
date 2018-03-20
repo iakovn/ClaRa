@@ -1,50 +1,6 @@
 within ClaRa.Components.FlueGasCleaning.Desulfurization.Check;
 model Test_FlueGasCleaning
   extends ClaRa.Basics.Icons.PackageIcons.ExecutableRegressiong100;
-model Regression
- extends ClaRa.Basics.Icons.RegressionSummary;
-
- Modelica.Blocks.Interfaces.RealInput deSO_ideal_L1_1_m_flow_out "Outlet mass flow of deSO_ideal_L1_1";
- Modelica.Blocks.Interfaces.RealInput deSO_ideal_L1_1_T_out "Outlet temperature of deSO_ideal_L1_1";
- Modelica.Blocks.Interfaces.RealInput deNOx_m_flow_out "Outlet mass flow of deNOx";
- Modelica.Blocks.Interfaces.RealInput deNOx_T_out "Outlet temperature of deNOx";
- Modelica.Blocks.Interfaces.RealInput e_Filter_simple_m_flow_out "Outlet mass flow of simple e-filter";
- Modelica.Blocks.Interfaces.RealInput e_Filter_simple_T_out "Outlet temperature of  simple e-filter";
- Modelica.Blocks.Interfaces.RealInput e_Filter_empirical_m_flow_out "Outlet mass flow of  empirical e-filter";
- Modelica.Blocks.Interfaces.RealInput e_Filter_empirical_T_out "Outlet temperature of  empirical e-filter";
- Modelica.Blocks.Interfaces.RealInput e_Filter_detailed_m_flow_out "Outlet mass flow of  detailed e-filter";
- Modelica.Blocks.Interfaces.RealInput e_Filter_detailed_T_out "Outlet temperature of  detailed e-filter";
- Modelica.Blocks.Interfaces.RealInput pipeFlowGas_L4_Simple_T_out "Outlet mass flow of flue gas pipe";
- Modelica.Blocks.Interfaces.RealInput pipeFlowGas_L4_Simple_p_out "Outlet temperature of flue gas pipe";
-
- Real y_deSO_ideal_L1_1_m_flow_out = integrator_deSO_ideal_L1_1_m_flow_out.y;
- Real y_deSO_ideal_L1_1_T_out = integrator_deSO_ideal_L1_1_T_out.y;
- Real y_deNOx_m_flow_out = integrator_deNOx_m_flow_out.y;
- Real y_deNOx_T_out = integrator_deNOx_T_out.y;
- Real y_e_Filter_simple_m_flow_out = integrator_e_Filter_simple_m_flow_out.y;
- Real y_e_Filter_simple_T_out = integrator_e_Filter_simple_T_out.y;
- Real y_e_Filter_empirical_m_flow_out = integrator_e_Filter_empirical_m_flow_out.y;
- Real y_e_Filter_empirical_T_out = integrator_e_Filter_empirical_T_out.y;
- Real y_e_Filter_detailed_m_flow_out = integrator_e_Filter_detailed_m_flow_out.y;
- Real y_e_Filter_detailed_T_out = integrator_e_Filter_detailed_T_out.y;
- Real y_pipeFlowGas_L4_Simple_T_out = integrator_pipeFlowGas_L4_Simple_T_out.y;
- Real y_pipeFlowGas_L4_Simple_p_out = integrator_pipeFlowGas_L4_Simple_p_out.y;
-
-  protected
- Components.Utilities.Blocks.Integrator integrator_deSO_ideal_L1_1_m_flow_out(u=deSO_ideal_L1_1_m_flow_out) annotation (Placement(transformation(extent={{-80,62},{-60,82}})));
- Components.Utilities.Blocks.Integrator integrator_deSO_ideal_L1_1_T_out(u=deSO_ideal_L1_1_T_out) annotation (Placement(transformation(extent={{-80,-34},{-60,-14}})));
- Components.Utilities.Blocks.Integrator integrator_deNOx_m_flow_out(u=deNOx_m_flow_out) annotation (Placement(transformation(extent={{-80,-2},{-60,18}})));
- Components.Utilities.Blocks.Integrator integrator_deNOx_T_out(u=deNOx_T_out) annotation (Placement(transformation(extent={{-80,30},{-60,50}})));
- Components.Utilities.Blocks.Integrator integrator_e_Filter_simple_m_flow_out(u=e_Filter_simple_m_flow_out) annotation (Placement(transformation(extent={{-18,62},{2,82}})));
- Components.Utilities.Blocks.Integrator integrator_e_Filter_simple_T_out(u=e_Filter_simple_T_out) annotation (Placement(transformation(extent={{-18,30},{2,50}})));
- Components.Utilities.Blocks.Integrator integrator_e_Filter_empirical_m_flow_out(u=e_Filter_empirical_m_flow_out) annotation (Placement(transformation(extent={{-18,-66},{2,-46}})));
- Components.Utilities.Blocks.Integrator integrator_e_Filter_empirical_T_out(u=e_Filter_empirical_T_out) annotation (Placement(transformation(extent={{-18,-98},{2,-78}})));
- Components.Utilities.Blocks.Integrator integrator_e_Filter_detailed_m_flow_out(u=e_Filter_detailed_m_flow_out) annotation (Placement(transformation(extent={{-18,-2},{2,18}})));
- Components.Utilities.Blocks.Integrator integrator_e_Filter_detailed_T_out(u=e_Filter_detailed_T_out) annotation (Placement(transformation(extent={{-18,-34},{2,-14}})));
- Components.Utilities.Blocks.Integrator integrator_pipeFlowGas_L4_Simple_T_out(u=pipeFlowGas_L4_Simple_T_out) annotation (Placement(transformation(extent={{-18,-2},{2,18}})));
- Components.Utilities.Blocks.Integrator integrator_pipeFlowGas_L4_Simple_p_out(u=pipeFlowGas_L4_Simple_p_out) annotation (Placement(transformation(extent={{-18,-34},{2,-14}})));
-
-end Regression;
 
   Desulfurization_L2_ideal deSO_ideal_L1_1(
     m_flow_nom=530,
@@ -256,20 +212,6 @@ end Regression;
         10,
         3))         annotation (Placement(transformation(extent={{146,-148},{166,-128}})));
 
-  Regression regression(
-    deSO_ideal_L1_1_m_flow_out = deSO_ideal_L1_1.summary.outlet.m_flow,
-    deSO_ideal_L1_1_T_out = deSO_ideal_L1_1.summary.outlet.T,
-    deNOx_m_flow_out = deNOx.summary.outlet.m_flow,
-    deNOx_T_out = deNOx.summary.outlet.T,
-    e_Filter_simple_m_flow_out = e_Filter_dynamic.summary.outlet.m_flow,
-    e_Filter_simple_T_out = e_Filter_dynamic.summary.outlet.T,
-    e_Filter_empirical_m_flow_out = e_Filter_dynamic1.summary.outlet.m_flow,
-    e_Filter_empirical_T_out = e_Filter_dynamic1.summary.outlet.T,
-    e_Filter_detailed_m_flow_out = e_Filter_dynamic2.summary.outlet.m_flow,
-    e_Filter_detailed_T_out = e_Filter_dynamic2.summary.outlet.T,
-    pipeFlowGas_L4_Simple_T_out = pipeFlowGas_L4_Simple.summary.outlet.T,
-    pipeFlowGas_L4_Simple_p_out = pipeFlowGas_L4_Simple.summary.outlet.p) annotation (Placement(transformation(extent={{60,40},{80,60}})));
-
 equation
   connect(gasFlowSource_T.gas_a, deSO_ideal_L1_1.inlet) annotation (Line(
       points={{-50,34},{-30,34}},
@@ -383,16 +325,12 @@ equation
           textString="________________________________________________________________
 PURPOSE:
 >>Regression tester for the flue gas cleaning components"),
-                                Text(
-          extent={{-100,100},{30,90}},
-          lineColor={0,128,0},
-          fontSize=34,
-          textString="TESTED -- 2014-10-08 //LN"),
         Rectangle(
           extent={{-100,100},{320,-220}},
           lineColor={115,150,0},
           lineThickness=0.5)}),           Commands(file="../../plot_DeSO.mos" "plot_DeSO"),
-    Icon(coordinateSystem(
+    Icon(graphics,
+         coordinateSystem(
         preserveAspectRatio=false,
         initialScale=0.1)),
     experiment(StopTime=10000));

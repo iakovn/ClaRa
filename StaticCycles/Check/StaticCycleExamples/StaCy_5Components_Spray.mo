@@ -1,10 +1,10 @@
 within ClaRa.StaticCycles.Check.StaticCycleExamples;
 model StaCy_5Components_Spray "A Static Cycle with only five components and a spray attemperator"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -59,7 +59,7 @@ parameter Real efficiency_Turb_HP=1 "Efficiency of turbine" annotation(Dialog(ta
 parameter Real efficiency_Turb_LP=1 "Efficiency of turbine" annotation(Dialog(tab="Turbines"));
 //parameter Real efficiency_Turb_LP2=1 "Efficiency of turbine" annotation(Dialog(tab="Turbines"));
 
-  ClaRa.StaticCycles.Machines.Pump pump_fw(efficiency=efficiency_Pump_FW) annotation (Placement(transformation(extent={{16,-90},{-4,-70}})));
+  ClaRa.StaticCycles.Machines.Pump1 pump_fw(efficiency=efficiency_Pump_FW) annotation (Placement(transformation(extent={{16,-90},{-4,-70}})));
   ClaRa.StaticCycles.Machines.Turbine turbine_HP(efficiency=efficiency_Turb_HP) annotation (Placement(transformation(extent={{-12,44},{-2,64}})));
   ClaRa.StaticCycles.Machines.Turbine turbine_LP(efficiency=efficiency_Turb_LP) annotation (Placement(transformation(extent={{76,48},{86,68}})));
   Furnace.Boiler_simple boiler(
@@ -151,6 +151,7 @@ equation
   connect(split1_1.outlet_2, boiler.feedWater) annotation (Line(points={{-69,-74.5},{-69,-43.25},{-69,-12.44}},              color={0,131,169}));
     annotation (Dialog(group="Global parameter"),
               Icon(coordinateSystem(preserveAspectRatio=false,extent={{-100,-100},{100,100}}),
-                   graphics),      Diagram(coordinateSystem(preserveAspectRatio=false,
+                   graphics),      Diagram(graphics,
+                                           coordinateSystem(preserveAspectRatio=false,
                  extent={{-100,-100},{100,100}})));
 end StaCy_5Components_Spray;

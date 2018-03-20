@@ -1,10 +1,10 @@
 within ClaRa.Components.HeatExchangers;
 model RegenerativeAirPreheaterPrimaryAndSecondaryAir_L4 "Model for a regenerative air preheater with primary and secondary air"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.2                            //
+  // Component of the ClaRa library, version: 1.3.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -77,7 +77,7 @@ model RegenerativeAirPreheaterPrimaryAndSecondaryAir_L4 "Model for a regenerativ
       tab="General",
       group="Geometry",
       showStartAttribute=false,
-      groupImage="modelica://ClaRa/figures/ParameterDialog/RegAirPreheater_PrimSec.png",
+      groupImage="modelica://ClaRa/Resources/Images/ParameterDialog/RegAirPreheater_PrimSec.png",
       connectorSizing=false));
 
   parameter Real leakage_primaryAir=0.1 "Ratio of mass leakage from hot primary air to hot secondary air"
@@ -393,26 +393,28 @@ public
         rotation=270,
         origin={30,1.77636e-015})));
 
-  ClaRa.Basics.ControlVolumes.SolidVolumes.ThinWall_L2[N_cv] wallPrimaryAir(
+  Basics.ControlVolumes.SolidVolumes.ThinPlateWall_L4 wallPrimaryAir(
     redeclare replaceable model Material = Material,
-    each mass=mass_primary/N_cv,
-    each A_heat=A_heat_primary/N_cv,
     each thickness_wall=s_sp,
     each initOption=initOptionWall,
     T_start=T_start_primary_wall_internal,
-    each stateLocation=stateLocation) annotation (Placement(transformation(
+    each stateLocation=stateLocation,
+    mass_struc=mass_primary - wallPrimaryAir.length*wallPrimaryAir.width*s_sp*wallPrimaryAir.solid[1].d,
+    CF_area=A_heat_primary/(wallPrimaryAir.length*wallPrimaryAir.width),
+    N_ax=N_cv) annotation (Placement(transformation(
         extent={{-10,-5},{10,5}},
         rotation=-90,
         origin={55,1.77636e-015})));
 
-  ClaRa.Basics.ControlVolumes.SolidVolumes.ThinWall_L2[N_cv] wallSecondaryAir(
+  Basics.ControlVolumes.SolidVolumes.ThinPlateWall_L4 wallSecondaryAir(
     redeclare replaceable model Material = Material,
-    each mass=mass_secondary/N_cv,
-    each A_heat=A_heat_secondary/N_cv,
     each thickness_wall=s_sp,
     each initOption=initOptionWall,
     T_start=T_start_secondary_wall_internal,
-    each stateLocation=stateLocation) annotation (Placement(transformation(
+    each stateLocation=stateLocation,
+    N_ax=N_cv,
+    CF_area=A_heat_secondary/(wallSecondaryAir.length*wallSecondaryAir.width),
+    mass_struc=mass_secondary - wallSecondaryAir.length*wallSecondaryAir.width*s_sp*wallSecondaryAir.solid[1].d) annotation (Placement(transformation(
         extent={{-10,-5},{10,5}},
         rotation=-90,
         origin={-55,1.77636e-015})));
@@ -444,8 +446,9 @@ public
         rotation=0,
         origin={-63,77})));
   VolumesValvesFittings.Fittings.FlueGasJunction_L2
-                                                 secondaryLeakageJoin(T_start=if size(T_start_flueGas,1)==2 then T_start_flueGas[2] else T_start_flueGas[1],p_start=if size(p_start_flueGas,1)==2 then p_start_flueGas[2] else p_start_flueGas[1],mixingRatio_initial=xi_start_flueGas,
-    volume=2)
+                                                 secondaryLeakageJoin(                                                                                      p_start=if size(p_start_flueGas,1)==2 then p_start_flueGas[2] else p_start_flueGas[1],mixingRatio_initial=xi_start_flueGas,
+    volume=2,
+    T_start=if size(T_start_flueGas, 1) == 2 then T_start_flueGas[2]*(1 - leakage_secondaryAir) else T_start_flueGas[1]*(1 - leakage_secondaryAir))
     annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=270,
@@ -501,7 +504,7 @@ public
     annotation (Placement(transformation(extent={{-10,-6},{10,6}},
         rotation=90,
         origin={80,54})));
-  ClaRa.Basics.Interfaces.EyeOut[2] eye_air annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+  ClaRa.Basics.Interfaces.EyeOutGas[2] eye_air(each medium=medium) annotation (Placement(transformation(extent={{-10,-10},{10,10}},
         rotation=270,
         origin={-56,-102}), iconTransformation(
         extent={{-10,-10},{10,10}},
@@ -509,12 +512,12 @@ public
         origin={-80,-104})));
 
 protected
-  ClaRa.Basics.Interfaces.EyeIn[2] eye_int_air annotation (Placement(transformation(extent={{-1,-1},{1,1}},
+  ClaRa.Basics.Interfaces.EyeInGas[2] eye_int_air(each medium=medium) annotation (Placement(transformation(extent={{-1,-1},{1,1}},
         rotation=270,
         origin={-56,-74})));
 
 public
-  ClaRa.Basics.Interfaces.EyeOut eye_flueGas
+  ClaRa.Basics.Interfaces.EyeOutGas eye_flueGas(each medium=medium)
                                             annotation (Placement(transformation(extent={{-10,-10},{10,10}},
         rotation=0,
         origin={100,82}),   iconTransformation(
@@ -522,7 +525,7 @@ public
         rotation=0,
         origin={102,86})));
 protected
-  ClaRa.Basics.Interfaces.EyeIn eye_int_flueGas[1]
+  ClaRa.Basics.Interfaces.EyeInGas eye_int_flueGas[1](each medium=medium)
                                                annotation (Placement(transformation(extent={{-1,-1},{1,1}},
         rotation=0,
         origin={86,82})));
@@ -532,27 +535,30 @@ equation
   eye_int_air[1].m_flow = summary.primaryAirOutlet.m_flow;
   eye_int_air[1].T = summary.primaryAirOutlet.T - 273.15;
   eye_int_air[1].s = primaryAirCell.fluidOutlet.s/1e3;
+  eye_int_air[1].xi = primaryAirCell.fluidOutlet.xi;
 
   eye_int_air[2].p = summary.secondaryAirOutlet.p/1e5;
   eye_int_air[2].h = summary.secondaryAirOutlet.h/1e3;
   eye_int_air[2].m_flow = summary.secondaryAirOutlet.m_flow;
   eye_int_air[2].T = summary.secondaryAirOutlet.T - 273.15;
   eye_int_air[2].s = secondaryAirCell.fluidOutlet.s/1e3;
+  eye_int_air[2].xi = secondaryAirCell.fluidOutlet.xi;
 
   eye_int_flueGas[1].p = summary.flueGasOutlet.p/1e5;
   eye_int_flueGas[1].h = summary.flueGasOutlet.h/1e3;
   eye_int_flueGas[1].m_flow = summary.flueGasOutlet.m_flow;
   eye_int_flueGas[1].T = summary.flueGasOutlet.T - 273.15;
-  eye_int_flueGas[1].s = 0;
+  eye_int_flueGas[1].s = secondaryLeakageJoin.flueGasPortA.s/1e3;
+  eye_int_flueGas[1].xi = secondaryLeakageJoin.flueGasPortA.xi;
 
   for i in 1:(N_cv) loop
-  connect(wallSecondaryAir[i].outerPhase, flueGasCellSecondary.heat[N_cv + 1 - i]) annotation (
+  connect(wallSecondaryAir.outerPhase[i], flueGasCellSecondary.heat[N_cv + 1 - i]) annotation (
       Line(
       points={{-50,0},{-44,0},{-44,1.33227e-015},{-32.8,1.33227e-015}},
       color={167,25,48},
       thickness=0.5,
       smooth=Smooth.None));
-   connect(flueGasCellPrimary.heat[N_cv + 1 - i], wallPrimaryAir[i].outerPhase) annotation (Line(
+   connect(flueGasCellPrimary.heat[N_cv + 1 - i], wallPrimaryAir.outerPhase[i]) annotation (Line(
       points={{75.2,4.44089e-016},{66,4.44089e-016},{66,0},{60,0}},
       color={167,25,48},
       thickness=0.5,
@@ -632,11 +638,6 @@ equation
       color={118,106,98},
       thickness=0.5,
       smooth=Smooth.None));
-  connect(secondaryAirCell.heat, wallSecondaryAir.innerPhase) annotation (Line(
-      points={{-77.2,-8.88178e-016},{-68,-8.88178e-016},{-68,0},{-60,0}},
-      color={167,25,48},
-      thickness=0.5,
-      smooth=Smooth.None));
   connect(primaryAirCell.heat, wallPrimaryAir.innerPhase) annotation (Line(
       points={{34.8,-1.11022e-015},{44,-1.11022e-015},{44,0},{50,0}},
       color={167,25,48},
@@ -644,12 +645,12 @@ equation
       smooth=Smooth.None));
 
   connect(flueGasJoin.portA, valveGas_L1_1.inlet) annotation (Line(
-      points={{80,38},{80,42},{80,44},{81,44}},
+      points={{80,38},{80,42},{80,44},{80,44}},
       color={118,106,98},
       thickness=0.5,
       smooth=Smooth.None));
   connect(valveGas_L1_1.outlet, secondaryLeakageJoin.portB) annotation (Line(
-      points={{81,64},{81,66},{80,66},{80,68}},
+      points={{80,64},{80,66},{80,66},{80,68}},
       color={118,106,98},
       thickness=0.5,
       smooth=Smooth.None));
@@ -660,6 +661,10 @@ equation
       smooth=Smooth.None));
   connect(eye_air[:], eye_int_air[:]) annotation (Line(points={{-56,-102},{-56,-74}}, color={190,190,190}));
   connect(eye_int_flueGas[1], eye_flueGas) annotation (Line(points={{86,82},{100,82}}, color={190,190,190}));
+  connect(secondaryAirCell.heat, wallSecondaryAir.innerPhase) annotation (Line(
+      points={{-77.2,0},{-60,0}},
+      color={167,25,48},
+      thickness=0.5));
   annotation (
     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}})),
     Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}})),

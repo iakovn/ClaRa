@@ -1,10 +1,10 @@
 within ClaRa.Components.Utilities.Blocks.Check;
 model testTableGain
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -19,10 +19,10 @@ model testTableGain
   Components.Utilities.Blocks.TableGain tableGain(table=[0,0; 1,5; 2,10])
     annotation (Placement(transformation(extent={{0,-2},{20,18}})));
   Modelica.Blocks.Sources.Ramp sine(
-    startTime=2,
     height=1,
-    duration=1,
-    offset=1)
+    offset=1,
+    duration=0.6,
+    startTime=0.2)
     annotation (Placement(transformation(extent={{-78,-2},{-58,18}})));
   Modelica.Blocks.Tables.CombiTable1D tableGain1(table=[0,0; 1,5; 2,10])
     annotation (Placement(transformation(extent={{0,-42},{20,-22}})));
@@ -45,5 +45,5 @@ equation
       points={{28,-72},{-8,-72},{-8,-70},{-57,-70},{-57,8}},
       color={0,0,127},
       smooth=Smooth.None));
-  annotation (Diagram(graphics));
+  annotation (Diagram(graphics), experiment(StopTime=1));
 end testTableGain;

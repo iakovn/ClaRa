@@ -4,7 +4,7 @@ model Source_brown
 // Component of the ClaRa library, version: 1.1.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -18,10 +18,10 @@ model Source_brown
   outer ClaRa.SimCenter simCenter;
   parameter TILMedia.GasTypes.BaseGas flueGas = simCenter.flueGasModel "Flue gas model used in component";
 
-final parameter ClaRa.Basics.Units.Temperature T_fg_nom(fixed=false);
-final parameter ClaRa.Basics.Units.MassFlowRate m_flow_fg_nom(fixed=false);
-final parameter ClaRa.Basics.Units.Pressure p_fg_nom(fixed=false);
-parameter ClaRa.Basics.Units.MassFraction xi_fg_nom[flueGas.nc-1]=zeros(flueGas.nc - 1);
+final parameter ClaRa.Basics.Units.Temperature T_fg_nom(fixed=false) "Temperature at the source";
+final parameter ClaRa.Basics.Units.MassFlowRate m_flow_fg_nom(fixed=false) "Mass flow from the source";
+final parameter ClaRa.Basics.Units.Pressure p_fg_nom(fixed=false) "Pressure at the source";
+parameter ClaRa.Basics.Units.MassFraction xi_fg_nom[flueGas.nc-1]=zeros(flueGas.nc - 1) "Flue gas composition at the source";
 
   ClaRa.StaticCycles.Fundamentals.FlueGasSignal_brown_b outlet(flueGas=flueGas, xi=xi_fg_nom) annotation (Placement(transformation(extent={{100,-10},{108,10}}), iconTransformation(extent={{100,-10},{108,10}})));
 
@@ -38,5 +38,6 @@ initial equation
           fillPattern=FillPattern.Solid,
           textString="%xi"),
         Line(points={{60,100},{100,0},{60,-100}}, color={118,106,98})}),
-                                                                 Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
+                                                                 Diagram(graphics,
+                                                                         coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
 end Source_brown;

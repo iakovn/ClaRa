@@ -189,13 +189,8 @@ PURPOSE:
 ______________________________________________________________________________________________
 NOTE: A number of visualisers can be displayed in the simulation window :-)
 ______________________________________________________________________________________________
-"),                                            Text(
-          extent={{-96,102},{244,82}},
-          lineColor={0,128,0},
-          fontSize=23,
-          horizontalAlignment=TextAlignment.Left,
-          textString="TESTED -- 2016-03-02 //TH")}),
-                                                 Icon(coordinateSystem(initialScale=0.1)),
+")}),                                            Icon(graphics,
+                                                      coordinateSystem(initialScale=0.1)),
     experiment(
       StopTime=12000,
       __Dymola_NumberOfIntervals=1000,

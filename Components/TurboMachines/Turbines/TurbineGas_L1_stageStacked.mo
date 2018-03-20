@@ -1,10 +1,10 @@
 within ClaRa.Components.TurboMachines.Turbines;
 model TurbineGas_L1_stageStacked "Advanced gas turbine model using the stage stacking method according to N. Gasparovic"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -59,15 +59,15 @@ parameter Boolean contributeToCycleSummary = simCenter.contributeToCycleSummary 
           allow_reverseFlow then Modelica.Constants.inf else -1e-5)) "outlet flow"
     annotation (Placement(transformation(extent={{30,-110},{50,-90}})));
 
-   Modelica.Mechanics.Rotational.Interfaces.Flange_a shaft if useMechanicalPort
-     annotation (Placement(transformation(extent={{-70,-10},{-50,10}}),
-        iconTransformation(extent={{-70,-10},{-50,10}})));
+   Modelica.Mechanics.Rotational.Interfaces.Flange_a shaft_a if
+                                                              useMechanicalPort annotation (Placement(transformation(extent={{32,-10},{52,10}}),   iconTransformation(extent={{32,-10},{52,10}})));
 protected
-  Fundamentals.GetInputsRotary getInputsRotary annotation (Placement(
+  Fundamentals.GetInputsRotary2 getInputsRotary
+                                               annotation (Placement(
         transformation(
-        extent={{-10,-10},{10,10}},
+        extent={{10,-10},{-10,10}},
         rotation=0,
-        origin={-20,0})));
+        origin={-10,0})));
 public
   TILMedia.Gas_pT flueGas_inlet( p = inlet.p, T = inStream(inlet.T_outflow), xi = inStream(inlet.xi_outflow), gasType = medium)
     annotation (Placement(transformation(extent={{-50,48},{-30,68}})));
@@ -113,10 +113,10 @@ public
   Real Pi(final start=Pi_nom) "pressure ratio";
   Basics.Units.Power P_hyd "Hydraulic power";
   Basics.Units.VolumeFlowRate V_flow "Volume flow rate";
-  Modelica.SIunits.AngularAcceleration a "Angular acceleration of the shaft";
+//   Modelica.SIunits.AngularAcceleration a "Angular acceleration of the shaft";
   SI.Power P_shaft "Mechanical power at shaft";
   SI.RPM rpm "Rotational speed";
-  Modelica.SIunits.Torque tau_fluid "Fluid torque";
+  //Modelica.SIunits.Torque tau_fluid "Fluid torque";
   //SI.EnthalpyMassSpecific Delta_h;
   Real tau "Overall temperature ratio";
   Real tau_nom "Overall nominal temperature ratio";
@@ -324,12 +324,18 @@ public
             -102},{-40,-82}})));
 
 public
-  Basics.Interfaces.EyeOut eyeOut annotation (Placement(transformation(extent={{20,-78},
+  Basics.Interfaces.EyeOutGas
+                           eyeOut(each medium=medium) annotation (Placement(transformation(extent={{20,-78},
             {60,-42}}),           iconTransformation(extent={{40,-70},{60,-50}})));
 protected
-  Basics.Interfaces.EyeIn eye_int[1] annotation (Placement(transformation(extent={{8,-68},
+  Basics.Interfaces.EyeInGas
+                          eye_int[1](each medium=medium) annotation (Placement(transformation(extent={{8,-68},
             {-8,-52}}),           iconTransformation(extent={{90,-84},{84,-78}})));
 
+public
+   Modelica.Mechanics.Rotational.Interfaces.Flange_b shaft_b if
+                                                              useMechanicalPort annotation (Placement(transformation(extent={{-70,-10},{-50,10}}),
+                                                                                                                                                 iconTransformation(extent={{-70,-10},{-50,10}})));
 initial equation
 
 inlet.m_flow = m_flow_corr_st[1]*flueGas_inlet.p/ flueGas_inlet.T^0.5;
@@ -352,21 +358,38 @@ inlet.m_flow = m_flow_corr_st[1]*flueGas_inlet.p/ flueGas_inlet.T^0.5;
      end if;
 
 equation
-//____________________ Mechanics ___________________________
+  rpm = der(getInputsRotary.shaft_a.phi)*60/(2*Modelica.Constants.pi);
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~
+//~~~Mechanics~~~~~~~~~~~~~
     if useMechanicalPort then
-      der(getInputsRotary.rotatoryFlange.phi) = (2*Modelica.Constants.pi*rpm/60);
-      J*a + tau_fluid + getInputsRotary.rotatoryFlange.tau = 0 "Mechanical momentum balance";
+      //der(shaft_a.phi) = 2*Modelica.Constants.pi*rpm/60;
+      if steadyStateTorque then
+        0 = getInputsRotary.shaft_a.tau + getInputsRotary.shaft_b.tau -P_shaft/der(getInputsRotary.shaft_a.phi) "Mechanical momentum balance";
+      else
+        J*der(rpm)*2*Modelica.Constants.pi/60 =  getInputsRotary.shaft_a.tau + getInputsRotary.shaft_b.tau -P_shaft/der(getInputsRotary.shaft_a.phi) "Mechanical momentum balance";
+      end if;
     else
       rpm = rpm_fixed;
-      getInputsRotary.rotatoryFlange.phi = 0.0;
     end if;
 
-    if (steadyStateTorque) then
-      a = 0;
-    else
-      a = 2*Modelica.Constants.pi/60*der(rpm);
-    end if;
-    tau_fluid = if noEvent(2*Modelica.Constants.pi*rpm/60<1e-8) then 0 else P_shaft/(2*Modelica.Constants.pi*rpm/60);
+  getInputsRotary.shaft_a.phi=getInputsRotary.shaft_b.phi;
+
+//____________________ Mechanics ___________________________
+//     if useMechanicalPort then
+//       der(getInputsRotary.rotatoryFlange.phi) = (2*Modelica.Constants.pi*rpm/60);
+//       J*a + tau_fluid + getInputsRotary.rotatoryFlange.tau = 0 "Mechanical momentum balance";
+//     else
+//       rpm = rpm_fixed;
+//       getInputsRotary.rotatoryFlange.phi = 0.0;
+//     end if;
+//
+//     if (steadyStateTorque) then
+//       a = 0;
+//     else
+//       a = 2*Modelica.Constants.pi/60*der(rpm);
+//     end if;
+//    tau_fluid = if noEvent(2*Modelica.Constants.pi*rpm/60<1e-8) then 0 else P_shaft/(2*Modelica.Constants.pi*rpm/60);
 
   //__________Angle of VIGV_______________
    if (not useExternalVIGVangle) then
@@ -867,12 +890,14 @@ end if;
       points={{0,-60},{40,-60}},
       color={190,190,190},
       smooth=Smooth.None));
-  connect(shaft, getInputsRotary.rotatoryFlange)
-    annotation (Line(points={{-60,0},{-45,0},{-30,0}}, color={0,0,0}));
-  annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-60,-100},
-            {40,100}})),         Icon(coordinateSystem(preserveAspectRatio=false,
-          extent={{-60,-100},{40,100}}),
-                                      graphics),
+  connect(shaft_a, getInputsRotary.shaft_a) annotation (Line(points={{42,0},{0,0}},    color={0,0,0}));
+  connect(getInputsRotary.shaft_b, shaft_b) annotation (Line(points={{-20,0},{-60,0}},
+                                                                                    color={0,0,0}));
+  annotation (Diagram(graphics,
+                      coordinateSystem(preserveAspectRatio=false, extent={{-60,-100},
+            {40,100}})),         Icon(graphics,
+                                      coordinateSystem(preserveAspectRatio=false,
+          extent={{-60,-100},{40,100}})),
     Documentation(info="<html>
 <p><b>Model description: </b>A multi stage compressor model based on the stage stacking method of Gasparovic able to calculate off-design behaviour according to nominal values</p>
 <p><b>Contact:</b> Lasse Nielsen, TLK-Thermo GmbH</p>

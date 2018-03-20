@@ -89,11 +89,11 @@ model TestSeparator_L3 "Check of normal operation and dry operation (Benson oper
   Visualisation.Quadruple       quadruple8 annotation (Placement(transformation(extent={{208,18},{240,28}})));
   Visualisation.Quadruple       quadruple9 annotation (Placement(transformation(extent={{206,-12},{238,-2}})));
   Visualisation.DynamicBar dynamicBar(
-    provideConnector=true,
     u_set=0.1,
     u_high=0.2,
     u_low=0.05,
-    u=steamSeparator_controlled.volume.summary.outline.level_rel) annotation (Placement(transformation(extent={{204,0},{214,20}})));
+    u=steamSeparator_controlled.volume.summary.outline.level_rel,
+    provideOutputConnector=true) annotation (Placement(transformation(extent={{204,0},{214,20}})));
   Utilities.Blocks.LimPID PID(
     controllerType=Modelica.Blocks.Types.SimpleController.PI,
     y_min=0,
@@ -212,12 +212,9 @@ PURPOSE:
 Show steam separator functionality for normal and abnormal operation conditions.
 Show differences between controlled and uncontrolled separation behaviour
 ______________________________________________________________________________________________
-"),                    Text(
-          extent={{-18,160},{182,140}},
-          lineColor={0,128,0},
-          fontSize=31,
-          textString="TESTED -- 2016-02-24 //TH")}),
+")}),
     experiment(StopTime=60000, __Dymola_NumberOfIntervals=5000),
     __Dymola_experimentSetupOutput,
-    Icon(coordinateSystem(preserveAspectRatio=false, initialScale=0.1)));
+    Icon(graphics,
+         coordinateSystem(preserveAspectRatio=false, initialScale=0.1)));
 end TestSeparator_L3;

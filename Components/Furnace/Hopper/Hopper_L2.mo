@@ -1,10 +1,10 @@
 within ClaRa.Components.Furnace.Hopper;
 model Hopper_L2 "Model for a hopper section of a combustion chamber"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -18,8 +18,7 @@ model Hopper_L2 "Model for a hopper section of a combustion chamber"
   import ClaRa;
   extends ClaRa.Basics.Icons.Hopper;
   //inner parameter ClaRa.Basics.Units.Temperature SlagTemperature=900;
-extends ClaRa.Components.Furnace.BaseClasses.HopperBase(geo(
-        flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical));
+extends ClaRa.Components.Furnace.BaseClasses.HopperBase;
 
 inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation"
                                                               annotation(Dialog(tab="Initialisation"));
@@ -106,7 +105,7 @@ inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy met
         m_flow=inlet.fuel.m_flow,
         T=actualStream(inlet.fuel.T_outflow),
         p=inlet.fuel.p,
-        cp=inlet.fuelType.cp),
+        cp=fuelInlet.cp),
       slag(
         m_flow=inlet.slag.m_flow,
         T=actualStream(inlet.slag.T_outflow),
@@ -123,7 +122,7 @@ inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy met
         m_flow=-outlet.fuel.m_flow,
         T=actualStream(outlet.fuel.T_outflow),
         p=outlet.fuel.p,
-        cp=outlet.fuelType.cp),
+        cp=fuelOutlet.cp),
       slag(
         m_flow=outlet.slag.m_flow,
         T=actualStream(outlet.slag.T_outflow),
@@ -167,9 +166,6 @@ equation
 
    mass = geo.volume * bulk.d;
 
-  //_______________/ Composition of fuel and gas \_____________________
-  xi_fuel_in = inStream(inlet.fuel.xi_outflow);
-  xi_fuel_out =  xi_fuel_in;
 
   //________________/ Mass balance - flue gas \______________________________________
   inlet.flueGas.m_flow + outlet.flueGas.m_flow  =  drhodt*geo.volume;
@@ -189,8 +185,8 @@ equation
                 + outlet.flueGas.m_flow * (flueGasOutlet.h - h_flueGas_out)
                 + inlet.slag.m_flow * (inlet.slagType.cp * (actualStream(inlet.slag.T_outflow) - 298.15) - h_flueGas_out)
                 + outlet.slag.m_flow * (inlet.slagType.cp * (actualStream(outlet.slag.T_outflow)  - 298.15) - h_flueGas_out)
-                + inlet.fuel.m_flow *(inStream(inlet.fuel.cp_outflow) * (inStream(inlet.fuel.T_outflow)  - 298.15) - h_flueGas_out)
-                + outlet.fuel.m_flow * (outlet.fuel.cp_outflow * (outlet.fuel.T_outflow - 298.15) - h_flueGas_out))/mass;
+                + inlet.fuel.m_flow *(fuelInlet.cp * (inStream(inlet.fuel.T_outflow)  - 298.15) - h_flueGas_out)
+                + outlet.fuel.m_flow * (fuelOutlet.cp * (outlet.fuel.T_outflow - 298.15) - h_flueGas_out))/mass;
 
   V_flow_flueGas_in = 0;
   V_flow_flueGas_out = 0;
@@ -231,17 +227,9 @@ equation
   inlet.flueGas.xi_outflow  = xi_flueGas_del;
   outlet.flueGas.xi_outflow  = xi_flueGas_del;
 
-    //___________/ LHV_outflows \__________________________________________
-  outlet.fuel.LHV_outflow =inStream(inlet.fuel.LHV_outflow);
-  inlet.fuel.LHV_outflow =inStream(outlet.fuel.LHV_outflow);
-  outlet.fuel.LHV_calculationType = inlet.fuel.LHV_calculationType;
-
-  outlet.fuel.cp_outflow =inStream(inlet.fuel.cp_outflow);
-  inlet.fuel.cp_outflow =inStream(outlet.fuel.cp_outflow);
 
   //___________/ Dummy T_outflows \__________________________________________
   inlet.fuel.T_outflow = bulk.T;
-  //outlet.slag.T_outflow = inStream(outlet.slag.T_outflow); //outlet.slag is inflowing slag
   inlet.flueGas.T_outflow  = bulk.T;
 
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-300,

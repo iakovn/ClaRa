@@ -30,5 +30,6 @@ initial equation
           fillPattern=FillPattern.Solid,
           textString=String(p)),
         Line(points={{60,100},{100,0},{60,-100}}, color={0,131,169})}),
-                                            Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
+                                            Diagram(graphics,
+                                                    coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
 end Source_blue;

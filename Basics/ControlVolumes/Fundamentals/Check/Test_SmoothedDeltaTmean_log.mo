@@ -1,10 +1,10 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.Check;
 model Test_SmoothedDeltaTmean_log
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.2                            //
+  // Component of the ClaRa library, version: 1.3.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -39,11 +39,9 @@ model Test_SmoothedDeltaTmean_log
     amplitude=+100,
     period=20,
     width=5) annotation (Placement(transformation(extent={{-60,20},{-40,40}})));
-  Modelica.Blocks.Sources.Ramp T_i(
-    duration=1,
-    startTime=7,
-    height=200,
-    offset=100) annotation (Placement(transformation(extent={{-2,-18},{18,2}})));
+  Modelica.Blocks.Sources.TimeTable
+                               T_i(offset=0, table=[0,100; 7,100; 8,300; 14,300; 15,200; 20,200])
+                annotation (Placement(transformation(extent={{-2,-18},{18,2}})));
 equation
 
 //   DT_mean = ClaRa.Basics.Functions.Stepsmoother(
@@ -69,7 +67,12 @@ equation
                              else
                                (DTU - DTL)/log(DTU/(DTL)));
 
-    DT_mean_smooth = SM(0.1,eps, abs(DTL))*SM(0.01,eps, DTU*DTL) * SZT((DTU - DTL)/log(abs(DTU)/(abs(DTL)+1e-9)), DT_wi, (abs(DTU)-abs(DTL))-0.01, 0.001);
+    DT_mean_smooth = SM(0.1,eps, abs(DTL))*SM(0.01,eps, DTU*DTL) * SZT((DTU - DTL)/log(abs(DTU)/(abs(DTL)+1e-9)), DT_wi, ((DTU)-(DTL))-0.01, 0.001);
+                     //SM(0.1,eps, abs(DTL))*SM(0.01,eps, DTU*DTL) * SZT((DTU - DTL)/log(abs(DTU)/(abs(DTL)+1e-9)), DT_wi, (abs(DTU)-abs(DTL))-0.01, 0.001)
 
-     annotation (experiment(StopTime=20), __Dymola_experimentSetupOutput);
+     annotation (experiment(StopTime=20), Diagram(graphics={Text(
+          extent={{-98,88},{92,56}},
+          lineColor={115,150,0},
+          textString="IDEA: illustrate the behaviour of the logaritmic mean calculation options available in L2 heat transfer models",
+          horizontalAlignment=TextAlignment.Left)}));
 end Test_SmoothedDeltaTmean_log;

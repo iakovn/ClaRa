@@ -1,10 +1,10 @@
 within ClaRa.Visualisation.Check;
 model IllustrateVisualisation
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -30,7 +30,8 @@ extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb80;
     y_min=300,
     y_max=700,
     t_end=20,
-    hideInterface=false)
+    hideInterface=false,
+    color={122,33,55})
                      annotation (Placement(transformation(extent={{28,16},{72,56}})));
   ClaRa.Visualisation.StatePoint_phTs statePoint_phTs
     annotation (Placement(transformation(extent={{34,-10},{48,4}})));

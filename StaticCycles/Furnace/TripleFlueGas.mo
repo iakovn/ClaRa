@@ -4,7 +4,7 @@ model TripleFlueGas "Visualise static cycle results of flue gas connectors"
 // Component of the ClaRa library, version: 1.1.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -52,7 +52,8 @@ annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100}
         Line(
           points={{-100,180},{-100,-100}},
           color=DynamicSelect({164,167,170},{118,106,98}),
-          smooth=Smooth.None,thickness=0.5)}), Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{220,180}},
+          smooth=Smooth.None,thickness=0.5)}), Diagram(graphics,
+                                                       coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{220,180}},
         initialScale=0.1)));
 
 end TripleFlueGas;

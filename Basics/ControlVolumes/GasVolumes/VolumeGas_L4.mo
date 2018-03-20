@@ -1,10 +1,10 @@
 within ClaRa.Basics.ControlVolumes.GasVolumes;
 model VolumeGas_L4 "An array of flue gas cells."
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.2                            //
+  // Component of the ClaRa library, version: 1.3.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -214,17 +214,17 @@ public
       m_flow=m_flow),
     inlet(mediumModel=medium,
       m_flow=inlet.m_flow,
-      T=inStream(inlet.T_outflow),
+      T=fluidInlet.T,
       p=inlet.p,
       h=fluidInlet.h,
-      xi=inStream(inlet.xi_outflow),
+      xi=fluidInlet.xi,
       H_flow=inlet.m_flow*fluidInlet.h),
     outlet(mediumModel=medium,
       m_flow=-outlet.m_flow,
-      T=outlet.T_outflow,
+      T=fluidOutlet.T,
       p=outlet.p,
       h=fluidOutlet.h,
-      xi=outlet.xi_outflow,
+      xi=fluidOutlet.xi,
       H_flow=-outlet.m_flow*fluidOutlet.h)) annotation (Placement(transformation(extent={{-60,-54},{-40,-34}})));
 
 protected
@@ -473,8 +473,10 @@ equation
       color={167,25,48},
       thickness=0.5));
   annotation (
-    Icon(coordinateSystem(preserveAspectRatio=false, extent={{-140,-50},{140,50}})),
-    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-140,-50},{140,50}})),
+    Icon(graphics,
+         coordinateSystem(preserveAspectRatio=false, extent={{-140,-50},{140,50}})),
+    Diagram(graphics,
+            coordinateSystem(preserveAspectRatio=false, extent={{-140,-50},{140,50}})),
     Documentation(info="<html>
 <p><b>Model description: </b>A non-adiabatic 1D-tube model using a single pipe cell for the formulation</p>
 <p><b>Contact:</b> Johannes Brunnemann, XRG Simulation GmbH</p>

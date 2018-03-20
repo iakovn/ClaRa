@@ -1,10 +1,10 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT;
 model NusseltShell1ph_L2 "Shell Geo || L2 || HTC || Nusselt || 1ph"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.2                            //
+  // Component of the ClaRa library, version: 1.3.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -46,7 +46,6 @@ model NusseltShell1ph_L2 "Shell Geo || L2 || HTC || Nusselt || 1ph"
   extends ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.ShellType_L2;
 
   outer ClaRa.SimCenter simCenter;
-  outer parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium;
   outer ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry geo;
 
   Modelica.SIunits.ReynoldsNumber Re "Reynolds number";
@@ -55,8 +54,57 @@ model NusseltShell1ph_L2 "Shell Geo || L2 || HTC || Nusselt || 1ph"
   Real failureStatus;
 
 protected
-  Modelica.SIunits.CoefficientOfHeatTransfer alpha_nom=FluidDissipation.HeatTransfer.HeatExchanger.kc_tubeBundle_1ph_KC(inCon_1ph, inVar_1ph_nom);
+  Real MIN=1e-5 "Limiter";
+  Real Nu_lam "Nusselt number of laminar flow, one tube";
+  Real Nu_turb "Nusselt number of turbulent flow, one tube";
+  Real Nu_B "Average Nusselt number of whole tube bundle";
+  Real Pr_w "Prandtl number of fluid near wall";
+  Real fa "Alignment factor";
+  SI.Length L "Characteristic length";
+  Real a "Longitudinal alignment ratio";
+  Real b "Perpendicular alignment ratio";
+  Real psi "Void ratio";
+  Real K "Heat flow direction coefficient";
+  Real Nu_lam_nom "Nusselt number of laminar flow, one tube";
+  Real Nu_turb_nom  "Nusselt number of turbulent flow, one tube";
+  Real Nu_nom  "Nusselt number one tube";
+  Real Nu_B_nom  "Average Nusselt number of whole tube bundle";
+  Real Re_nom  "Laminar Reynolds number one tube";
+  Real Pr_w_nom  "Prandtl number of fluid near wall";
+  Modelica.SIunits.PrandtlNumber Pr_nom "Prandtl number of fluid";
+  Real K_nom "Heat flow direction coefficient";
 
+  Real lambda=fluidObjectFunction_lambda( iCom.p_out, iCom.h_out, iCom.xi_out, iCom.fluidPointer_out);
+  Real m_flow=noEvent(max(Modelica.Constants.eps, abs(iCom.m_flow_in)));
+  Real lambda_w=if heat.T < (fluidObjectFunction_T_dew(
+        iCom.p_out,
+        iCom.xi_out,
+        iCom.fluidPointer_out) + 1e-6) and heat.T > (fluidObjectFunction_T_dew(
+        iCom.p_out,
+        iCom.xi_out,
+        iCom.fluidPointer_out) - 1e-6) then lambda_w_nom else fluid_wall.transp.lambda;
+   Real eta_w=if heat.T < (fluidObjectFunction_T_dew(iCom.p_out,iCom.xi_out,iCom.fluidPointer_out) + 1e-6) and heat.T > (fluidObjectFunction_T_dew(iCom.p_out,iCom.xi_out,iCom.fluidPointer_out) - 1e-6) then eta_w_nom else fluid_wall.transp.eta;
+  Real  cp=fluidObjectFunction_cp(iCom.p_out,iCom.h_out,iCom.xi_out,iCom.fluidPointer_out);
+  Real rho=fluidObjectFunction_rho(iCom.p_out,iCom.h_out,iCom.xi_out,iCom.fluidPointer_out);
+  Real eta=fluidObjectFunction_eta(iCom.p_out,iCom.h_out,iCom.xi_out,iCom.fluidPointer_out);
+  Real cp_w=fluid_wall.cp;
+
+   Modelica.SIunits.CoefficientOfHeatTransfer alpha_nom;
+  TILMedia.VLEFluid_pT fluid_wall(
+    T=heat.T,
+    p=iCom.p_bulk,
+    vleFluidType=iCom.mediumModel,
+    computeTransportProperties=true,
+    computeVLETransportProperties=true,
+    computeVLEAdditionalProperties=true) annotation (Placement(transformation(extent={{70,70},{90,90}})));
+
+  final parameter  Real cp_w_nom=fluidFunction_cp(iCom.mediumModel,iCom.p_nom,iCom.h_nom,iCom.xi_nom);
+  final parameter  Real  eta_w_nom=fluidFunction_eta(iCom.mediumModel,iCom.p_nom, iCom.h_nom, iCom.xi_nom);
+  final parameter  Real  lambda_w_nom=fluidFunction_lambda( iCom.mediumModel, iCom.p_nom,iCom.h_nom, iCom.xi_nom);
+  final parameter  Real cp_nom = fluidFunction_cp( iCom.mediumModel,iCom.p_nom, iCom.h_nom,iCom.xi_nom);
+  final parameter  Real eta_nom = fluidFunction_eta( iCom.mediumModel, iCom.p_nom, iCom.h_nom,iCom.xi_nom);
+  final parameter  Real lambda_nom = fluidFunction_lambda( iCom.mediumModel, iCom.p_nom, iCom.h_nom, iCom.xi_nom);
+  final parameter  Real rho_nom = fluidFunction_rho(iCom.mediumModel,iCom.p_nom,iCom.h_nom, iCom.xi_nom);
 public
   final parameter Real C=if geo.staggeredAlignment then 1 else 0.8 "Correction factor for tube arrangement: offset pattern=1| aligned pattern=0.8"
                                                                                         annotation (Dialog(tab="General", group="Geometry"));
@@ -66,105 +114,47 @@ public
       choice=3 "Selection to be extended"));
   Modelica.SIunits.CoefficientOfHeatTransfer alpha "Heat transfer coefficient";
 
-  final parameter FluidDissipation.HeatTransfer.HeatExchanger.kc_tubeBundle_1ph_IN_con inCon_1ph(
-    staggeredAlignment=geo.staggeredAlignment,
-    d=geo.diameter_t,
-    A_front=geo.A_front,
-    s_1=geo.Delta_z_ort,
-    s_2=geo.Delta_z_par,
-    n=geo.N_rows) annotation (Placement(transformation(extent={{24,-96},{44,-76}})));
-protected
-  TILMedia.VLEFluid_pT fluid_wall(
-    T=heat.T,
-    p=iCom.p_bulk,
-    vleFluidType=medium,
-    computeTransportProperties=true,
-    computeVLETransportProperties=true,
-    computeVLEAdditionalProperties=true) annotation (Placement(transformation(extent={{70,70},{90,90}})));
-public
-  final parameter FluidDissipation.HeatTransfer.HeatExchanger.kc_tubeBundle_1ph_IN_var inVar_1ph_nom(
-    cp_w=fluidFunction_cp(
-        iCom.mediumModel,
-        iCom.p_nom,
-        iCom.h_nom,
-        iCom.xi_nom),
-    eta_w=fluidFunction_eta(
-        iCom.mediumModel,
-        iCom.p_nom,
-        iCom.h_nom,
-        iCom.xi_nom),
-    lambda_w=fluidFunction_lambda(
-        iCom.mediumModel,
-        iCom.p_nom,
-        iCom.h_nom,
-        iCom.xi_nom),
-    m_flow=noEvent(abs(iCom.m_flow_nom)),
-    cp=fluidFunction_cp(
-        iCom.mediumModel,
-        iCom.p_nom,
-        iCom.h_nom,
-        iCom.xi_nom),
-    eta=fluidFunction_eta(
-        iCom.mediumModel,
-        iCom.p_nom,
-        iCom.h_nom,
-        iCom.xi_nom),
-    lambda=fluidFunction_lambda(
-        iCom.mediumModel,
-        iCom.p_nom,
-        iCom.h_nom,
-        iCom.xi_nom),
-    rho=fluidFunction_rho(
-        iCom.mediumModel,
-        iCom.p_nom,
-        iCom.h_nom,
-        iCom.xi_nom)) annotation (Placement(transformation(extent={{56,-66},{76,-46}})));
-
-  FluidDissipation.HeatTransfer.HeatExchanger.kc_tubeBundle_1ph_IN_var inVar_1ph(
-    cp=fluidObjectFunction_cp(
-        iCom.p_out,
-        iCom.h_out,
-        iCom.xi_out,
-        iCom.fluidPointer_out),
-    lambda=fluidObjectFunction_lambda(
-        iCom.p_out,
-        iCom.h_out,
-        iCom.xi_out,
-        iCom.fluidPointer_out),
-    rho=fluidObjectFunction_rho(
-        iCom.p_out,
-        iCom.h_out,
-        iCom.xi_out,
-        iCom.fluidPointer_out),
-    eta=fluidObjectFunction_eta(
-        iCom.p_out,
-        iCom.h_out,
-        iCom.xi_out,
-        iCom.fluidPointer_out),
-    cp_w=fluid_wall.cp,
-    eta_w=if heat.T < (fluidObjectFunction_T_dew(
-        iCom.p_out,
-        iCom.xi_out,
-        iCom.fluidPointer_out) + 1e-6) and heat.T > (fluidObjectFunction_T_dew(
-        iCom.p_out,
-        iCom.xi_out,
-        iCom.fluidPointer_out) - 1e-6) then inVar_1ph_nom.eta_w else fluid_wall.transp.eta,
-    lambda_w=if heat.T < (fluidObjectFunction_T_dew(
-        iCom.p_out,
-        iCom.xi_out,
-        iCom.fluidPointer_out) + 1e-6) and heat.T > (fluidObjectFunction_T_dew(
-        iCom.p_out,
-        iCom.xi_out,
-        iCom.fluidPointer_out) - 1e-6) then inVar_1ph_nom.lambda_w else fluid_wall.transp.lambda,
-    m_flow=noEvent(max(Modelica.Constants.eps, abs(iCom.m_flow_in)))) annotation (Placement(transformation(extent={{56,-96},{76,-76}})));
 
 equation
+
+//calculation of heat transfer coefficient: // defining the HTC for a shell area, either heated or cooled ONE-PHASE flow. Evaporation and condensation are NOT supported
+  a= geo.Delta_z_ort/geo.diameter_t;
+  b= geo.Delta_z_par/geo.diameter_t;
+  // b<=0 refers to single row case!
+  psi= if b >= 1 or b<=0 then 1 - Modelica.Constants.pi/4/a else 1 - Modelica.Constants.pi/4/a/b;
+  L= Modelica.Constants.pi/2*geo.diameter_t;
+  Re = abs(m_flow)/geo.A_front/rho*L/psi/eta*rho;
+  Pr   = eta*cp/max(MIN,lambda);
+  Pr_w   = eta_w*cp_w/max(MIN,lambda_w);
+  Nu_lam = 0.664*sqrt(Re)*max(MIN,Pr)^(1/3);
+  Nu_turb = (0.037*Re^0.8*Pr)/(1 + 2.443*max(MIN,Re)^(-0.1)*(max(MIN,Pr)^(2/3) - 1));
+  K = if Pr/Pr_w > 1 then (max(MIN,Pr/Pr_w))^0.25 else (max(MIN,Pr/Pr_w))^0.11;
+  Nu = K*(0.3 + sqrt((Nu_lam^2 + Nu_turb^2)));
+  if geo.staggeredAlignment then
+    fa =  1 + (if b>0 then 2/3/b else 0);
+  else
+    fa =  1 + (if b>0 then 0.7/psi^1.5*(b/a - 0.3)/(b/a + 0.7)^2 else 0);
+  end if;
+  Nu_B =  Nu*(if geo.N_rows>=10 then fa else (((geo.N_rows-1)*fa+1)/geo.N_rows));
+
+  alpha =  if useHomotopy then homotopy(Nu_B*lambda/L, alpha_nom) else Nu_B*lambda/L;
+  failureStatus =  if (Re<10e6 and Re>10) and (Pr<10e3 and Pr>0.6)  then 0 else 1;
+// end of calculation of heat transfer coefficient
+
+//calculation of NOMINAL heat transfer coefficient:
+  Re_nom = abs(iCom.m_flow_nom)/geo.A_front/rho*L/psi/eta*rho_nom;
+  Pr_nom   = eta*cp/max(MIN,lambda_nom);
+  Pr_w_nom   = eta_w_nom*cp_w_nom/max(MIN,lambda_w_nom);
+  Nu_lam_nom = 0.664*sqrt(Re_nom)*max(MIN,Pr_nom)^(1/3);
+  Nu_turb_nom = (0.037*Re_nom^0.8*Pr_nom)/(1 + 2.443*max(MIN,Re_nom)^(-0.1)*(max(MIN,Pr_nom)^(2/3) - 1));
+  K_nom = if Pr_nom/Pr_w_nom > 1 then (max(MIN,Pr_nom/Pr_w_nom))^0.25 else (max(MIN,Pr_nom/Pr_w_nom))^0.11;
+  Nu_nom = K_nom*(0.3 + sqrt((Nu_lam_nom^2 + Nu_turb_nom^2)));
+  Nu_B_nom =  Nu_nom*(if geo.N_rows>=10 then fa else (((geo.N_rows-1)*fa+1)/geo.N_rows));
+  alpha_nom = Nu_B_nom*lambda_nom/L;
+// end of calculation of heat transfer coefficient
+
   heat.Q_flow = if useHomotopy then homotopy(alpha*geo.A_heat_CF[heatSurfaceAlloc]*Delta_T_mean, alpha_nom*geo.A_heat_CF[heatSurfaceAlloc]*Delta_T_mean) else alpha*geo.A_heat_CF[heatSurfaceAlloc]*Delta_T_mean;
 
-  // defining the HTC for a shell area, either heated or cooled ONE-PHASE flow. Evaporation and condensation are NOT supported
-  alpha = if useHomotopy then homotopy(FluidDissipation.HeatTransfer.HeatExchanger.kc_tubeBundle_1ph_KC(inCon_1ph, inVar_1ph), alpha_nom) else noEvent(FluidDissipation.HeatTransfer.HeatExchanger.kc_tubeBundle_1ph_KC(inCon_1ph, inVar_1ph));
-
-  (,Pr,Re,Nu,failureStatus) = FluidDissipation.HeatTransfer.HeatExchanger.kc_tubeBundle_1ph(inCon_1ph, inVar_1ph);
 
   annotation (Icon(graphics), Diagram(graphics));
 end NusseltShell1ph_L2;

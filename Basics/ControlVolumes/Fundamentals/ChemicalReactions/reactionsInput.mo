@@ -10,5 +10,6 @@ model reactionsInput
           lineColor={28,108,200},
           lineThickness=0.5,
           fillColor={255,255,255},
-          fillPattern=FillPattern.Solid)}), Diagram(coordinateSystem(preserveAspectRatio=false)));
+          fillPattern=FillPattern.Solid)}), Diagram(graphics,
+                                                    coordinateSystem(preserveAspectRatio=false)));
 end reactionsInput;

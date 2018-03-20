@@ -1,10 +1,10 @@
 within ClaRa.Components.MechanicalSeparation;
 partial model FeedWaterTank_base "Base class for feedwater tanks"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -49,8 +49,7 @@ partial model FeedWaterTank_base "Base class for feedwater tanks"
   parameter Boolean outputAbs = false "True, if absolute level is at output"  annotation(Dialog(enable = levelOutput, tab="Summary and Visualisation"));
 
 public
-  ClaRa.Basics.Interfaces.FluidPortOut outlet(Medium=medium) "Outlet port"
-    annotation (Placement(transformation(extent={{-270,-110},{-250,-90}}), iconTransformation(extent={{-270,-110},{-250,-90}})));
+  ClaRa.Basics.Interfaces.FluidPortOut feedwater(Medium=medium) "Feedwater" annotation (Placement(transformation(extent={{-270,-110},{-250,-90}}), iconTransformation(extent={{-270,-110},{-250,-90}})));
   ClaRa.Basics.Interfaces.FluidPortIn heatingSteam(Medium=medium) "Heating steam inlet"
     annotation (Placement(transformation(extent={{-210,70},{-190,90}}), iconTransformation(extent={{-210,70},{-190,90}})));
   ClaRa.Basics.Interfaces.FluidPortIn condensate(Medium=medium) "Main condensate inlet"
@@ -72,7 +71,8 @@ equation
       points={{-220,-80},{-220,-110}},
       color={190,190,190},
       smooth=Smooth.None));
-  annotation (Icon(coordinateSystem(preserveAspectRatio=false,extent={{-300,-100},{300,100}},
+  annotation (Icon(graphics,
+                   coordinateSystem(preserveAspectRatio=false,extent={{-300,-100},{300,100}},
         initialScale=0.1)),
                          Diagram(coordinateSystem(preserveAspectRatio=false,
           extent={{-300,-100},{300,100}},

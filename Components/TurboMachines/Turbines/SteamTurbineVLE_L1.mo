@@ -1,10 +1,10 @@
 within ClaRa.Components.TurboMachines.Turbines;
 model SteamTurbineVLE_L1 "A steam turbine model based on STODOLA's law"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -50,7 +50,9 @@ model SteamTurbineVLE_L1 "A steam turbine model based on STODOLA's law"
 //_______________________ Efficiency _____________________________
   parameter Real eta_mech=0.98 "Mechanical efficiency" annotation(Dialog(tab="Mechanical and Efficiency Settings",group="Turbine Efficiency"));
 
-  replaceable model Efficiency=ClaRa.Components.TurboMachines.Fundamentals.EfficiencyModels.TableMassFlow constrainedby ClaRa.Components.TurboMachines.Fundamentals.EfficiencyModels.EfficiencyModelBase "Calculation of isentropic efficiency"
+  replaceable model Efficiency=ClaRa.Components.TurboMachines.Fundamentals.TurbineEfficiency.TableMassFlow
+                                                                                                          constrainedby ClaRa.Components.TurboMachines.Fundamentals.TurbineEfficiency.EfficiencyModelBase
+                                                                                                                                                                                                "Calculation of isentropic efficiency"
                                                                                             annotation(Dialog(tab="Mechanical and Efficiency Settings",group="Turbine Efficiency"),choicesAllMatching);
 
 //_______________________ Expert Settings _____________________________
@@ -70,12 +72,13 @@ public
   Modelica.SIunits.Pressure p_l "Laval pressure";
    ClaRa.Basics.Units.RPM rpm;
 
-   inner Fundamentals.ICom iCom(m_flow_in=inlet.m_flow, m_flow_nom=m_flow_nom,
+  inner Fundamentals.IComTurbine iCom(
+    m_flow_in=inlet.m_flow,
+    m_flow_nom=m_flow_nom,
     rho_nom=rho_nom,
     rho_in=fluidIn.d,
     rpm=rpm,
-    Delta_h_is=fluidIn.h - h_is)
-                                annotation (Placement(transformation(extent={{-40,-100},{-20,-80}})));
+    Delta_h_is=fluidIn.h - h_is) annotation (Placement(transformation(extent={{-40,-100},{-20,-80}})));
 
 model Outline
   extends ClaRa.Basics.Icons.RecordIcon;
@@ -207,7 +210,8 @@ equation
       smooth=Smooth.None));
   connect(getInputsRotary.shaft_a, shaft_a) annotation (Line(points={{-20,0},{-20,0},{-52,0},{-100,0}},       color={0,0,0}));
   connect(getInputsRotary.shaft_b, shaft_b) annotation (Line(points={{0,0},{10,0},{10,0},{0,0},{80,0},{80,0}},       color={0,0,0}));
-  annotation (Diagram(coordinateSystem(preserveAspectRatio=false,extent={{-60,-100},{40,100}})),
+  annotation (Diagram(graphics,
+                      coordinateSystem(preserveAspectRatio=false,extent={{-60,-100},{40,100}})),
                                          Icon(coordinateSystem(extent={{-60,-100},{40,100}},
                              preserveAspectRatio=false), graphics={Rectangle(
           extent={{-100,10},{-60,-10}},

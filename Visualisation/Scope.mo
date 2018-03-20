@@ -4,7 +4,7 @@ model Scope "Dynamic graphical display of one variable"
 // Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -32,19 +32,19 @@ public
                                                                     annotation(Dialog(group="Layout"));
 
   parameter ClaRa.Basics.Types.Color color={0,131,169} "Line color"         annotation (Hide=false, Dialog(group="Layout"));
-  parameter Modelica.SIunits.Time Tau_stab=0.01 "Stabilizing time constant, 0 means no stabilisation "
-                                                                                                annotation(Dialog(group="Numerics"));
+  parameter Modelica.SIunits.Time Tau_stab=0.01 "Stabilizing time constant, 0 means no stabilisation " annotation(Dialog(group="Numerics"));
 
 //  final parameter Real y_start=(y_min+y_max)/2 "Initial display value";
 
+
 protected
-  final parameter Integer N_points = integer((t_end-t_start)/t_sample+1) "Number of points";
   final parameter Real x[N_points] = linspace(1,100,N_points) "x-positions of line points" annotation(Hide=false);
   Real y[N_points] "y-positions of line points" annotation(Hide=false);
+  final parameter Integer N_points = integer((t_end-t_start)/t_sample+1) "Number of points";
   Real f "Horizontal position of the cover-rectangle" annotation(Hide=false);
   Real u_in "Value to be displayed";
   Real u_aux "Auxilliary variable";
-
+  Real xy[:,:] = [x,y] annotation(Hide=false);
 public
   Modelica.Blocks.Interfaces.RealInput u(value = u_aux) if not hideInterface "Input signal"
     annotation (Placement(transformation(extent={{-40,50},{0,90}}),
@@ -108,7 +108,7 @@ annotation (    Icon(coordinateSystem(preserveAspectRatio=true, extent={{-30,-10
           fillColor={27,36,42},
           fillPattern=FillPattern.Solid),
           Line(
-            points=DynamicSelect({{0,0},{50,52},{70,40},{100,100}}, [x,y]),
+            points=DynamicSelect({{0,0},{50,52},{70,40},{100,100}}, xy),
             color=DynamicSelect({0,131,169},color),
             pattern=LinePattern.Solid, thickness=0.5),
           Rectangle(

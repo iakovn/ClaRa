@@ -1,10 +1,10 @@
 within ClaRa.Components.BoundaryConditions;
 model BoundarySlag_Tm_flow "A source defining mass flow and temperature"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -24,7 +24,7 @@ model BoundarySlag_Tm_flow "A source defining mass flow and temperature"
                                                                                               annotation(Dialog(tab="Summary and Visualisation"));
   parameter Boolean massFlowIsLoss = true "True if mass flow is a loss (not a process product)" annotation(Dialog(tab="Summary and Visualisation"));
 
-  parameter ClaRa.Basics.Media.Fuel.PartialSlag slagType=simCenter.slagModel "Medium to be used"                      annotation(choicesAllMatching, Dialog(group="Fundamental Definitions"));
+  parameter ClaRa.Basics.Media.Slag.PartialSlag slagType=simCenter.slagModel "Medium to be used" annotation (choicesAllMatching, Dialog(group="Fundamental Definitions"));
 
   parameter Boolean variable_m_flow=false "True, if mass flow defined by variable input" annotation(Dialog(group="Define Variable Boundaries"));
   parameter Boolean variable_T=false "True, if temperature defined by variable input" annotation(Dialog(group="Define Variable Boundaries"));

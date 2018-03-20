@@ -2,7 +2,6 @@ Check
 GasMassSpecific
 GasPortIn
 GasPortOut
-fluidPort_XRG
 FluidPortIn
 FluidPortOut
 Fuel_inlet
@@ -27,6 +26,7 @@ EyeOutGas
 DataInterface
 DoubleDataInterface
 DataInterfaceVector
+DataInterfaceVectorGas
 Bus
 SteamSignal
 ElectricPortIn

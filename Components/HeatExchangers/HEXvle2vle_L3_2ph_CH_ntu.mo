@@ -1,10 +1,10 @@
 within ClaRa.Components.HeatExchangers;
 model HEXvle2vle_L3_2ph_CH_ntu "VLE 2 VLE | L3 | 2 phase at shell side | Cylinder shape | Header type | simple HT"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.2                            //
+  // Component of the ClaRa library, version: 1.3.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -31,8 +31,8 @@ model HEXvle2vle_L3_2ph_CH_ntu "VLE 2 VLE | L3 | 2 phase at shell side | Cylinde
     input Basics.Units.TemperatureDifference Delta_T_out "Fluid temperature at outlet T_1_out - T_2_out";
     input Real effectiveness[3] if showExpertSummary "Effectivenes of HEX";
     input Real kA[3](unit="W/K") if showExpertSummary "Overall heat resistance";
-    input Basics.Units.Length absLevel "Absolute filling level";
-    input Real relLevel "relative filling level";
+    input Basics.Units.Length level_abs "Absolute filling level";
+    input Real level_rel "relative filling level";
   end Outline;
 
   model Summary
@@ -64,10 +64,10 @@ model HEXvle2vle_L3_2ph_CH_ntu "VLE 2 VLE | L3 | 2 phase at shell side | Cylinde
         group="Fundamental Definitions"), choicesAllMatching);
   parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation"
     annotation (Dialog(group="Fundamental Definitions"), choicesAllMatching);
-//, groupImage="modelica://ClaRa/figures/ParameterDialog/HEX_ParameterDialog_CHgeneral.png"
+//, groupImage="modelica://ClaRa/Resources/Images/ParameterDialog/HEX_ParameterDialog_CHgeneral.png"
   //________________________________ Shell geometry _______________________________//
   parameter Basics.Units.Length length=10 "Length of the HEX"
-    annotation (Dialog(tab="Shell Side", group="Geometry", groupImage="modelica://ClaRa/figures/ParameterDialog/HEX_ParameterDialog_CHshell.png"));
+    annotation (Dialog(tab="Shell Side", group="Geometry", groupImage="modelica://ClaRa/Resources/Images/ParameterDialog/HEX_ParameterDialog_CHshell.png"));
   parameter Basics.Units.Length diameter=3 "Diameter of HEX"
     annotation (Dialog(tab="Shell Side", group="Geometry"));
   parameter Basics.Units.Length z_in_shell=length/2 "Inlet position from bottom"
@@ -130,7 +130,7 @@ model HEXvle2vle_L3_2ph_CH_ntu "VLE 2 VLE | L3 | 2 phase at shell side | Cylinde
 
   //________________________________ Tubes geometry _______________________________//
 
-  parameter Basics.Units.Length diameter_i=0.048 "Inner diameter of horizontal tubes"     annotation (Dialog(tab="Tubes", group="Geometry",groupImage="modelica://ClaRa/figures/ParameterDialog/HEX_ParameterDialogTubes.png"));
+  parameter Basics.Units.Length diameter_i=0.048 "Inner diameter of horizontal tubes"     annotation (Dialog(tab="Tubes", group="Geometry",groupImage="modelica://ClaRa/Resources/Images/ParameterDialog/HEX_ParameterDialogTubes.png"));
   parameter Basics.Units.Length diameter_o=0.05 "Outer diameter of horizontal tubes" annotation (Dialog(tab="Tubes", group="Geometry"));
 
   parameter Basics.Units.Length length_tubes=10 "Length of the tubes (one pass)" annotation (Dialog(tab="Tubes", group="Geometry"));
@@ -181,6 +181,11 @@ model HEXvle2vle_L3_2ph_CH_ntu "VLE 2 VLE | L3 | 2 phase at shell side | Cylinde
       choice=0 "Use guess values",
       choice=1 "Steady state",
       choice=203 "Steady temperature"));
+  parameter Integer initOption_yps=3 "Volumetric initialisation" annotation (Dialog(tab="Tube Wall", group="Initialisation"),choices(choice = 1 "Integrator state at zero",
+                                                                                                    choice=2 "Steady state",
+                                                                                                    choice=3 "Apply guess value y_start at output",
+                                                                                                    choice=4 "Force y_start at output"));
+  parameter Real yps_start[2]={0.33,0.33} "Initial area fraction 1phase | 2phase " annotation (Dialog(tab="Tube Wall", group="Initialisation"));
 
   //*********************************** / EXPERT Settings and Visualisation \ ***********************************//
   parameter Basics.Units.Time Tau_cond=0.3 "Time constant of condensation" annotation (Dialog(tab="Expert Settings", group="Zone Interaction at Shell Side"));
@@ -203,9 +208,10 @@ model HEXvle2vle_L3_2ph_CH_ntu "VLE 2 VLE | L3 | 2 phase at shell side | Cylinde
   parameter Real gain_eff=1 "Avoid effectiveness > 1, high gain_eff leads to stricter observation but may cause numeric errors"
                                                                                               annotation (Dialog(tab="Expert Settings", group="NTU model"));
   parameter Basics.Units.Time Tau_stab=0.1 "Time constant for numeric stabilisation w.r.t. heat flow rates" annotation (Dialog(tab="Expert Settings", group="NTU model"));
-  replaceable function HeatCapacityAveraging =
-      ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.ArithmeticMean
-    constrainedby ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.GeneralMean "Method for Averaging of heat capacities"
+  replaceable model HeatCapacityAveraging =
+      ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Averaging_Cp.ArithmeticMean
+    constrainedby ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Averaging_Cp.GeneralMean
+                                                                                              "Method for Averaging of heat capacities"
     annotation (Dialog(tab="Expert Settings", group="NTU model"),choicesAllMatching);
 
   ClaRa.Basics.Interfaces.FluidPortIn In2(Medium=medium_tubes)
@@ -296,8 +302,8 @@ public
       Delta_T_out=shell.summary.outlet[1].T - tubes.summary.outlet.T,
       effectiveness=wall.summary.effectiveness,
       kA=wall.summary.kA,
-      absLevel=shell.phaseBorder.level_abs,
-      relLevel=shell.phaseBorder.level_rel)) annotation (Placement(transformation(
+      level_abs=shell.phaseBorder.level_abs,
+      level_rel=shell.phaseBorder.level_rel)) annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=0,
         origin={-50,-92})));
@@ -342,7 +348,7 @@ public
     h_i_inlet=inStream(tubes.inlet.h_outflow),
     h_o_inlet=inStream(shell.inlet[1].h_outflow),
     m_flow_o=sum(shell.inlet.m_flow),
-    redeclare function HeatCapacityAveraging = HeatCapacityAveraging,
+    redeclare model HeatCapacityAveraging = HeatCapacityAveraging,
     medium_shell=medium_shell,
     medium_tubes=medium_tubes,
     T_w_i_start=T_w_tube_start,
@@ -358,7 +364,9 @@ public
     alpha_o={shell.heattransfer.alpha[2],shell.heattransfer.alpha[2],shell.heattransfer.alpha[1]},
     Tau_stab=Tau_stab,
     CF_geo=CF_geo,
-    p_o=shell.inlet[1].p)                                                                               annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+    p_o=shell.inlet[1].p,
+    initOption_yps=initOption_yps,
+    yps_start=yps_start)                                                                                annotation (Placement(transformation(extent={{-10,-10},{10,10}},
         rotation=90,
         origin={54,40})));
   Adapters.Scalar2VectorHeatPort reallocateHeatFlows(final equalityMode="Equal Temperatures")
@@ -367,6 +375,7 @@ public
         extent={{-10,-10},{10,10}},
         rotation=270,
         origin={80,-110})));
+
 equation
    assert(diameter_o > diameter_i,
      "Outer diameter of tubes must be greater than inner diameter");
@@ -456,14 +465,5 @@ equation
           extent={{-86,78},{86,38}},
           lineColor={27,36,42},
           textString="NTU")}),Diagram(coordinateSystem(preserveAspectRatio=false,
-          extent={{-100,-100},{100,100}}), graphics={Text(
-          extent={{4,14},{54,-10}},
-          lineColor={118,124,127},
-          textString="Heat flow from subcooled zone calculated
- by NTU-model is mixed with the heat flow 
-from the other zones and distributed according
-to temperature differences to the shell volume.
-This is done due to numerical reasons.
-In HEXvle2vle_L3_2ph_BU_ntu this is 
-handled differently.")}));
+          extent={{-100,-100},{100,100}})));
 end HEXvle2vle_L3_2ph_CH_ntu;

@@ -12,7 +12,7 @@ model TestTurboGenerator
   TurboMachines.Turbines.SteamTurbineVLE_L1 steamTurbineVLE_L1_1(useMechanicalPort=true,
     J=3000,
     steadyStateTorque=true,
-    redeclare model Efficiency = TurboMachines.Fundamentals.EfficiencyModels.TableMassFlow,
+    redeclare model Efficiency = TurboMachines.Fundamentals.TurbineEfficiency.TableMassFlow,
     contributeToCycleSummary=true,
     eta_mech=1)                                                                                                  annotation (Placement(transformation(extent={{-34,-10},{-24,10}})));
   BoundaryConditions.BoundaryVLE_hxim_flow
@@ -51,8 +51,10 @@ equation
   connect(ramp.y, boundaryVLE_phxi1.p) annotation (Line(points={{-79,-30},{-70,-30},{-70,-24},{-60,-24}}, color={0,0,127}));
   connect(ramp1.y, boundaryElectricFrequency.f) annotation (Line(points={{79,0},{62,0}}, color={0,0,127}));
   annotation (
-    Icon(coordinateSystem(preserveAspectRatio=false)),
-    Diagram(coordinateSystem(preserveAspectRatio=false)),
+    Icon(graphics,
+         coordinateSystem(preserveAspectRatio=false)),
+    Diagram(graphics,
+            coordinateSystem(preserveAspectRatio=false)),
     experiment(StopTime=300),
     __Dymola_experimentSetupOutput);
 end TestTurboGenerator;

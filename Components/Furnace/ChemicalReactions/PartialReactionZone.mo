@@ -2,20 +2,13 @@ within ClaRa.Components.Furnace.ChemicalReactions;
 partial model PartialReactionZone "Model to regard chemical reactions"
   extends ClaRa.Basics.Icons.Box;
 
-outer parameter TILMedia.GasTypes.BaseGas flueGas;
-outer parameter ClaRa.Basics.Media.Fuel.PartialFuel fuelType;
-input ClaRa.Basics.Units.MassFraction xi_fuel_in[fuelType.nc - 1];
+parameter TILMedia.GasTypes.BaseGas flueGas;
+parameter ClaRa.Basics.Media.FuelTypes.Fuel_refvalues_v1 fuelModel;
+
+
+input ClaRa.Basics.Units.MassFraction elementaryComposition_fuel_in[fuelModel.N_e - 1];
 ClaRa.Basics.Units.MassFraction prod_comp[flueGas.nc - 1] "Resulting composition of products";
-//outer ClaRa.Basics.Units.MassFraction xi_prod_comp_test[flueGas.nc-1]; //Resulting composition of products
-input ClaRa.Basics.Units.MassFraction xi_flueGas[flueGas.nc - 1];
 
-parameter Real xi_slag = 0.1 "Fraction of Ash that leaves combustion chamber at bottom due to gravity"
-                                                                              annotation (Dialog(group="Slag parameters"));
-
-parameter Real xi_NOx=1000e-6 "Fraction of burned fuel N being converted to NOx"
-                                                       annotation(Dialog(group="Toxic substance in fluegas"));
-parameter Real xi_CO=1000e-6 "Fraction of burned fuel C being converted to CO"
-                                                      annotation(Dialog(group="Toxic substance in fluegas"));
 
 //_________/Educts\__________________
 protected

@@ -1,10 +1,10 @@
 within ClaRa.StaticCycles.Storage;
 model Feedwatertank3 "Feedwatertank || par.: m_flow_FW, p_FW_nom || blue | red | green"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -28,17 +28,17 @@ model Feedwatertank3 "Feedwatertank || par.: m_flow_FW, p_FW_nom || blue | red |
 
   Summary summary(
   inlet_cond(
-     m_flow=cond_in.m_flow,
-     h=cond_in.h,
-     p=cond_in.p),
+     m_flow=m_flow_cond,
+     h=h_cond_in,
+     p=p_FWT),
   outlet_cond(
-     m_flow=cond_out.m_flow,
-     h=cond_out.h,
-     p=cond_out.p),
-     inlet_tap(
-     m_flow=tap_in.m_flow,
-     h=tap_in.h,
-     p=tap_in.p));
+     m_flow=m_flow_FW,
+     h=h_cond_out,
+     p=p_FWT_out),
+  inlet_tap(
+     m_flow=m_flow_tap,
+     h=h_tap_in,
+     p=p_FWT));
   //---------Summary Definition---------
   outer ClaRa.SimCenter simCenter;
    parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium = simCenter.fluid1 "Medium in the component"
@@ -57,6 +57,7 @@ model Feedwatertank3 "Feedwatertank || par.: m_flow_FW, p_FW_nom || blue | red |
 //__________________________________________________
 
   final parameter ClaRa.Basics.Units.Pressure p_FWT = P_target_*p_FWT_nom "Feedwater tank pressure at current load";
+  final parameter ClaRa.Basics.Units.Pressure p_FWT_out=p_FWT + Modelica.Constants.g_n*level_abs*TILMedia.VLEFluidFunctions.bubbleDensity_pxi(medium, p_FWT) "Feedwater tank condensate outlet pressure";
 
   final parameter ClaRa.Basics.Units.MassFlowRate m_flow_tap = (h_cond_out*m_flow_FW - h_cond_in*m_flow_cond)/h_tap_in "Mass flow of the heating steam";
 
@@ -77,7 +78,7 @@ public
         origin={0,0})));
   Fundamentals.SteamSignal_green_b cond_out(
     h=h_cond_out,
-    p=p_FWT + Modelica.Constants.g_n*level_abs*TILMedia.VLEFluidFunctions.bubbleDensity_pxi(medium, p_FWT),
+    p=p_FWT_out,
     m_flow=m_flow_FW) annotation (Placement(transformation(extent={{100,-70},{110,-50}}), iconTransformation(extent={{100,-70},{110,-50}})));
 initial equation
   m_flow_cond = cond_in.m_flow;
@@ -115,6 +116,7 @@ initial equation
           fillPattern=FillPattern.Solid,
           smooth=Smooth.Bezier,
           visible = DynamicSelect(false, isFilled))}),
-                         Diagram(coordinateSystem(preserveAspectRatio=false,
+                         Diagram(graphics,
+                                 coordinateSystem(preserveAspectRatio=false,
                                                                            extent={{-100,-100},{100,20}})));
 end Feedwatertank3;

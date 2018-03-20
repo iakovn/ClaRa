@@ -2,10 +2,10 @@ within ClaRa.Components.TurboMachines.Compressors;
 model CompressorGas_L1_affinity "A gas compressor or fan based on affinity laws"
   import ClaRa;
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -112,10 +112,12 @@ protected
   Real kappaA_aux;
 
 public
-  Basics.Interfaces.EyeOut eyeOut annotation (Placement(transformation(extent={{72,-78},
+  ClaRa.Basics.Interfaces.EyeOutGas
+                           eyeOut(each medium=medium) annotation (Placement(transformation(extent={{72,-78},
             {112,-42}}),          iconTransformation(extent={{92,-70},{112,-50}})));
 protected
-  Basics.Interfaces.EyeIn eye_int[1] annotation (Placement(transformation(extent={{48,-68},
+  ClaRa.Basics.Interfaces.EyeInGas
+                          eye_int[1](each medium=medium) annotation (Placement(transformation(extent={{48,-68},
             {32,-52}}),           iconTransformation(extent={{90,-84},{84,-78}})));
 
 public
@@ -168,7 +170,7 @@ equation
   Delta_p_max_aff = Delta_p_max*(rpm/rpm_nom)^2;
 
   //______________Compressor_characteristic___________
-  V_flow =  FluidDissipation.Utilities.Functions.General.SmoothPower((Delta_p_max_aff - Delta_p)/Delta_p_max, Delta_p_eps/Delta_p_max, exp_hyd)*(V_flow_max-V_flow_min) + V_flow_min;
+  V_flow =  Modelica.Fluid.Dissipation.Utilities.Functions.General.SmoothPower((Delta_p_max_aff - Delta_p)/Delta_p_max, Delta_p_eps/Delta_p_max, exp_hyd)*(V_flow_max-V_flow_min) + V_flow_min;
 
   P_hyd = Delta_h*inlet.m_flow;
 
@@ -204,6 +206,7 @@ equation
   eye_int[1].s = flueGas_outlet.s/1e3;
   eye_int[1].p = flueGas_outlet.p/1e5;
   eye_int[1].h = flueGas_outlet.h/1e3;
+  eye_int[1].xi=flueGas_outlet.xi;
 
   connect(eye_int[1],eyeOut)  annotation (Line(
       points={{40,-60},{92,-60}},
@@ -211,7 +214,8 @@ equation
       smooth=Smooth.None));
   connect(shaft, getInputsRotary.rotatoryFlange)
     annotation (Line(points={{0,100},{0,30}}, color={0,0,0}));
-  annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+  annotation (Diagram(graphics,
+                      coordinateSystem(preserveAspectRatio=false, extent={{-100,
             -100},{100,100}})),  Icon(coordinateSystem(preserveAspectRatio=false,
           extent={{-100,-100},{100,100}}),
                                       graphics));

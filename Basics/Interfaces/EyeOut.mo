@@ -14,7 +14,12 @@ annotation ( Icon(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100}
           points={{-100,100},{100,0},{-100,-100},{-100,100}},
           lineColor={190,190,190},
           fillColor={102,181,203},
-          fillPattern=FillPattern.Solid)}),
+          fillPattern=FillPattern.Solid),
+        Polygon(
+          points={{-80,60},{60,0},{-80,-60},{-80,60}},
+          fillColor={221,222,223},
+          fillPattern=FillPattern.Solid,
+          pattern=LinePattern.None)}),
     Diagram(graphics={         Polygon(
           points={{-100,100},{100,0},{-100,-100},{-100,100}},
           lineColor={153,205,221},

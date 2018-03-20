@@ -1,10 +1,10 @@
 within ClaRa.Components.MechanicalSeparation;
 model BalanceTank_L3 "A balance tank with a vent"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -74,7 +74,7 @@ model BalanceTank_L3 "A balance tank with a vent"
     annotation (Placement(transformation(extent={{132,190},{152,210}}),
         iconTransformation(extent={{132,190},{152,210}})));
 
-  Basics.ControlVolumes.SolidVolumes.ThickWall_L4 wall(
+  Basics.ControlVolumes.SolidVolumes.CylindricalThickWall_L4 wall(
     N_rad=3,
     sizefunc=+1,
     diameter_i=diameter_i,
@@ -154,6 +154,7 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-            -100},{200,200}}), graphics), Icon(coordinateSystem(
+            -100},{200,200}}), graphics), Icon(graphics,
+                                               coordinateSystem(
           preserveAspectRatio=false, extent={{-100,-100},{200,200}})));
 end BalanceTank_L3;

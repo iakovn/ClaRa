@@ -1,10 +1,10 @@
 within ClaRa.Components.Control.PredictorModels_3508.Check;
 model testReheater
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -47,50 +47,47 @@ public
     annotation (Placement(transformation(extent={{20,-80},{40,-60}})));
 equation
   connect(p.y, steamSignal.p_) annotation (Line(
-      points={{-61,34},{-6,34},{-6,16}},
+      points={{-61,34},{-6.1,34},{-6.1,16.1}},
       color={0,0,127},
       smooth=Smooth.None), Text(
       string="%second",
       index=1,
       extent={{6,3},{6,3}}));
   connect(p1.y, steamSignal.h_) annotation (Line(
-      points={{-61,6},{-16,6},{-16,16},{-6,16}},
+      points={{-61,6},{-16,6},{-16,16.1},{-6.1,16.1}},
       color={0,0,127},
       smooth=Smooth.None), Text(
       string="%second",
       index=1,
       extent={{6,3},{6,3}}));
   connect(m.y, steamSignal.m_flow_) annotation (Line(
-      points={{-35,-16},{-6,-16},{-6,16}},
+      points={{-35,-16},{-6.1,-16},{-6.1,16.1}},
       color={0,0,127},
       smooth=Smooth.None), Text(
       string="%second",
       index=1,
       extent={{6,3},{6,3}}));
-  connect(steamSignal, turbinesAndReheat.inlet) annotation (Line(
-      points={{-6,16},{8,16},{8,22},{18.2,22}},
-      color={255,204,51},
-      thickness=0.5,
-      smooth=Smooth.None), Text(
+  connect(steamSignal, turbinesAndReheat_00_XRG.inlet) annotation (Line(
+      points={{-6,16},{8,16},{8,-62},{20.2,-62}},
+      color={102,181,203},
+      thickness=0.5), Text(
       string="%first",
       index=-1,
       extent={{-6,3},{-6,3}}));
   connect(steamSignal, turbinesAndReheat_02_XRG.inlet) annotation (Line(
       points={{-6,16},{8,16},{8,-22},{20.2,-22}},
-      color={255,204,51},
-      thickness=0.5,
-      smooth=Smooth.None), Text(
+      color={102,181,203},
+      thickness=0.5), Text(
       string="%first",
       index=-1,
       extent={{-6,3},{-6,3}}));
-  connect(turbinesAndReheat_00_XRG.inlet, steamSignal) annotation (Line(
-      points={{20.2,-62},{8,-62},{8,16},{-6,16}},
-      color={255,204,51},
-      thickness=0.5,
-      smooth=Smooth.None), Text(
-      string="%second",
-      index=1,
-      extent={{6,3},{6,3}}));
+  connect(steamSignal, turbinesAndReheat.inlet) annotation (Line(
+      points={{-6,16},{6,16},{6,22},{18.2,22}},
+      color={102,181,203},
+      thickness=0.5), Text(
+      string="%first",
+      index=-1,
+      extent={{-6,3},{-6,3}}));
   annotation (Diagram(graphics={  Text(
           extent={{-96,100},{102,60}},
           lineColor={0,128,0},
@@ -100,11 +97,7 @@ equation
 PURPOSE:
 
 ______________________________________________________________________________________________
-"),                    Text(
-          extent={{-136,104},{64,84}},
-          lineColor={0,128,0},
-          fontSize=31,
-          textString="TESTED -- YYYY-MM-DD //XX"),Text(
+"),                                               Text(
           extent={{-96,60},{68,46}},
           lineColor={0,128,0},
           horizontalAlignment=TextAlignment.Left,
@@ -120,5 +113,5 @@ ________________________________________________________________________________
 Scenario:  
 
 ______________________________________________________________________________________________
-")}));
+")}), experiment(StopTime=3000));
 end testReheater;

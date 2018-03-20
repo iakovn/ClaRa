@@ -91,11 +91,7 @@ equation
 PURPOSE:
 Show steam separator functionality for normal and abnormal operation conditions
 ______________________________________________________________________________________________
-"),                    Text(
-          extent={{-100,130},{100,110}},
-          lineColor={0,128,0},
-          fontSize=31,
-          textString="TESTED -- 2016-02-24 //TH")}),
+")}),
     experiment(
       StopTime=60000,
       __Dymola_NumberOfIntervals=20000,

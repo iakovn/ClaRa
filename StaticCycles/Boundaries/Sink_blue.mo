@@ -31,5 +31,6 @@ initial equation
           fillPattern=FillPattern.Solid,
           textString="%p"),
         Line(points={{-100,100},{-60,0},{-100,-100}}, color={0,131,169})}),
-                                            Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
+                                            Diagram(graphics,
+                                                    coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
 end Sink_blue;

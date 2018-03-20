@@ -1,10 +1,10 @@
-within ClaRa.Visualisation;
+﻿within ClaRa.Visualisation;
 model Sixtuple " Cross-shaped dynamic display of m_flow, p, T, h, s and e"
 //___________________________________________________________________________//
 // Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -28,6 +28,7 @@ model Sixtuple " Cross-shaped dynamic display of m_flow, p, T, h, s and e"
   Real e "Exergy flow";
 
 record DecimalSpaces
+  extends ClaRa.Basics.Icons.RecordIcon;
 parameter Integer T=1 "Accuracy to be displayed for temperature";
 parameter Integer m_flow=1 "Accuracy to be displayed for mass flow";
 parameter Integer h=1 "Accuracy to be displayed for enthalpy";
@@ -71,7 +72,7 @@ equation
           textString=DynamicSelect(" h ", String(eye.h,format = "1."+String(decimalSpaces.h)+"f") + " kJ/kg")),
         Text(
           extent=DynamicSelect({{0,0},{200,-100}},if largeFonts then {{0,0},{200,-100}} else {{0,-20},{200,-80}}),
-          textString=DynamicSelect(" T ", String(eye.T, format = "1."+String(decimalSpaces.T)+"f") + " C"),
+          textString=DynamicSelect(" T ", String(eye.T, format = "1."+String(decimalSpaces.T)+"f") + "°C"),
           fillColor={215,215,215},
           fillPattern=FillPattern.Solid,
           lineColor=DynamicSelect({230,230,230},if time>0 then {0,131,169} else {230,230,230})),

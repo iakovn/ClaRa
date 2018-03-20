@@ -2,71 +2,13 @@ within ClaRa.Components.Furnace.BaseClasses;
 partial model CombustionChamberBase
   import ClaRa;
 
-    //## S U M M A R Y   D E F I N I T I O N ###################################################################
-  model Outline
-    //  parameter Boolean showExpertSummary annotation(Dialog(hide));
-    extends ClaRa.Basics.Icons.RecordIcon;
-    input ClaRa.Basics.Units.Volume volume "Volume";
-    input ClaRa.Basics.Units.Area A_cross "Free cross sectional area";
-    input ClaRa.Basics.Units.Area A_wall "Wall area";
-    input ClaRa.Basics.Units.Length height "Height of volume";
-    input ClaRa.Basics.Units.Mass m "Mass inside volume";
-    input ClaRa.Basics.Units.MassFlowRate m_flow_fuel_burned "Burned fuel mass flow rate";
-    input ClaRa.Basics.Units.MassFlowRate m_flow_oxygen_burned "Burned oxygen mass flow rate";
-    input ClaRa.Basics.Units.MassFlowRate m_flow_oxygen_req "Required O2 flow rate for stochiometric combustion";
-    input ClaRa.Basics.Units.MassFlowRate m_flow_air_req "Required air flow rate for stochiometric combustion";
-    input Real lambdaComb "Excess air";
-    input Real NOx_fraction "NOx fraction at outlet";
-    input Real CO_fraction "CO fraction at outlet";
-    input ClaRa.Basics.Units.EnthalpyMassSpecific LHV "Lower heating value";
-    input ClaRa.Basics.Units.HeatFlowRate Q_combustion "Combustion Heat";
-    input ClaRa.Basics.Units.Velocity w_migration "Particle migration speed";
-    input ClaRa.Basics.Units.Time t_dwell_flueGas "Flue gas dwelltime";
-    input ClaRa.Basics.Units.Time burning_time "Burning time";
-    input Real unburntFraction "Fuel diffusity";
-    input ClaRa.Basics.Units.Temperature T_out "Outlet temperature";
-    input ClaRa.Basics.Units.EnthalpyMassSpecific h_out "Flue gas enthalpy at outlet";
-  end Outline;
-
-  model Fuel
-    extends ClaRa.Basics.Icons.RecordIcon;
-    input ClaRa.Basics.Units.MassFlowRate m_flow "Mass flow rate"
-      annotation (Dialog);
-    input ClaRa.Basics.Units.Temperature T "Temperature" annotation (Dialog);
-    input ClaRa.Basics.Units.Pressure p "Pressure" annotation (Dialog);
-    input ClaRa.Basics.Units.HeatCapacityMassSpecific cp "Specific heat capacity"
-                               annotation (Dialog);
-  end Fuel;
-
-  model Slag
-    extends ClaRa.Basics.Icons.RecordIcon;
-    input ClaRa.Basics.Units.MassFlowRate m_flow "Mass flow rate"
-      annotation (Dialog);
-    input ClaRa.Basics.Units.Temperature T "Temperature" annotation (Dialog);
-    input ClaRa.Basics.Units.Pressure p "Pressure" annotation (Dialog);
-  end Slag;
-
-  model Flow
-    extends ClaRa.Basics.Icons.RecordIcon;
-    ClaRa.Basics.Records.FlangeGas flueGas;
-    Fuel fuel;
-    Slag slag;
-  end Flow;
-
-  model Summary
-    extends ClaRa.Basics.Icons.RecordIcon;
-    Outline outline;
-    Flow inlet;
-    Flow outlet;
-  end Summary;
-
 //## P A R A M E T E R S #######################################################################################
    //__________________________/ Media definintions \______________________________________________
   outer ClaRa.SimCenter simCenter;
-  inner parameter ClaRa.Basics.Media.Fuel.PartialFuel fuelType=simCenter.fuelModel1 "Fuel elemental composition used for combustion" annotation(choices(choice=simCenter.fuelModel "Fuel model 1 as defined in simCenter"),
+
+  inner parameter ClaRa.Basics.Media.FuelTypes.BaseFuel fuelModel=simCenter.fuelModel1 "Fuel elemental composition used for combustion" annotation(choices(choice=simCenter.fuelModel "Fuel model 1 as defined in simCenter"),
                                                                                             Dialog(group="Media Definitions"));
-  parameter ClaRa.Basics.Media.Fuel.PartialSlag slagType=simCenter.slagModel "Slag properties" annotation(choices(choice=simCenter.slagModel "Slag model 1 as defined in simCenter"),
-                                                                                            Dialog(group="Media Definitions"));
+  parameter ClaRa.Basics.Media.Slag.PartialSlag slagType=simCenter.slagModel "Slag properties" annotation (choices(choice=simCenter.slagModel "Slag model 1 as defined in simCenter"), Dialog(group="Media Definitions"));
   inner parameter TILMedia.GasTypes.BaseGas flueGas = simCenter.flueGasModel "Flue gas model used in component" annotation(choicesAllMatching, Dialog(group="Media Definitions"));
 
   parameter Integer slagTemperature_calculationType=1 "Calculation type of outflowing slag temperature" annotation (Dialog(group="Slag temperature definitions"), choices(
@@ -90,12 +32,7 @@ partial model CombustionChamberBase
                                                                        annotation (Dialog(group="Heat Transfer"), choicesAllMatching=true);
   inner parameter Modelica.SIunits.Time Tau_rad= 0.1 "Radiation time constant" annotation(Dialog(group="Heat Transfer"));
 
-//________________________/Chemistry \________________________________________________________
-  replaceable model ReactionZone =
-      ClaRa.Components.Furnace.ChemicalReactions.CoalReactionZone
-    constrainedby ClaRa.Components.Furnace.ChemicalReactions.PartialReactionZone "Model to regard chemical reactions"
-                                         annotation (Dialog(group=
-          "Combustion"), choicesAllMatching=true);
+
 
   replaceable model Burning_time =
       ClaRa.Components.Furnace.GeneralTransportPhenomena.BurningTime.ConstantBurningTime
@@ -114,6 +51,19 @@ partial model CombustionChamberBase
   ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlock constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry(
                                                                       flowOrientation = ClaRa.Basics.Choices.GeometryOrientation.vertical, height_fill=-1) "1st: choose geometry definition | 2nd: edit corresponding record"
     annotation (Dialog(group="Geometry"), choicesAllMatching=true);
+
+  //__________________________/ Pressure Loss \______________________________________________
+  replaceable model PressureLoss =
+    ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.NoFriction_L2
+    constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.PressureLossBaseGas_L2 "Pressure loss model"
+    annotation(Dialog(group="Pressure loss"),choicesAllMatching=true);
+//________________________/Chemistry \________________________________________________________
+   replaceable model ReactionZone =
+       ClaRa.Components.Furnace.ChemicalReactions.CoalReactionZone
+     constrainedby ClaRa.Components.Furnace.ChemicalReactions.PartialReactionZone "Model to regard chemical reactions"
+                                          annotation (Dialog(group=
+           "Combustion"), choicesAllMatching=true);
+
 
   //__________________/ Parameter \_______________________________________________
 
@@ -136,13 +86,13 @@ partial model CombustionChamberBase
 //## V A R I A B L E   P A R T##################################################################################
 
 protected
-  inner ClaRa.Basics.Units.MassFraction xi_fuel "amount of fuel per flue gas mass";
-
+ inner ClaRa.Basics.Units.MassFraction xi_fuel "amount of fuel per flue gas mass";
+  ClaRa.Basics.Units.Pressure Delta_p_aux "auxillary state for pressure drop";
 //________________/ FlueGas Composition \_____________________
 public
- inner ClaRa.Basics.Units.MassFraction xi_flueGas[flueGas.nc - 1] "Flue gas composition ";
+ ClaRa.Basics.Units.MassFraction xi_flueGas[flueGas.nc - 1] "Flue gas composition ";
 //________________/ Fuel Composition \_____________________
-  ClaRa.Basics.Units.MassFraction xi_fuel_out[fuelType.nc - 1] "Fuel outlet composition";
+  ClaRa.Basics.Units.MassFraction xi_fuel_out[fuelModel.N_c - 1] "Fuel outlet composition";
 
 //_____________/ Calculated quantities \_________________________________
   inner ClaRa.Basics.Units.Area A_cross=geo.A_front "Cross section";
@@ -154,7 +104,7 @@ public
   ClaRa.Basics.Units.HeatFlowRate Q_flow_bottom "Heat flow from bottom section";
   ClaRa.Basics.Units.HeatFlowRate Q_flow_wall "Heat flow from walls";
 
-  inner ClaRa.Basics.Units.MassFraction xi_fuel_in[fuelType.nc - 1] "Fuel inlet composition";
+  ClaRa.Basics.Units.MassFraction elementaryComposition_fuel_in[fuelModel.N_e - 1] "Fuel inlet composition";
   ClaRa.Basics.Units.EnthalpyMassSpecific h_flueGas_out "Gas outlet specific enthalpy";
   ClaRa.Basics.Units.EnthalpyMassSpecific h_flueGas_out_del "Gas outlet specific enthalpy - delayed";
 
@@ -179,8 +129,8 @@ protected
   Real Delta_h_f "Formation enthalpy of used fuel";
 
 public
-  ClaRa.Basics.Units.EnthalpyMassSpecific LHV(start=(33907*fuelType.defaultComposition[1] + 142324*(fuelType.defaultComposition[2] - fuelType.defaultComposition[3]/8.) + 10465*fuelType.defaultComposition[5] - 2512*((1 - sum(fuelType.defaultComposition)) + 9*fuelType.defaultComposition[2]))*1000);
-  Modelica.SIunits.SpecificHeatCapacity cp;
+  ClaRa.Basics.Units.EnthalpyMassSpecific LHV;//(33907*FuelType.defaultComposition[1] + 142324*(FuelType.defaultComposition[2] - FuelType.defaultComposition[3]/8.) + 10465*FuelType.defaultComposition[5] - 2512*((1 - sum(FuelType.defaultComposition)) + 9*FuelType.defaultComposition[2]))*1000);
+  //Modelica.SIunits.SpecificHeatCapacity cp;
   ClaRa.Basics.Units.Time t_dwell_flueGas=geo.height/particleMigration.w "Flow time in z-direction";
   Real unburntFraction "Quantatity describes how much unburned fuel leaves control volume together with the fluegas to neighbor cell";
   ClaRa.Basics.Units.MassFlowRate m_flow_oxygen_req(min=1e-15) "Required O2 flow rate for stochiometric combustion";
@@ -194,7 +144,7 @@ public
     //________________________/ Connectors \_______________________________________________________
   ClaRa.Basics.Interfaces.FuelSlagFlueGas_inlet inlet(
     flueGas(final Medium=flueGas),
-    final fuelType=fuelType,
+    fuelModel=fuelModel,
     final slagType=slagType)
     annotation (Placement(transformation(extent={{-130,-110},{-110,-90}}),
         iconTransformation(
@@ -203,7 +153,7 @@ public
         origin={-160,-100})));
   ClaRa.Basics.Interfaces.FuelSlagFlueGas_outlet outlet(
     flueGas(final Medium=flueGas, m_flow(start=-1)),
-    final fuelType=fuelType,
+    fuelModel=fuelModel,
     final slagType=slagType)                                                                        annotation (Placement(transformation(extent={{-130,90},
             {-110,110}}),
         iconTransformation(
@@ -225,7 +175,16 @@ protected
     TILMedia.Gas_pT     flueGasInlet(p=inlet.flueGas.p, T= actualStream(inlet.flueGas.T_outflow), xi=actualStream(inlet.flueGas.xi_outflow),
       gasType=flueGas)
       annotation (Placement(transformation(extent={{-130,-88},{-110,-68}})));
-
+  ClaRa.Basics.Media.FuelObject fuelInlet(
+    fuelModel=fuelModel,
+    p=inlet.fuel.p,
+    T=noEvent(actualStream(inlet.fuel.T_outflow)),
+    xi_c=noEvent(actualStream(inlet.fuel.xi_outflow))) annotation (Placement(transformation(extent={{-152,-88},{-132,-68}})));
+  ClaRa.Basics.Media.FuelObject fuelOutlet(
+  fuelModel=fuelModel,
+    p=outlet.fuel.p,
+    T=noEvent(actualStream(outlet.fuel.T_outflow)),
+    xi_c=noEvent(actualStream(outlet.fuel.xi_outflow))) annotation (Placement(transformation(extent={{-156,68},{-136,88}})));
 public
   TILMedia.Gas_pT ideal_combustion(
     p=outlet.flueGas.p,
@@ -244,25 +203,29 @@ public
             {74,70}})));
   inner ClaRa.Components.Furnace.GeneralTransportPhenomena.ThermalCapacities.ThermalLowPass radiationTimeConstant(T_out_initial=T_start_flueGas_out, Tau=Tau_rad)   annotation (Placement(transformation(extent={{32,50},
              {52,70}})));
+   ReactionZone reactionZone(flueGas=flueGas, fuelModel=fuelModel,elementaryComposition_fuel_in=elementaryComposition_fuel_in)
+     annotation (Placement(transformation(extent={{-130,-10},{-110,10}})));
 
-  ReactionZone reactionZone(xi_fuel_in=xi_fuel_in, xi_flueGas=xi_flueGas)
-    annotation (Placement(transformation(extent={{-130,-10},{-110,10}})));
   Burning_time burning_time
     annotation (Placement(transformation(extent={{-54,28},{-34,48}})));
   ParticleMigration particleMigration
     annotation (Placement(transformation(extent={{-54,-10},{-34,10}})));
+  PressureLoss pressureLoss
+    annotation (Placement(transformation(extent={{-54,-48},{-34,-28}})));
 
   ClaRa.Basics.Interfaces.EyeOutGas
-                           eyeOut annotation (Placement(transformation(extent={{-280,78},
+                           eyeOut(each medium=flueGas) annotation (Placement(transformation(extent={{-280,78},
             {-308,102}}),         iconTransformation(extent={{-290,70},{-310,90}})));
 protected
            ClaRa.Basics.Interfaces.EyeInGas
-                                   eye_int[1]
+                                   eye_int[1](each medium=flueGas)
                                 annotation (Placement(transformation(extent={{-254,84},
             {-266,96}}),      iconTransformation(extent={{240,-64},{232,-56}})));
 
 public
   parameter Boolean showData = false "True, if characteristic data shall be visualised in model icon"  annotation(Dialog(tab="Summary and Visualisation"));
+
+
 
 initial equation
 
@@ -280,9 +243,10 @@ equation
   inlet.fuel.xi_outflow = xi_fuel_out;
 
   //_____________/ Pressure \______________________________________________
-  inlet.flueGas.p = outlet.flueGas.p;
-  inlet.fuel.p = outlet.fuel.p;
-  inlet.slag.p = outlet.slag.p;
+  der(Delta_p_aux) = 1/Tau * (pressureLoss.Delta_p - Delta_p_aux);
+  inlet.flueGas.p = outlet.flueGas.p + Delta_p_aux;
+  inlet.fuel.p = outlet.fuel.p + Delta_p_aux;
+  inlet.slag.p = outlet.slag.p + Delta_p_aux;
 
   //____________/ Heat port temperatures and Q_flows \____________________________
    Q_flow_wall = heat_wall.Q_flow;

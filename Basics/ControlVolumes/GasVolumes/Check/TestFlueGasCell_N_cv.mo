@@ -1,10 +1,10 @@
 within ClaRa.Basics.ControlVolumes.GasVolumes.Check;
 model TestFlueGasCell_N_cv
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -20,12 +20,11 @@ model TestFlueGasCell_N_cv
         ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry_N_cv,
     m_flow_nom=10,
     Delta_p_nom=1000,
-    redeclare model PressureLoss =
-        ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4,
     redeclare model HeatTransfer =
         ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4,
     T_start=fill(273.15 + 200, 3),
-    initOption=0)
+    initOption=0,
+    redeclare model PressureLoss = Fundamentals.PressureLoss.Gas_PL.QuadraticNominalPoint_L4)
     annotation (Placement(transformation(extent={{-6,-6},{24,6}})));
 
   Modelica.Blocks.Sources.Ramp massFlowRate(
@@ -127,11 +126,7 @@ LOOK AT:
 >> Outlet temperature of the flue gas cell
 
 
-"),                             Text(
-          extent={{-100,98},{30,88}},
-          lineColor={0,128,0},
-          fontSize=34,
-          textString="TESTED -- 2014-10-08 //LN")}),
+")}),
     experiment(StopTime=500),
     __Dymola_experimentSetupOutput);
 end TestFlueGasCell_N_cv;

@@ -1,10 +1,10 @@
 within ClaRa.Components.Control.PowerPlantControl;
 model LiveSteamTemperature "A simple controller for the live steam temperature based on Strauss: \"Kraftwerkstechnik\", 5th edition, 2006."
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -23,9 +23,9 @@ model LiveSteamTemperature "A simple controller for the live steam temperature b
     k=k_PID2,
     Tau_i=Tau_i_PID2,
     y_max=1000,
-    initType=Modelica.Blocks.Types.InitPID.InitialOutput,
     y_start=536,
-    perUnitConversion=false) annotation (Placement(transformation(
+    perUnitConversion=false,
+    initOption=796) annotation (Placement(transformation(
         extent={{10,9},{-10,-9}},
         rotation=90,
         origin={7,68})));
@@ -36,8 +36,8 @@ model LiveSteamTemperature "A simple controller for the live steam temperature b
     y_max=1,
     k=k_P2,
     sign=-1,
-    initType=Modelica.Blocks.Types.InitPID.InitialOutput,
-    y_start=0.9) annotation (Placement(transformation(
+    y_start=0.9,
+    initOption=796) annotation (Placement(transformation(
         extent={{10,9.5},{-10,-9.5}},
         rotation=90,
         origin={7.5,36})));
@@ -61,10 +61,10 @@ public
     k=k_PID1,
     Tau_i=Tau_i_PID1,
     y_max=1000,
-    initType=Modelica.Blocks.Types.InitPID.InitialOutput,
     y_start=492,
     sign=+1,
-    perUnitConversion=false) annotation (Placement(transformation(
+    perUnitConversion=false,
+    initOption=796) annotation (Placement(transformation(
         extent={{10,9},{-10,-9}},
         rotation=90,
         origin={-2,-28})));
@@ -75,8 +75,8 @@ public
     y_max=1,
     y_min=0,
     k=k_P1,
-    initType=Modelica.Blocks.Types.InitPID.InitialOutput,
-    y_start=0.5) annotation (Placement(transformation(
+    y_start=0.5,
+    initOption=796) annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=270,
         origin={-2,-68})));

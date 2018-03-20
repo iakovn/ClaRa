@@ -1,6 +1,6 @@
 within ClaRa.Components.MechanicalSeparation.Check;
 model TestBalanceTank
-  extends Basics.Icons.PackageIcons.ExecutableExampleb50;
+  extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
   BalanceTank_L3 balanceTank_L3_1(
     diameter_i=3,
     s_wall=0.02,
@@ -67,7 +67,7 @@ model TestBalanceTank
         origin={42,10})));
 equation
   connect(valve.outlet,gasSink_pT. gas_a)                   annotation (Line(
-      points={{-36,-7},{-36,-6},{-42,-6}},
+      points={{-36,-8},{-36,-6},{-42,-6}},
       color={118,106,98},
       thickness=0.5,
       smooth=Smooth.None));
@@ -76,7 +76,7 @@ equation
       color={0,0,127},
       smooth=Smooth.None));
   connect(valve.inlet, balanceTank_L3_1.vent1) annotation (Line(
-      points={{-16,-7},{-16,-8},{-4,-8},{-4,-28}},
+      points={{-16,-8},{-16,-8},{-4,-8},{-4,-28}},
       color={118,106,98},
       thickness=0.5,
       smooth=Smooth.None));
@@ -123,11 +123,7 @@ equation
 PURPOSE:
 Show balance tank functionality for charging and discharging situations
 ______________________________________________________________________________________________
-"),                    Text(
-          extent={{-136,102},{64,82}},
-          lineColor={0,128,0},
-          fontSize=31,
-          textString="TESTED -- 2014-10-16 //TT")}),
+")}),
     experiment(StopTime=30000, Tolerance=1e-006),
     __Dymola_experimentSetupOutput);
 end TestBalanceTank;

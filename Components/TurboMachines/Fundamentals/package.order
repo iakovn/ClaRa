@@ -1,4 +1,8 @@
+TurbineEfficiency
+PumpEfficiency
+PumpHydraulics
 GetInputsRotary
 GetInputsRotary2
-ICom
-EfficiencyModels
+IComTurbine
+IComPump_L1
+IComPump_L2

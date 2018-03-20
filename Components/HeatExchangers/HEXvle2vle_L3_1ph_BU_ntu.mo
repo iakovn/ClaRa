@@ -1,10 +1,10 @@
 within ClaRa.Components.HeatExchangers;
 model HEXvle2vle_L3_1ph_BU_ntu "VLE 2 VLE | L3 | 1 phase on each side | Block shape | U-type | NTU Ansatz"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.2                            //
+  // Component of the ClaRa library, version: 1.3.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -68,7 +68,7 @@ model HEXvle2vle_L3_1ph_BU_ntu "VLE 2 VLE | L3 | 1 phase on each side | Block sh
 
   //________________________________ Shell geometry _______________________________//
   parameter Basics.Units.Length length=1 "Length of the HEX"
-    annotation (Dialog(tab="Shell Side", group="Geometry", groupImage="modelica://ClaRa/figures/ParameterDialog/HEX_ParameterDialog_BUshell1ph.png"));
+    annotation (Dialog(tab="Shell Side", group="Geometry", groupImage="modelica://ClaRa/Resources/Images/ParameterDialog/HEX_ParameterDialog_BUshell1ph.png"));
   parameter Basics.Units.Length height=7 "Height of HEX"
     annotation (Dialog(tab="Shell Side", group="Geometry"));
   parameter Basics.Units.Length width=1 "Width of HEX"
@@ -112,7 +112,7 @@ model HEXvle2vle_L3_1ph_BU_ntu "VLE 2 VLE | L3 | 1 phase on each side | Block sh
         group="Fundamental Definitions"), choicesAllMatching);
 
   //________________________________ Tubes geometry _______________________________//
-  parameter Basics.Units.Length diameter_i=0.019 "Inner diameter of horizontal tubes"    annotation (Dialog(tab="Tubes", group="Tubes Geometry",groupImage="modelica://ClaRa/figures/ParameterDialog/HEX_ParameterDialogTubes.png"));
+  parameter Basics.Units.Length diameter_i=0.019 "Inner diameter of horizontal tubes"    annotation (Dialog(tab="Tubes", group="Tubes Geometry",groupImage="modelica://ClaRa/Resources/Images/ParameterDialog/HEX_ParameterDialogTubes.png"));
   parameter Basics.Units.Length diameter_o=0.027 "Outer diameter of horizontal tubes"    annotation (Dialog(tab="Tubes", group="Tubes Geometry"));
   parameter Integer N_tubes=210 "Number of horizontal tubes"    annotation (Dialog(tab="Tubes", group="Tubes Geometry"));
   parameter Integer N_passes=integer(floor(230/(3.14159*diameter_o*width*N_tubes))) "Number of passes of the internal tubes"    annotation (Dialog(tab="Tubes", group="Tubes Geometry"));

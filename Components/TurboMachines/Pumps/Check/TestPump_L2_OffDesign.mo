@@ -16,35 +16,6 @@ model TestPump_L2_OffDesign "Running the  L2 pump in off design, including rever
 //___________________________________________________________________________//
   extends ClaRa.Basics.Icons.PackageIcons.ExecutableRegressiong100;
 
-  model Regression
-    extends ClaRa.Basics.Icons.RegressionSummary;
-
-    Modelica.Blocks.Interfaces.RealInput V_flow;
-    Modelica.Blocks.Interfaces.RealInput m_flow;
-    Modelica.Blocks.Interfaces.RealInput rpm;
-    Modelica.Blocks.Interfaces.RealInput tau;
-    Modelica.Blocks.Interfaces.RealInput h_out;
-
-    Real y_V_flow_min = timeExtrema.y_min;
-    Real y_V_flow_max = timeExtrema.y_max;
-    Real y_rpm_min = timeExtrema1.y_min;
-    Real y_rpm_max = timeExtrema1.y_max;
-    Real y_m_flow_int = integrator.y;
-    Real y_tau_int = integrator2.y;
-    Real y_h_out_min = timeExtrema2.y_min;
-    Real y_h_out_max = timeExtrema2.y_max;
-
-  protected
-    ClaRa.Components.Utilities.Blocks.TimeExtrema timeExtrema(u=V_flow) annotation (Placement(transformation(extent={{-40,60},{-20,80}})));
-    ClaRa.Components.Utilities.Blocks.Integrator integrator(u = m_flow, startTime=1)
-                                                       annotation (Placement(transformation(extent={{-40,-20},{-20,0}})));
-    ClaRa.Components.Utilities.Blocks.TimeExtrema timeExtrema1(u = rpm)  annotation (Placement(transformation(extent={{-40,40},{-20,60}})));
-    ClaRa.Components.Utilities.Blocks.Integrator integrator2(u = tau, startTime=1)
-                                                     annotation (Placement(transformation(extent={{-40,-84},{-20,-64}})));
-    ClaRa.Components.Utilities.Blocks.TimeExtrema timeExtrema2(u = h_out)  annotation (Placement(transformation(extent={{-40,20},{-20,40}})));
-
-  end Regression;
-
   inner ClaRa.SimCenter simCenter(redeclare TILMedia.VLEFluidTypes.TILMedia_SplineWater fluid1, showExpertSummary=true)
                                                                                           annotation (Placement(transformation(extent={{-160,-160},{-120,-140}})));
   Modelica.Blocks.Sources.TimeTable
@@ -63,22 +34,29 @@ model TestPump_L2_OffDesign "Running the  L2 pump in off design, including rever
     steadyStateTorque=false,
     V_flow_max=2600/3600,
     rpm_nom=4600,
-    clearSection=0.01,
-    exp_rpm=0.15,
-    exp_flow=2.8,
     J=1,
     rpm_fixed=4600,
     Delta_p_max=2e5,
     m_flow_nom=1,
     volume_fluid=0.02,
     useMechanicalPort=true,
-    eta_hyd_nom=0.82,
     redeclare model PressureLoss = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.NoFriction_L2,
     h_start=150e3,
     p_start(displayUnit="Pa") = 12e5,
-    Tau_stab=0.1,
-    Delta_p_eps=200,
-    initOption=0) annotation (Placement(transformation(extent={{-40,-130},{-20,-110}})));
+    redeclare model Hydraulics = ClaRa.Components.TurboMachines.Fundamentals.PumpHydraulics.MetaStable_Q124 (
+        exp_hyd=(0.5),
+        drp_exp=(0),
+        Delta_p_eps=(200)),
+    redeclare model Losses = ClaRa.Components.TurboMachines.Fundamentals.PumpEfficiency.EfficiencyCurves_Q1 (
+        eta_hyd_nom=(0.82),
+        exp_rpm=(0.15),
+        V_flow_opt_=(0.6),
+        exp_flow=(2.8),
+        Delta_p_eps=(200),
+        V_flow_leak=(0.00002),
+        stabiliseDelta_p=(false),
+        Tau_stab=(0.1)),
+    initOption=1) annotation (Placement(transformation(extent={{-40,-130},{-20,-110}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi pressureSink_XRG4(p_const(displayUnit="bar") = 1200000)
                                                                                           annotation (Placement(transformation(extent={{-80,-130},{-60,-110}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi pressureSink_XRG5(
@@ -99,10 +77,11 @@ model TestPump_L2_OffDesign "Running the  L2 pump in off design, including rever
   ClaRa.Components.VolumesValvesFittings.Valves.ValveVLE_L1 valveVLE_L1_1(
     checkValve=false,
     openingInputIsActive=true,
-    redeclare model PressureLoss =
-        ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticNominalPoint (                   Delta_p_nom=1000, Delta_p_eps=1000),
-    useStabilisedMassFlow=true)
-                               annotation (Placement(transformation(extent={{0,-126},{20,-114}})));
+    useStabilisedMassFlow=true,
+    redeclare model PressureLoss = ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.QuadraticNominalPoint (
+        Delta_p_nom=1000,
+        Delta_p_eps=1000,
+        m_flow_nom=1000))      annotation (Placement(transformation(extent={{0,-126},{20,-114}})));
   Modelica.Blocks.Sources.Ramp ramp(
     height=-1,
     offset=1,
@@ -111,12 +90,6 @@ model TestPump_L2_OffDesign "Running the  L2 pump in off design, including rever
     annotation (Placement(transformation(extent={{-20,-100},{0,-80}})));
 
   ClaRa.Visualisation.Quadruple quadruple annotation (Placement(transformation(extent={{-18,-142},{20,-132}})));
-  Regression regression(
-    V_flow = pump_3.summary.outline.V_flow,
-    m_flow = pump_3.summary.inlet.m_flow,
-    h_out = pump_3.summary.outlet.h,
-    rpm = pump_3.summary.outline.rpm,
-    tau = inertia1.flange_b.tau) annotation (Placement(transformation(extent={{-160,-120},{-140,-100}})));
 
 equation
   connect(pressureSink_XRG4.steam_a,pump_3. inlet)        annotation (Line(
@@ -168,7 +141,7 @@ equation
           fillPattern=FillPattern.Solid,
           horizontalAlignment=TextAlignment.Left,
           fontSize=12,
-          textString="TESTED -- 2016-03-21 //FG
+          textString="
 ______________________________________
 Purpose: Illustrate the capacities of the instantiated pump to run under non-design conditions, i.e. shut off, reverse flow due to insufficient shaft power as well as running against a closed control valve (failure)
 ______________________________________

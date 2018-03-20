@@ -1,10 +1,10 @@
 within ClaRa.Components.VolumesValvesFittings.Pipes.Check.OnePhaseFlow;
 model Test_Pipe_L1_TML_LongDistanceAndGravitationalPressureDrop
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.2                            //
+  // Component of the ClaRa library, version: 1.3.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -16,27 +16,6 @@ model Test_Pipe_L1_TML_LongDistanceAndGravitationalPressureDrop
   //___________________________________________________________________________//
 
  extends ClaRa.Basics.Icons.PackageIcons.ExecutableRegressiong100;
-
-model Regression
-  extends ClaRa.Basics.Icons.RegressionSummary;
-  Modelica.Blocks.Interfaces.RealInput tube1_T_out "Tube 1 outlet temperature";
-  Modelica.Blocks.Interfaces.RealInput tube7_T_out "Tube 7 outlet temperature";
-  Modelica.Blocks.Interfaces.RealInput tube1_p_out "Tube 1 outlet pressure";
-  Modelica.Blocks.Interfaces.RealInput tube7_p_out "Tube 7 outlet pressure";
-
-  Real y_T_out1_int = integrator1.y;
-  Real y_T_out7_int = integrator7.y;
-
-  Real y_p_out1_max = timeExtrema1.y_max;
-  Real y_p_out1_min = timeExtrema1.y_min;
-  Real y_p_out7_max = timeExtrema7.y_max;
-  Real y_p_out7_min = timeExtrema7.y_min;
-  protected
-  Components.Utilities.Blocks.Integrator integrator1(u = tube1_T_out-320.378);
-  Components.Utilities.Blocks.Integrator integrator7(u = tube7_T_out-320.378);
-  Components.Utilities.Blocks.TimeExtrema timeExtrema1(u = tube1_p_out);
-  Components.Utilities.Blocks.TimeExtrema timeExtrema7(u = tube7_p_out);
-end Regression;
 
   Modelica.Blocks.Math.MultiSum multiSum(nu=2) annotation (Placement(
         transformation(
@@ -105,7 +84,7 @@ end Regression;
         origin={-90,190})));
   Utilities.Blocks.RealInputMultiplyer realInputMultiplyer(N=tube3.N_cv) annotation (Placement(transformation(extent={{-60,180},{-40,200}})));
 
-  ClaRa.Basics.ControlVolumes.SolidVolumes.ThinWall_L4 thinWall(
+  ClaRa.Basics.ControlVolumes.SolidVolumes.CylindricalThinWall_L4 thinWall(
     diameter_o=0.55,
     diameter_i=0.5,
     length=tube7.length,
@@ -240,7 +219,7 @@ end Regression;
         extent={{15,-5},{-15,5}},
         rotation=0,
         origin={205,40})));
-  ClaRa.Basics.ControlVolumes.SolidVolumes.ThinWall_L4 thinWall1(
+  ClaRa.Basics.ControlVolumes.SolidVolumes.CylindricalThinWall_L4 thinWall1(
     diameter_o=0.55,
     diameter_i=0.5,
     length=tube7.length,
@@ -252,7 +231,7 @@ end Regression;
         extent={{-13.9998,5},{14.0005,-4.99999}},
         rotation=90,
         origin={61,106})));
-  ClaRa.Basics.ControlVolumes.SolidVolumes.ThinWall_L4 thinWall2(
+  ClaRa.Basics.ControlVolumes.SolidVolumes.CylindricalThinWall_L4 thinWall2(
     diameter_o=0.55,
     diameter_i=0.5,
     length=tube7.length,
@@ -264,7 +243,7 @@ end Regression;
         extent={{-15,-5.50005},{15,5.50008}},
         rotation=270,
         origin={136.5,105})));
-  ClaRa.Basics.ControlVolumes.SolidVolumes.ThinWall_L4 thinWall3(
+  ClaRa.Basics.ControlVolumes.SolidVolumes.CylindricalThinWall_L4 thinWall3(
     diameter_o=0.55,
     diameter_i=0.5,
     length=tube7.length,
@@ -276,7 +255,7 @@ end Regression;
         extent={{-15.5,-5.50001},{15.5,5.50003}},
         rotation=90,
         origin={186.5,105.5})));
-  ClaRa.Basics.ControlVolumes.SolidVolumes.ThinWall_L4 thinWall4(
+  ClaRa.Basics.ControlVolumes.SolidVolumes.CylindricalThinWall_L4 thinWall4(
     diameter_o=0.55,
     diameter_i=0.5,
     length=tube7.length,
@@ -285,7 +264,7 @@ end Regression;
     stateLocation=1,
     T_start=320.378*ones(tube7.N_cv),
     initOption=203) annotation (Placement(transformation(extent={{70,53},{102,64}})));
-  ClaRa.Basics.ControlVolumes.SolidVolumes.ThinWall_L4 thinWall5(
+  ClaRa.Basics.ControlVolumes.SolidVolumes.CylindricalThinWall_L4 thinWall5(
     diameter_o=0.55,
     diameter_i=0.5,
     length=tube7.length,
@@ -297,7 +276,7 @@ end Regression;
         320.378,
         tube7.N_cv),
     initOption=203) annotation (Placement(transformation(extent={{130,168},{160,178}})));
-  ClaRa.Basics.ControlVolumes.SolidVolumes.ThinWall_L4 thinWall6(
+  ClaRa.Basics.ControlVolumes.SolidVolumes.CylindricalThinWall_L4 thinWall6(
     diameter_o=0.55,
     diameter_i=0.5,
     length=tube7.length,
@@ -338,7 +317,7 @@ end Regression;
     m_flow_nom=0,
     variable_h=true,
     p_nom=1000) annotation (Placement(transformation(extent={{260,-70},{240,-50}})));
-  ClaRa.Basics.ControlVolumes.SolidVolumes.ThinWall_L4 thinWall7(
+  ClaRa.Basics.ControlVolumes.SolidVolumes.CylindricalThinWall_L4 thinWall7(
     diameter_o=0.55,
     diameter_i=0.5,
     stateLocation=1,
@@ -365,10 +344,6 @@ end Regression;
         extent={{-6,-6},{6,6}},
         rotation=0,
         origin={38,-29})));
-  Regression regression(tube1_T_out = tube1.summary.outlet.T,
-  tube7_T_out =  tube7.summary.outlet.T,
-  tube1_p_out = tube1.summary.outlet.p,
-  tube7_p_out = tube7.summary.outlet.p) annotation (Placement(transformation(extent={{-100,-40},{-80,-20}})));
 equation
   connect(multiSum.y, massFlowSource.m_flow) annotation (Line(
       points={{289,70.98},{289,46},{262,46}},
@@ -564,7 +539,7 @@ equation
           extent={{-98,-62},{246,-126}},
           lineColor={115,150,0},
           horizontalAlignment=TextAlignment.Left,
-          textString="Tested 26. 08.2016 //FG
+          textString="
 This tester gives a number of step-like changes to the boundary conditions of a very long (70 km) liquid connection piping.
 The upper set of pipes follow a certain height curve of the geographic topology it is related to. The lower, merged piping can only reflect the overall height difference
 between inlet and outlet of the system. However, since the overall length is the same, the temperature development at the outlet is very similar.
@@ -582,6 +557,7 @@ between inlet and outlet of the system. However, since the overall length is the
       derivatives=false,
       equidistant=false,
       events=false),
-    Icon(coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=
+    Icon(graphics,
+         coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=
             true)));
 end Test_Pipe_L1_TML_LongDistanceAndGravitationalPressureDrop;

@@ -4,7 +4,7 @@ model Source_orange
 // Component of the ClaRa library, version: 1.1.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -46,5 +46,6 @@ initial equation
           fillPattern=FillPattern.Solid,
           textString="%xi_fg_nom"),
         Line(points={{60,100},{100,0},{60,-100}}, color={244,125,35})}),
-                                                                 Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
+                                                                 Diagram(graphics,
+                                                                         coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
 end Source_orange;

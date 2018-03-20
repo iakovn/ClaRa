@@ -1,10 +1,10 @@
 within ClaRa.Basics.ControlVolumes.FluidVolumes.Check;
 model Validation_VolumeVLE_L2_HeatTransfer_2ph_shell "Validation scenario from VDI Wrmeatlas 9. Auflage 2002 Chapter Ja 13 Example 2"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -42,19 +42,18 @@ extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
   parameter Units.EnthalpyMassSpecific
                                     h = TILMedia.VLEFluidFunctions.dewSpecificEnthalpy_Txi(TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater(),T_s);
 
-  Real eta_l = TILMedia.VLEFluidFunctions.dynamicViscosity_pTxi(TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater(),p, T_w,{0});
-  Real cp_l =  TILMedia.VLEFluidFunctions.specificIsobaricHeatCapacity_pTxi(TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater(),p, T_w,{0});
-  Real lambda_l = TILMedia.VLEFluidFunctions.thermalConductivity_pTxi(TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater(),p, T_w,{0});
-  Real rho_liq = TILMedia.VLEFluidFunctions.density_pTxi(TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater(),p, T_w,{0});
-  Real h_l = TILMedia.VLEFluidFunctions.specificEnthalpy_pTxi(TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater(),p,T_w,{0});
+//   Real eta_l = TILMedia.VLEFluidFunctions.dynamicViscosity_pTxi(TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater(),p, T_w,{0});
+//   Real cp_l =  TILMedia.VLEFluidFunctions.specificIsobaricHeatCapacity_pTxi(TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater(),p, T_w,{0});
+//   Real lambda_l = TILMedia.VLEFluidFunctions.thermalConductivity_pTxi(TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater(),p, T_w,{0});
+//   Real rho_liq = TILMedia.VLEFluidFunctions.density_pTxi(TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater(),p, T_w,{0});
+//   Real h_l = TILMedia.VLEFluidFunctions.specificEnthalpy_pTxi(TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater(),p,T_w,{0});
+//
+//   Real alpha "Heat transfer coefficient";
+//   Real Pr "Prandtl number of the film";
+//   Real Re "Reynolds number of flowing steam";
+//   Real Nu "Nusselt number";
+//   Real failureStatus "0== boundary conditions fulfilled | 1== failure >> check if still meaningfull results";
 
-  Real alpha "Heat transfer coefficient";
-  Real Pr "Prandtl number of the film";
-  Real Re "Reynolds number of flowing steam";
-  Real Nu "Nusselt number";
-  Real failureStatus "0== boundary conditions fulfilled | 1== failure >> check if still meaningfull results";
-
-//  Real Re_test;
 
   VolumeVLE_2 Volume(
     m_flow_nom=m_flow_D,
@@ -99,14 +98,6 @@ extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
     annotation (Placement(transformation(extent={{-5,-5},{5,5}},
         rotation=270,
         origin={41,-39})));
-  TILMedia.VLEFluid_ph vleFluid(
-    redeclare TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater vleFluidType,
-    computeTransportProperties=true,
-    computeVLEAdditionalProperties=true,
-    computeVLETransportProperties=true,
-    p=p,
-    h=h)
-        annotation (Placement(transformation(extent={{-60,-140},{-40,-120}})));
   Modelica.Blocks.Sources.Constant
                                const(k=-m_flow_D)
                 annotation (Placement(transformation(extent={{-80,-60},{-60,-40}})));
@@ -118,14 +109,9 @@ extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
                 annotation (Placement(transformation(extent={{160,-60},{140,-40}})));
   Modelica.Blocks.Sources.Constant const3(k=h_in)
               annotation (Placement(transformation(extent={{160,-100},{140,-80}})));
-  VolumeVLE_2 volumeVLE_2_1 annotation (Placement(transformation(extent={{392,-48},{412,-28}})));
 equation
 
-(alpha, Pr,Re,Nu,failureStatus)=FluidDissipation.HeatTransfer.HeatExchanger.kc_tubeBundleFilmCondensation_lam(
-FluidDissipation.HeatTransfer.HeatExchanger.kc_tubeBundleFilmCondensation_lam_IN_con(d=diameter_tube_o, A_front=Modelica.Constants.pi/4*diameter_shell_o ^2),
-FluidDissipation.HeatTransfer.HeatExchanger.kc_tubeBundleFilmCondensation_lam_IN_var(cp_l=vleFluid.VLEAdditional.cp_l, lambda_l=vleFluid.VLETransp.lambda_l, rho_g=vleFluid.VLE.d_v, rho_l=vleFluid.VLE.d_l, eta_g=vleFluid.VLETransp.eta_v, eta_l=vleFluid.VLETransp.eta_l, T_s=T_s, dh_lg=vleFluid.VLE.h_v-vleFluid.VLE.h_l, m_flow=vleFluid.d*w_inf*Modelica.Constants.pi/4*diameter_shell_o ^2, T_w=T_w));
 
-//Re_test=m_flow_D/(Modelica.Constants.pi/4*diameter_shell_o ^2)/(Volume.iCom.d_dew)*diameter_tube_o/(Volume.iCom.eta_bub/Volume.iCom.d_bub);
   connect(Volume.inlet,MassFlowSource. steam_a) annotation (Line(
       points={{52,-70},{52,-70},{100,-70}},
       color={0,131,169},
@@ -164,11 +150,6 @@ FluidDissipation.HeatTransfer.HeatExchanger.kc_tubeBundleFilmCondensation_lam_IN
   annotation (Diagram(coordinateSystem(extent={{-100,-140},{180,120}},
           preserveAspectRatio=true),
                       graphics={Text(
-          extent={{-110,110},{110,110}},
-          lineColor={0,128,0},
-          fontSize=27,
-          textString="Validated -- 2013-01-22 //AR"),
-                                Text(
           extent={{-100,100},{180,0}},
           lineColor={0,128,0},
           horizontalAlignment=TextAlignment.Left,

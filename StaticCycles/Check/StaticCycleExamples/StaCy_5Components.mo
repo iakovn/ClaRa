@@ -1,10 +1,10 @@
 within ClaRa.StaticCycles.Check.StaticCycleExamples;
 model StaCy_5Components "A Static Cycle with only five components!"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -59,7 +59,7 @@ parameter Real efficiency_Turb_HP=1 "Efficiency of turbine" annotation(Dialog(ta
 parameter Real efficiency_Turb_LP=1 "Efficiency of turbine" annotation(Dialog(tab="Turbines"));
 //parameter Real efficiency_Turb_LP2=1 "Efficiency of turbine" annotation(Dialog(tab="Turbines"));
 
-  ClaRa.StaticCycles.Machines.Pump pump_fw(efficiency=efficiency_Pump_FW) annotation (Placement(transformation(extent={{-2,-78},{-22,-58}})));
+  ClaRa.StaticCycles.Machines.Pump1 pump_fw(efficiency=efficiency_Pump_FW) annotation (Placement(transformation(extent={{-2,-78},{-22,-58}})));
   ClaRa.StaticCycles.Machines.Turbine turbine_HP(efficiency=efficiency_Turb_HP) annotation (Placement(transformation(extent={{-2,42},{8,62}})));
   ClaRa.StaticCycles.Machines.Turbine turbine_LP(efficiency=efficiency_Turb_LP) annotation (Placement(transformation(extent={{20,50},{30,70}})));
   Furnace.Boiler_simple boiler(
@@ -95,5 +95,6 @@ equation
               Icon(coordinateSystem(preserveAspectRatio=true, extent={{-100,
             -100},{100,100}},
         initialScale=0.1),
-                   graphics),      Diagram(coordinateSystem(initialScale=0.1)));
+                   graphics),      Diagram(graphics,
+                                           coordinateSystem(initialScale=0.1)));
 end StaCy_5Components;

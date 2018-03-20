@@ -1,10 +1,10 @@
 within ClaRa.Components.HeatExchangers;
 model TubeBundle_L2 "A flexible 0D tube bundle model"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.2                            //
+  // Component of the ClaRa library, version: 1.3.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -43,7 +43,7 @@ model TubeBundle_L2 "A flexible 0D tube bundle model"
   parameter Integer N_passes=1 "Number of passes of the internal tubes" annotation(Dialog(group="Geometry"));
   parameter Modelica.SIunits.Length z_in=length/2 "Inlet position from bottom" annotation(Dialog(group="Geometry"));
   parameter Modelica.SIunits.Length z_out=length/2 "Outlet position from bottom"
-                                            annotation(Dialog(group="Geometry", groupImage="modelica://ClaRa/figures/ParameterDialog/PipeGeometry.png"));
+                                            annotation(Dialog(group="Geometry", groupImage="modelica://ClaRa/Resources/Images/ParameterDialog/PipeGeometry.png"));
 
   parameter Boolean showData=true "True, if a data port containing p,T,h,s,m_flow shall be shown, else false"
                                                                                               annotation(Dialog(tab="Summary and Visualisation"));

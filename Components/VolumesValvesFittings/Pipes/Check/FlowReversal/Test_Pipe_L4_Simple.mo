@@ -1,10 +1,10 @@
 within ClaRa.Components.VolumesValvesFittings.Pipes.Check.FlowReversal;
 model Test_Pipe_L4_Simple
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.2                            //
+  // Component of the ClaRa library, version: 1.3.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -16,45 +16,6 @@ model Test_Pipe_L4_Simple
   //___________________________________________________________________________//
 
  extends ClaRa.Basics.Icons.PackageIcons.ExecutableRegressiong100;
-model Regression
-  extends ClaRa.Basics.Icons.RegressionSummary;
-  Modelica.Blocks.Interfaces.RealInput tube_h_out "Tube outlet temperature";
-  Modelica.Blocks.Interfaces.RealInput tube_h_in "Tube inlet temperature";
-  Modelica.Blocks.Interfaces.RealInput tube_p_out "Tube outlet pressure";
-  Modelica.Blocks.Interfaces.RealInput tube_p_in "Tube inlet pressure";
-  Modelica.Blocks.Interfaces.RealInput tube_m_flow_out "Tube outlet mass flow rate";
-  Modelica.Blocks.Interfaces.RealInput tube_m_flow_in "Tube inlet mass flow rate";
-  Modelica.Blocks.Interfaces.RealInput wall_T_in "Tube inlet wall temperature";
-  Modelica.Blocks.Interfaces.RealInput wall_T_out "Tube outlet wall temperature";
-
-  Real y_Hflow_out_int = integrator1.y;
-  Real y_Hflow_in_int = integrator2.y;
-
-  Real y_p_out_max = timeExtrema1.y_max;
-  Real y_p_out_min = timeExtrema1.y_min;
-  Real y_p_in_max = timeExtrema2.y_max;
-  Real y_p_in_min = timeExtrema2.y_min;
-  Real y_T_wall_out_max = timeExtremaT1.y_max;
-  Real y_T_wall_out_min = timeExtremaT1.y_min;
-  Real y_T_wall_in_max = timeExtremaT2.y_max;
-  Real y_T_wall_in_min = timeExtremaT2.y_min;
-  Real y_mflow_out_max = timeExtremaMflow.y_max;
-  Real y_mflow_out_min = timeExtremaMflow.y_min;
-  Real y_mflow_out_max2 = timeExtremaMflow2.y_max;
-  Real y_mflow_out_min2 = timeExtremaMflow2.y_min;
-  Real y_mflow_out_max3 = timeExtremaMflow3.y_max;
-  Real y_mflow_out_min3 = timeExtremaMflow3.y_min;
-  protected
-  Components.Utilities.Blocks.Integrator integrator1(u = tube_h_out*tube_m_flow_out);
-  Components.Utilities.Blocks.Integrator integrator2(u = tube_h_in*tube_m_flow_in);
-  Components.Utilities.Blocks.TimeExtrema timeExtrema1(u = tube_p_out);
-  Components.Utilities.Blocks.TimeExtrema timeExtrema2(u = tube_p_in);
-  Components.Utilities.Blocks.TimeExtrema timeExtremaT1(u = wall_T_out);
-  Components.Utilities.Blocks.TimeExtrema timeExtremaT2(u = wall_T_in);
-  Components.Utilities.Blocks.TimeExtrema timeExtremaMflow(u = tube_m_flow_out, samplingTime=0.001);
-  Components.Utilities.Blocks.TimeExtrema timeExtremaMflow2(u = tube_m_flow_out, samplingTime=0.001, startTime=999);
-  Components.Utilities.Blocks.TimeExtrema timeExtremaMflow3(u = tube_m_flow_out, samplingTime=0.001, startTime=1499);
-end Regression;
 
   Modelica.Blocks.Math.MultiSum multiSum(nu=2) annotation (Placement(
         transformation(
@@ -140,7 +101,7 @@ end Regression;
         rotation=0,
         origin={81,-69.5})));
 
-  ClaRa.Basics.ControlVolumes.SolidVolumes.ThinWall_L4 thinWall(
+  ClaRa.Basics.ControlVolumes.SolidVolumes.CylindricalThinWall_L4 thinWall(
     diameter_o=0.55,
     diameter_i=0.5,
     length=tube.length,
@@ -150,14 +111,6 @@ end Regression;
     T_start=320*ones(tube.N_cv),
     initOption=0) annotation (Placement(transformation(extent={{-14,-30},{14,-20}})));
 
-  Regression regression(tube_h_out=tube.summary.outlet.h,
-  tube_h_in=tube.summary.inlet.h,
-  tube_p_out=tube.summary.outlet.p,
-  tube_p_in=tube.summary.inlet.p,
-  tube_m_flow_out=tube.summary.outlet.m_flow,
-  tube_m_flow_in=tube.summary.inlet.m_flow,
-  wall_T_in=tube.heatTransfer.heat[1].T,
-  wall_T_out=tube.heatTransfer.heat[end].T) annotation (Placement(transformation(extent={{-100,-100},{-80,-80}})));
   BoundaryConditions.PrescribedHeatFlow prescribedHeatFlow(length=tube.length, N_axial=tube.N_cv) annotation (Placement(transformation(extent={{-40,0},{-20,20}})));
 equation
   connect(multiSum.y, massFlowSource.m_flow) annotation (Line(
@@ -205,11 +158,7 @@ PURPOSE:
 test the heated L4 simple pipe in a flow reversal scenario to evaluate the numerical robustness and to check for
  physically meaningful behaviour
 ______________________________________________________________________________________________
-"),                    Text(
-          extent={{-100,120},{100,100}},
-          lineColor={0,128,0},
-          fontSize=31,
-          textString="TESTED -- 2017-04-12 //TH"),Text(
+"),                                               Text(
           extent={{-98,66},{80,24}},
           lineColor={0,128,0},
           horizontalAlignment=TextAlignment.Left,
@@ -239,6 +188,7 @@ ________________________________________________________________________________
       Tolerance=1e-006,
       __Dymola_Algorithm="Dassl"),
     __Dymola_experimentSetupOutput(equidistant=false),
-    Icon(coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=
+    Icon(graphics,
+         coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=
             true)));
 end Test_Pipe_L4_Simple;

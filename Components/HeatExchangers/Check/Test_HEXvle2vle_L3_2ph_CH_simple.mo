@@ -1,30 +1,6 @@
 within ClaRa.Components.HeatExchangers.Check;
 model Test_HEXvle2vle_L3_2ph_CH_simple
  extends ClaRa.Basics.Icons.PackageIcons.ExecutableRegressiong100;
-model Regression
-  extends ClaRa.Basics.Icons.RegressionSummary;
-  Modelica.Blocks.Interfaces.RealInput V_liq "Liquid shell volume";
-  Modelica.Blocks.Interfaces.RealInput T_shell_out "Shell outlet temperature";
-  Modelica.Blocks.Interfaces.RealInput p_shell_out "IP turbine outlet enthalpy";
-  Modelica.Blocks.Interfaces.RealInput Q_flow_tot "Total heat flow";
-
-  Real y_Q_flow_tot_int = integrator1.y;
-  Real y_Q_flow_tot = Q_flow_tot;
-
-  Real y_V_liq_int = integrator2.y;
-  Real y_V_liq = V_liq;
-
-  Real y_T_shell_out_int = integrator3.y;
-  Real y_T_shell_out = T_shell_out;
-  Real y_p_shell_out_int = integrator4.y;
-  Real y_p_shell_out = p_shell_out;
-
-  protected
-  Components.Utilities.Blocks.Integrator integrator1(u = Q_flow_tot, startTime=1000);
-  Components.Utilities.Blocks.Integrator integrator2(u = V_liq, startTime=1000);
-  Components.Utilities.Blocks.Integrator integrator3(u = T_shell_out, startTime=1000);
-  Components.Utilities.Blocks.Integrator integrator4(u = p_shell_out, startTime=1000);
-end Regression;
 
   HEXvle2vle_L3_2ph_CH_simple hex(
     mass_struc=1,
@@ -115,15 +91,14 @@ end Regression;
     startTime=10000,
     offset=53e5,
     height=-20e5) annotation (Placement(transformation(extent={{-120,-92},{-100,-72}})));
-  Visualisation.DynamicBar            level_abs1(
-    provideConnector=true,
+  Visualisation.DynamicBar level_abs1(
     u=hex.shell.summary.outline.level_abs,
     u_set=2,
     u_high=3,
     u_low=1,
-    u_max=10)        annotation (Placement(transformation(extent={{-8,-72},{-18,-52}})));
+    u_max=10,
+    provideOutputConnector=true) annotation (Placement(transformation(extent={{-8,-72},{-18,-52}})));
   Utilities.Blocks.LimPID PI(
-    initType=Modelica.Blocks.Types.InitPID.InitialOutput,
     controllerType=Modelica.Blocks.Types.SimpleController.PI,
     Tau_d=60,
     k=0.1,
@@ -133,13 +108,10 @@ end Regression;
     y_min=0,
     y_start=0.5,
     Tau_i=120,
-    sign=1) annotation (Placement(transformation(extent={{-28,-77},{-38,-67}})));
+    sign=1,
+    initOption=796) annotation (Placement(transformation(extent={{-28,-77},{-38,-67}})));
   Modelica.Blocks.Sources.RealExpression realExpression(y=2) annotation (Placement(transformation(extent={{-8,-86},{-24,-76}})));
 
-     Regression regression(V_liq = hex.shell.summary.outline.volume[1],
-     T_shell_out = hex.shell.summary.outlet[1].T,
-     p_shell_out = hex.shell.summary.outlet[1].p,
-     Q_flow_tot = -hex.summary.outline.Q_flow) annotation (Placement(transformation(extent={{-120,80},{-100,100}})));
 equation
 
   connect(m_hot.y, massFlowSource_h.m_flow) annotation (Line(
@@ -213,15 +185,11 @@ PURPOSE:
 >>check HEXvle2vle_L3_2ph_CH_simple as a high pressure preheater in a load change. 
 Test robustness and prove steady-state initialisation capabilities. Check controlled and uncontrolled behaviour.
 ______________________________________________________________________________________________"),
-                       Text(
-          extent={{-114,102},{44,84}},
-          lineColor={115,150,0},
-          fontSize=30,
-          textString="TESTED -- 2014-10-16 //TH"),
         Rectangle(
           extent={{-120,100},{100,-100}},
           lineColor={115,150,0},
-          lineThickness=0.5)}),                  Icon(coordinateSystem(extent={{-100,-100},{100,100}})),
+          lineThickness=0.5)}),                  Icon(graphics,
+                                                      coordinateSystem(extent={{-100,-100},{100,100}})),
     experiment(StopTime=12000, Tolerance=1e-005),
     __Dymola_experimentSetupOutput);
 end Test_HEXvle2vle_L3_2ph_CH_simple;

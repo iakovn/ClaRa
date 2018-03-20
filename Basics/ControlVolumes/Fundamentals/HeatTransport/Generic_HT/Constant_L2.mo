@@ -1,10 +1,10 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT;
 model Constant_L2 "All Geo || L2 || HTC || Constant"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.2                            //
+  // Component of the ClaRa library, version: 1.3.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -47,12 +47,12 @@ model Constant_L2 "All Geo || L2 || HTC || Constant"
       choice = "Inlet",
       choice = "Outlet"));
 
-  Units.Temperature Delta_T_wi "Temperature difference between wall and fluid inlet temperature";
-  Units.Temperature Delta_T_wo "Temperature difference between wall and fluid outlet temperature";
-  Units.Temperature Delta_T_mean "Mean temperature difference used for heat transfer calculation";
+  Units.TemperatureDifference Delta_T_wi "Temperature difference between wall and fluid inlet temperature";
+  Units.TemperatureDifference Delta_T_wo "Temperature difference between wall and fluid outlet temperature";
+  Units.TemperatureDifference Delta_T_mean "Mean temperature difference used for heat transfer calculation";
 
-  Units.Temperature Delta_T_U "Upper temperature difference";
-  Units.Temperature Delta_T_L "Lower temperature difference";
+  Units.TemperatureDifference Delta_T_U "Upper temperature difference";
+  Units.TemperatureDifference Delta_T_L "Lower temperature difference";
 
   Modelica.SIunits.CoefficientOfHeatTransfer alpha "Heat transfer coefficient used for heat trasnfer calculation";
 
@@ -66,7 +66,7 @@ equation
     //The following equation is only supported due to an backward compatibility issue - avoid its usage
     Delta_T_mean = noEvent(if floor(abs(Delta_T_wo)*1/eps) <= 1 or floor(abs(Delta_T_wi)*1/eps) <= 1 then 0 elseif (heat.T < iCom.T_out and heat.T > iCom.T_in) or (heat.T > iCom.T_out and heat.T < iCom.T_in) then 0 elseif floor(abs(Delta_T_wo - Delta_T_wi)*1/eps) < 1 then Delta_T_wi else (Delta_T_U - Delta_T_L)/log(Delta_T_U/Delta_T_L));
   elseif temperatureDifference == "Logarithmic mean - smoothed" then
-    Delta_T_mean = SM(0.1,eps, abs(Delta_T_L))*SM(0.01,eps, Delta_T_U*Delta_T_L) * SZT((Delta_T_U - Delta_T_L)/log(abs(Delta_T_U)/(abs(Delta_T_L)+1e-9)), Delta_T_wi, (abs(Delta_T_U)-abs(Delta_T_L))-0.01, 0.001);
+    Delta_T_mean = SM(0.1,eps, abs(Delta_T_L))*SM(0.01,eps, Delta_T_U*Delta_T_L) * SZT((Delta_T_U - Delta_T_L)/log(abs(Delta_T_U)/(abs(Delta_T_L)+1e-9)), Delta_T_wi, ((Delta_T_U)-(Delta_T_L))-0.01, 0.001);
   elseif temperatureDifference == "Arithmetic mean" then
     Delta_T_mean = heat.T - (iCom.T_in + iCom.T_out)/2;
   elseif temperatureDifference == "Inlet" then

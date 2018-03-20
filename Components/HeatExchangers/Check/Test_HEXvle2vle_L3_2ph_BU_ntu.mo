@@ -1,30 +1,6 @@
 within ClaRa.Components.HeatExchangers.Check;
 model Test_HEXvle2vle_L3_2ph_BU_ntu
  extends ClaRa.Basics.Icons.PackageIcons.ExecutableRegressiong100;
-model Regression
-  extends ClaRa.Basics.Icons.RegressionSummary;
-  Modelica.Blocks.Interfaces.RealInput V_liq "Liquid shell volume";
-  Modelica.Blocks.Interfaces.RealInput T_shell_out "Shell outlet temperature";
-  Modelica.Blocks.Interfaces.RealInput p_shell_out "IP turbine outlet enthalpy";
-  Modelica.Blocks.Interfaces.RealInput Q_flow_tot "Total heat flow";
-
-  Real y_Q_flow_tot_int = integrator1.y;
-  Real y_Q_flow_tot = Q_flow_tot;
-
-  Real y_V_liq_int = integrator2.y;
-  Real y_V_liq = V_liq;
-
-  Real y_T_shell_out_int = integrator3.y;
-  Real y_T_shell_out = T_shell_out;
-  Real y_p_shell_out_int = integrator4.y;
-  Real y_p_shell_out = p_shell_out;
-
-  protected
-  Components.Utilities.Blocks.Integrator integrator1(u = Q_flow_tot, startTime=1000);
-  Components.Utilities.Blocks.Integrator integrator2(u = V_liq, startTime=1000);
-  Components.Utilities.Blocks.Integrator integrator3(u = T_shell_out, startTime=1000);
-  Components.Utilities.Blocks.Integrator integrator4(u = p_shell_out, startTime=1000);
-end Regression;
 
   HEXvle2vle_L3_2ph_BU_ntu hex(
     redeclare model WallMaterial = TILMedia.SolidTypes.TILMedia_Aluminum,
@@ -50,12 +26,13 @@ end Regression;
     z_in_shell=3.9,
     z_in_aux1=3.9,
     z_in_aux2=3.9,
-    redeclare function HeatCapacityAveraging = Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.ArithmeticMean,
     redeclare model HeatTransferTubes = Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.NusseltPipe1ph_L2 (CF_alpha_tubes=0.5),
     smoothness=Modelica.Blocks.Types.Smoothness.LinearSegments,
     levelOutput=true,
     initOptionTubes=0,
-    initOptionShell=204) annotation (Placement(transformation(extent={{16,-68},{36,-48}})));
+    initOptionShell=204,
+    redeclare model HeatCapacityAveraging = Basics.ControlVolumes.SolidVolumes.Fundamentals.Averaging_Cp.InputOnly)
+                         annotation (Placement(transformation(extent={{16,-68},{36,-48}})));
 
   Sensors.SensorVLE_L1_T Temp_Tubes_out annotation (Placement(transformation(extent={{30,-24},{50,-4}})));
   Modelica.Blocks.Sources.Ramp h_steam(
@@ -136,16 +113,14 @@ end Regression;
   Visualisation.Quadruple quadruple3(
                                     largeFonts=false, decimalSpaces(p=3))
                                                       annotation (Placement(transformation(extent={{36,3},{66,13}})));
-  Visualisation.DynamicBar            level_abs1(
-    provideConnector=true,
+  Visualisation.DynamicBar level_abs1(
     u_set=0.8,
     u_high=1,
     u_low=0.6,
     u_max=4,
-    u=hex.shell.summary.outline.level_abs)
-                     annotation (Placement(transformation(extent={{14,-68},{4,-48}})));
+    u=hex.shell.summary.outline.level_abs,
+    provideOutputConnector=true) annotation (Placement(transformation(extent={{14,-68},{4,-48}})));
   Utilities.Blocks.LimPID PI(
-    initType=Modelica.Blocks.Types.InitPID.InitialOutput,
     controllerType=Modelica.Blocks.Types.SimpleController.PI,
     Tau_d=60,
     k=0.1,
@@ -155,12 +130,9 @@ end Regression;
     y_min=0,
     sign=-1,
     y_start=0.5,
-    Tau_i=120) annotation (Placement(transformation(extent={{-20,-46},{-30,-36}})));
+    Tau_i=120,
+    initOption=796) annotation (Placement(transformation(extent={{-20,-46},{-30,-36}})));
   Modelica.Blocks.Sources.RealExpression realExpression(y=0.8) annotation (Placement(transformation(extent={{2,-46},{-14,-36}})));
-  Regression regression(V_liq = hex.shell.summary.outline.volume[1],
-    T_shell_out = hex.shell.summary.outlet[1].T,
-    p_shell_out = hex.shell.summary.outlet[1].p,
-    Q_flow_tot = hex.wall.nTU.summary.Q_flow_tot) annotation (Placement(transformation(extent={{-100,-60},{-80,-40}})));
 equation
 
   connect(valve_tubes1.inlet,Temp_Tubes_out. port) annotation (Line(
@@ -187,7 +159,7 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(hex.Out2, valve_tubes1.inlet) annotation (Line(
-      points={{35.8,-52},{40,-52},{40,-32},{44,-32}},
+      points={{36,-52},{40,-52},{40,-32},{44,-32}},
       color={0,131,169},
       pattern=LinePattern.Solid,
       thickness=0.5,
@@ -210,7 +182,7 @@ equation
       color={0,131,169},
       thickness=0.5));
   connect(massFlowSource_h1.steam_a, hex.In2) annotation (Line(
-      points={{74,-62},{35.8,-62}},
+      points={{74,-62},{36,-62}},
       color={0,131,169},
       thickness=0.5));
   connect(quadruple2.eye, massFlowSource_h1.eye) annotation (Line(points={{56,-86},{56,-70},{74,-70}}, color={190,190,190}));
@@ -232,15 +204,11 @@ PURPOSE:
 >>check HEXvle2vle_L3_2ph_BU_ntu as a condenser in a load change. Test robustness and
 prove steady-state initialisation capabilities. Check controlled behaviour.
 ______________________________________________________________________________________________"),
-                       Text(
-          extent={{-100,120},{58,102}},
-          lineColor={115,150,0},
-          fontSize=31,
-          textString="TESTED -- 2016-03-02 //TH"),
         Rectangle(
           extent={{-100,120},{140,-100}},
           lineColor={115,150,0},
-          lineThickness=0.5)}),                  Icon(coordinateSystem(initialScale=0.1)),
+          lineThickness=0.5)}),                  Icon(graphics,
+                                                      coordinateSystem(initialScale=0.1)),
     experiment(
       StopTime=12000,
       __Dymola_NumberOfIntervals=50000,

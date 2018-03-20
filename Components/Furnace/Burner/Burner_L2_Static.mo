@@ -1,10 +1,10 @@
 within ClaRa.Components.Furnace.Burner;
 model Burner_L2_Static "Model for a burner section inside a combustion chamber"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -15,9 +15,73 @@ model Burner_L2_Static "Model for a burner section inside a combustion chamber"
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
 
-extends ClaRa.Components.Furnace.BaseClasses.CombustionChamberBase(redeclare replaceable model Geometry = ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlock,
-        geo(flowOrientation=ClaRa.Basics.Choices.GeometryOrientation.vertical));      //(flueGasCombustion(p = outlet.flueGas.p, xi = xi_flueGas));
+extends ClaRa.Components.Furnace.BaseClasses.CombustionChamberBase(redeclare replaceable model Geometry = ClaRa.Basics.ControlVolumes.Fundamentals.Geometry.HollowBlock);      //(flueGasCombustion(p = outlet.flueGas.p, xi = xi_flueGas));
 extends ClaRa.Basics.Icons.Burner;
+
+    //## S U M M A R Y   D E F I N I T I O N ###################################################################
+  model Outline
+    //  parameter Boolean showExpertSummary annotation(Dialog(hide));
+    extends ClaRa.Basics.Icons.RecordIcon;
+    input ClaRa.Basics.Units.Volume volume "Volume";
+    input ClaRa.Basics.Units.Area A_cross "Free cross sectional area";
+    input ClaRa.Basics.Units.Area A_wall "Wall area";
+    input ClaRa.Basics.Units.Length height "Height of volume";
+    input ClaRa.Basics.Units.Mass m "Mass inside volume";
+    input ClaRa.Basics.Units.MassFlowRate m_flow_fuel_burned "Burned fuel mass flow rate";
+    input ClaRa.Basics.Units.MassFlowRate m_flow_oxygen_burned "Burned oxygen mass flow rate";
+    input ClaRa.Basics.Units.MassFlowRate m_flow_oxygen_req "Required O2 flow rate for stochiometric combustion";
+    input ClaRa.Basics.Units.MassFlowRate m_flow_air_req "Required air flow rate for stochiometric combustion";
+    input Real lambdaComb "Excess air";
+    input Real NOx_fraction "NOx fraction at outlet";
+    input Real CO_fraction "CO fraction at outlet";
+    input ClaRa.Basics.Units.EnthalpyMassSpecific LHV "Lower heating value";
+    input ClaRa.Basics.Units.HeatFlowRate Q_combustion "Combustion Heat";
+    input ClaRa.Basics.Units.Velocity w_migration "Particle migration speed";
+    input ClaRa.Basics.Units.Time t_dwell_flueGas "Flue gas dwelltime";
+    input ClaRa.Basics.Units.Time burning_time "Burning time";
+    input Real unburntFraction "Fuel diffusity";
+    input ClaRa.Basics.Units.Temperature T_out "Outlet temperature";
+    input ClaRa.Basics.Units.EnthalpyMassSpecific h_out "Flue gas enthalpy at outlet";
+  end Outline;
+
+  model Fuel
+    extends ClaRa.Basics.Icons.RecordIcon;
+    input ClaRa.Basics.Units.MassFlowRate m_flow "Mass flow rate"
+      annotation (Dialog);
+    input ClaRa.Basics.Units.Temperature T "Temperature" annotation (Dialog);
+    input ClaRa.Basics.Units.Pressure p "Pressure" annotation (Dialog);
+    input ClaRa.Basics.Units.HeatCapacityMassSpecific cp "Specific heat capacity"
+                               annotation (Dialog);
+  end Fuel;
+
+  model Slag
+    extends ClaRa.Basics.Icons.RecordIcon;
+    input ClaRa.Basics.Units.MassFlowRate m_flow "Mass flow rate"
+      annotation (Dialog);
+    input ClaRa.Basics.Units.Temperature T "Temperature" annotation (Dialog);
+    input ClaRa.Basics.Units.Pressure p "Pressure" annotation (Dialog);
+  end Slag;
+
+  model Flow
+    extends ClaRa.Basics.Icons.RecordIcon;
+    ClaRa.Basics.Records.FlangeGas flueGas;
+    Fuel fuel;
+    Slag slag;
+  end Flow;
+
+  model Burner
+    extends ClaRa.Basics.Icons.RecordIcon;
+    ClaRa.Basics.Records.FlangeGas flueGas;
+    Fuel fuel;
+  end Burner;
+
+  model Summary
+    extends ClaRa.Basics.Icons.RecordIcon;
+    Outline outline;
+    Flow inlet;
+    Burner fuelFlueGas_inlet;
+    Flow outlet;
+  end Summary;
 
 //## P A R A M E T E R S #######################################################################################
 inner parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation"
@@ -40,7 +104,7 @@ ClaRa.Basics.Units.EnthalpyMassSpecific h_flueGasMix "Specific enthalpy of flue 
 
 //_____________________/ Connectors \______________________________
 public
-  ClaRa.Basics.Interfaces.FuelFlueGas_inlet fuelFlueGas_inlet(flueGas(Medium=flueGas), final fuelType=fuelType) annotation (Placement(transformation(extent={{-310,-10},{-290,10}}), iconTransformation(extent={{-310,-10},{-290,10}})));
+  ClaRa.Basics.Interfaces.FuelFlueGas_inlet fuelFlueGas_inlet(flueGas(Medium=flueGas),  fuelModel=fuelModel) annotation (Placement(transformation(extent={{-310,-10},{-290,10}}), iconTransformation(extent={{-310,-10},{-290,10}})));
 
 //_____________________/ Media Objects \_________________________________
 protected
@@ -54,6 +118,13 @@ protected
 
   TILMedia.Gas_ph inlet_GasMix(p=inlet.flueGas.p,xi=xi_flueGasMix,gasType=flueGas,h(start = 1.0E4)=h_flueGasMix)
      annotation (Placement(transformation(extent={{-160,-40},{-140,-20}})));
+
+protected
+  Basics.Media.FuelObject fuelBurnerInlet(
+  fuelModel=fuelModel,
+    xi_c=noEvent(actualStream(fuelFlueGas_inlet.fuel.xi_outflow)),
+    p=fuelFlueGas_inlet.fuel.p,
+    T=noEvent(actualStream(fuelFlueGas_inlet.fuel.T_outflow))) annotation (Placement(transformation(extent={{-264,-28},{-244,-8}})));
 
 //___________________/ iCom record \\__________________
 protected
@@ -76,7 +147,9 @@ protected
     V_flow_out=V_flow_flueGas_out,
     xi_out=xi_flueGas) annotation (Placement(transformation(extent={{244,-102},{268,-76}})));
 
+
 //___________________/ Summary \\__________________
+public
   Summary summary(
     outline(
       volume=geo.volume,
@@ -111,11 +184,24 @@ protected
         m_flow=inlet.fuel.m_flow,
         T=actualStream(inlet.fuel.T_outflow),
         p=inlet.fuel.p,
-        cp=inlet.fuelType.cp),
+        cp=fuelInlet.cp),
       slag(
         m_flow=inlet.slag.m_flow,
         T=actualStream(inlet.slag.T_outflow),
         p=inlet.slag.p)),
+    fuelFlueGas_inlet(
+      flueGas(mediumModel=flueGas,
+        m_flow=fuelFlueGas_inlet.flueGas.m_flow,
+        T=actualStream(fuelFlueGas_inlet.flueGas.T_outflow),
+        p=fuelFlueGas_inlet.flueGas.p,
+        h=primaryAir_inlet.h,
+        xi=actualStream(fuelFlueGas_inlet.flueGas.xi_outflow),
+        H_flow=primaryAir_inlet.h*fuelFlueGas_inlet.flueGas.m_flow),
+      fuel(
+        m_flow=fuelFlueGas_inlet.fuel.m_flow,
+        T=actualStream(fuelFlueGas_inlet.fuel.T_outflow),
+        p=fuelFlueGas_inlet.fuel.p,
+        cp=primaryAir_inlet.cp)),
     outlet(
       flueGas(mediumModel=flueGas,
         m_flow=-outlet.flueGas.m_flow,
@@ -128,7 +214,7 @@ protected
         m_flow=-outlet.fuel.m_flow,
         T=actualStream(outlet.fuel.T_outflow),
         p=outlet.fuel.p,
-        cp=outlet.fuelType.cp),
+        cp=fuelOutlet.cp),
       slag(
         m_flow=outlet.slag.m_flow,
         T=actualStream(outlet.slag.T_outflow),
@@ -139,7 +225,7 @@ initial equation
 
 equation
 
-  if noEvent(t_dwell_flueGas < burning_time.t) then
+  if (t_dwell_flueGas < burning_time.t) then
     der(unburntFraction) = 1/Tau * ((1.0 - t_dwell_flueGas/burning_time.t) - unburntFraction);
   else
     der(unburntFraction) = 1/Tau * (0-unburntFraction);
@@ -147,44 +233,43 @@ equation
 
   mass = geo.volume * (flueGasOutlet.d + inlet_GasMix.d)/2;
 
-  //____________/ Resulting Xi for entire fuel mass in the volume \______________
-  if (inlet.fuel.m_flow + fuelFlueGas_inlet.fuel.m_flow <= 0.0) then
-     xi_fuel_in = inStream(inlet.fuel.xi_outflow);
+   //____________/ Resulting Xi for entire fuel mass in the volume \______________
+   if (inlet.fuel.m_flow + fuelFlueGas_inlet.fuel.m_flow <= 0.0) then
+       elementaryComposition_fuel_in =fuelInlet.xi_e; //inStream(inlet.fuel.xi_outflow);
    else
-    (inlet.fuel.m_flow + fuelFlueGas_inlet.fuel.m_flow) * xi_fuel_in = inStream(
-      fuelFlueGas_inlet.fuel.xi_outflow)                                                                        * fuelFlueGas_inlet.fuel.m_flow + inStream(inlet.
-      fuel.xi_outflow)                                                                                                    * inlet.fuel.m_flow;
-  end if;
+    (inlet.fuel.m_flow + fuelFlueGas_inlet.fuel.m_flow) * elementaryComposition_fuel_in =fuelBurnerInlet.xi_e * fuelFlueGas_inlet.fuel.m_flow +fuelInlet.xi_e * inlet.fuel.m_flow;
+   end if;
+
   //__________________________/ Resulting Xi for flue gas mix \____________________________
   inlet.flueGas.m_flow * inStream(inlet.flueGas.xi_outflow) +  fuelFlueGas_inlet.flueGas.m_flow * inStream(
     fuelFlueGas_inlet.flueGas.xi_outflow)                                                                                                    - (inlet.flueGas.m_flow+fuelFlueGas_inlet.flueGas.m_flow)*xi_flueGasMix = zeros(flueGas.nc-1);
 
   //________________/ Mass balance - flue gas \______________________________________
-  0 =m_flow_fuel_burned*(1 - xi_fuel_in[6]*reactionZone.xi_slag) + inlet.flueGas.m_flow + fuelFlueGas_inlet.flueGas.m_flow + outlet.flueGas.m_flow;
+  0 =m_flow_fuel_burned*(1 - elementaryComposition_fuel_in[6]*reactionZone.xi_slag) + inlet.flueGas.m_flow + fuelFlueGas_inlet.flueGas.m_flow + outlet.flueGas.m_flow;
 
   //______________ / Mass balance - Slag \____________________________________________________________________________
-  0 =inlet.slag.m_flow + m_flow_fuel_burned*xi_fuel_in[6]*reactionZone.xi_slag + outlet.slag.m_flow;
+  0 =inlet.slag.m_flow + m_flow_fuel_burned*elementaryComposition_fuel_in[6]*reactionZone.xi_slag + outlet.slag.m_flow;
 
   //______________/ Mass balance - Fuel \____________________________
   0 =outlet.fuel.m_flow + inlet.fuel.m_flow + fuelFlueGas_inlet.fuel.m_flow - m_flow_fuel_burned;
 
   //__________/ molar flow rates of combustable components (educts) into the whole burner system (maybe not all of it is burned) \________
-  n_flow_C = xi_fuel_in[1]*(fuelFlueGas_inlet.fuel.m_flow + inlet.fuel.m_flow) /Basics.Constants.M_C;
-  n_flow_H = xi_fuel_in[2]*(fuelFlueGas_inlet.fuel.m_flow + inlet.fuel.m_flow) /Basics.Constants.M_H;
-  n_flow_O = xi_fuel_in[3]*(fuelFlueGas_inlet.fuel.m_flow + inlet.fuel.m_flow) /Basics.Constants.M_O;
-  n_flow_N = xi_fuel_in[4]*(fuelFlueGas_inlet.fuel.m_flow + inlet.fuel.m_flow) /Basics.Constants.M_N;
-  n_flow_S = xi_fuel_in[5]*(fuelFlueGas_inlet.fuel.m_flow + inlet.fuel.m_flow) /Basics.Constants.M_S;
-  n_flow_Ash = xi_fuel_in[6]*(fuelFlueGas_inlet.fuel.m_flow + inlet.fuel.m_flow) /Basics.Constants.M_Ash;
-  n_flow_H2O = (1-sum(xi_fuel_in))*(fuelFlueGas_inlet.fuel.m_flow + inlet.fuel.m_flow) /Basics.Constants.M_H2O;
+  n_flow_C = elementaryComposition_fuel_in[1]*(fuelFlueGas_inlet.fuel.m_flow + inlet.fuel.m_flow) /Basics.Constants.M_C;
+  n_flow_H = elementaryComposition_fuel_in[2]*(fuelFlueGas_inlet.fuel.m_flow + inlet.fuel.m_flow) /Basics.Constants.M_H;
+  n_flow_O = elementaryComposition_fuel_in[3]*(fuelFlueGas_inlet.fuel.m_flow + inlet.fuel.m_flow) /Basics.Constants.M_O;
+  n_flow_N = elementaryComposition_fuel_in[4]*(fuelFlueGas_inlet.fuel.m_flow + inlet.fuel.m_flow) /Basics.Constants.M_N;
+  n_flow_S = elementaryComposition_fuel_in[5]*(fuelFlueGas_inlet.fuel.m_flow + inlet.fuel.m_flow) /Basics.Constants.M_S;
+  n_flow_Ash = elementaryComposition_fuel_in[6]*(fuelFlueGas_inlet.fuel.m_flow + inlet.fuel.m_flow) /Basics.Constants.M_Ash;
+  n_flow_H2O = (1-sum(elementaryComposition_fuel_in))*(fuelFlueGas_inlet.fuel.m_flow + inlet.fuel.m_flow) /Basics.Constants.M_H2O;
 
   //_______________/ determination of lambda at burner\_________________________
-  n_flow_C_primary =inStream(fuelFlueGas_inlet.fuel.xi_outflow[1])*fuelFlueGas_inlet.fuel.m_flow
+  n_flow_C_primary =fuelBurnerInlet.xi_e[1]*fuelFlueGas_inlet.fuel.m_flow
     /Basics.Constants.M_C;
-  n_flow_H_primary =inStream(fuelFlueGas_inlet.fuel.xi_outflow[2])*fuelFlueGas_inlet.fuel.m_flow
+  n_flow_H_primary =fuelBurnerInlet.xi_e[2]*fuelFlueGas_inlet.fuel.m_flow
     /Basics.Constants.M_H;
-  n_flow_O_primary =inStream(fuelFlueGas_inlet.fuel.xi_outflow[3])*fuelFlueGas_inlet.fuel.m_flow
+  n_flow_O_primary =fuelBurnerInlet.xi_e[3]*fuelFlueGas_inlet.fuel.m_flow
     /Basics.Constants.M_O;
-  n_flow_S_primary =inStream(fuelFlueGas_inlet.fuel.xi_outflow[5])*fuelFlueGas_inlet.fuel.m_flow
+  n_flow_S_primary =fuelBurnerInlet.xi_e[5]*fuelFlueGas_inlet.fuel.m_flow
     /Basics.Constants.M_S;
 
   m_flow_oxygen_req_primary = (n_flow_C_primary + n_flow_H_primary/4.0 + n_flow_S_primary - n_flow_O_primary/2)*Basics.Constants.M_O
@@ -219,35 +304,21 @@ equation
   end if;
 
   //_____________/ Calculation of the mixed LHV\______________________________________
+     LHV = (inlet.fuel.m_flow*fuelInlet.LHV + fuelFlueGas_inlet.fuel.m_flow*fuelBurnerInlet.LHV)/ max(Modelica.Constants.eps,fuelFlueGas_inlet.fuel.m_flow + inlet.fuel.m_flow);
 
-   if fuelFlueGas_inlet.fuel.LHV_calculationType == "predefined" and inlet.fuel.LHV_calculationType == "predefined" then
-     LHV = (inlet.fuel.m_flow*inStream(inlet.fuel.LHV_outflow) + fuelFlueGas_inlet.fuel.m_flow*inStream(fuelFlueGas_inlet.fuel.LHV_outflow))/(fuelFlueGas_inlet.fuel.m_flow + inlet.fuel.m_flow);
-   elseif fuelFlueGas_inlet.fuel.LHV_calculationType == "Verbandsformel" and inlet.fuel.LHV_calculationType == "Verbandsformel" then
-     LHV =(33907*xi_fuel_in[1] + 142324*(xi_fuel_in[2] - xi_fuel_in[3]/8.) + 10465*xi_fuel_in[5] - 2512*((1 - sum(xi_fuel_in)) + 9*xi_fuel_in[2]))*1000;
-    else
-     LHV = inStream(inlet.fuel.LHV_outflow);
-   end if;
-
-   cp = (inlet.fuel.m_flow*inStream(inlet.fuel.cp_outflow) + fuelFlueGas_inlet.fuel.m_flow*inStream(fuelFlueGas_inlet.fuel.cp_outflow))/(fuelFlueGas_inlet.fuel.m_flow + inlet.fuel.m_flow);
-
-//   if (inlet.fuel.m_flow < 0 or inlet.fuel.m_flow > 0) or (outlet.fuel.m_flow < 0 or outlet.fuel.m_flow > 0) or (fuelFlueGas_inlet.fuel.m_flow < 0 or fuelFlueGas_inlet.fuel.m_flow > 0) then
-//      LHV * (max(0,fuelFlueGas_inlet.fuel.m_flow) + max(0,inlet.fuel.m_flow) + max(0,outlet.fuel.m_flow))= (max(0,fuelFlueGas_inlet.fuel.m_flow)*inStream(fuelFlueGas_inlet.fuel.LHV_outflow) + max(0,inlet.fuel.m_flow)*inStream(inlet.fuel.LHV_outflow) +  max(0,outlet.fuel.m_flow)*inStream(outlet.fuel.LHV_outflow));
-//   else
-//      LHV = inStream(inlet.fuel.LHV_outflow);
-//   end if;
   //______________________________/ mass balance of flue gas components \__________________________
   zeros(flueGas.nc-1) =inlet.flueGas.m_flow*flueGasInlet.xi + fuelFlueGas_inlet.flueGas.m_flow*primaryAir_inlet.xi + outlet.flueGas.m_flow*xi_flueGas + m_flow_fuel_burned*reactionZone.prod_comp;
 
   //_____________/ Calculation of fuel formation enthalpy with LHV for an ideal combustion\__________________
   m_flow_fuel_id = 1.0;
-  m_flow_flueGas_id =(m_flow_fuel_id*(1 - xi_fuel_in[6]*reactionZone.xi_slag));           //ideal flue gas mass flow
+  m_flow_flueGas_id =(m_flow_fuel_id*(1 - elementaryComposition_fuel_in[6]*reactionZone.xi_slag));           //ideal flue gas mass flow
    xi_flueGas_id =1/m_flow_flueGas_id*reactionZone.prod_comp;   //products of an ideal combustion
 
    sum_comp = sum(xi_flueGas_id);
-  Delta_h_f - LHV =m_flow_flueGas_id*((ideal_combustion.h_i)*cat(1,xi_flueGas_id,{1 - sum(xi_flueGas_id)})) + xi_fuel_in[6]*reactionZone.xi_slag*outlet.slagType.cp*T_0;  //formation enthalpy of used fuel
+  Delta_h_f - LHV =m_flow_flueGas_id*((ideal_combustion.h_i)*cat(1,xi_flueGas_id,{1 - sum(xi_flueGas_id)})) + elementaryComposition_fuel_in[6]*reactionZone.xi_slag*outlet.slagType.cp*T_0;  //formation enthalpy of used fuel
 
   //_______________/ Energy Balance flueGasCombustion \__________________________
-  0 =Q_flow_wall + Q_flow_top + Q_flow_bottom + inlet.flueGas.m_flow*flueGasInlet.h + fuelFlueGas_inlet.flueGas.m_flow*primaryAir_inlet.h + inlet.fuel.m_flow*(inStream(inlet.fuel.cp_outflow)*(inStream(inlet.fuel.T_outflow) - T_0) + Delta_h_f) + fuelFlueGas_inlet.fuel.m_flow*(inStream(fuelFlueGas_inlet.fuel.cp_outflow)*(inStream(fuelFlueGas_inlet.fuel.T_outflow) - T_0) + Delta_h_f) + outlet.fuel.m_flow*(cp*(outlet.fuel.T_outflow - T_0) + Delta_h_f) + outlet.slag.m_flow*outlet.slagType.cp*(actualStream(outlet.slag.T_outflow) - T_0) + inlet.slag.m_flow*inlet.slagType.cp*(actualStream(inlet.slag.T_outflow) - T_0) + outlet.flueGas.m_flow*h_flueGas_out;
+  0 =Q_flow_wall + Q_flow_top + Q_flow_bottom + inlet.flueGas.m_flow*flueGasInlet.h + fuelFlueGas_inlet.flueGas.m_flow*primaryAir_inlet.h + inlet.fuel.m_flow*(fuelInlet.cp*(inStream(inlet.fuel.T_outflow) - T_0) + Delta_h_f) + fuelFlueGas_inlet.fuel.m_flow*(fuelBurnerInlet.cp*(inStream(fuelFlueGas_inlet.fuel.T_outflow) - T_0) + Delta_h_f) + outlet.fuel.m_flow*(fuelOutlet.cp*(outlet.fuel.T_outflow - T_0) + Delta_h_f) + outlet.slag.m_flow*outlet.slagType.cp*(actualStream(outlet.slag.T_outflow) - T_0) + inlet.slag.m_flow*inlet.slagType.cp*(actualStream(inlet.slag.T_outflow) - T_0) + outlet.flueGas.m_flow*h_flueGas_out;
 
   sum_xi = sum(flueGasOutlet.xi);
 
@@ -258,7 +329,7 @@ equation
 
   h_flueGasMix = (fuelFlueGas_inlet.flueGas.m_flow * primaryAir_inlet.h + inlet.flueGas.m_flow * flueGasInlet.h)/(inlet.flueGas.m_flow+fuelFlueGas_inlet.flueGas.m_flow);
 
-  xi_fuel_out = xi_fuel_in; //no change of fuel composition during combustion
+  (inlet.fuel.m_flow + fuelFlueGas_inlet.fuel.m_flow)*xi_fuel_out = inlet.fuel.m_flow* inStream(inlet.fuel.xi_outflow) + fuelFlueGas_inlet.fuel.m_flow*inStream(fuelFlueGas_inlet.fuel.xi_outflow);
 
   xi_fuel = (inlet.fuel.m_flow + fuelFlueGas_inlet.fuel.m_flow)/(inlet.flueGas.m_flow + fuelFlueGas_inlet.flueGas.m_flow);// amount of fuel per flue gas mass
 
@@ -287,20 +358,6 @@ equation
 
   heat_bottom.T = iCom.T_out;
 
-  //___________/ LHV_outflows \__________________________________________
-  outlet.fuel.LHV_outflow =LHV;
-  inlet.fuel.LHV_outflow =LHV;
-  outlet.fuel.cp_outflow =cp;
-
-  fuelFlueGas_inlet.fuel.LHV_outflow =LHV;
-  if (fuelFlueGas_inlet.fuel.LHV_calculationType == "predefined") and (inlet.fuel.LHV_calculationType == "predefined") then
-    outlet.fuel.LHV_calculationType = "predefined";
-  elseif (fuelFlueGas_inlet.fuel.LHV_calculationType == "Verbandsformel") and (inlet.fuel.LHV_calculationType == "Verbandsformel") then
-    outlet.fuel.LHV_calculationType = "Verbandsformel";
-  else
-    outlet.fuel.LHV_calculationType = "predefined";
- // assert(fuelFlueGas_inlet.fuel.LHV_calculationType == "predefined" and inlet.fuel.LHV_calculationType == "predefined" or fuelFlueGas_inlet.fuel.LHV_calculationType == "Verbandsformel" and inlet.fuel.LHV_calculationType == "Verbandsformel", "Please check your LHV calculation settings inside boundaries. Mixed LHV_calculationTypes are not supported inside one fuel stream");
-  end if;
 
   //_____________/ Pressures \______________________________________________
   fuelFlueGas_inlet.fuel.p = outlet.flueGas.p;
@@ -312,12 +369,10 @@ equation
  //____________/ (Dummy) values for inlet_outflows \_____________
   fuelFlueGas_inlet.fuel.xi_outflow = xi_fuel_out;
   fuelFlueGas_inlet.flueGas.xi_outflow =  xi_flueGas;
-  fuelFlueGas_inlet.fuel.cp_outflow=inStream(outlet.fuel.cp_outflow);
-  inlet.fuel.cp_outflow=inStream(outlet.fuel.cp_outflow);
+
 
   //___________/ Dummy T_outflows \__________________________________________
   inlet.fuel.T_outflow = outlet.flueGas.T_outflow;
-  //outlet.slag.T_outflow = inStream(outlet.slag.T_outflow);
   inlet.flueGas.T_outflow  = outlet.flueGas.T_outflow;
 
   fuelFlueGas_inlet.fuel.T_outflow = inStream(fuelFlueGas_inlet.fuel.T_outflow);

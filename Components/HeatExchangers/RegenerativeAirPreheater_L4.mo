@@ -1,10 +1,10 @@
 within ClaRa.Components.HeatExchangers;
 model RegenerativeAirPreheater_L4 "Model for a regenerative air preheater"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.2                            //
+  // Component of the ClaRa library, version: 1.3.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -69,7 +69,7 @@ model RegenerativeAirPreheater_L4 "Model for a regenerative air preheater"
       tab="General",
       group="Geometry",
       showStartAttribute=false,
-      groupImage="modelica://ClaRa/figures/ParameterDialog/RegAirPreheater.png",
+      groupImage="modelica://ClaRa/Resources/Images/ParameterDialog/RegAirPreheater.png",
       connectorSizing=false));
   // annotation (Dialog(group="Geometry"));
   parameter Real leakage=0.05 "Ratio of mass leakage from cold fresh air to cold flue gas"
@@ -276,20 +276,21 @@ public
         rotation=270,
         origin={-46,-22})));
 
-  Basics.ControlVolumes.SolidVolumes.ThinWall_L2[N_cv] wallSecundaryAir(
+  Basics.ControlVolumes.SolidVolumes.ThinPlateWall_L4 wallSecondaryAir(
     redeclare replaceable model Material = Material,
-    each mass=mass/N_cv,
-    each A_heat=A_heat/N_cv,
     each thickness_wall=s_sp,
     each initOption=initOptionWall,
     T_start=T_start_wall_internal,
-    each stateLocation=stateLocation) annotation (Placement(transformation(
+    each stateLocation=stateLocation,
+    N_ax=N_cv,
+    mass_struc=mass - wallSecondaryAir.length*wallSecondaryAir.width*s_sp*wallSecondaryAir.solid[1].d,
+    CF_area=A_heat/(wallSecondaryAir.length*wallSecondaryAir.width)) annotation (Placement(transformation(
         extent={{-10,-5},{10,5}},
         rotation=-90,
         origin={1,-22})));
 
   VolumesValvesFittings.Fittings.FlueGasJunction_L2
-                                                 flueGasSplit_L2_1(T_start=if size(T_start_flueGas,1)==2 then T_start_flueGas[2] else T_start_flueGas[1],p_start=if size(p_start_flueGas,1)==2 then p_start_flueGas[2] else p_start_flueGas[1],mixingRatio_initial=(1*xi_start_flueGas + leakage*xi_start_freshAir)/(1+leakage),volume=1)
+                                                 flueGasSplit_L2_1(T_start=if size(T_start_flueGas,1)==2 then T_start_flueGas[2]*(1-leakage) else T_start_flueGas[1]*(1-leakage),p_start=if size(p_start_flueGas,1)==2 then p_start_flueGas[2] else p_start_flueGas[1],mixingRatio_initial=(1*xi_start_flueGas + leakage*xi_start_freshAir)/(1+leakage),volume=1)
     annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=-90,
@@ -329,7 +330,47 @@ public
         extent={{-10,-9},{10,9}},
         rotation=0,
         origin={-32,39})));
+public
+  Basics.Interfaces.EyeOutGas       eye_flueGas(each medium=medium)
+                                            annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+        rotation=0,
+        origin={100,82}),   iconTransformation(
+        extent={{-10,-10},{10,10}},
+        rotation=0,
+        origin={102,86})));
+protected
+  Basics.Interfaces.EyeInGas       eye_int_flueGas[1](each medium=medium)
+                                               annotation (Placement(transformation(extent={{-1,-1},{1,1}},
+        rotation=0,
+        origin={86,82})));
+protected
+  Basics.Interfaces.EyeInGas       eye_int_freshAir
+                                                  [1](each medium=medium)
+                                               annotation (Placement(transformation(extent={{-1,-1},{1,1}},
+        rotation=180,
+        origin={-82,-78})));
+public
+  Basics.Interfaces.EyeOutGas eye_freshAir(each medium=medium) annotation (Placement(transformation(
+        extent={{-10,-10},{10,10}},
+        rotation=180,
+        origin={-104,-78}), iconTransformation(
+        extent={{-10,-10},{10,10}},
+        rotation=180,
+        origin={-102,-86})));
 equation
+  eye_int_flueGas[1].p = summary.flueGasOutlet.p/1e5;
+  eye_int_flueGas[1].h = summary.flueGasOutlet.h/1e3;
+  eye_int_flueGas[1].m_flow = summary.flueGasOutlet.m_flow;
+  eye_int_flueGas[1].T = summary.flueGasOutlet.T - 273.15;
+  eye_int_flueGas[1].s = flueGasSplit_L2_1.flueGasPortA.s/1e3;
+  eye_int_flueGas[1].xi = flueGasSplit_L2_1.flueGasPortA.xi;
+
+  eye_int_freshAir[1].p = summary.freshAirOutlet.p/1e5;
+  eye_int_freshAir[1].h = summary.freshAirOutlet.h/1e3;
+  eye_int_freshAir[1].m_flow = summary.freshAirOutlet.m_flow;
+  eye_int_freshAir[1].T = summary.freshAirOutlet.T - 273.15;
+  eye_int_freshAir[1].s = freshAirCell.fluidOutlet.s/1e3;
+  eye_int_freshAir[1].xi = freshAirCell.fluidOutlet.xi;
 
   connect(freshAirInlet, split_controllable.inlet) annotation (Line(
       points={{-46,100},{-46,40},{-42,40}},
@@ -356,20 +397,13 @@ equation
       color={118,106,98},
       thickness=0.5,
       smooth=Smooth.None));
-  connect(freshAirCell.heat, wallSecundaryAir.innerPhase) annotation (Line(
-      points={{-41.2,-22},{-4,-22}},
-      color={167,25,48},
-      thickness=0.5,
-      smooth=Smooth.None));
   for i in 1:(N_cv) loop
-
-    connect(wallSecundaryAir[i].outerPhase, flueGasCell.heat[N_cv + 1 - i])
+    connect(wallSecondaryAir.outerPhase[i], flueGasCell.heat[N_cv + 1 - i])
       annotation (Line(
         points={{6,-22},{41.2,-22}},
         color={167,25,48},
         thickness=0.5,
         smooth=Smooth.None));
-
         end for;
 
   connect(split_controllable.outlet2, freshAirCell.inlet) annotation (Line(
@@ -382,11 +416,16 @@ equation
       color={118,106,98},
       thickness=0.5,
       smooth=Smooth.None));
+  connect(freshAirCell.heat, wallSecondaryAir.innerPhase) annotation (Line(
+      points={{-41.2,-22},{-4,-22}},
+      color={167,25,48},
+      thickness=0.5));
+  connect(eye_int_flueGas[1],eye_flueGas)  annotation (Line(points={{86,82},{100,82}}, color={190,190,190}));
+  connect(eye_int_freshAir[1], eye_freshAir) annotation (Line(points={{-82,-78},{-104,-78}}, color={190,190,190}));
   annotation (
     Dialog(group="Nominal Values"),
     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
-            100}}),
-         graphics),
+            100}})),
     Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
             100,100}})),
     Documentation(info="<html>

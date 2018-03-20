@@ -1,10 +1,10 @@
 within ClaRa.Components.VolumesValvesFittings.Pipes;
 model PipeFlowVLE_L1_TML "Simple tube model based on transmission line equations. Can choose between Modelica and ClaRa Delay implementation."
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.2                            //
+  // Component of the ClaRa library, version: 1.3.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -231,9 +231,9 @@ model PipeFlowVLE_L1_TML "Simple tube model based on transmission line equations
   Modelica.SIunits.Pressure Delta_p_in(final start=0) "Pressure at inlet:  p_in = p_nom + dp_0";
   Modelica.SIunits.Pressure Delta_p_out(final start=0) "Pressure at outlet: p_out = p_nom - R*q_nom + dp_L";
 
-  discrete Modelica.SIunits.Pressure p_L_init(start=p_out_start) "Initial pressure at outlet:  p_out = p_in_init + dp_L";
+  parameter Modelica.SIunits.Pressure p_L_init(start=p_out_start, fixed=false) "Initial pressure at outlet:  p_out = p_in_init + dp_L";
 
-  discrete Modelica.SIunits.Pressure p_0_init(start=p_in_start) "Initial pressure at inlet:  p_in = p_out_init + dp_0";
+  parameter Modelica.SIunits.Pressure p_0_init(start=p_in_start, fixed=false) "Initial pressure at inlet:  p_in = p_out_init + dp_0";
 
   //____Mass and Density______________________________________________________________________________________
   Modelica.SIunits.Density rho "Time averaged fluid density in pipe";
@@ -248,7 +248,7 @@ model PipeFlowVLE_L1_TML "Simple tube model based on transmission line equations
   Modelica.SIunits.VolumeFlowRate Delta_V_flow_in "Volume flow at inlet:  V_flow_in=q_nom + dq_0";
   Modelica.SIunits.VolumeFlowRate Delta_V_flow_out(start=0) "Volume flow at outlet: V_flow_out=q_nom + dq_L";
 
-  discrete Modelica.SIunits.VolumeFlowRate V_flow_start(start=m_flow_nom/rho_start) "Initial volume flow at inlet";
+  parameter Modelica.SIunits.VolumeFlowRate V_flow_start(start=m_flow_nom/rho_start, fixed=false) "Initial volume flow at inlet";
 
   Modelica.SIunits.Velocity w "Flow velocity in pipe";
   Modelica.SIunits.Velocity a "Time averaged speed of sound in pipe";
@@ -347,8 +347,8 @@ protected
       ClaRa.Basics.Functions.ClaRaDelay.ExternalTable();
   Real hist_dq0[6](start=zeros(6));
 
-  discrete Real A_0;
-  discrete Real B_0;
+  parameter  Real A_0(fixed=false);
+  parameter Real B_0(fixed=false);
   Real Tau_pass_tot "Total residence time fo fluid in pipe from inlet to outlet";
   ClaRa.Basics.Functions.ClaRaDelay.ExternalTable pointer_beta=
       ClaRa.Basics.Functions.ClaRaDelay.ExternalTable();
@@ -403,19 +403,8 @@ initial equation
     a_ps = 1/2*(fluidInlet.w + fluidOutlet.w);
   end if;
 
-  //__________________________________________________________________________________________________
-
-equation
-  assert(abs(z_out-z_in) <= length, "Length of pipe less than vertical height", AssertionLevel.error);
-
-  connect(eye, eye_int[1]) annotation (Line(
-      points={{146,-28},{110,-28},{110,-30},{72,-30}},
-      color={255,204,51},
-      thickness=0.5,
-      smooth=Smooth.None));
-
   //_____/Initial Settings\______________________________________________________________________________
-  when initial() then
+//  when initial() then
     A_0 = inlet.m_flow/A_cross/rho;
     B_0 = if adiabaticWall then der(cp*rho)/(cp*rho) else alpha*S/(A_cross*rho*cp)
        + der(cp*rho)/(cp*rho);
@@ -428,7 +417,7 @@ equation
 //     p_L_init = outlet.p+Delta_p_grav_start;
     V_flow_start = (inlet.m_flow- outlet.m_flow)/2/rho;
 
-  if z_out == z_in then
+  if abs(z_out - z_in) < Modelica.Constants.eps then
     p_0_init = outlet.p + F/A_cross*(inlet.m_flow- outlet.m_flow)/2*length;
     p_L_init = outlet.p;
   elseif z_out > z_in then
@@ -439,7 +428,20 @@ equation
     p_L_init = outlet.p;
    end if;
 
-  end when;
+
+//  end when;
+  //__________________________________________________________________________________________________
+
+equation
+  assert(abs(z_out-z_in) <= length, "Length of pipe less than vertical height", AssertionLevel.error);
+
+  connect(eye, eye_int[1]) annotation (Line(
+      points={{146,-28},{110,-28},{110,-30},{72,-30}},
+      color={255,204,51},
+      thickness=0.5,
+      smooth=Smooth.None));
+
+
 
   //_____/Setup of delayed signals needed in the model Settings\__________________________________________
 
@@ -711,7 +713,7 @@ equation
 
   Delta_p_grav = rho*g_n*abs(z_out - z_in);
 
-  if z_out == z_in then
+  if abs(z_out - z_in) <Modelica.Constants.eps then
     p_out = p_L_init + Delta_p_out;
     p_in = p_0_init + Delta_p_in;
   elseif z_out > z_in then

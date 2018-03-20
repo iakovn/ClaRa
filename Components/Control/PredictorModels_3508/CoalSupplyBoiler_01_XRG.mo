@@ -1,10 +1,10 @@
 within ClaRa.Components.Control.PredictorModels_3508;
 model CoalSupplyBoiler_01_XRG "A simple coal supply and boiler model using characteristic lines and transfer functions"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -201,7 +201,8 @@ equation
   connect(m_StG_, m_StG_) annotation (Line(points={{-40,-110},{-40,-110}}, color={0,0,127}));
   connect(convert2LifeSteamPressure.y[1], p_LS_) annotation (Line(points={{51,30},{66,30},{66,-78},{20,-78},{20,-110}}, color={0,0,127}));
     annotation (Placement(transformation(extent={{-730,-116},{-710,-96}})),
-              Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},{160,100}})),
+              Diagram(graphics,
+                      coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},{160,100}})),
                                  Icon(coordinateSystem(preserveAspectRatio=true,
           extent={{-100,-100},{160,100}}), graphics={
         Polygon(

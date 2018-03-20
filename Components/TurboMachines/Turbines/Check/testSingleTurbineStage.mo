@@ -1,10 +1,10 @@
 within ClaRa.Components.TurboMachines.Turbines.Check;
 model testSingleTurbineStage
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -100,10 +100,6 @@ equation
       points={{-75,26},{-70,26}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(inertia.flange_b, GasFanAdvanced.shaft)  annotation (Line(
-      points={{-24,26},{-24,-2},{-38,-2},{-38,-36},{-34,-36}},
-      color={0,0,0},
-      smooth=Smooth.None));
   connect(VIGVTimeTable.y, GasFanAdvanced.Delta_alpha_input)
                                                          annotation (Line(
       points={{-75,-6},{-48,-6},{-48,-28},{-34,-28}},
@@ -119,14 +115,10 @@ equation
       color={118,106,98},
       thickness=0.5,
       smooth=Smooth.None));
+  connect(GasFanAdvanced.shaft_b, inertia.flange_b) annotation (Line(points={{-34,-36},{-40,-36},{-40,-2},{-24,-2},{-24,26}}, color={0,0,0}));
   annotation (
     Diagram(coordinateSystem(extent={{-100,-60},{60,60}}, preserveAspectRatio=false),
             graphics={          Text(
-          extent={{-100,60},{-22,50}},
-          lineColor={0,128,0},
-          fontSize=34,
-          textString="TESTED -- 2015-01-27 //LN"),
-                                Text(
           extent={{-98,50},{-18,48}},
           lineColor={0,128,0},
           horizontalAlignment=TextAlignment.Left,
@@ -136,5 +128,6 @@ PURPOSE:
 >> Tester for a single gas turbine stage")}),
     experiment(StopTime=20),
     __Dymola_experimentSetupOutput,
-    Icon(coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=false)));
+    Icon(graphics,
+         coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=false)));
 end testSingleTurbineStage;

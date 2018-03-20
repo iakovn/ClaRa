@@ -182,13 +182,8 @@ PURPOSE:
 ______________________________________________________________________________________________
 
 ______________________________________________________________________________________________
-"),                                            Text(
-          extent={{-96,102},{244,82}},
-          lineColor={0,128,0},
-          fontSize=23,
-          horizontalAlignment=TextAlignment.Left,
-          textString="TESTED -- 2017-03-01 //TH")}),
-                                                 Icon(coordinateSystem(initialScale=0.1)),
+")}),                                            Icon(graphics,
+                                                      coordinateSystem(initialScale=0.1)),
     experiment(
       StopTime=12000,
       __Dymola_NumberOfIntervals=1000,

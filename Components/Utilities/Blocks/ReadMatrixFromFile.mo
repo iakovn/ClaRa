@@ -1,10 +1,10 @@
 within ClaRa.Components.Utilities.Blocks;
 model ReadMatrixFromFile "Read a 2D matrix from file  || *.csv and *.mat(-v4) are supported"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -16,12 +16,9 @@ model ReadMatrixFromFile "Read a 2D matrix from file  || *.csv and *.mat(-v4) ar
 //___________________________________________________________________________//
 
   import Modelica.Blocks.Types;
-  import ModelicaServices.ExternalReferences.loadResource;
-  ////////// this is Dymola specific ///////////
-  import DataFiles;
-  ////////// MSL 3.2.2 conform Version / going to be used in the future ///////
-  // import Modelica.Utilities.Streams.*;
-  //////////////////////////////////////////////
+  import Modelica.Utilities.Files.loadResource;
+
+  import Modelica.Utilities.Streams.*;
   extends Modelica.Blocks.Interfaces.BlockIcon;
 
   parameter String fileName="NoName" "file where matrix is stored"
@@ -32,18 +29,12 @@ model ReadMatrixFromFile "Read a 2D matrix from file  || *.csv and *.mat(-v4) ar
        annotation(Dialog(group="table data definition", enable = tableOnFile));
 
   final parameter Integer matrixSize[2]=readMatrixSize(loadResource(fileName), matrixName);
-  ////////// this is Dymola specific ///////////
-protected
-  parameter Real M[:,:] = readMatrix(loadResource(fileName), matrixName, matrixSize[1], matrixSize[2]);
-  ////////// MSL 3.2.2 conform Version / going to be used in the future ///////
-  // parameter Real M[:,:] = readRealMatrix(loadResource(fileName), matrixName, matrixSize[1], matrixSize[2]);
-  //////////////////////////////////////////////
 
-public
-  Modelica.Blocks.Interfaces.RealOutput y[matrixSize[1], matrixSize[2]]
-    annotation (Placement(transformation(extent={{100,-10},{120,10}})));
-equation
- y=M;
+final parameter    Real M[:,:] = readRealMatrix(loadResource(fileName), matrixName, matrixSize[1], matrixSize[2]);
+
+
+   Modelica.Blocks.Interfaces.RealOutput y[matrixSize[1], matrixSize[2]]=M annotation (Placement(transformation(extent={{100,-10},{120,10}})));
+
   annotation (
     Documentation(info="<html>
 <p>
@@ -199,59 +190,39 @@ and the first row \"table2D_1[1,2:]\" contains the u[2] grid points.
           extent={{-60,60},{60,-60}},
           fillColor={235,235,235},
           fillPattern=FillPattern.Solid,
-          lineColor={0,0,255}),
+          lineColor={27,36,42}),
         Line(points={{60,0},{100,0}}, color={0,0,255}),
         Text(
           extent={{-100,100},{100,64}},
-          textString="2 dimensional linear table interpolation",
-          lineColor={0,0,255}),
+          lineColor={27,36,42},
+          textString="2 dimensional linear table interpolation"),
+        Rectangle(
+          extent={{-28,40},{54,20}},
+          lineColor={0,0,0},
+          fillColor={235,183,0},
+          fillPattern=FillPattern.Solid),
+        Rectangle(
+          extent={{-54,20},{-28,-40}},
+          lineColor={0,0,0},
+          fillColor={235,183,0},
+          fillPattern=FillPattern.Solid),
         Line(points={{-54,40},{-54,-40},{54,-40},{54,40},{28,40},{28,-40},{-28,
               -40},{-28,40},{-54,40},{-54,20},{54,20},{54,0},{-54,0},{-54,-20},
               {54,-20},{54,-40},{-54,-40},{-54,40},{54,40},{54,-40}}, color={
               0,0,0}),
         Line(points={{0,40},{0,-40}}, color={0,0,0}),
-        Rectangle(
-          extent={{-54,20},{-28,0}},
-          lineColor={0,0,0},
-          fillColor={255,158,2},
-          fillPattern=FillPattern.Solid),
-        Rectangle(
-          extent={{-54,0},{-28,-20}},
-          lineColor={0,0,0},
-          fillColor={255,158,2},
-          fillPattern=FillPattern.Solid),
-        Rectangle(
-          extent={{-54,-20},{-28,-40}},
-          lineColor={0,0,0},
-          fillColor={255,158,2},
-          fillPattern=FillPattern.Solid),
-        Rectangle(
-          extent={{-28,40},{0,20}},
-          lineColor={0,0,0},
-          fillColor={255,158,2},
-          fillPattern=FillPattern.Solid),
-        Rectangle(
-          extent={{0,40},{28,20}},
-          lineColor={0,0,0},
-          fillColor={255,158,2},
-          fillPattern=FillPattern.Solid),
-        Rectangle(
-          extent={{28,40},{54,20}},
-          lineColor={0,0,0},
-          fillColor={255,158,2},
-          fillPattern=FillPattern.Solid),
         Line(points={{-54,40},{-28,20}}, color={0,0,0}),
         Line(points={{-28,40},{-54,20}}, color={0,0,0}),
         Text(
           extent={{-54,-40},{-30,-56}},
-          textString="u1",
-          lineColor={0,0,255}),
+          lineColor={27,36,42},
+          textString="u1"),
         Text(
           extent={{28,58},{52,44}},
-          textString="u2",
-          lineColor={0,0,255}),
+          lineColor={27,36,42},
+          textString="u2"),
         Text(
           extent={{-2,12},{32,-22}},
-          textString="y",
-          lineColor={0,0,255})}));
+          lineColor={27,36,42},
+          textString="y")}));
 end ReadMatrixFromFile;

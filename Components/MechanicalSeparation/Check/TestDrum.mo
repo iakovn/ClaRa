@@ -1,13 +1,11 @@
 within ClaRa.Components.MechanicalSeparation.Check;
 model TestDrum "Initialisation of a natural circulation with drum and evaporator"
-extends Basics.Icons.PackageIcons.ExecutableExampleb50;
-  ClaRa.Components.MechanicalSeparation.Drum_L3_advanced drum(
+extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
+  ClaRa.Components.MechanicalSeparation.Drum_L3 drum(
     diameter=1,
     length=10,
     z_feed=5,
-    z_riser=8,
     z_sat=9,
-    z_down=1,
     level_rel_start=0.5,
     h_liq_start=source.h_const,
     h_vap_start=sink.h_const,
@@ -17,7 +15,9 @@ extends Basics.Icons.PackageIcons.ExecutableExampleb50;
     outputAbs=false,
     showLevel=true,
     showData=true,
-    initOption=204) annotation (Placement(transformation(extent={{-30,-40},{30,-20}})));
+    initOption=204,
+    z_risers={8,0,0},
+    z_downs={1,0,0}) annotation (Placement(transformation(extent={{-30,-40},{30,-20}})));
 
   ClaRa.Components.BoundaryConditions.BoundaryVLE_hxim_flow source(h_const=1500e3, m_flow_const=7.1)
     annotation (Placement(transformation(extent={{100,-40},{80,-20}})));
@@ -37,11 +37,11 @@ extends Basics.Icons.PackageIcons.ExecutableExampleb50;
     initOption=1) annotation (Placement(transformation(
         extent={{10,10},{-10,-10}},
         rotation=90,
-        origin={0,-80})));
+        origin={6,-78})));
 
   Modelica.Thermal.HeatTransfer.Sources.PrescribedTemperature
                                                          fixedTemperature
-    annotation (Placement(transformation(extent={{40,-90},{20,-70}})));
+    annotation (Placement(transformation(extent={{42,-88},{22,-68}})));
   inner ClaRa.SimCenter simCenter(redeclare TILMedia.VLEFluidTypes.TILMedia_Water
                                             fluid1, useHomotopy=true)
     annotation (Placement(transformation(extent={{-100,-100},{-60,-80}})));
@@ -59,21 +59,10 @@ extends Basics.Icons.PackageIcons.ExecutableExampleb50;
     duration=1,
     offset=500 + 273.15,
     height=-100,
-    startTime=400) annotation (Placement(transformation(extent={{80,-91},{60,-69}})));
+    startTime=400) annotation (Placement(transformation(extent={{82,-89},{62,-67}})));
 equation
-  connect(drum.down, evaporator.inlet) annotation (Line(
-      points={{0,-39.8},{0,-70}},
-      color={0,131,169},
-      pattern=LinePattern.Solid,
-      thickness=0.5,
-      smooth=Smooth.None));
-  connect(drum.riser, evaporator.outlet) annotation (Line(
-      points={{-26,-39.4},{-26,-98},{0,-98},{0,-90}},
-      color={0,131,169},
-      thickness=0.5,
-      smooth=Smooth.None));
   connect(evaporator.heat, fixedTemperature.port) annotation (Line(
-      points={{10,-80},{20,-80}},
+      points={{16,-78},{22,-78}},
       color={167,25,48},
       thickness=0.5,
       smooth=Smooth.None));
@@ -99,9 +88,18 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(ramp.y, fixedTemperature.T) annotation (Line(
-      points={{59,-80},{42,-80}},
+      points={{61,-78},{44,-78}},
       color={0,0,127},
       smooth=Smooth.None));
+  connect(evaporator.inlet, drum.down_1) annotation (Line(
+      points={{6,-68},{6,-40}},
+      color={0,131,169},
+      thickness=0.5));
+  connect(evaporator.outlet, drum.riser_1) annotation (Line(
+      points={{6,-88},{6,-96},{-26,-96},{-26,-40}},
+      color={0,131,169},
+      pattern=LinePattern.Solid,
+      thickness=0.5));
   annotation (                          Diagram(coordinateSystem(
           preserveAspectRatio=false, extent={{-100,-100},{100,100}}), graphics={
                                    Text(
@@ -118,16 +116,9 @@ PURPOSE:
 2. Behaviour in case of disturbance (sudden temp. decrease)
 _____________________________________________________
 HAVE A LOOK AT:
-Look at filling level, steam qualities and circulation rate"),
-                                   Text(
-          extent={{-100,100},{48,76}},
-          lineColor={0,128,0},
-          lineThickness=0.5,
-          fillColor={102,198,0},
-          fillPattern=FillPattern.Solid,
-          horizontalAlignment=TextAlignment.Left,
-          fontSize=20,
-          textString="TESTED, 26.02.2016 //AR")}), Icon(coordinateSystem(extent={{-100,-100},{100,100}})),
+Look at filling level, steam qualities and circulation rate")}),
+                                                   Icon(graphics,
+                                                        coordinateSystem(extent={{-100,-100},{100,100}})),
     experiment(StopTime=800),
     __Dymola_experimentSetupOutput);
 end TestDrum;

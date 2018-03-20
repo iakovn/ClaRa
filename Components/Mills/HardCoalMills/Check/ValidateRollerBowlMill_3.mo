@@ -1,10 +1,10 @@
 within ClaRa.Components.Mills.HardCoalMills.Check;
 model ValidateRollerBowlMill_3 "A test scenario derived from the paper Niemczyk: 'Derivation and validation of a coal mill model for control'"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -15,7 +15,7 @@ model ValidateRollerBowlMill_3 "A test scenario derived from the paper Niemczyk:
 // XRG Simulation GmbH (Hamburg, Germany).                                   //
 //___________________________________________________________________________//
  extends ClaRa.Basics.Icons.PackageIcons.ExecutableRegressiong100;
-  import ModelicaServices.ExternalReferences.loadResource;
+  import Modelica.Utilities.Files.loadResource;
 //   parameter Real K_10 = 1459.98;//1507.9;
 //   parameter Real K_11 = 1.75388e7;//8.4736e6;
 //   parameter Real K_2 = 0.127694;//0.1283;
@@ -24,106 +24,84 @@ model ValidateRollerBowlMill_3 "A test scenario derived from the paper Niemczyk:
   Real Dev1;
   Real Dev2;
 
-model Regression
-  extends ClaRa.Basics.Icons.RegressionSummary;
-  Modelica.Blocks.Interfaces.RealInput Delta_T_meas_int "Temperature deviation sim vs meas.";
-  Modelica.Blocks.Interfaces.RealInput T_out "Outlet temperature";
-  Modelica.Blocks.Interfaces.RealInput xi_h2o_out "H2O mass fraction at air outlet";
-  Modelica.Blocks.Interfaces.RealInput m_flow_coal_out "Total coal outlet flow";
-
-  Real y_Delta_T_meas_int = Delta_T_meas_int;
-
-  Real y_xi_h2o_out_int = integrator2.y;
-
-  Real y_T_out_int = integrator3.y;
-
-  Real y_m_flow_coal_out_max = timeExtrema4.y_max;
-  Real y_m_flow_coal_out_min = timeExtrema4.y_min;
-
-  protected
-  Components.Utilities.Blocks.Integrator integrator2(u = xi_h2o_out);
-  Components.Utilities.Blocks.Integrator integrator3(u = T_out);
-  Components.Utilities.Blocks.TimeExtrema timeExtrema4(u = m_flow_coal_out);
-end Regression;
-
   ClaRa.Components.Mills.HardCoalMills.VerticalMill_L3 Mill2(
-    millKoeff=ClaRa.Components.Mills.HardCoalMills.Fundamentals.STV4(),
     initOption=801,
     mass_rct_start=3000,
     mass_pct_start=100,
     T_out_start=96.15 + 273.15) annotation (Placement(transformation(extent={{-8,-60},{12,-40}})));
-  inner SimCenter simCenter(redeclare ClaRa.Basics.Media.Fuel.Coal_v2 fuelModel1, T_amb=283.15) annotation (Placement(transformation(extent={{80,80},{100,100}})));
+  inner SimCenter simCenter(T_amb=283.15, redeclare Basics.Media.FuelTypes.Fuel_refvalues_v2 fuelModel1(C_cp={1400,1000,4190}))
+                                                                                                 annotation (Placement(transformation(extent={{80,80},{100,100}})));
   Modelica.Blocks.Sources.CombiTimeTable W_c(
     tableOnFile=true,
     tableName="W_c",
-    fileName=loadResource("modelica://ClaRa/TableBase/W_c.mat"))
+    fileName=loadResource("modelica://ClaRa/Resources/TableBase/W_c.mat"))
     annotation (Placement(transformation(extent={{-100,-40},{-80,-20}})));
   Modelica.Blocks.Sources.CombiTimeTable
                                T_air(
     tableOnFile=true,
-    fileName=loadResource("modelica://ClaRa/TableBase/T_air.mat"),
+    fileName=loadResource("modelica://ClaRa/Resources/TableBase/T_air.mat"),
     tableName="T_air")
     annotation (Placement(transformation(extent={{-100,-100},{-80,-80}})));
   Modelica.Blocks.Sources.CombiTimeTable
                                omega(
     tableOnFile=true,
     tableName="omega",
-    fileName=loadResource("modelica://ClaRa/TableBase/omega.mat"))
+    fileName=loadResource("modelica://ClaRa/Resources/TableBase/omega.mat"))
     annotation (Placement(transformation(extent={{-100,-8},{-80,12}})));
   Modelica.Blocks.Sources.CombiTimeTable
                                W_air(
     tableOnFile=true,
-    fileName=loadResource("modelica://ClaRa/TableBase/W_air.mat"),
+    fileName=loadResource("modelica://ClaRa/Resources/TableBase/W_air.mat"),
     tableName="W_air")
     annotation (Placement(transformation(extent={{-100,-72},{-80,-52}})));
   Modelica.Blocks.Sources.CombiTimeTable DeltaP_pa(
     tableOnFile=true,
-    fileName=loadResource("modelica://ClaRa/TableBase/DeltaP_pa.mat"),
+    fileName=loadResource("modelica://ClaRa/Resources/TableBase/DeltaP_pa.mat"),
     tableName="DeltaP_pa")
     annotation (Placement(transformation(extent={{80,52},{100,72}})));
   Modelica.Blocks.Sources.CombiTimeTable DeltaP_mill_meas(
     tableOnFile=true,
     tableName="DeltaP_mill_meas",
-    fileName=loadResource("modelica://ClaRa/TableBase/DeltaP_mill_meas.mat"))
+    fileName=loadResource("modelica://ClaRa/Resources/TableBase/DeltaP_mill_meas.mat"))
     annotation (Placement(transformation(extent={{80,-52},{100,-32}})));
   Modelica.Blocks.Sources.CombiTimeTable
                                E_meas(
     tableOnFile=true,
     tableName="E_meas",
-    fileName=loadResource("modelica://ClaRa/TableBase/E_meas.mat"))
+    fileName=loadResource("modelica://ClaRa/Resources/TableBase/E_meas.mat"))
     annotation (Placement(transformation(extent={{80,-20},{100,0}})));
   Modelica.Blocks.Sources.CombiTimeTable T_out_meas(
     tableOnFile=true,
     tableName="T_out_meas",
-    fileName=loadResource("modelica://ClaRa/TableBase/T_out_meas.mat"),
+    fileName=loadResource("modelica://ClaRa/Resources/TableBase/T_out_meas.mat"),
     offset={-273.15})
     annotation (Placement(transformation(extent={{80,-84},{100,-64}})));
   Modelica.Blocks.Sources.CombiTimeTable
                                E_model(
     tableOnFile=true,
     tableName="E_model",
-    fileName=loadResource("modelica://ClaRa/TableBase/E_model.mat"))
+    fileName=loadResource("modelica://ClaRa/Resources/TableBase/E_model.mat"))
     annotation (Placement(transformation(extent={{52,-20},{72,0}})));
   Modelica.Blocks.Sources.CombiTimeTable DeltaP_mill_model(
     tableOnFile=true,
     tableName="DeltaP_mill_model",
-    fileName=loadResource("modelica://ClaRa/TableBase/DeltaP_mill_model.mat"))
+    fileName=loadResource("modelica://ClaRa/Resources/TableBase/DeltaP_mill_model.mat"))
     annotation (Placement(transformation(extent={{52,-52},{72,-32}})));
   Modelica.Blocks.Sources.CombiTimeTable T_out_model(
     tableOnFile=true,
     offset={-273.15},
     tableName="T_out_model",
-    fileName=loadResource("modelica://ClaRa/TableBase/T_out_model.mat"))
+    fileName=loadResource("modelica://ClaRa/Resources/TableBase/T_out_model.mat"))
     annotation (Placement(transformation(extent={{52,-84},{72,-64}})));
   Modelica.Blocks.Sources.CombiTimeTable W_pf_meas(
     tableOnFile=true,
     tableName="W_pf_meas",
-    fileName=loadResource("modelica://ClaRa/TableBase/W_pf_meas.mat"))
+    fileName=loadResource("modelica://ClaRa/Resources/TableBase/W_pf_meas.mat"))
     annotation (Placement(transformation(extent={{80,18},{100,38}})));
   Modelica.Blocks.Sources.CombiTimeTable W_pf_model(
     tableOnFile=true,
     tableName="W_pf_model",
-    fileName=loadResource("modelica://ClaRa/TableBase/W_pf_model.mat"))
+    fileName=loadResource("modelica://ClaRa/Resources/TableBase/W_pf_model.mat"))
     annotation (Placement(transformation(extent={{52,18},{72,38}})));
   BoundaryConditions.BoundaryFuel_Txim_flow coalFlowSource_XRG1(m_flow_const=10, variable_m_flow=true) annotation (Placement(transformation(extent={{-66,-48},{-46,-28}})));
   ClaRa.Components.Adapters.FuelFlueGas_join coalGas_join_burner1 annotation (Placement(transformation(
@@ -149,10 +127,6 @@ end Regression;
         extent={{-10,-10},{10,10}},
         rotation=90,
         origin={20,-70})));
-  Regression regression(T_out = Mill2.summary.T_out,
-    m_flow_coal_out = Mill2.summary.m_flow_tot_out,
-    xi_h2o_out = Mill2.summary.xi_air_h2o_out,
-    Delta_T_meas_int = Dev1) annotation (Placement(transformation(extent={{-100,20},{-80,40}})));
 equation
   der(Dev1)=(Mill2.T_out-(T_out_meas.y[1]+273.15))^2;
   der(Dev2)=((Mill2.P_grind - E_meas.y[1])^2)*1e4;

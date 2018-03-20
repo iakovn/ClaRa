@@ -263,5 +263,7 @@ equation
           fillColor={255,255,255},
           fillPattern=FillPattern.Solid,
           textString="ClaRa Library",
-          fontName="Miso")}), Icon(coordinateSystem(                                initialScale=0.1)));
+          fontName="Miso")}), Icon(graphics,
+                                   coordinateSystem(                                initialScale=0.1)),
+    experiment(StopTime=1));
 end TestFluidConverters;

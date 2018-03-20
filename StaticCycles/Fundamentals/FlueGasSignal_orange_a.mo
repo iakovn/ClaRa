@@ -4,7 +4,7 @@ connector FlueGasSignal_orange_a "Signal-based flue gas connector"
 // Component of the ClaRa library, version: 1.1.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -26,5 +26,6 @@ connector FlueGasSignal_orange_a "Signal-based flue gas connector"
           extent={{-40,100},{40,-100}},
           lineColor={118,106,98},
           fillColor={244,125,35},
-          fillPattern=FillPattern.Solid)}), Diagram(coordinateSystem(extent={{-40,-100},{40,100}})));
+          fillPattern=FillPattern.Solid)}), Diagram(graphics,
+                                                    coordinateSystem(extent={{-40,-100},{40,100}})));
 end FlueGasSignal_orange_a;

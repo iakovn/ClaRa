@@ -8,12 +8,12 @@ expandable connector EyeIn "Signal bus featuring pressure, specific enthalpy, te
    input Real s "Specific entropy in kJ/kgK" annotation(HideResult=false);
 
   annotation (defaultComponentName="eyeIn",
-  Icon(graphics={Polygon(
+  Icon(coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=true, initialScale=0.2), graphics={
+                 Polygon(
           points={{-100,100},{100,0},{-100,-100},{-100,100}},
           lineColor={190,190,190},
-          fillColor={27,36,42},
-          fillPattern=FillPattern.Solid)},
-       coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=true, initialScale=0.2)),
+          fillColor={102,181,203},
+          fillPattern=FillPattern.Solid)}),
   Diagram(coordinateSystem(
         preserveAspectRatio=true, initialScale=0.2,
         extent={{-100,-100},{100,100}},

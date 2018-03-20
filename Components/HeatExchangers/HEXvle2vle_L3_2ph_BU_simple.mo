@@ -1,10 +1,10 @@
 within ClaRa.Components.HeatExchangers;
 model HEXvle2vle_L3_2ph_BU_simple "VLE 2 VLE | L3 | 2 phase at shell side | Block shape |  U-type | simple HT"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.2                            //
+  // Component of the ClaRa library, version: 1.3.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -29,8 +29,8 @@ model HEXvle2vle_L3_2ph_BU_simple "VLE 2 VLE | L3 | 2 phase at shell side | Bloc
     input ClaRa.Basics.Units.HeatFlowRate Q_flow "Heat flow rate";
     input ClaRa.Basics.Units.TemperatureDifference Delta_T_in "Fluid temperature at inlet T_1_in - T_2_in";
     input ClaRa.Basics.Units.TemperatureDifference Delta_T_out "Fluid temperature at outlet T_1_out - T_2_out";
-    input ClaRa.Basics.Units.Length absLevel "Absolute filling level";
-    input Real relLevel "relative filling level";
+    input ClaRa.Basics.Units.Length level_abs "Absolute filling level";
+    input Real level_rel "relative filling level";
   end Outline;
 
   model Summary
@@ -62,12 +62,12 @@ model HEXvle2vle_L3_2ph_BU_simple "VLE 2 VLE | L3 | 2 phase at shell side | Bloc
         group="Fundamental Definitions"), choicesAllMatching);
   parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation"
    annotation (Dialog(tab="General",group="Fundamental Definitions"), choicesAllMatching);
-//, groupImage="modelica://ClaRa/figures/ParameterDialog/HEX_ParameterDialog_CHgeneral.png"
+//, groupImage="modelica://ClaRa/Resources/Images/ParameterDialog/HEX_ParameterDialog_CHgeneral.png"
   //________________________________ Shell geometry _______________________________//
   parameter ClaRa.Basics.Units.Length length=10 "Length of the HEX" annotation (Dialog(
       tab="Shell Side",
       group="Geometry",
-      groupImage="modelica://ClaRa/figures/ParameterDialog/HEX_ParameterDialog_BUshell2ph.png"));                                                  //
+      groupImage="modelica://ClaRa/Resources/Images/ParameterDialog/HEX_ParameterDialog_BUshell2ph.png"));                                                  //
   parameter ClaRa.Basics.Units.Length height=3 "Height of HEX"
     annotation (Dialog(tab="Shell Side", group="Geometry"));
   parameter ClaRa.Basics.Units.Length width=3 "Width of HEX"
@@ -127,7 +127,7 @@ model HEXvle2vle_L3_2ph_BU_simple "VLE 2 VLE | L3 | 2 phase at shell side | Bloc
   parameter ClaRa.Basics.Units.Length diameter_i=0.048 "Inner diameter of internal tubes" annotation (Dialog(
       tab="Tubes",
       group="Tubes Geometry",
-      groupImage="modelica://ClaRa/figures/ParameterDialog/HEX_ParameterDialogTubes.png"));
+      groupImage="modelica://ClaRa/Resources/Images/ParameterDialog/HEX_ParameterDialogTubes.png"));
   parameter ClaRa.Basics.Units.Length diameter_o=0.05 "Outer diameter of internal tubes" annotation (Dialog(tab="Tubes", group="Tubes Geometry"));
   parameter Integer N_tubes=1000 "Number of tubes"  annotation (Dialog(tab="Tubes", group="Tubes Geometry"));
   parameter Integer N_passes=1 "Number of passes of the internal tubes" annotation (Dialog(tab="Tubes", group="Tubes Geometry"));
@@ -143,7 +143,7 @@ model HEXvle2vle_L3_2ph_BU_simple "VLE 2 VLE | L3 | 2 phase at shell side | Bloc
   parameter ClaRa.Basics.Units.MassFlowRate m_flow_nom_tubes=10 "Nominal mass flow on tubes side" annotation (Dialog(
       tab="Tubes",
       group="Nominal Values",
-      groupImage="modelica://ClaRa/figures/ParameterDialog/CH_general.png"));
+      groupImage="modelica://ClaRa/Resources/Images/ParameterDialog/CH_general.png"));
   parameter ClaRa.Basics.Units.Pressure p_nom_tubes=10 "Nominal pressure on side tubes" annotation (Dialog(tab="Tubes", group="Nominal Values"));
   parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_nom_tubes=10 "Nominal specific enthalpy on tubes side" annotation (Dialog(tab="Tubes", group="Nominal Values"));
   parameter ClaRa.Basics.Units.HeatFlowRate Q_flow_nom=1e6 "Nominal heat flow rate" annotation (Dialog(tab="Tubes", group="Nominal Values"));
@@ -186,11 +186,10 @@ model HEXvle2vle_L3_2ph_BU_simple "VLE 2 VLE | L3 | 2 phase at shell side | Bloc
   parameter Boolean outputAbs = false "True, if absolute level is at output"  annotation(Dialog(enable = levelOutput, tab="Summary and Visualisation"));
 
   ClaRa.Basics.Interfaces.FluidPortIn In2(Medium=medium_tubes)
-    annotation (Placement(transformation(extent={{90,10},{110,30}}),
-        iconTransformation(extent={{90,10},{110,30}})));
+    annotation (Placement(transformation(extent={{90,-50},{110,-30}}),
+        iconTransformation(extent={{90,-50},{110,-30}})));
   ClaRa.Basics.Interfaces.FluidPortOut Out2(Medium=medium_tubes)
-    annotation (Placement(transformation(extent={{-110,10},{-90,30}}),
-        iconTransformation(extent={{-110,10},{-90,30}})));
+    annotation (Placement(transformation(extent={{90,50},{110,70}}), iconTransformation(extent={{90,50},{110,70}})));
   ClaRa.Basics.Interfaces.FluidPortOut Out1(Medium=medium_shell)
     annotation (Placement(transformation(extent={{-10,-110},{10,-90}})));
   ClaRa.Basics.Interfaces.FluidPortIn In1(Medium=medium_shell)
@@ -268,7 +267,7 @@ model HEXvle2vle_L3_2ph_BU_simple "VLE 2 VLE | L3 | 2 phase at shell side | Bloc
         rotation=270,
         origin={0,46})));
 
-  ClaRa.Basics.ControlVolumes.SolidVolumes.ThickWall_L4 wall(
+  ClaRa.Basics.ControlVolumes.SolidVolumes.CylindricalThickWall_L4 wall(
     redeclare replaceable model Material = WallMaterial,
     N_rad=3,
     sizefunc=1,
@@ -278,7 +277,7 @@ model HEXvle2vle_L3_2ph_BU_simple "VLE 2 VLE | L3 | 2 phase at shell side | Bloc
     T_start=T_w_start,
     length=length*N_passes,
     initOption=initOptionWall,
-    mass_struc=mass_struc)     annotation (Placement(transformation(
+    mass_struc=mass_struc) annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=90,
         origin={33,45})));
@@ -289,21 +288,21 @@ public
       Q_flow=sum(shell.heat.Q_flow),
       Delta_T_in=shell.summary.inlet[1].T - tubes.summary.inlet.T,
       Delta_T_out=shell.summary.outlet[1].T - tubes.summary.outlet.T,
-      absLevel=shell.phaseBorder.level_abs,
-      relLevel=shell.phaseBorder.level_rel)) annotation (Placement(transformation(
+      level_abs=shell.phaseBorder.level_abs,
+      level_rel=shell.phaseBorder.level_rel)) annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=0,
         origin={-50,-92})));
 protected
-   ClaRa.Basics.Interfaces.EyeIn eye_int2[1] annotation (Placement(transformation(extent={{-51,-43},{-49,-41}})));
+   ClaRa.Basics.Interfaces.EyeIn eye_int2[1] annotation (Placement(transformation(extent={{67,79},{69,81}})));
 public
    ClaRa.Basics.Interfaces.EyeOut eye2 if showData annotation (Placement(transformation(
-        extent={{-10,-10},{10,10}},
+        extent={{10,-10},{-10,10}},
         rotation=180,
-        origin={-100,-40}), iconTransformation(
-        extent={{-10,-10},{10,10}},
+        origin={104,80}),   iconTransformation(
+        extent={{10,-10},{-10,10}},
         rotation=180,
-        origin={-110,0})));
+        origin={104,80})));
 protected
    ClaRa.Basics.Interfaces.EyeIn eye_int1[1] annotation (Placement(transformation(extent={{27,-59},{29,-57}})));
 public
@@ -316,7 +315,7 @@ public
         origin={20,0})));
   ClaRa.Basics.Interfaces.FluidPortIn aux1(Medium=medium_shell) annotation (Placement(transformation(extent={{-110,70},{-90,90}})));
   ClaRa.Basics.Interfaces.FluidPortIn aux2(Medium=medium_shell) annotation (Placement(transformation(extent={{-110,50},{-90,70}}), iconTransformation(extent={{-110,50},{-90,70}})));
-  Modelica.Blocks.Interfaces.RealOutput level(value = if outputAbs then shell.summary.outline.level_abs else shell.summary.outline.level_rel) if levelOutput annotation (Placement(transformation(extent={{80,-90},{100,-110}}), iconTransformation(
+  Modelica.Blocks.Interfaces.RealOutput level(value = if outputAbs then summary.outline.level_abs else summary.outline.level_rel) if levelOutput annotation (Placement(transformation(extent={{80,-90},{100,-110}}), iconTransformation(
         extent={{-10,-10},{10,10}},
         rotation=270,
         origin={80,-110})));
@@ -325,12 +324,12 @@ equation
      "Outer diameter of tubes must be greater than inner diameter");
 
   connect(tubes.inlet, In2) annotation (Line(
-      points={{62,20},{100,20}},
+      points={{62,20},{82,20},{82,-40},{100,-40}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
   connect(tubes.outlet, Out2) annotation (Line(
-      points={{42,20},{-100,20}},
+      points={{42,20},{72,20},{72,60},{100,60}},
       color={0,131,169},
       thickness=0.5,
       smooth=Smooth.None));
@@ -383,7 +382,7 @@ equation
       points={{52,30},{52,30},{52,44.8},{42.6,44.8}},
       color={167,25,48},
       thickness=0.5));
-  connect(eye_int2[1], eye2) annotation (Line(points={{-50,-42},{-100,-42},{-100,-40}}, color={190,190,190}));
+  connect(eye_int2[1], eye2) annotation (Line(points={{68,80},{104,80}},                color={190,190,190}));
   connect(eye_int1[1], eye1) annotation (Line(points={{28,-58},{40,-58},{40,-110}},         color={190,190,190}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
             -100},{100,100}})),

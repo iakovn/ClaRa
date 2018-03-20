@@ -1,10 +1,10 @@
 within ClaRa.Components.VolumesValvesFittings.Fittings.Check;
 model Test_JoinSplitGas_L2_flex
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -103,8 +103,7 @@ equation
       color={118,106,98},
       thickness=0.5));
   connect(source3.gas_a, joinGas_L2_flex.inlet[1]) annotation (Line(
-      points={{-54,58},{-34,58},{-34,14},{-8,14},{-8,14},{-8,14},{-8,13.3333},{
-          -8,13.3333}},
+      points={{-54,58},{-34,58},{-34,14},{-8,14},{-8,14},{-8,14},{-8,13.3333},{-8,13.3333}},
       color={118,106,98},
       thickness=0.5));
   connect(sink1.gas_a, splitGas_L2_flex.inlet) annotation (Line(
@@ -116,8 +115,7 @@ equation
       color={118,106,98},
       thickness=0.5));
   connect(splitGas_L2_flex.outlet[3], source6.gas_a) annotation (Line(
-      points={{10,-59.3333},{10,-60},{10,-60},{10,-60},{10,-60},{26,-60},{26,
-          -16},{46,-16}},
+      points={{10,-59.3333},{10,-60},{10,-60},{10,-60},{10,-60},{26,-60},{26,-16},{46,-16}},
       color={118,106,98},
       thickness=0.5));
   connect(splitGas_L2_flex.outlet[1], source4.gas_a) annotation (Line(
@@ -136,9 +134,5 @@ PURPOSE:
 >> Tester for gas junctions
 
 ______________________________________________________________________________________________
-"),                    Text(
-          extent={{-100,102},{42,84}},
-          lineColor={0,128,0},
-          fontSize=31,
-          textString="TESTED -- 2016-03-21 //LN")}));
+")}), experiment(StopTime=2));
 end Test_JoinSplitGas_L2_flex;

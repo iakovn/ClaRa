@@ -4,7 +4,7 @@ model StatePoint "State Point of fluid without visualisation"
 // Component of the ClaRa library, version: 1.2.2                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -56,6 +56,7 @@ equation
           extent={{-20,-20},{20,20}},
           lineColor={215,215,215},
           lineThickness=1,
-          textString="S")}),Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-20,-20},{20,20}},
+          textString="S")}),Diagram(graphics,
+                                    coordinateSystem(preserveAspectRatio=true,  extent={{-20,-20},{20,20}},
         initialScale=0.05)));
 end StatePoint;

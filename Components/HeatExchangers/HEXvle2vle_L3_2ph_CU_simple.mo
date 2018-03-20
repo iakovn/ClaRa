@@ -1,10 +1,10 @@
 within ClaRa.Components.HeatExchangers;
 model HEXvle2vle_L3_2ph_CU_simple "VLE 2 VLE | L3 | 2 phase at shell side | Cylinder shape | U-type | simple HT"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.2                            //
+  // Component of the ClaRa library, version: 1.3.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -31,8 +31,8 @@ model HEXvle2vle_L3_2ph_CU_simple "VLE 2 VLE | L3 | 2 phase at shell side | Cyli
     input Basics.Units.TemperatureDifference Delta_T_out "Fluid temperature at outlet T_1_out - T_2_out";
   //   Real effectivenes[3] if showExpertSummary "Effectivenes of HEX";
   //   Real kA[3](unit="W/K") if showExpertSummary "Overall heat resistance";
-    input Basics.Units.Length absLevel "Absolute filling level";
-    input Real relLevel "relative filling level";
+    input Basics.Units.Length level_abs "Absolute filling level";
+    input Real level_rel "relative filling level";
   end Outline;
 
   model Summary
@@ -66,7 +66,7 @@ model HEXvle2vle_L3_2ph_CU_simple "VLE 2 VLE | L3 | 2 phase at shell side | Cyli
 
   //________________________________ Shell geometry _______________________________//
   parameter Basics.Units.Length length=10 "Length of the HEX"
-    annotation (Dialog(tab="Shell Side", group="Geometry", groupImage="modelica://ClaRa/figures/ParameterDialog/HEX_ParameterDialog_CUshell.png"));
+    annotation (Dialog(tab="Shell Side", group="Geometry", groupImage="modelica://ClaRa/Resources/Images/ParameterDialog/HEX_ParameterDialog_CUshell.png"));
   parameter Basics.Units.Length diameter=3 "Diameter of HEX"
     annotation (Dialog(tab="Shell Side", group="Geometry"));
 
@@ -132,7 +132,7 @@ model HEXvle2vle_L3_2ph_CU_simple "VLE 2 VLE | L3 | 2 phase at shell side | Cyli
         group="Fundamental Definitions"), choicesAllMatching);
 
   //________________________________ Tubes geometry _______________________________//
-  parameter ClaRa.Basics.Units.Length diameter_i=0.048 "Inner diameter of horizontal tubes" annotation (Dialog(tab="Tubes", group="Geometry",groupImage="modelica://ClaRa/figures/ParameterDialog/HEX_ParameterDialogTubes.png"));
+  parameter ClaRa.Basics.Units.Length diameter_i=0.048 "Inner diameter of horizontal tubes" annotation (Dialog(tab="Tubes", group="Geometry",groupImage="modelica://ClaRa/Resources/Images/ParameterDialog/HEX_ParameterDialogTubes.png"));
   parameter ClaRa.Basics.Units.Length diameter_o=0.05 "Outer diameter of horizontal tubes" annotation (Dialog(tab="Tubes", group="Geometry"));
   parameter ClaRa.Basics.Units.Length length_tubes=10 "Length of the tubes (one pass)" annotation (Dialog(tab="Tubes", group="Geometry"));
   parameter Integer N_tubes=1000 "Number of horizontal tubes" annotation (Dialog(tab="Tubes", group="Geometry"));
@@ -290,7 +290,7 @@ model HEXvle2vle_L3_2ph_CU_simple "VLE 2 VLE | L3 | 2 phase at shell side | Cyli
         rotation=270,
         origin={0,0})));
 
-  ClaRa.Basics.ControlVolumes.SolidVolumes.ThickWall_L4 wall(
+  ClaRa.Basics.ControlVolumes.SolidVolumes.CylindricalThickWall_L4 wall(
     redeclare replaceable model Material = WallMaterial,
     diameter_i=diameter_i,
     N_tubes=N_tubes,
@@ -300,9 +300,8 @@ model HEXvle2vle_L3_2ph_CU_simple "VLE 2 VLE | L3 | 2 phase at shell side | Cyli
     N_rad=3,
     sizefunc=1,
     T_start=T_w_start,
-    mass_struc=mass_struc)
-                       "{shell.heattransfer.alpha[2],shell.heattransfer.alpha[2],shell.heattransfer.alpha[1]}"
-                                                                                              annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+    mass_struc=mass_struc) "{shell.heattransfer.alpha[2],shell.heattransfer.alpha[2],shell.heattransfer.alpha[1]}" annotation (Placement(transformation(
+        extent={{-10,-10},{10,10}},
         rotation=90,
         origin={58,0})));
 
@@ -312,8 +311,8 @@ public
       Q_flow=sum(shell.heat.Q_flow),
       Delta_T_in=shell.summary.inlet[1].T - tubes.summary.inlet.T,
       Delta_T_out=shell.summary.outlet[1].T - tubes.summary.outlet.T,
-      absLevel=shell.phaseBorder.level_abs,
-      relLevel=shell.phaseBorder.level_rel)) annotation (Placement(transformation(
+      level_abs=shell.phaseBorder.level_abs,
+      level_rel=shell.phaseBorder.level_rel)) annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=0,
         origin={-50,-92})));
@@ -341,7 +340,7 @@ protected
     annotation (Placement(transformation(extent={{27,-59},{29,-57}})));
   ClaRa.Basics.Interfaces.EyeIn eye_int2[1]
     annotation (Placement(transformation(extent={{-51,-43},{-49,-41}})));
-
+public
   Modelica.Blocks.Interfaces.RealOutput level(value = if outputAbs then shell.summary.outline.level_abs else shell.summary.outline.level_rel) if levelOutput annotation (Placement(transformation(extent={{204,-126},{224,-106}}), iconTransformation(
         extent={{-10,-10},{10,10}},
         rotation=270,
@@ -419,7 +418,8 @@ eye_int2[1].m_flow=-tubes.outlet.m_flow;
       thickness=0.5,
       smooth=Smooth.None));
 
-  annotation (Icon(coordinateSystem(preserveAspectRatio=false,extent={{-100,
+  annotation (Icon(graphics,
+                   coordinateSystem(preserveAspectRatio=false,extent={{-100,
             -100},{100,100}})),             Diagram(coordinateSystem(
           preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
 end HEXvle2vle_L3_2ph_CU_simple;

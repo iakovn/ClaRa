@@ -1,10 +1,10 @@
 within ClaRa.Components.VolumesValvesFittings.Fittings;
 model SprayInjectorVLE_L3_advanced "A spray injector for i.e. temperature control"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -58,7 +58,7 @@ model SprayInjectorVLE_L3_advanced "A spray injector for i.e. temperature contro
       ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.LinearNominalPoint
     constrainedby ClaRa.Components.VolumesValvesFittings.Valves.Fundamentals.GenericPressureLoss "Pressure loss model of injector valve"
                                                                                    annotation(Dialog(group="Fundamental Definitions"),choicesAllMatching);
-
+  replaceable model HeatTransfer = Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3 constrainedby Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.HeatTransfer_L3 "Heat transfer to wall" annotation(Dialog(group="Fundamental Definitions"),choicesAllMatching);
   replaceable model PressureLoss_mixingZone =
       ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.QuadraticParallelZones_L3
     constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.PressureLoss_L3 "Pressure loss model of injector mixing Zone"      annotation(Dialog(group="Fundamental Definitions"),choicesAllMatching);
@@ -188,15 +188,16 @@ public
     h_vap_start=h_start_main,
     level_rel_start=y_start,
     redeclare model PhaseBorder = ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.RealMixed (level_rel_start=y_start, eps_mix=eps_mix),
-    redeclare model HeatTransfer = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L3,
     showExpertSummary=showExpertSummary,
     redeclare model PressureLoss = PressureLoss_mixingZone,
-    initOption=initOptionFluid)  annotation (Placement(transformation(extent={{40,10},{60,30}})));
+    initOption=initOptionFluid,
+    redeclare model HeatTransfer = HeatTransfer)
+                                 annotation (Placement(transformation(extent={{40,10},{60,30}})));
 
   ClaRa.Basics.Interfaces.FluidPortIn inlet1(Medium=medium) "Inlet port" annotation (Placement(transformation(extent={{-110,10},{-90,30}}), iconTransformation(extent={{-110,10},{-90,30}})));
   ClaRa.Basics.Interfaces.FluidPortIn inlet2(Medium=medium) "Inlet port" annotation (Placement(transformation(extent={{-30,-110},{-10,-90}}), iconTransformation(extent={{-30,-110},{-10,-90}})));
   ClaRa.Basics.Interfaces.FluidPortOut outlet(Medium=medium) "Outlet port" annotation (Placement(transformation(extent={{90,10},{110,30}}), iconTransformation(extent={{90,10},{110,30}})));
-  ClaRa.Basics.ControlVolumes.SolidVolumes.ThickWall_L4 wall(
+  ClaRa.Basics.ControlVolumes.SolidVolumes.CylindricalThickWall_L4 wall(
     redeclare replaceable model Material = Material,
     sizefunc=+1,
     diameter_o=diameter_o,
@@ -238,6 +239,7 @@ protected
 
   Adapters.Scalar2VectorHeatPort scalar2VectorHeatPort(N=2)
     annotation (Placement(transformation(extent={{20,40},{40,60}})));
+
 equation
 //-------------------------------------------
 //Summary:
@@ -290,6 +292,7 @@ equation
       smooth=Smooth.None));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false,extent={{-100,-100},
             {100,100}}),
-                   graphics),    Diagram(coordinateSystem(preserveAspectRatio=true,
+                   graphics),    Diagram(graphics,
+                                         coordinateSystem(preserveAspectRatio=true,
                   extent={{-100,-100},{100,100}})));
 end SprayInjectorVLE_L3_advanced;

@@ -78,11 +78,7 @@ PURPOSE:
 >> Tester for three way VLE valve
 
 ______________________________________________________________________________________________
-"),                    Text(
-          extent={{-112,102},{46,84}},
-          lineColor={0,128,0},
-          fontSize=31,
-          textString="TESTED -- 2015-01-27 //LN")}),
+")}),
     experiment(StopTime=3),
     __Dymola_experimentSetupOutput);
 end TestThreeWayValves;

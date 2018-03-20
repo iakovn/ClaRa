@@ -1,10 +1,10 @@
 within ClaRa.Components.VolumesValvesFittings.Pipes.Check.OnePhaseFlow;
 model Test_Pipe_L4_Simple
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.2                            //
+  // Component of the ClaRa library, version: 1.3.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -90,7 +90,7 @@ model Test_Pipe_L4_Simple
         origin={-10,-23})));
   Utilities.Blocks.RealInputMultiplyer realInputMultiplyer(N=tube.N_cv) annotation (Placement(transformation(extent={{-46,-32},{-32,-13}})));
 
-  ClaRa.Basics.ControlVolumes.SolidVolumes.ThinWall_L4 thinWall(
+  ClaRa.Basics.ControlVolumes.SolidVolumes.CylindricalThinWall_L4 thinWall(
     diameter_o=0.55,
     diameter_i=0.5,
     length=tube.length,
@@ -174,11 +174,7 @@ PURPOSE:
 test the simple L4 pipe in a various number of steps concerning mass flow rate heat flow rate 
 and inlet enthalpy to evaluate the numerical robustness and to check for physically meaningful behaviour
 ______________________________________________________________________________________________
-",        fontSize=10),Text(
-          extent={{-100,120},{100,100}},
-          lineColor={0,128,0},
-          fontSize=31,
-          textString="TESTED -- 2013-03-05 //JB"),Text(
+",        fontSize=10),                           Text(
           extent={{-100,88},{98,48}},
           lineColor={0,128,0},
           horizontalAlignment=TextAlignment.Left,
@@ -203,6 +199,7 @@ ________________________________________________________________________________
       Tolerance=1e-005,
       __Dymola_Algorithm="Dassl"),
     __Dymola_experimentSetupOutput(equidistant=false),
-    Icon(coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=
+    Icon(graphics,
+         coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=
             true)));
 end Test_Pipe_L4_Simple;

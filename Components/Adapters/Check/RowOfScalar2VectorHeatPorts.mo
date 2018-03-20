@@ -1,10 +1,10 @@
 within ClaRa.Components.Adapters.Check;
 model RowOfScalar2VectorHeatPorts
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -50,7 +50,7 @@ model RowOfScalar2VectorHeatPorts
     initOption=0) annotation (Placement(transformation(extent={{13,-67},{39,-57}})));
 
   BoundaryConditions.BoundaryVLE_pTxi pressureSink_pT(p_const=4900000) annotation (Placement(transformation(extent={{78,-72},{60,-52}})));
-  Basics.ControlVolumes.SolidVolumes.ThinWall_L4 thinWall_1(
+  Basics.ControlVolumes.SolidVolumes.CylindricalThinWall_L4 thinWall_1(
     N_ax=pipe1.N_cv,
     diameter_o=pipe1.diameter_i + 0.005,
     diameter_i=pipe1.diameter_i,
@@ -61,7 +61,7 @@ model RowOfScalar2VectorHeatPorts
     stateLocation=2,
     T_start=ones(thinWall_1.N_ax)*(528 + 273.15),
     initOption=0) annotation (Placement(transformation(extent={{-28,-32},{-8,-24}})));
-  Basics.ControlVolumes.SolidVolumes.ThinWall_L4 thinWall_2(
+  Basics.ControlVolumes.SolidVolumes.CylindricalThinWall_L4 thinWall_2(
     N_ax=pipe2.N_cv,
     diameter_o=pipe2.diameter_i + 0.004,
     diameter_i=pipe2.diameter_i,
@@ -192,11 +192,7 @@ equation
 PURPOSE:
 
 ______________________________________________________________________________________________
-"),                    Text(
-          extent={{-136,104},{64,84}},
-          lineColor={0,128,0},
-          fontSize=31,
-          textString="TESTED -- YYYY-MM-DD //XX"),Text(
+"),                                               Text(
           extent={{-96,60},{68,46}},
           lineColor={0,128,0},
           horizontalAlignment=TextAlignment.Left,

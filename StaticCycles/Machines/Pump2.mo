@@ -17,22 +17,34 @@ model Pump2 "Ideal Pump || par.: efficiency, pressure ratio || blue | blue"
   // Blue input: Values of p is known and provided FOR neighbor component, values of m_flow and h are unknown in component and provided BY neighbor component.
   // Blue output: Value of p is unknown and provided BY neighbor component, values of m_flow and h are known in component and provided FOR neighbor component.
   outer ClaRa.SimCenter simCenter;
-  //---------Summary Definition---------
+    //---------Summary Definition---------
+  model Outline
+    extends ClaRa.Basics.Icons.RecordIcon;
+      parameter Basics.Units.Pressure
+                        Delta_p "Pressure difference between outlet and inlet" annotation(Dialog);
+      parameter Basics.Units.Power
+                        P_pump "Pump power" annotation(Dialog);
+  end Outline;
+
+
   model Summary
     extends ClaRa.Basics.Icons.RecordIcon;
     ClaRa.Basics.Records.StaCyFlangeVLE inlet;
     ClaRa.Basics.Records.StaCyFlangeVLE outlet;
+        Outline outline;
   end Summary;
 
   Summary summary(
   inlet(
-     m_flow=inlet.m_flow,
-     h=inlet.h,
-     p=inlet.p),
+     m_flow=m_flow,
+     h=h_in,
+     p=p_in),
   outlet(
-     m_flow=outlet.m_flow,
-     h=outlet.h,
-     p=outlet.p));
+     m_flow=m_flow,
+     h=h_out,
+     p=p_out),
+  outline(Delta_p=Delta_p,
+     P_pump=P_pump));
   //---------Summary Definition---------
 
   parameter TILMedia.VLEFluidTypes.BaseVLEFluid medium = simCenter.fluid1 "Medium in the component"

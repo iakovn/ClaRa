@@ -1,10 +1,10 @@
 within ClaRa.SubSystems.Boiler;
 model SteamGenerator_L3 "A steam generation and reaheater model using lumped balance equations for mass and energy and two spray attemperators"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -106,7 +106,8 @@ public
       initType=Modelica.Blocks.Types.Init.NoInit) "comprehends the coal supply, the heat release and the steam generation"
     annotation (Placement(transformation(extent={{-66,-56},{-46,-36}})));
   ClaRa.Components.Utilities.Blocks.ParameterizableTable1D convert2PressureDrop_HP(columns={2},
-      table=CL_Delta_pHP_mLS_)
+      table=CL_Delta_pHP_mLS_,
+    u(start=1*ones(size(convert2PressureDrop_HP.columns, 1))))
     annotation (Placement(transformation(extent={{-6,108},{14,128}})));
   TILMedia.VLEFluid_ph liveSteam(vleFluidType =    medium,       p=p_HP,
     h=(h_HP*(-m_flow_heatedHP) + HPInjection.m_flow*h_sprayHP)/(-livesteam.m_flow))
@@ -124,7 +125,8 @@ public
         rotation=0,
         origin={110,0})));
   ClaRa.Components.Utilities.Blocks.ParameterizableTable1D convert2PressureDrop_IP(columns={2},
-      table=CL_Delta_pIP_mLS_)
+      table=CL_Delta_pIP_mLS_,
+    u(start=1/6*ones(size(convert2PressureDrop_IP.columns, 1))))
     annotation (Placement(transformation(extent={{50,108},{70,128}})));
   ClaRa.Components.Utilities.Blocks.ParameterizableTable1D convert2HPFiring(columns={2}, table=
         CL_yF_QF_)
@@ -283,8 +285,7 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,
-            -100},{100,220}}),
-                      graphics), Icon(coordinateSystem(preserveAspectRatio=false,
+            -100},{100,220}})),  Icon(coordinateSystem(preserveAspectRatio=false,
           extent={{-100,-100},{100,220}}), graphics),
     Documentation(info="<html>
 <p>

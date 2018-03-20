@@ -1,10 +1,10 @@
 within ClaRa.StaticCycles.Check.StaticCycleExamples;
 model InitSteamCycle_Rostock_HRO_20 "Helps you to find reasonable start values for steam cycles"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -83,7 +83,7 @@ parameter ClaRa.Basics.Units.Pressure valve_LP1_dp_nominal=0.001e5   annotation(
 
 //parameter Real efficiency_Turb_LP2=1 "Efficiency of turbine" annotation(Dialog(tab="Turbines"));
 
-  ClaRa.StaticCycles.Machines.Pump pump_fw(efficiency=efficiency_Pump_FW) annotation (Placement(transformation(extent={{-100,-134},{-140,-94}})));
+  ClaRa.StaticCycles.Machines.Pump1 pump_fw(efficiency=efficiency_Pump_FW) annotation (Placement(transformation(extent={{-100,-134},{-140,-94}})));
   ClaRa.StaticCycles.Machines.Turbine turbine_HP(efficiency=efficiency_Turb_HP) annotation (Placement(transformation(extent={{-150,112},{-120,172}})));
   ClaRa.StaticCycles.Machines.Turbine turbine_IP(efficiency=efficiency_Turb_IP) annotation (Placement(transformation(extent={{-86,114},{-56,174}})));
   Furnace.Boiler_simple boiler(
@@ -108,7 +108,7 @@ parameter ClaRa.Basics.Units.Pressure valve_LP1_dp_nominal=0.001e5   annotation(
         extent={{-10,-7},{10,7}},
         rotation=270,
         origin={90,11})));
-  ClaRa.StaticCycles.Machines.Pump pump_cond(efficiency=efficiency_Pump_cond) annotation (Placement(transformation(extent={{174,-134},{134,-94}})));
+  ClaRa.StaticCycles.Machines.Pump1 pump_cond(efficiency=efficiency_Pump_cond) annotation (Placement(transformation(extent={{174,-134},{134,-94}})));
   ClaRa.StaticCycles.Machines.Turbine turbine_LP1(efficiency=efficiency_Turb_LP) annotation (Placement(transformation(extent={{12,114},{42,174}})));
   ClaRa.StaticCycles.Fittings.Split1 split_LP annotation (Placement(transformation(extent={{-44,104},{-24,124}})));
   ClaRa.StaticCycles.Fittings.Split1 split_LP1 annotation (Placement(transformation(extent={{80,104},{100,124}})));
@@ -239,6 +239,7 @@ equation
   connect(preheater_HP.cond_out, boiler.feedWater) annotation (Line(points={{-202,-1},{-204,-1},{-204,51.2}}, color={0,131,169}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=true, extent={{-100,
             -100},{100,100}}),
-                   graphics),      Diagram(coordinateSystem(preserveAspectRatio=false,
+                   graphics),      Diagram(graphics,
+                                           coordinateSystem(preserveAspectRatio=false,
                  extent={{-240,-200},{280,260}})));
 end InitSteamCycle_Rostock_HRO_20;

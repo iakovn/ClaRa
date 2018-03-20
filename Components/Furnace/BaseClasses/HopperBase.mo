@@ -4,10 +4,9 @@ partial model HopperBase
 //## P A R A M E T E R S #######################################################################################
    //__________________________/ Media definintions \______________________________________________
   outer ClaRa.SimCenter simCenter;
-  inner parameter ClaRa.Basics.Media.Fuel.PartialFuel fuelType=simCenter.fuelModel1 "Fuel elemental composition used for combustion" annotation(choices(choice=simCenter.fuelModel "Fuel model 1 as defined in simCenter"),
+  inner parameter ClaRa.Basics.Media.FuelTypes.BaseFuel fuelModel=simCenter.fuelModel1 "Fuel elemental composition used for combustion" annotation(choices(choice=simCenter.fuelModel "Fuel model 1 as defined in simCenter"),
                                                                                             Dialog(group="Media Definitions"));
-  parameter ClaRa.Basics.Media.Fuel.PartialSlag slagType=simCenter.slagModel "Slag properties" annotation(choices(choice=simCenter.slagModel "Slag model 1 as defined in simCenter"),
-                                                                                            Dialog(group="Media Definitions"));
+  parameter ClaRa.Basics.Media.Slag.PartialSlag slagType=simCenter.slagModel "Slag properties" annotation (choices(choice=simCenter.slagModel "Slag model 1 as defined in simCenter"), Dialog(group="Media Definitions"));
   inner parameter TILMedia.GasTypes.BaseGas flueGas = simCenter.flueGasModel "Flue gas model used in component" annotation(choicesAllMatching, Dialog(group="Media Definitions"));
   parameter Integer slagTemperature_calculationType=1 "Calculation type of outflowing slag temperature" annotation (Dialog(group="Slag temperature definitions"), choices(
       choice=1 "Fixed slag temperature",
@@ -86,7 +85,7 @@ protected
 public
  inner ClaRa.Basics.Units.MassFraction xi_flueGas[flueGas.nc - 1] "Flue gas composition ";
 //________________/ Fuel Composition \_____________________
-  ClaRa.Basics.Units.MassFraction xi_fuel_out[fuelType.nc - 1] "Fuel outlet composition";
+//  ClaRa.Basics.Units.MassFraction xi_fuel_out[FuelType.N_c - 1] "Fuel outlet composition";
 
 //_____________/ Calculated quantities \_________________________________
   inner ClaRa.Basics.Units.Area A_cross=geo.A_front "Cross section";
@@ -99,7 +98,7 @@ public
   ClaRa.Basics.Units.HeatFlowRate Q_flow_bottom "Heat flow from bottom section";
   ClaRa.Basics.Units.HeatFlowRate Q_flow_wall "Heat flow from walls";
 
-  inner ClaRa.Basics.Units.MassFraction xi_fuel_in[fuelType.nc - 1] "Fuel inlet composition";
+  //ClaRa.Basics.Units.MassFraction elementaryComposition_fuel_in[FuelType.N_e - 1] "Fuel inlet composition";
   ClaRa.Basics.Units.EnthalpyMassSpecific h_flueGas_out "Gas outlet specific enthalpy";
   ClaRa.Basics.Units.EnthalpyMassSpecific h_flueGas_out_del "Gas outlet specific enthalpy - delayed";
 
@@ -108,7 +107,7 @@ public
     //________________________/ Connectors \_______________________________________________________
   ClaRa.Basics.Interfaces.FuelSlagFlueGas_inlet inlet(
     flueGas(final Medium=flueGas),
-    final fuelType=fuelType,
+    fuelModel=fuelModel,
     final slagType=slagType)
     annotation (Placement(transformation(extent={{-130,-110},{-110,-90}}),
         iconTransformation(
@@ -117,7 +116,7 @@ public
         origin={-160,-100})));
   ClaRa.Basics.Interfaces.FuelSlagFlueGas_outlet outlet(
     flueGas(final Medium=flueGas, m_flow(start=-1)),
-    final fuelType=fuelType,
+    fuelModel=fuelModel,
     final slagType=slagType)                                                                        annotation (Placement(transformation(extent={{-130,90},
             {-110,110}}),
         iconTransformation(
@@ -135,7 +134,7 @@ public
      annotation (Placement(transformation(extent={{10,-90},{30,-110}})));
 
    //_____________________/ Media Objects \_________________________________
-
+protected
      TILMedia.Gas_pT     flueGasInlet(p=inlet.flueGas.p, T= actualStream(inlet.flueGas.T_outflow), xi=actualStream(inlet.flueGas.xi_outflow),
        gasType=flueGas)
        annotation (Placement(transformation(extent={{-130,-88},{-110,-68}})));
@@ -143,6 +142,14 @@ public
       TILMedia.Gas_pT     flueGasOutlet(p=outlet.flueGas.p, T= actualStream(outlet.flueGas.T_outflow),xi=actualStream(outlet.flueGas.xi_outflow),
         gasType=flueGas)
         annotation (Placement(transformation(extent={{-130,74},{-110,94}})));
+  Basics.Media.FuelObject fuelInlet(
+    p=inlet.fuel.p,
+    T=noEvent(actualStream(inlet.fuel.T_outflow)),
+    xi_c=noEvent(actualStream(inlet.fuel.xi_outflow))) annotation (Placement(transformation(extent={{-152,-88},{-132,-68}})));
+  Basics.Media.FuelObject fuelOutlet(
+    p=outlet.fuel.p,
+    T=noEvent(actualStream(outlet.fuel.T_outflow)),
+    xi_c=noEvent(actualStream(outlet.fuel.xi_outflow))) annotation (Placement(transformation(extent={{-156,68},{-136,88}})));
 
 //________________________/ replaceable models for heat transfer, pressure loss and geometry \_________________________
 
@@ -160,11 +167,11 @@ public
             {52,70}})));
 
   Basics.Interfaces.EyeOutGas
-                           eyeOut annotation (Placement(transformation(extent={{-286,78},
+                           eyeOut(each medium=flueGas) annotation (Placement(transformation(extent={{-286,78},
             {-314,102}}),         iconTransformation(extent={{-290,70},{-310,90}})));
 protected
            Basics.Interfaces.EyeInGas
-                                   eye_int[1]
+                                   eye_int[1](each medium=flueGas)
                                 annotation (Placement(transformation(extent={{-254,84},
             {-266,96}}),      iconTransformation(extent={{240,-64},{232,-56}})));
 public
@@ -181,8 +188,8 @@ equation
   der(xi_flueGas_del) = 1/Tau*(xi_flueGas - xi_flueGas_del);
 
    //____________/ Xi_outflow of Fuel and FlueGas \__________________
-  outlet.fuel.xi_outflow = xi_fuel_out;
-  inlet.fuel.xi_outflow = xi_fuel_out;
+  outlet.fuel.xi_outflow = inStream(inlet.fuel.xi_outflow);
+  inlet.fuel.xi_outflow = inStream(inlet.fuel.xi_outflow);
 
   //_____________/ Pressure \______________________________________________
   inlet.flueGas.p = outlet.flueGas.p;
@@ -226,7 +233,8 @@ equation
       smooth=Smooth.None));
  annotation (Icon(coordinateSystem(preserveAspectRatio=false,extent={{-300,-100},
             {300,100}}),
-                   graphics),               Diagram(coordinateSystem(
+                   graphics),               Diagram(graphics,
+                                                    coordinateSystem(
           preserveAspectRatio=false,extent={{-300,-100},{300,100}})),
     Documentation(info="<html>
 <p><b>Model description: </b>Base class for burner and furnace sections</p>

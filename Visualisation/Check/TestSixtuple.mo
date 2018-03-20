@@ -28,7 +28,9 @@ equation
   connect(pipeFlowVLE_L2_Simple.eye, sixtuple.eye) annotation (Line(points={{2.6,6.6},{6,6.6},{6,-13},{16,-13}}, color={190,190,190}));
   connect(pipeFlowVLE_L2_Simple.eye, quadruple.eye) annotation (Line(points={{2.6,6.6},{10,6.6},{10,-3},{16,-3}}, color={190,190,190}));
   annotation (
-    Icon(coordinateSystem(preserveAspectRatio=false)),
-    Diagram(coordinateSystem(preserveAspectRatio=false)),
+    Icon(graphics,
+         coordinateSystem(preserveAspectRatio=false)),
+    Diagram(graphics,
+            coordinateSystem(preserveAspectRatio=false)),
     experiment(StopTime=1000));
 end TestSixtuple;

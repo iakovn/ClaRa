@@ -1,10 +1,10 @@
 within ClaRa.Components.Control.PredictorModels_3508;
 model TurbinesAndReheat_00_XRG "A predictor for the generator power including the HP and IP/LP turbines as well as the energy storage in the reheater - unmodified"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -145,22 +145,7 @@ assert(Tau_HP>0 and Tau_IP>0, "Time constants must be greater than zero!");
           fillColor={0,0,0},
           fillPattern=FillPattern.Solid)}), Diagram(graphics),
     Documentation(info="<html>
-<p>
-A model calculating the time response of a turbogenerator with reheater.<br>
-</p>
 
-<p>
-Be carefully: this model modifies the VDI guideline for Unit Control for Thermal Power Stations (3508) in the following:<br>
-<ul>
-<li>a constant parameter turbineRatio is introduced to avoid P_gen_ &gt; 1.
-
-This is necessary to cope with the two parallelly acting HP turbine and IP/LP turbines. While an enhancement of the turbine mass flow leads to an almost imediate increase of the HP turbine power, the power increase of the IP and LP turbine is retarded due to energy storage of the reheater. This is why the reheat and IP/LP turbine time response is in parallel to the HP turbine time response (both represented by a first order block).<br>
-However, putting the blocks in parallel leads to a doubled generator power which is - of course - unphysically (this would mean that each of the HP and IP/LP turbine is capable to generate the full turbine power). The turbineRatio is the the ratio of the specific enthalpy difference in the HP turbine to the total enthalpy difference:<br>
- <img src=\"../figures/TurbinesAndReheat_00_equation.png\" alt=\"\"><br>
-This turbine ratio is usually around 1/3 but may vary with the load. </li><br>
-</ul>
-</p>
-<p><br/>Contact: Friedrich Gottelt, XRG Simulation</p>
 </html>", revisions="<html>
 <p><ul>
 <li><b>v0.1 </b>2011-07-11: Initial implementation. Friedrich Gottelt, XRG Simulation GmbH</li>

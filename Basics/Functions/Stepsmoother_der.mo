@@ -1,10 +1,10 @@
 within ClaRa.Basics.Functions;
 function Stepsmoother_der "Time derivative of continouus interpolation for x"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -46,35 +46,6 @@ Modelica.Math.tan(m*x+b)^2)*m*(dx-dnofunc+m/Modelica.Constants.pi*(dnofunc-dfunc
       width=0.66,
       height=0.6),
     Documentation(info="<html>
-<h4>StepSmoother_der</h4>
 
-<p>
-The function StepSmoother_der  is implemented as the time derivative of StepSmoother.<br><br>
-
-<img src=\"../figures/StepSmoother_der_equation005.png\" alt=\"\"><br></p>
-
-</p>
-
-<h5>Definition</h5>
-
-<p>
-The following shorthands are used:<br><br>
-<img src=\"../figures/StepSmoother_der_equation003.png\" alt=\"\"><br>
-</p>
-
-
-<p>
-Two different cases  n &lt; f and n &gt; f are distiguished:<br><br>
-</p>
-<img src=\"../figures/StepSmoother_der_equation002.png\" alt=\"\"><br>
-<img src=\"../figures/StepSmoother_der_Function_n_less_f.png\" alt=\"\"><br><br>
-<img src=\"../figures/StepSmoother_der_equation004.png\" alt=\"\"><br>
-<img src=\"../figures/StepSmoother_der_Function_n_greater_f.png\" alt=\"\"><br>
-</p>
-
-
-<h5>References:</h5>
-<p>
-</p>
 </html>"));
 end Stepsmoother_der;

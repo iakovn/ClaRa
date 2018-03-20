@@ -1,10 +1,10 @@
 within ClaRa.Basics.ControlVolumes.SolidVolumes;
 model NTU_L3 "Base heat exchanger wall model with liquid, vapour and 2ph zones"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -16,7 +16,7 @@ model NTU_L3 "Base heat exchanger wall model with liquid, vapour and 2ph zones"
 //___________________________________________________________________________//
 
   import ClaRa.Basics.Functions.Stepsmoother;
-
+  import smooth = ClaRa.Basics.Functions.Stepsmoother;
   extends ClaRa.Basics.Icons.NTU;
   extends ClaRa.Basics.Icons.ComplexityLevel(complexity="L3");
 
@@ -60,16 +60,17 @@ model NTU_L3 "Base heat exchanger wall model with liquid, vapour and 2ph zones"
   inner parameter Integer initOption=0 "Type of initialisation" annotation (Dialog(tab="Initialisation"), choices(
       choice=0 "Use guess values",
       choice=1 "Steady state",
-      choice=203 "Steady temperature"));
+      choice=203 "Steady temperature",
+      choice=204 "Fixed temperatures"));
 
 protected
   final parameter Boolean smallShellFlow_start[3] = {not outerPhaseChange,not outerPhaseChange,not outerPhaseChange};
 
 //______________Expert Settings____________________________________________//
 public
-  replaceable function HeatCapacityAveraging =
-      ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.ArithmeticMean
-    constrainedby ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.GeneralMean "|Expert Settings||Method for Averaging of heat capacities"
+  replaceable model HeatCapacityAveraging =
+      ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Averaging_Cp.ArithmeticMean
+    constrainedby ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Averaging_Cp.GeneralMean "|Expert Settings||Method for Averaging of heat capacities"
                                                                 annotation(choicesAllMatching);
   parameter Real gain_eff= 1 "|Expert Settings||Avoid effectiveness > 1, high gain_eff leads to stricter observation but may cause numeric errors";
   parameter SI.Time Tau_stab=0.1 "|Expert Settings||Time constant for state stabilisation";
@@ -102,7 +103,8 @@ public
 //
   Real kA[3](unit="W/K") "The product U*S for regions |1|2|3|";
   SI.HeatFlowRate Q_flow[3] "Heat flow rate of zones |1|2|3|";
-  HeatExchangerType HEXtype(NTU_1=NTU_1, R_1=R_1);
+  HeatExchangerType HEXtype(NTU_1=NTU_1, R_1=R_1) annotation (Placement(transformation(extent={{-114,60},{-94,80}})));
+  HeatCapacityAveraging heatCapacityAveraging annotation (Placement(transformation(extent={{-86,60},{-66,80}})));
   Real cp_error_[3] "Check: Deviation from constant cp in zones |1|2|3|";
   Real effectiveness_act[3] "Actual effectiveness of zones |1|2|3|";
   Real effectiveness[3] "Effectiveness of zones |1|2|3|";
@@ -250,7 +252,13 @@ public
     T_in2out_o=HEXtype.T_in2out_o,
     T_in2out_i=HEXtype.T_in2out_i,
     T_123_o={O1_in.T,O1_out.T,O2_in.T,O2_out.T,O3_in.T,O3_out.T},
-    T_123_i={I1_in.T,I1_out.T,I2_in.T,I2_out.T,I3_in.T,I3_out.T})
+    T_123_i={I1_in.T,I1_out.T,I2_in.T,I2_out.T,I3_in.T,I3_out.T},
+    p_i=p_i,
+    p_o=p_o,
+    ptr_i_in={I1_in.vleFluidPointer,I2_in.vleFluidPointer,I3_in.vleFluidPointer},
+    ptr_o_in={O1_in.vleFluidPointer,O2_in.vleFluidPointer,O3_in.vleFluidPointer},
+    ptr_i_out={I1_out.vleFluidPointer,I2_out.vleFluidPointer,I3_out.vleFluidPointer},
+    ptr_o_out={O1_out.vleFluidPointer,O2_out.vleFluidPointer,O3_out.vleFluidPointer})
     annotation (Placement(transformation(extent={{60,-102},{80,-82}})));
 
 protected
@@ -275,14 +283,15 @@ inner TILMedia.VLEFluid_ph I3_out(
     h=iCom.h_i_out[3])
 annotation (Placement(transformation(extent={{36,-30},{56,-10}})));
 
-equation
-  cp_o[1] = homotopy(HeatCapacityAveraging(O1_in.cp, O1_out.cp), 3000);
-  cp_o[2] = if not outerPhaseChange then homotopy(HeatCapacityAveraging(O2_in.cp,O2_out.cp), 3000) else Modelica.Constants.inf;
-  cp_o[3] = homotopy( HeatCapacityAveraging(O3_in.cp,  O3_out.cp), 3000);
 
-  cp_i[1] = homotopy(HeatCapacityAveraging(I1_in.cp,  I1_out.cp), 3000); //case2:2085.84;//case1:4189.93;//
-  cp_i[2] = if outerPhaseChange then homotopy(HeatCapacityAveraging(I2_in.cp,  I2_out.cp), 3000) else Modelica.Constants.inf;
-  cp_i[3] = homotopy(HeatCapacityAveraging(I3_in.cp,  I3_out.cp), 3000);
+equation
+  cp_o[1] = homotopy(heatCapacityAveraging.cp_o[1], 3000);
+  cp_o[2] = if not outerPhaseChange then homotopy(heatCapacityAveraging.cp_o[2], 3000) else Modelica.Constants.inf;
+  cp_o[3] = homotopy( heatCapacityAveraging.cp_o[3], 3000);
+
+  cp_i[1] = homotopy(heatCapacityAveraging.cp_i[1], 3000); //case2:2085.84;//case1:4189.93;//
+  cp_i[2] = if outerPhaseChange then homotopy(heatCapacityAveraging.cp_i[2], 3000) else Modelica.Constants.inf;
+  cp_i[3] = homotopy(heatCapacityAveraging.cp_i[3], 3000);
 
   der(yps) = (HEXtype.yps-yps)/Tau_stab;
 
@@ -301,12 +310,12 @@ end when;
 // outerPhase.T=k*(outerPhase.T-T_w_o);
 
 //Energy Balance:
-  der(T_w_i[1])=(innerPhase[1].Q_flow+Q_flow_s[1] - solid[1].cp*solid[1].T * mass/2*der(yps[1]))/(max(1e-3,yps[1])*mass/2*solid[1].cp);
-  der(T_w_o[1])=(outerPhase[1].Q_flow-Q_flow_s[1] - solid[1].cp*solid[1].T * mass/2*der(yps[1]))/(max(1e-3,yps[1])*mass/2*solid[1].cp);
-  der(T_w_i[2])=(innerPhase[2].Q_flow+Q_flow_s[2] - solid[2].cp*solid[2].T * mass/2*der(yps[2]))/(max(1e-3,yps[2])*mass/2*solid[2].cp);
-  der(T_w_o[2])=(outerPhase[2].Q_flow-Q_flow_s[2] - solid[2].cp*solid[2].T * mass/2*der(yps[2]))/(max(1e-3,yps[2])*mass/2*solid[2].cp);
-  der(T_w_i[3])=(innerPhase[3].Q_flow+Q_flow_s[3] - solid[3].cp*solid[3].T * mass/2*der(yps[3]))/(max(1e-3,yps[3])*mass/2*solid[3].cp);
-  der(T_w_o[3])=(outerPhase[3].Q_flow-Q_flow_s[3] - solid[3].cp*solid[3].T * mass/2*der(yps[3]))/(max(1e-3,yps[3])*mass/2*solid[3].cp);
+  der(T_w_i[1])=(innerPhase[1].Q_flow + Q_flow[1] - solid[1].cp*solid[1].T * mass/2*der(yps[1]))/(max(1e-3,yps[1])*mass/2*solid[1].cp);
+  der(T_w_o[1])=(outerPhase[1].Q_flow - Q_flow[1] - solid[1].cp*solid[1].T * mass/2*der(yps[1]))/(max(1e-3,yps[1])*mass/2*solid[1].cp);
+  der(T_w_i[2])=(innerPhase[2].Q_flow + Q_flow[2] - solid[2].cp*solid[2].T * mass/2*der(yps[2]))/(max(1e-3,yps[2])*mass/2*solid[2].cp);
+  der(T_w_o[2])=(outerPhase[2].Q_flow - Q_flow[2] - solid[2].cp*solid[2].T * mass/2*der(yps[2]))/(max(1e-3,yps[2])*mass/2*solid[2].cp);
+  der(T_w_i[3])=(innerPhase[3].Q_flow + Q_flow[3] - solid[3].cp*solid[3].T * mass/2*der(yps[3]))/(max(1e-3,yps[3])*mass/2*solid[3].cp);
+  der(T_w_o[3])=(outerPhase[3].Q_flow - Q_flow[3] - solid[3].cp*solid[3].T * mass/2*der(yps[3]))/(max(1e-3,yps[3])*mass/2*solid[3].cp);
 
 //_____________calculation of actual effectivenesses__________________________________//
     effectiveness_act[1] = noEvent(if O1_in.T-I1_in.T > 1e-6 then if smallShellFlow[1] then abs((O1_in.T - O1_out.T)/(O1_in.T-I1_in.T)) else abs((I1_in.T - I1_out.T)/(O1_in.T-I1_in.T)) else 0);
@@ -317,10 +326,10 @@ end when;
 
 //____________Heat capacity flows_____________________________________________________//
 
-    C_flow_low = {noEvent(min(cp_o[i]*abs(m_flow_o*HEXtype.ff_o[i]+1e-6), cp_i[i]*abs(m_flow_i*HEXtype.ff_i[i]+1e-6))) for i in 1:3};
+     C_flow_low = {noEvent(min(cp_o[i]*abs(m_flow_o*HEXtype.ff_o[i]+1e-6), cp_i[i]*abs(m_flow_i*HEXtype.ff_i[i]+1e-6))) for i in 1:3};
 //____The following formulation can be seen as an alternative to the line above avoiding discontinuities arising from the min evaluation___________________________
-//   C_flow_low = {Stepsmoother(-1e-3, +1e-3, cp_o[i]*abs(m_flow_o*HEXtype.ff_o[i]) - cp_i[i]*abs(m_flow_i*HEXtype.ff_i[i]))*cp_o[i]*abs(m_flow_o*HEXtype.ff_o[i])
-//               + Stepsmoother(+1e-3, -1e-3, cp_o[i]*abs(m_flow_o*HEXtype.ff_o[i]) - cp_i[i]*abs(m_flow_i*HEXtype.ff_i[i]))*cp_i[i]*abs(m_flow_i*HEXtype.ff_i[i]) for i in 1:3};
+//    C_flow_low = {Stepsmoother(-1e-3, +1e-3, cp_o[i]*abs(m_flow_o*HEXtype.ff_o[i]) - cp_i[i]*abs(m_flow_i*HEXtype.ff_i[i]))*cp_o[i]*abs(m_flow_o*HEXtype.ff_o[i])
+//                + Stepsmoother(+1e-3, -1e-3, cp_o[i]*abs(m_flow_o*HEXtype.ff_o[i]) - cp_i[i]*abs(m_flow_i*HEXtype.ff_i[i]))*cp_i[i]*abs(m_flow_i*HEXtype.ff_i[i]) for i in 1:3};
 //_________________________________________________________________________________________________________________________________________________________________
 
   C_flow_high[1] = noEvent(max(cp_o[1]*abs(m_flow_o*HEXtype.ff_o[1]+1e-6), cp_i[1]*abs(m_flow_i*HEXtype.ff_i[1]+1e-6)));
@@ -335,7 +344,7 @@ end when;
 
 //____________Number of Transer Units_______________________________________________//
 
-  NTU_1 = kA./(C_flow_low + ones(3)*Modelica.Constants.eps).*HEXtype.CF_NTU;
+  NTU_1 = kA./(C_flow_low + ones(3)*1e-6).*HEXtype.CF_NTU;
 
 //____________effectivenesses of the three zones_____________________________________//
   effectiveness[1] =  noEvent(if R_1[1] <1  then (1 - exp(-NTU_1[1] *(1-R_1[1])))/(1 - R_1[1]*exp(-NTU_1[1]*(1-R_1[1]))) else NTU_1[1]/(1+NTU_1[1]));//vapour zone
@@ -343,35 +352,42 @@ end when;
   effectiveness[3] =  noEvent(if R_1[3] < 1 then (1 - exp(-NTU_1[3] *(1-R_1[3])))/(1 - R_1[3]*exp(-NTU_1[3]*(1-R_1[3]))) else NTU_1[3]/(1+NTU_1[3])); //liquid zone
 
 //____________Specific enthalpies in each zone _____________________________________//
-  iCom.h_o_out   =  - Q_flow_s./(m_flow_o*HEXtype.ff_o+ones(3)*1e-6) + iCom.h_o_in;
+  iCom.h_o_out   =  - Q_flow_s./(abs(m_flow_o)*HEXtype.ff_o+ones(3)*1e-6) + iCom.h_o_in;
 
-  iCom.h_i_out   = Q_flow_s./(m_flow_i*HEXtype.ff_i+ones(3)*1e-6) + iCom.h_i_in;
+  iCom.h_i_out   = Q_flow_s./(abs(m_flow_i)*HEXtype.ff_i+ones(3)*1e-6) + iCom.h_i_in;
 
 //____________Heat flow rate from effectivenesses__________________________________//
   Q_flow  = {effectiveness[i] * C_flow_low[i] * (iCom.T_123_o[i*2-1] - iCom.T_123_i[i*2-1])  * noEvent(max(0,homotopy(1-gain_eff*max(0,min(1,effectiveness[i]-1)),1))) for i in 1:3};
 
-  der(Q_flow_s) = (Q_flow - Q_flow_s)/Tau_stab;
+der(Q_flow_s) = (Q_flow - Q_flow_s)/Tau_stab;
+//   Q_flow_s = Q_flow;
 
 //   cp_error_[1] = 1-(abs(Q_flow[1])-noEvent(if smallShellFlow[1] then abs(O1_in.T - O1_out.T) else abs(I2_out.T-I1_out.T)) *C_flow_low[1])/abs(Q_flow[1]+1e-3);
 //   cp_error_[2] = 1-(abs(Q_flow[2])-noEvent(if smallShellFlow[2] then abs(O2_in.T - O2_out.T) else abs(I2_in.T-I2_out.T)) *C_flow_low[2])/abs(Q_flow[2]+1e-3);
 //   cp_error_[3] = 1-(abs(Q_flow[3])-noEvent(if smallShellFlow[3] then abs(O2_out.T - O3_out.T) else abs(I3_in.T-I2_in.T)) *C_flow_low[3])/abs(Q_flow[3]+1e-3);
   cp_error_ = {(abs(Q_flow[i])-noEvent(if smallShellFlow[i] then abs(iCom.T_123_o[2*i-1] - iCom.T_123_o[2*i]) else abs(iCom.T_123_i[i*2-1]-iCom.T_123_i[2*i])) *C_flow_low[i])/abs(Q_flow[i]+1e-3) for i in 1:3};
 initial equation
+   Q_flow_s= Q_flow;
   yps=HEXtype.yps;
 
   if initOption == 1 then //steady state
-    der(Q_flow_s)=zeros(3);
+    //der(Q_flow_s)=zeros(3);
     der(T_w_i)=zeros(3);
     der(T_w_o)=zeros(3);
    elseif initOption == 203 then //steady temperature
     der(T_w_i)=zeros(3);
     der(T_w_o)=zeros(3);
+  elseif initOption ==204 then // fixed temperatures
+    T_w_i = T_w_i_start;
+    T_w_o = T_w_o_start;
+    //Q_flow_s=Q_flow;
   else
-    Q_flow_s=Q_flow;
+    //Q_flow_s=Q_flow;
     assert(initOption == 0,"Invalid init option");
    end if;
 
-  annotation (Icon(coordinateSystem(
+  annotation (Icon(graphics,
+                   coordinateSystem(
           preserveAspectRatio=false, initialScale=0.1)),
                            Diagram(coordinateSystem(extent={{-140,-100},{140,
             100}}, preserveAspectRatio=true),

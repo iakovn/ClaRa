@@ -4,7 +4,7 @@ model FlameRoomNaturalCirculation " Natural circulation heating surfaces with dr
 // Component of the ClaRa library, version: 1.1.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -238,7 +238,8 @@ initial equation
         Line(
           points={{100,80},{-80,80},{-80,-80},{100,-80}},
           color=DynamicSelect({0,131,169}, if h_vle_wall_out - h_dew_wall > 10 then {167,25,48} elseif h_vle_wall_out - h_bub_wall > -10 then {115,150,0} else {0,131,069}),
-          smooth=Smooth.None)}), Diagram(coordinateSystem(preserveAspectRatio=true,
+          smooth=Smooth.None)}), Diagram(graphics,
+                                         coordinateSystem(preserveAspectRatio=true,
           extent={{-100,-100},{100,100}},
         initialScale=0.1)));
 end FlameRoomNaturalCirculation;

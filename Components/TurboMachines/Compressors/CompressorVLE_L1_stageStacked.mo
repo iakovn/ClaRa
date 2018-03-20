@@ -2,10 +2,10 @@ within ClaRa.Components.TurboMachines.Compressors;
 model CompressorVLE_L1_stageStacked "Advanced compressor or fan for VLE mixtures using the stage stacking method  according to N. Gasparovic"
   import ClaRa;
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -428,7 +428,7 @@ equation
 //____________________ Mechanics ___________________________
     if useMechanicalPort then
       der(getInputsRotary.rotatoryFlange.phi) = (2*Modelica.Constants.pi*rpm/60);
-      J*a + tau_fluid + getInputsRotary.rotatoryFlange.tau = 0 "Mechanical momentum balance";
+      J*a - tau_fluid + getInputsRotary.rotatoryFlange.tau = 0 "Mechanical momentum balance";
     else
       rpm = rpm_fixed;
       getInputsRotary.rotatoryFlange.phi = 0.0;
@@ -1032,7 +1032,8 @@ end if;
       smooth=Smooth.None));
   connect(getInputsRotary.rotatoryFlange, shaft)
     annotation (Line(points={{0,30},{0,100}},         color={0,0,0}));
-  annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+  annotation (Diagram(graphics,
+                      coordinateSystem(preserveAspectRatio=false, extent={{-100,
             -100},{100,100}})),  Icon(graphics),
     Documentation(info="<html>
 <p><b>Model description: </b>A multi stage compressor model based on the stage stacking method of Gasparovic able to calculate off-design behaviour according to nominal values</p>

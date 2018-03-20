@@ -42,7 +42,9 @@ equation
   connect(pressure.p, p1) annotation (Line(points={{-17,20},{-14,20},{-12,20},{-12,44}}, color={0,0,127}));
   connect(temperature.T, T1) annotation (Line(points={{9,20},{14,20},{14,44}}, color={0,0,127}));
   connect(flow_.m_flow, m_flow1) annotation (Line(points={{37,20},{44,20},{44,46}}, color={0,0,127}));
-  annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(coordinateSystem(preserveAspectRatio=false)),
+  annotation (Icon(graphics,
+                   coordinateSystem(preserveAspectRatio=false)), Diagram(graphics,
+                                                                         coordinateSystem(preserveAspectRatio=false)),
     experiment(StopTime=6, __Dymola_Algorithm="Sdirk34hw"),
     __Dymola_experimentSetupOutput);
 end TestVLESensors;

@@ -1,10 +1,10 @@
 within ClaRa.Components.TurboMachines.Compressors.Check;
 model Test_MassFlow_VIGVControlled
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -81,11 +81,10 @@ model Test_MassFlow_VIGVControlled
     y_ref=1,
     y_max=30,
     y_min=-30,
-    initType=Modelica.Blocks.Types.InitPID.InitialOutput,
     y_start=0,
     k=10,
-    Tau_i=0.01)
-    annotation (Placement(transformation(extent={{-154,-38},{-134,-18}})));
+    Tau_i=0.01,
+    initOption=796) annotation (Placement(transformation(extent={{-154,-38},{-134,-18}})));
   Modelica.Blocks.Sources.RealExpression realExpression(y=GasFanAdvanced.m_flow_nom)
     annotation (Placement(transformation(extent={{-192,-38},{-172,-18}})));
 equation
@@ -111,11 +110,11 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(PID.y, GasFanAdvanced.Delta_alpha_input) annotation (Line(
-      points={{-133.1,-28},{-70,-28},{-70,-47.6},{-54.64,-47.6}},
+      points={{-133,-28},{-70,-28},{-70,-47.6},{-54.64,-47.6}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(gasMassflowSensor.m_flow, PID.u_m) annotation (Line(
-      points={{-11,-44},{-6,-44},{-6,-72},{-144,-72},{-144,-40}},
+      points={{-11,-44},{-6,-44},{-6,-72},{-143.9,-72},{-143.9,-40}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(realExpression.y, PID.u_s) annotation (Line(
@@ -145,12 +144,9 @@ PURPOSE:
 LOOK AT:
 >> Time plots of mass flow and pressure ratio as well as the VIGV position
 
-"),                             Text(
-          extent={{-200,60},{-96,50}},
-          lineColor={0,128,0},
-          fontSize=34,
-          textString="TESTED -- 2014-10-08 //LN")}),
+")}),
     experiment(StopTime=30),
     __Dymola_experimentSetupOutput,
-    Icon(coordinateSystem(extent={{-100,-100},{100,100}},     preserveAspectRatio=false)));
+    Icon(graphics,
+         coordinateSystem(extent={{-100,-100},{100,100}},     preserveAspectRatio=false)));
 end Test_MassFlow_VIGVControlled;

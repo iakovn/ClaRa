@@ -103,15 +103,14 @@ model Test_HEXvle2vle_L3_2ph_CU_simple
     offset=0.9e5,
     startTime=1800)
                 annotation (Placement(transformation(extent={{-100,-78},{-80,-58}})));
-  Visualisation.DynamicBar            level_abs1(
-    provideConnector=true,
+  Visualisation.DynamicBar level_abs1(
     u=hex.shell.summary.outline.level_abs,
     u_set=0.5,
     u_high=1,
     u_low=0.2,
-    u_max=3)         annotation (Placement(transformation(extent={{2,-70},{12,-50}})));
+    u_max=3,
+    provideOutputConnector=true) annotation (Placement(transformation(extent={{2,-70},{12,-50}})));
   Utilities.Blocks.LimPID PI(
-    initType=Modelica.Blocks.Types.InitPID.InitialOutput,
     controllerType=Modelica.Blocks.Types.SimpleController.PI,
     Tau_d=60,
     k=0.1,
@@ -121,7 +120,8 @@ model Test_HEXvle2vle_L3_2ph_CU_simple
     y_min=0,
     y_start=0.5,
     Tau_i=120,
-    sign=1) annotation (Placement(transformation(extent={{-6,-75},{-16,-65}})));
+    sign=1,
+    initOption=796) annotation (Placement(transformation(extent={{-6,-75},{-16,-65}})));
   Modelica.Blocks.Sources.Ramp rampControllerSetpoint(
     duration=100,
     startTime=12000,
@@ -209,13 +209,9 @@ equation
 PURPOSE:
 >>check HEXvle2vle_L3_2ph_CU_simple in a load change. Test robustness and 
 prove steady-state initialisation capabilities. Check controlled and uncontrolled behaviour.
-______________________________________________________________________________________________"),
-                       Text(
-          extent={{-114,102},{44,84}},
-          lineColor={0,128,0},
-          fontSize=31,
-          textString="TESTED -- 2016-03-04 //TH")}),
-                                                 Icon(coordinateSystem(extent={{-100,-100},{100,100}})),
+______________________________________________________________________________________________")}),
+                                                 Icon(graphics,
+                                                      coordinateSystem(extent={{-100,-100},{100,100}})),
     experiment(StopTime=3600, Tolerance=1e-005),
     __Dymola_experimentSetupOutput);
 end Test_HEXvle2vle_L3_2ph_CU_simple;

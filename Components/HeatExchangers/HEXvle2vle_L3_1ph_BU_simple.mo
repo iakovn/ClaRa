@@ -4,7 +4,7 @@ model HEXvle2vle_L3_1ph_BU_simple "VLE 2 VLE | L3 | 1 phase at shell side | Bloc
   // Component of the ClaRa library, version: 1.2.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -60,12 +60,12 @@ model HEXvle2vle_L3_1ph_BU_simple "VLE 2 VLE | L3 | 1 phase at shell side | Bloc
         group="Fundamental Definitions"), choicesAllMatching);
   parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation"
    annotation (Dialog(tab="General",group="Fundamental Definitions"), choicesAllMatching);
-//, groupImage="modelica://ClaRa/figures/ParameterDialog/HEX_ParameterDialog_CHgeneral.png"
+//, groupImage="modelica://ClaRa/Resources/Images/ParameterDialog/HEX_ParameterDialog_CHgeneral.png"
   //________________________________ Shell geometry _______________________________//
   parameter ClaRa.Basics.Units.Length length=10 "Length of the HEX" annotation (Dialog(
       tab="Shell Side",
       group="Geometry",
-      groupImage="modelica://ClaRa/figures/ParameterDialog/HEX_ParameterDialog_BUshell1ph.png"));                                               //
+      groupImage="modelica://ClaRa/Resources/Images/ParameterDialog/HEX_ParameterDialog_BUshell1ph.png"));                                               //
   parameter ClaRa.Basics.Units.Length height=3 "Height of HEX"
     annotation (Dialog(tab="Shell Side", group="Geometry"));
   parameter ClaRa.Basics.Units.Length width=3 "Width of HEX"
@@ -113,7 +113,7 @@ model HEXvle2vle_L3_1ph_BU_simple "VLE 2 VLE | L3 | 1 phase at shell side | Bloc
   parameter ClaRa.Basics.Units.Length diameter_i=0.048 "Inner diameter of internal tubes" annotation (Dialog(
       tab="Tubes",
       group="Tubes Geometry",
-      groupImage="modelica://ClaRa/figures/ParameterDialog/HEX_ParameterDialogTubes.png"));
+      groupImage="modelica://ClaRa/Resources/Images/ParameterDialog/HEX_ParameterDialogTubes.png"));
   parameter ClaRa.Basics.Units.Length diameter_o=0.05 "Outer diameter of internal tubes" annotation (Dialog(tab="Tubes", group="Tubes Geometry"));
   parameter Integer N_tubes=1000 "Number of tubes"  annotation (Dialog(tab="Tubes", group="Tubes Geometry"));
   parameter Integer N_passes=1 "Number of passes of the internal tubes" annotation (Dialog(tab="Tubes", group="Tubes Geometry"));
@@ -130,7 +130,7 @@ model HEXvle2vle_L3_1ph_BU_simple "VLE 2 VLE | L3 | 1 phase at shell side | Bloc
   parameter ClaRa.Basics.Units.MassFlowRate m_flow_nom_tubes=10 "Nominal mass flow on tubes side" annotation (Dialog(
       tab="Tubes",
       group="Nominal Values",
-      groupImage="modelica://ClaRa/figures/ParameterDialog/CH_general.png"));
+      groupImage="modelica://ClaRa/Resources/Images/ParameterDialog/CH_general.png"));
   parameter ClaRa.Basics.Units.Pressure p_nom_tubes=10 "Nominal pressure on side tubes" annotation (Dialog(tab="Tubes", group="Nominal Values"));
   parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_nom_tubes=10 "Nominal specific enthalpy on tubes side" annotation (Dialog(tab="Tubes", group="Nominal Values"));
   parameter ClaRa.Basics.Units.HeatFlowRate Q_flow_nom=1e6 "Nominal heat flow rate" annotation (Dialog(tab="Tubes", group="Nominal Values"));
@@ -227,7 +227,7 @@ model HEXvle2vle_L3_1ph_BU_simple "VLE 2 VLE | L3 | 1 phase at shell side | Bloc
         rotation=270,
         origin={0,0})));
 
-  ClaRa.Basics.ControlVolumes.SolidVolumes.ThickWall_L4 wall(
+  ClaRa.Basics.ControlVolumes.SolidVolumes.CylindricalThickWall_L4 wall(
     redeclare replaceable model Material = WallMaterial,
     N_rad=3,
     sizefunc=1,
@@ -237,7 +237,7 @@ model HEXvle2vle_L3_1ph_BU_simple "VLE 2 VLE | L3 | 1 phase at shell side | Bloc
     T_start=T_w_start,
     length=length*N_passes,
     initOption=initOptionWall,
-    mass_struc=mass_struc)     annotation (Placement(transformation(
+    mass_struc=mass_struc) annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=90,
         origin={30,0})));
@@ -307,7 +307,7 @@ equation
   connect(eye_int1[1], eye1) annotation (Line(points={{28,-58},{28,-58},{28,-110},{40,-110}},
                                                                                          color={190,190,190}));
   connect(shell.heat, wall.outerPhase) annotation (Line(
-      points={{10,-1.77636e-015},{19.8667,-1.77636e-015},{19.8667,6.66134e-016}},
+      points={{10,-1.77636e-15},{19.8667,-1.77636e-15},{19.8667,6.66134e-16}},
       color={167,25,48},
       thickness=0.5));
   connect(shell.inlet, In1) annotation (Line(
@@ -319,8 +319,10 @@ equation
       color={0,131,169},
       pattern=LinePattern.Solid,
       thickness=0.5));
-  annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+  annotation (Icon(graphics,
+                   coordinateSystem(preserveAspectRatio=false, extent={{-100,
             -100},{100,100}})),
-                              Diagram(coordinateSystem(preserveAspectRatio=false,
+                              Diagram(graphics,
+                                      coordinateSystem(preserveAspectRatio=false,
           extent={{-100,-100},{100,100}})));
 end HEXvle2vle_L3_1ph_BU_simple;

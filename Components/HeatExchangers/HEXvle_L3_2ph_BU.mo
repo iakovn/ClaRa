@@ -1,10 +1,10 @@
 within ClaRa.Components.HeatExchangers;
 model HEXvle_L3_2ph_BU "Single side: VLE | L3 | two phase at shell side | Block shape | U-type"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.2                            //
+  // Component of the ClaRa library, version: 1.3.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -32,8 +32,8 @@ model HEXvle_L3_2ph_BU "Single side: VLE | L3 | two phase at shell side | Block 
     extends ClaRa.Basics.Icons.RecordIcon;
     parameter Boolean showExpertSummary=false;
     input ClaRa.Basics.Units.HeatFlowRate Q_flow "Heat flow rate";
-    input ClaRa.Basics.Units.Length absLevel "Absolute filling level";
-    input Real relLevel "relative filling level";
+    input ClaRa.Basics.Units.Length level_abs "Absolute filling level";
+    input Real level_rel "relative filling level";
   end Outline;
 
   model Summary
@@ -71,7 +71,7 @@ model HEXvle_L3_2ph_BU "Single side: VLE | L3 | two phase at shell side | Block 
   parameter ClaRa.Basics.Units.Length
                       length=10 "Length of the HEX" annotation (Dialog(
       tab="Shell Side",
-      group="Geometry", groupImage="modelica://ClaRa/figures/ParameterDialog/HEX_ParameterDialog_BUshell2ph2.png"));
+      group="Geometry", groupImage="modelica://ClaRa/Resources/Images/ParameterDialog/HEX_ParameterDialog_BUshell2ph2.png"));
   parameter ClaRa.Basics.Units.Length
                       height=3 "Height of HEX"
     annotation (Dialog(tab="Shell Side", group="Geometry"));
@@ -127,11 +127,11 @@ model HEXvle_L3_2ph_BU "Single side: VLE | L3 | two phase at shell side | Block 
 //     annotation (Dialog(
 //       tab="Tubes",
 //       group="Geometry",
-//       groupImage="modelica://ClaRa/figures/ParameterDialog/HollowBlockWithTubes_2.png"));
+//       groupImage="modelica://ClaRa/Resources/Images/ParameterDialog/HollowBlockWithTubes_2.png"));
   parameter ClaRa.Basics.Units.Length
                       diameter_o=0.05 "Outer diameter of horizontal tubes"
     annotation (Dialog(tab="Tubes", group="Geometry",
-      groupImage="modelica://ClaRa/figures/ParameterDialog/HollowBlockWithTubes_2.png"));
+      groupImage="modelica://ClaRa/Resources/Images/ParameterDialog/HollowBlockWithTubes_2.png"));
   parameter Integer N_tubes=1000 "Number of horizontal tubes"
     annotation (Dialog(tab="Tubes", group="Geometry"));
   parameter Integer N_passes=1 "Number of passes of the internal tubes"
@@ -239,8 +239,8 @@ model HEXvle_L3_2ph_BU "Single side: VLE | L3 | two phase at shell side | Block 
   Summary summary(outline(
       showExpertSummary=showExpertSummary,
       Q_flow=sum(shell.heat.Q_flow),
-      absLevel=shell.phaseBorder.level_abs,
-      relLevel=shell.phaseBorder.level_rel)) annotation (Placement(transformation(
+      level_abs=shell.phaseBorder.level_abs,
+      level_rel=shell.phaseBorder.level_rel)) annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=0,
         origin={-50,-92})));
@@ -317,8 +317,10 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(eye_int[1], eye) annotation (Line(points={{28,-58},{28,-58},{28,-98},{28,-98}}, color={190,190,190}));
-  annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+  annotation (Icon(graphics,
+                   coordinateSystem(preserveAspectRatio=false, extent={{-100,
             -100},{100,100}})),
-                              Diagram(coordinateSystem(preserveAspectRatio=false,
+                              Diagram(graphics,
+                                      coordinateSystem(preserveAspectRatio=false,
           extent={{-100,-100},{100,100}})));
 end HEXvle_L3_2ph_BU;

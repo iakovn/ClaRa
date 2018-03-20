@@ -1,10 +1,10 @@
 within ClaRa.Components.Furnace.Check;
 model Test_CombustionChamber_control
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -25,8 +25,8 @@ model Test_CombustionChamber_control
   ClaRa.Components.BoundaryConditions.BoundaryFuel_Txim_flow coalFlowSource(
     m_flow_const=1,
     variable_m_flow=true,
-    fuelType=simCenter.fuelModel1,
-    xi_const=simCenter.fuelModel1.defaultComposition) annotation (Placement(transformation(extent={{-60,-20},{-40,0}})));
+    fuelModel=simCenter.fuelModel1,
+    xi_const=simCenter.fuelModel1.defaultComposition)  annotation (Placement(transformation(extent={{-60,-20},{-40,0}})));
   ClaRa.Components.BoundaryConditions.BoundarySlag_pT slagSink annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=90,
@@ -77,7 +77,7 @@ model Test_CombustionChamber_control
   ClaRa.Components.Adapters.FuelFlueGas_join coalGas_join annotation (Placement(transformation(extent={{-24,-26},{-4,-6}})));
 equation
   connect(combustionChamber.lambda, PID_lambda.u_m) annotation (Line(
-      points={{15,-24},{0,-24},{0,-46},{-50,-46},{-50,-58}},
+      points={{15,-24},{0,-24},{0,-46},{-50.1,-46},{-50.1,-58}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(setPoint_lambda.y, PID_lambda.u_s) annotation (Line(
@@ -85,7 +85,7 @@ equation
       color={0,0,127},
       smooth=Smooth.None));
   connect(PID_lambda.y, flueGasFlowSource.m_flow) annotation (Line(
-      points={{-60.9,-70},{-68,-70},{-68,-36},{-60,-36}},
+      points={{-61,-70},{-68,-70},{-68,-36},{-60,-36}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(setPoint_Q_boiler.y, PID_Q_boiler.u_s) annotation (Line(
@@ -93,11 +93,11 @@ equation
       color={0,0,127},
       smooth=Smooth.None));
   connect(combustionChamber.Q_flow_boiler, PID_Q_boiler.u_m) annotation (Line(
-      points={{37,-16},{52,-16},{52,42},{-50,42},{-50,32}},
+      points={{37,-16},{52,-16},{52,42},{-50.1,42},{-50.1,32}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(PID_Q_boiler.y, coalFlowSource.m_flow) annotation (Line(
-      points={{-60.9,20},{-70,20},{-70,-4},{-60,-4}},
+      points={{-61,20},{-70,20},{-70,-4},{-60,-4}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(coalFlowSource.fuel_a,coalGas_join.fuel_inlet)  annotation (Line(
@@ -130,13 +130,7 @@ equation
       smooth=Smooth.None));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
             -100},{100,100}}),
-                      graphics={
-                       Text(
-          extent={{-100,104},{16,86}},
-          lineColor={0,128,0},
-          fontSize=31,
-          textString="TESTED -- 2015-01-27 //LN"),
-                                  Text(
+                      graphics={  Text(
           extent={{-98,100},{46,62}},
           lineColor={0,128,0},
           horizontalAlignment=TextAlignment.Left,

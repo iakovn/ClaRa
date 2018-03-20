@@ -4,7 +4,7 @@ model Sink_brown
 // Component of the ClaRa library, version: 1.1.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -18,10 +18,10 @@ model Sink_brown
   outer ClaRa.SimCenter simCenter;
   parameter TILMedia.GasTypes.BaseGas flueGas = simCenter.flueGasModel "Flue gas model used in component";
 
-parameter ClaRa.Basics.Units.Temperature T_fg_nom;
-parameter ClaRa.Basics.Units.MassFlowRate m_flow_fg_nom;
-parameter ClaRa.Basics.Units.Pressure p_fg_nom;
-final parameter ClaRa.Basics.Units.MassFraction xi_fg_nom[flueGas.nc-1](fixed=false);
+parameter ClaRa.Basics.Units.Temperature T_fg_nom "Temperature at the sink";
+parameter ClaRa.Basics.Units.MassFlowRate m_flow_fg_nom "Mass flow into the sink";
+parameter ClaRa.Basics.Units.Pressure p_fg_nom  "Temperature at the sink";
+final parameter ClaRa.Basics.Units.MassFraction xi_fg_nom[flueGas.nc-1](fixed=false)  "Flue gas composition at the sink";
 
 // final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_FG_out=TILMedia.GasFunctions.specificEnthalpy_pTxi(
 //       flueGas,
@@ -59,5 +59,6 @@ initial equation
           textString="%p_fg_nom"),
         Line(points={{-100,100},{-60,0},{-100,-100}},
                                                   color={118,106,98})}),
-                                                                 Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
+                                                                 Diagram(graphics,
+                                                                         coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
 end Sink_brown;

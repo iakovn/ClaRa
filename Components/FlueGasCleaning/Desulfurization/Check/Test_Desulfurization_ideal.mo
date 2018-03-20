@@ -40,11 +40,7 @@ equation
           fontSize=12,
           textString="________________________________________________________________
 PURPOSE:
->>Tester for the Desulfurization component"),
-                                Text(
-          extent={{-100,100},{30,90}},
-          lineColor={0,128,0},
-          fontSize=34,
-          textString="TESTED -- 2014-10-08 //LN")}),
-                                          Commands(file="../../plot_DeSO.mos" "plot_DeSO"));
+>>Tester for the Desulfurization component")}),
+                                          Commands(file="../../plot_DeSO.mos" "plot_DeSO"),
+    experiment(StopTime=10));
 end Test_Desulfurization_ideal;

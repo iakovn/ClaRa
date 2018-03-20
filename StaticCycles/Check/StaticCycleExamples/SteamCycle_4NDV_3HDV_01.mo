@@ -1,10 +1,10 @@
 within ClaRa.StaticCycles.Check.StaticCycleExamples;
 model SteamCycle_4NDV_3HDV_01 "Helps you to find reasonable start values for steam cycles"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -132,7 +132,7 @@ parameter ClaRa.Basics.Units.Pressure valve_LP3_dp_nominal=0.001e5
 
 //parameter Real efficiency_Turb_LP2=1 "Efficiency of turbine" annotation(Dialog(tab="Turbines"));
 
-  ClaRa.StaticCycles.Machines.Pump pump_fw(efficiency=efficiency_Pump_FW) annotation (Placement(transformation(extent={{78,-190},{38,-150}})));
+  ClaRa.StaticCycles.Machines.Pump1 pump_fw(efficiency=efficiency_Pump_FW) annotation (Placement(transformation(extent={{78,-190},{38,-150}})));
   ClaRa.StaticCycles.Machines.Turbine turbine_HP(efficiency=efficiency_Turb_HP) annotation (Placement(transformation(extent={{0,90},{30,150}})));
   ClaRa.StaticCycles.Machines.Turbine turbine_IP2(efficiency=efficiency_Turb_IP2) annotation (Placement(transformation(extent={{256,116},{286,176}})));
   Furnace.Boiler_simple boiler(
@@ -157,7 +157,7 @@ parameter ClaRa.Basics.Units.Pressure valve_LP3_dp_nominal=0.001e5
         extent={{-10,-7},{10,7}},
         rotation=270,
         origin={890,33})));
-  ClaRa.StaticCycles.Machines.Pump pump_cond(efficiency=efficiency_Pump_cond) annotation (Placement(transformation(extent={{1018,-190},{978,-150}})));
+  ClaRa.StaticCycles.Machines.Pump1 pump_cond(efficiency=efficiency_Pump_cond) annotation (Placement(transformation(extent={{1018,-190},{978,-150}})));
   ClaRa.StaticCycles.Machines.Turbine turbine_LP1(efficiency=efficiency_Turb_LP1) annotation (Placement(transformation(extent={{596,116},{626,176}})));
   ClaRa.StaticCycles.Fittings.Split1 split_LP annotation (Placement(transformation(extent={{316,110},{336,130}})));
   ClaRa.StaticCycles.Fittings.Split1 split_LP1 annotation (Placement(transformation(extent={{880,110},{900,130}})));
@@ -178,9 +178,9 @@ parameter ClaRa.Basics.Units.Pressure valve_LP3_dp_nominal=0.001e5
         origin={739.5,-65.5})));
   ClaRa.StaticCycles.Machines.Turbine turbine_LP3(efficiency=efficiency_Turb_LP3) annotation (Placement(transformation(extent={{814,116},{844,176}})));
   ClaRa.StaticCycles.Fittings.Split1 split_LP2 annotation (Placement(transformation(extent={{768,110},{788,130}})));
-  ClaRa.StaticCycles.Machines.Pump pump_preheater_LP2(efficiency=efficiency_Pump_preheater_LP2) annotation (Placement(transformation(extent={{772,-248},{732,-208}})));
+  ClaRa.StaticCycles.Machines.Pump1 pump_preheater_LP2(efficiency=efficiency_Pump_preheater_LP2) annotation (Placement(transformation(extent={{772,-248},{732,-208}})));
   ClaRa.StaticCycles.Fittings.Mixer1 mixer1 annotation (Placement(transformation(extent={{723,-180},{706,-168}})));
-  ClaRa.StaticCycles.Machines.Pump Pump_preheater_LP3(efficiency=efficiency_Pump_preheater_LP3) annotation (Placement(transformation(extent={{898,-248},{938,-208}})));
+  ClaRa.StaticCycles.Machines.Pump1 Pump_preheater_LP3(efficiency=efficiency_Pump_preheater_LP3) annotation (Placement(transformation(extent={{898,-248},{938,-208}})));
   ClaRa.StaticCycles.Machines.Turbine turbine_LP2(efficiency=efficiency_Turb_LP2) annotation (Placement(transformation(extent={{710,116},{740,176}})));
   ClaRa.StaticCycles.Fittings.Split1 split_LP3 annotation (Placement(transformation(extent={{650,110},{670,130}})));
   ClaRa.StaticCycles.HeatExchanger.Preheater1 preheater_LP1(m_flow_tap_nom=preheater_LP1_m_flow_tap, p_tap_nom=preheater_LP1_p_tap - valve_LP1_dp_nominal) annotation (Placement(transformation(extent={{684,-192},{638,-148}})));
@@ -196,7 +196,7 @@ parameter ClaRa.Basics.Units.Pressure valve_LP3_dp_nominal=0.001e5
   ClaRa.StaticCycles.Fittings.Split1 split_LP4 annotation (Placement(transformation(extent={{462,108},{482,128}})));
   ClaRa.StaticCycles.Machines.Turbine turbine_IP3(efficiency=efficiency_Turb_IP3) annotation (Placement(transformation(extent={{374,114},{404,174}})));
   ClaRa.StaticCycles.HeatExchanger.Preheater1 preheater_IP3(m_flow_tap_nom=preheater_IP3_m_flow_tap, p_tap_nom=preheater_IP3_p_tap - valve_IP3_dp_nominal) annotation (Placement(transformation(extent={{494,-192},{448,-148}})));
-  ClaRa.StaticCycles.Machines.Pump pump_preheater_IP3(efficiency=efficiency_Pump_preheater_IP3) annotation (Placement(transformation(extent={{448,-250},{408,-210}})));
+  ClaRa.StaticCycles.Machines.Pump1 pump_preheater_IP3(efficiency=efficiency_Pump_preheater_IP3) annotation (Placement(transformation(extent={{448,-250},{408,-210}})));
   ClaRa.StaticCycles.Fittings.Mixer1 mixer3 annotation (Placement(transformation(extent={{406,-182},{386,-162}})));
   ClaRa.StaticCycles.Fittings.Mixer3 mixer3_2 annotation (Placement(transformation(extent={{210,-112},{230,-132}})));
   ClaRa.StaticCycles.Machines.Turbine turbine_IP1(efficiency=efficiency_Turb_IP1) annotation (Placement(transformation(extent={{144,114},{174,174}})));
@@ -495,6 +495,7 @@ equation
   connect(preheater_IP1.cond_out, boiler.feedWater) annotation (Line(points={{-90,25},{-92,25},{-92,53.2},{-90,53.2}}, color={0,131,169}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=true, extent={{-100,
             -100},{100,100}}),
-                   graphics),      Diagram(coordinateSystem(preserveAspectRatio=false,
+                   graphics),      Diagram(graphics,
+                                           coordinateSystem(preserveAspectRatio=false,
                  extent={{-180,-280},{1080,240}})));
 end SteamCycle_4NDV_3HDV_01;

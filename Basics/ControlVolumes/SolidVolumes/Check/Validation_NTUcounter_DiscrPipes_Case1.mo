@@ -1,10 +1,10 @@
 within ClaRa.Basics.ControlVolumes.SolidVolumes.Check;
 model Validation_NTUcounter_DiscrPipes_Case1 "Validation: NTU method vs. discretized tube models || counter current || evaporating inner side ||H2O"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.2                            //
+  // Component of the ClaRa library, version: 1.3.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -54,14 +54,15 @@ model Validation_NTUcounter_DiscrPipes_Case1 "Validation: NTU method vs. discret
   Units.HeatCapacityMassSpecific cp_i[N_cv];
 
   Real x[N_cv];
-  Real val=pipe_InnerSide.fluid[1].VLE.h_v;
+  Real val=pipe_InnerSide.summary.fluid.h_dew[1];
   Integer Cell_hv "Zelle bei der Phasenwechsel auftritt";
   Integer Cells_hv_p1=Cell_hv + 1;
 
   inner SimCenter simCenter(
     steamCycleAllowFlowReversal=true,
     useHomotopy=false,
-    redeclare TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1) annotation (Placement(transformation(extent={{116,74},{136,94}})));
+    redeclare TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1,
+    showExpertSummary=true)                                             annotation (Placement(transformation(extent={{116,74},{136,94}})));
 
   Components.VolumesValvesFittings.Pipes.PipeFlowVLE_L4_Simple pipe_OuterSide(
     length=length,
@@ -76,7 +77,6 @@ model Validation_NTUcounter_DiscrPipes_Case1 "Validation: NTU method vs. discret
         1328.89e3,
         1080.51e3,
         N_cv),
-    redeclare model PressureLoss = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4 (Delta_p_nom(displayUnit="Pa") = 100),
     diameter_i=diameter_o,
     p_start=linspace(
         p_o + 100,
@@ -88,7 +88,10 @@ model Validation_NTUcounter_DiscrPipes_Case1 "Validation: NTU method vs. discret
         N_cv),
     m_flow_nom=m_flow_o,
     redeclare model HeatTransfer = ClaRa.Basics.ControlVolumes.Fundamentals.HeatTransport.Generic_HT.Constant_L4 (alpha_nom=alpha_o),
-    initOption=208) annotation (Placement(transformation(extent={{-84,-14},{-52,-26}})));
+    initOption=208,
+    frictionAtOutlet=true,
+    redeclare model PressureLoss = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4)
+                    annotation (Placement(transformation(extent={{-84,-14},{-52,-26}})));
   Components.VolumesValvesFittings.Pipes.PipeFlowVLE_L4_Simple pipe_InnerSide(
     length=length,
     N_tubes=N_tubes,
@@ -98,7 +101,6 @@ model Validation_NTUcounter_DiscrPipes_Case1 "Validation: NTU method vs. discret
         419240,
         450e3,
         N_cv),
-    redeclare model PressureLoss = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4 (Delta_p_nom(displayUnit="Pa") = 100),
     diameter_i=diameter_i,
     p_start=linspace(
         p_i + 100,
@@ -115,7 +117,10 @@ model Validation_NTUcounter_DiscrPipes_Case1 "Validation: NTU method vs. discret
         419240,
         2895e3,
         N_cv),
-    initOption=208) annotation (Placement(transformation(extent={{-52,-72},{-84,-60}})));
+    initOption=208,
+    frictionAtOutlet=true,
+    redeclare model PressureLoss = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.Generic_PL.LinearPressureLoss_L4)
+                    annotation (Placement(transformation(extent={{-52,-72},{-84,-60}})));
   Components.BoundaryConditions.BoundaryVLE_Txim_flow OuterSide_in(
     variable_m_flow=false,
     variable_T=false,
@@ -134,9 +139,11 @@ model Validation_NTUcounter_DiscrPipes_Case1 "Validation: NTU method vs. discret
     Delta_p(displayUnit="Pa"),
     variable_p=false,
     p_const=p_i) annotation (Placement(transformation(extent={{-146,-76},{-126,-56}})));
-  ClaRa.Components.Sensors.SensorVLE_L1_T OuterSide_outletTemp annotation (Placement(transformation(extent={{-42,-20},{-22,0}})));
-  ClaRa.Components.Sensors.SensorVLE_L1_T InnerSide_outletTemp annotation (Placement(transformation(extent={{-106,-66},{-86,-46}})));
-  ClaRa.Basics.ControlVolumes.SolidVolumes.ThinWall_L4 thinWall(
+  ClaRa.Components.Sensors.SensorVLE_L1_T OuterSide_outletTemp(unitOption=2)
+                                                               annotation (Placement(transformation(extent={{-42,-20},{-22,0}})));
+  ClaRa.Components.Sensors.SensorVLE_L1_T InnerSide_outletTemp(unitOption=2)
+                                                               annotation (Placement(transformation(extent={{-106,-66},{-86,-46}})));
+  ClaRa.Basics.ControlVolumes.SolidVolumes.CylindricalThinWall_L4 thinWall(
     length=length,
     N_tubes=N_tubes,
     N_ax=N_cv,
@@ -147,8 +154,7 @@ model Validation_NTUcounter_DiscrPipes_Case1 "Validation: NTU method vs. discret
         T_o_in,
         T_i_in,
         N_cv),
-    initOption=203)
-               annotation (Placement(transformation(extent={{-78,-46},{-58,-38}})));
+    initOption=203) annotation (Placement(transformation(extent={{-78,-46},{-58,-38}})));
 
   Visualisation.Hexdisplay_3 hexdisplay_3_1(
     Unit="HEX wall",
@@ -164,7 +170,7 @@ model Validation_NTUcounter_DiscrPipes_Case1 "Validation: NTU method vs. discret
     N_p=N_passes,
     length=length,
     outerPhaseChange=false,
-    redeclare function HeatCapacityAveraging = ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.ArithmeticMean,
+    redeclare model HeatCapacityAveraging = ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Averaging_Cp.ArithmeticMean,
     radius_i=radius_i,
     radius_o=radius_o,
     p_o=p_o,
@@ -173,17 +179,20 @@ model Validation_NTUcounter_DiscrPipes_Case1 "Validation: NTU method vs. discret
     h_o_inlet=h_o_in,
     m_flow_i=m_flow_i,
     m_flow_o=m_flow_o,
-    alpha_i=ones(3)*alpha_i,
-    alpha_o=ones(3)*alpha_o,
     T_w_i_start=ones(3)*T_i_in,
     T_w_o_start=ones(3)*T_o_in,
-    initOption=203) annotation (Placement(transformation(extent={{4,-50},{24,-30}})));
+    alpha_i=ones(3)*alpha_i,
+    alpha_o=ones(3)*alpha_o,
+    yps_start={0.3,0.3},
+    initOption=204,
+    initOption_yps=4)
+                    annotation (Placement(transformation(extent={{4,-50},{24,-30}})));
 
 equation
   for i in 1:pipe_InnerSide.N_cv loop
 
     connect(pipe_InnerSide.heat[i], thinWall.innerPhase[(pipe_InnerSide.N_cv + 1) - i]);
-    x[i] = pipe_InnerSide.fluid[i].h;
+    x[i] = pipe_InnerSide.summary.fluid.h[i];
   end for;
 
   for i in 1:N_cv loop
@@ -241,12 +250,8 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   annotation (
-    Diagram(coordinateSystem(extent={{-160,-100},{160,100}}, preserveAspectRatio=false), graphics={Text(
-          extent={{-158,98},{162,90}},
-          lineColor={0,128,0},
-          textStyle={TextStyle.Bold},
-          horizontalAlignment=TextAlignment.Left,
-          textString="Validated! // 08. Jan 2013, FG"), Text(
+    Diagram(coordinateSystem(extent={{-160,-100},{160,100}}, preserveAspectRatio=false), graphics={
+                                                        Text(
           extent={{-158,84},{162,26}},
           lineColor={0,128,0},
           horizontalAlignment=TextAlignment.Left,
@@ -271,5 +276,6 @@ ________________________________________________________________________________
       Tolerance=1e-006,
       __Dymola_Algorithm="Dassl"),
     __Dymola_experimentSetupOutput(equidistant=false),
-    Icon(coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=true)));
+    Icon(graphics,
+         coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=true)));
 end Validation_NTUcounter_DiscrPipes_Case1;

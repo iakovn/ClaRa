@@ -23,7 +23,7 @@ record IComBase_L3
 //_____Nominal___________________________________________________________________________
   parameter SI.Pressure  p_nom=1e5 "Nominal pressure" annotation(Dialog(tab="Nominal"));
   parameter SI.PressureDifference  Delta_p_nom=1e4 "Nominal pressure" annotation(Dialog(tab="Nominal"));
-  parameter SI.MassFlowRate  m_flow_nom "Nominal mass flow" annotation(Dialog(tab="Nominal"));
+  parameter SI.MassFlowRate  m_flow_nom = 1 "Nominal mass flow" annotation(Dialog(tab="Nominal"));
   parameter SI.EnthalpyMassSpecific  h_nom=1e4 "Nominal enthalpy" annotation(Dialog(tab="Nominal"));
   parameter SI.MassFraction  xi_nom[:]= {1} "Nominal mass fraction" annotation(Dialog(tab="Nominal"));
 annotation (   defaultComponentName="iCom",

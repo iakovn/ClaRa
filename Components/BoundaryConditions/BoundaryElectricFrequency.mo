@@ -18,5 +18,7 @@ equation
     f_in = f_const;
   end if;
   electricPortIn.f = f_in;
-  annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(coordinateSystem(preserveAspectRatio=false)));
+  annotation (Icon(graphics,
+                   coordinateSystem(preserveAspectRatio=false)), Diagram(graphics,
+                                                                         coordinateSystem(preserveAspectRatio=false)));
 end BoundaryElectricFrequency;

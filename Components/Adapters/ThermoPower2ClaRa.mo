@@ -1,10 +1,10 @@
 within ClaRa.Components.Adapters;
 model ThermoPower2ClaRa "Adapter for ThermoPower 2.2 to ClaRa fluid connector"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -38,7 +38,8 @@ equation
   flangeA.p = outlet.p;
   outlet.xi_outflow =ones(ClaRaMedium.nc-1);
 
-  annotation (Icon(graphics={Polygon(
+  annotation (defaultComponentName =     "thermopower2clara",
+          Icon(graphics={Polygon(
           points={{-96,10},{2,10},{36,-10},{-98,-10},{-96,10}},
           lineColor={0,0,255},
           smooth=Smooth.None,

@@ -1,12 +1,7 @@
 within ClaRa.Basics.Interfaces;
 connector FuelFlueGas_outlet "Port describing Coal and CombustionAir flow"
 
-   parameter ClaRa.Basics.Media.Fuel.PartialFuel fuelType;
-
-  ClaRa.Basics.Interfaces.GasPortOut flueGas
-    annotation (Placement(transformation(extent={{-30,-70},{30,-10}})));
-  ClaRa.Basics.Interfaces.Fuel_outlet fuel(fuelType=fuelType)
-    annotation (Placement(transformation(extent={{-30,10},{30,70}})));
+extends ClaRa.Basics.Interfaces.FuelFlueGas_inlet;
   annotation (Icon(graphics={
         Ellipse(
           extent={{-100,100},{100,-100}},

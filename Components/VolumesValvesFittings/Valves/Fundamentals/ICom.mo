@@ -11,4 +11,6 @@ record ICom
   Real gamma_in "Heat capacity ratio at inlet"   annotation(Dialog);
   Real gamma_out "Heat capacity ratio at outlet"    annotation(Dialog);
   Real opening_leak_ annotation(Dialog);
+  SI.EnthalpyMassSpecific h_in "Inlet enthalpy" annotation(Dialog);
+
 end ICom;

@@ -1,10 +1,10 @@
 within ClaRa.Basics.ControlVolumes.Fundamentals.Check;
 model Test_SmoothedDeltaTmean_arith
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.2                            //
+  // Component of the ClaRa library, version: 1.3.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -51,5 +51,9 @@ equation
     100,
     -100,
     DT_wi*DT_wo)*(DT_wi + DT_wo)/2;
-  annotation ();
+  annotation (experiment(StopTime=20, __Dymola_NumberOfIntervals=5000), Diagram(graphics={Text(
+          extent={{-98,88},{92,56}},
+          lineColor={115,150,0},
+          horizontalAlignment=TextAlignment.Left,
+          textString="IDEA: illustrate the behaviour of thefuture arethmetic mean calculation options available in L2 heat transfer models")}));
 end Test_SmoothedDeltaTmean_arith;

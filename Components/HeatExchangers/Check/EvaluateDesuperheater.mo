@@ -1,10 +1,10 @@
 within ClaRa.Components.HeatExchangers.Check;
 model EvaluateDesuperheater "An evaluation scenario for the ShellAndTube_HEX_1 featuring part load. Comparing against an EBSILON model"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.2                            //
+  // Component of the ClaRa library, version: 1.3.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -16,7 +16,7 @@ model EvaluateDesuperheater "An evaluation scenario for the ShellAndTube_HEX_1 f
   //___________________________________________________________________________//
 
   extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb60;
-  import ModelicaServices.ExternalReferences.loadResource;
+  import Modelica.Utilities.Files.loadResource;
 
   Real Q_flow1=-desuperheater_1.summary.outline.Q_flow;
   Real Q_flow2=-desuperheater_2.summary.outline.Q_flow;
@@ -45,7 +45,7 @@ model EvaluateDesuperheater "An evaluation scenario for the ShellAndTube_HEX_1 f
     tableName="S",
     columns={2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,
         27,28,29,30,31,32,33,34,35},
-    fileName=loadResource("modelica://ClaRa/TableBase/Desuperheater.mat"))
+    fileName=loadResource("modelica://ClaRa/Resources/TableBase/Desuperheater.mat"))
     annotation (Placement(transformation(extent={{-100,40},{-80,60}})));
   Modelica.Blocks.Discrete.Sampler sampler[34](each samplePeriod=300)
     annotation (Placement(transformation(extent={{-72,40},{-52,60}})));
@@ -279,12 +279,8 @@ equation
       smooth=Smooth.None));
   annotation (
     Diagram(coordinateSystem(extent={{-100,-100},{100,180}},
-          preserveAspectRatio=false),                         graphics={Text(
-          extent={{-100,180},{98,166}},
-          lineColor={0,128,0},
-          fontSize=16,
-          horizontalAlignment=TextAlignment.Left,
-          textString="VALIDATED 02. Apr. 2013 //FG"),Text(
+          preserveAspectRatio=false),                         graphics={
+                                                     Text(
           extent={{-100,176},{88,70}},
           lineColor={0,128,0},
           horizontalAlignment=TextAlignment.Left,

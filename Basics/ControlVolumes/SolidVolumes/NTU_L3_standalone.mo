@@ -1,10 +1,10 @@
 within ClaRa.Basics.ControlVolumes.SolidVolumes;
 model NTU_L3_standalone "A three-zonal NTU cell model with internally calculated zone size"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -19,6 +19,8 @@ model NTU_L3_standalone "A three-zonal NTU cell model with internally calculated
   outer ClaRa.SimCenter simCenter;
   extends ClaRa.Basics.Icons.NTU;
   extends ClaRa.Basics.Icons.ComplexityLevel(complexity="L3");
+
+  import smooth=ClaRa.Basics.Functions.Stepsmoother;
 
 //_____________material definitions_________________________________________//
 
@@ -47,23 +49,29 @@ model NTU_L3_standalone "A three-zonal NTU cell model with internally calculated
   parameter Real CF_geo=1 "Correction coefficient due to fins etc." annotation(Dialog(group="Geometry"));
 
 //______________Initialisation______________________________________________//
-  parameter Units.Temperature
-                           T_w_i_start[3]= ones(3)*293.15 "|Initialisation||Initial temperature at inner phase";
-  parameter Units.Temperature
-                           T_w_o_start[3] = ones(3)*293.15 "|Initialisation||Initial temperature at outer phase";
-  inner parameter Integer initOption=0 "Type of initialisation" annotation (Dialog(tab="Initialisation"), choices(
+  inner parameter Integer initOption=0 "Thermal initialisation" annotation (Dialog(tab="Initialisation"), choices(
       choice=0 "Use guess values",
       choice=1 "Steady state",
-      choice=203 "Steady temperature"));
+      choice=203 "Steady temperature",
+      choice=204 "Fixed temperatures"));
+  parameter Units.Temperature  T_w_i_start[3]= ones(3)*293.15 "Initial temperature at inner phase" annotation(Dialog(choicesAllMatching, tab="Initialisation"));
+  parameter Units.Temperature  T_w_o_start[3] = ones(3)*293.15 "Initial temperature at outer phase" annotation(Dialog(choicesAllMatching, tab="Initialisation"));
+
+  parameter Integer initOption_yps = 3 "Volumetric initialisation" annotation(Dialog(choicesAllMatching, tab="Initialisation"), choices(choice = 1 "Integrator state at zero",
+                                                                                                    choice=2 "Steady state",
+                                                                                                    choice=3 "Apply guess value y_start at output",
+                                                                                                    choice=4 "Force y_start at output"));
+  parameter Real yps_start[2]={0,0} "Initial area fraction 1phase | 2phase " annotation(Dialog(tab="Initialisation"));
 
 //______________Expert Settings____________________________________________//
-  replaceable function HeatCapacityAveraging =
-      ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.ArithmeticMean
-    constrainedby ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.GeneralMean "|Expert Settings||Method for Averaging of heat capacities"
-                                                                annotation(choicesAllMatching);
-  parameter Real gain_eff= 1 "|Expert Settings||Avoid effectiveness > 1, high gain_eff leads to stricter observation but may cause numeric errors";
-  parameter SI.Time Tau_stab=0.1 "|Expert Settings||Time constant for numeric stabilisation w.r.t. heat flow rates";
-  parameter Boolean showExpertSummary = false "|Summaries and Visualisation||True,if expert summaries shall be shown";
+  replaceable model HeatCapacityAveraging =
+      ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Averaging_Cp.ArithmeticMean
+    constrainedby ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.Averaging_Cp.GeneralMean
+                                                                                "Method for Averaging of heat capacities" annotation(Dialog(choicesAllMatching, tab="Expert Settings"));
+
+  parameter Real gain_eff= 1 "Avoid effectiveness > 1, high gain_eff leads to stricter observation but may cause numeric errors"  annotation(Dialog(choicesAllMatching, tab="Expert Settings"));
+  parameter SI.Time Tau_stab=0.1 "Time constant for numeric stabilisation w.r.t. heat flow rates"  annotation(Dialog(choicesAllMatching, tab="Expert Settings"));
+  parameter Boolean showExpertSummary = false "True,if expert summaries shall be shown"  annotation(Dialog(choicesAllMatching, tab="Expert Settings"));
 //______________Inputs_____________________________________________________//
 public
   input Units.Pressure p_o "Pressure at outer side" annotation (Dialog(group="Input"));
@@ -153,7 +161,7 @@ protected
     CF_geo=CF_geo,
     T_w_i_start=T_w_i_start,
     T_w_o_start=T_w_o_start,
-    redeclare function HeatCapacityAveraging = HeatCapacityAveraging,
+    redeclare model HeatCapacityAveraging = HeatCapacityAveraging,
     p_o=p_o,
     p_i=p_i,
     h_i_inlet=h_i_inlet,
@@ -178,44 +186,51 @@ public
                                    innerPhase[3] "inner side of cylinder"
     annotation (Placement(transformation(extent={{-10,-100},{10,-80}}), iconTransformation(extent={{-10,-100},{10,-80}})));
 protected
-  Components.Utilities.Blocks.LimPID PI_2ph(
+  Fundamentals.Blocks.TinyPIP        PI_2ph(
     y_min=0,
-    sign=-1,
-    y_start=0.33,
-    perUnitConversion=false,
-    controllerType=Modelica.Blocks.Types.SimpleController.PI,
-    initType=Modelica.Blocks.Types.InitPID.NoInit,
-    k=1e-2,
-    Tau_i=1000,
-    Ni=0.01)
-    annotation (Placement(transformation(extent={{-38,34},{-18,54}})));
-  Components.Utilities.Blocks.LimPID PI_1ph_in(
+    y_start=yps_start[2],
+    K_p=0.01,
+    y_max=1,
+    initOption=initOption_yps,
+    Tau_i=1000*PI_2ph.K_p,
+    N_i=0.01/PI_2ph.K_p,
+    u=controller2phInput)
+    annotation (Placement(transformation(extent={{-40,40},{-20,60}})));
+  Fundamentals.Blocks.TinyPIP        PI_1ph_in(
     y_min=0,
-    sign=-1,
-    y_start=0.33,
-    perUnitConversion=false,
-    controllerType=Modelica.Blocks.Types.SimpleController.PI,
-    initType=Modelica.Blocks.Types.InitPID.NoInit,
-    k=1e-2,
-    Tau_i=1000,
-    Ni=0.01)
-    annotation (Placement(transformation(extent={{-78,34},{-58,54}})));
+    y_start=yps_start[1],
+    K_p=0.01,
+    y_max=1,
+    initOption=initOption_yps,
+    Tau_i=1000*PI_1ph_in.K_p,
+    N_i=0.01/PI_1ph_in.K_p,
+    u=controller1phInput)
+    annotation (Placement(transformation(extent={{-80,40},{-60,60}})));
+
+protected
+  Units.EnthalpyMassSpecific controller2phInput "Controller input for 2ph yps controller";
+  Units.EnthalpyMassSpecific controller1phInput "Controller input for 1ph yps controller";
 
 equation
-//_____________connection of PI controllers for the area fraction:____________________//
 
-   PI_1ph_in.u_s= 0;
-   PI_2ph.u_s = 0;
 
    if outerPhaseChange then
-     PI_1ph_in.u_m = nTU.iCom.Delta_h_1ph;
-     PI_2ph.u_m = nTU.iCom.Delta_h_2ph;
+     controller2phInput = (smooth(1e-3,1e-4,m_flow_o)+smooth(-1e-3,-1e-4,m_flow_o))*nTU.iCom.Delta_h_2ph/1000;
+     controller1phInput = (smooth(1e-3,1e-4,m_flow_o)+smooth(-1e-3,-1e-4,m_flow_o))*nTU.iCom.Delta_h_1ph/1000;
   else
-     PI_1ph_in.u_m = nTU.iCom.Delta_h_1ph;
-
-     PI_2ph.u_m = nTU.iCom.Delta_h_2ph;
+     controller2phInput = (smooth(1e-3,1e-4,m_flow_i)+smooth(-1e-3,-1e-4,m_flow_i))*nTU.iCom.Delta_h_2ph/1000;
+     controller1phInput = (smooth(1e-3,1e-4,m_flow_i)+smooth(-1e-3,-1e-4,m_flow_i))*nTU.iCom.Delta_h_1ph/1000;
 
    end if;
+
+
+
+//_____________connection of PI controllers for the area fraction:____________________//
+
+//    PI_1ph_in.u_s= 0;
+//    PI_2ph.u_s = 0;
+//
+
 
   connect(nTU.outerPhase, outerPhase)     annotation (Line(
       points={{0,10.9},{0,90}},
@@ -225,5 +240,6 @@ equation
       points={{0,-8.9},{0,-90}},
       color={191,0,0},
       smooth=Smooth.None));
-  annotation (Diagram(graphics), Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
+  annotation (Diagram(graphics), Icon(graphics,
+                                      coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
 end NTU_L3_standalone;

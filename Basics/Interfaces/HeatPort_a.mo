@@ -20,7 +20,7 @@ class.</p></HTML>
           lineThickness=0.5,
           fillPattern=FillPattern.Solid,
           fillColor={167,25,48})}),
-    Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},
+    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
             {100,100}}), graphics={Rectangle(
           extent={{-50,50},{50,-50}},
           lineColor={167,25,48},

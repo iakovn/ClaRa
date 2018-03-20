@@ -3,32 +3,6 @@ model testTurbineVLE_L1
 
   extends ClaRa.Basics.Icons.PackageIcons.ExecutableRegressiong100;
 
-model Regression
-  extends ClaRa.Basics.Icons.RegressionSummary;
-  Modelica.Blocks.Interfaces.RealInput V_flow_HP_in "HP turbine inlet flow";
-  Modelica.Blocks.Interfaces.RealInput p_HP_out "HP turbine outlet pressure";
-  Modelica.Blocks.Interfaces.RealInput p_IP_out "IP turbine outlet pressure";
-  Modelica.Blocks.Interfaces.RealInput h_IP_out "IP turbine outlet enthalpy";
-  Modelica.Blocks.Interfaces.RealInput tau "Shaft torque";
-
-  Real y_tau_max = timeExtrema1.y_max;
-  Real y_tau = tau;
-  Real y_p_HP_out_int = timeExtrema2.y_max;
-  Real y_p_HP_out = p_HP_out;
-  Real y_p_IP_out_int = timeExtrema3.y_max;
-  Real y_p_IP_out = p_HP_out;
-  Real y_h_IP_out_min = timeExtrema4.y_min;
-  Real y_h_IP_out = h_IP_out;
-  Real y_V_flow_int = integrator5.y;
-
-  protected
-  Components.Utilities.Blocks.TimeExtrema timeExtrema1(u = tau, startTime=1000, initOption=1, y_start={0,0});
-  Components.Utilities.Blocks.TimeExtrema timeExtrema2(u = p_HP_out, startTime=1000, initOption=1, y_start={0,0});
-  Components.Utilities.Blocks.TimeExtrema timeExtrema3(u = p_IP_out, startTime=1000, initOption=1, y_start={0,0});
-  Components.Utilities.Blocks.TimeExtrema timeExtrema4(u = h_IP_out, startTime=1000, initOption=1, y_start={0,0});
-  Components.Utilities.Blocks.Integrator integrator5(u = V_flow_HP_in, startTime=1000);
-end Regression;
-
   ClaRa.Components.VolumesValvesFittings.Valves.ValveVLE_L1 turbineControlValve(
     showExpertSummary=true,
     checkValve=false,
@@ -47,19 +21,23 @@ end Regression;
   ClaRa.Components.TurboMachines.Turbines.SteamTurbineVLE_L1 turbineHP(
     showExpertSummary=true,
     showData=true,
-    eta_mech=1,
     m_flow_nom=79.1,
     rho_nom=37.1,
     rpm(start=3000),
     steadyStateTorque=false,
     J=500,
     Pi=32.9e5/turbineHP.p_nom,
+    useMechanicalPort=true,
+    eta_mech=0.9,
     p_nom=12790000,
-    useMechanicalPort=true) annotation (Placement(transformation(extent={{-130,-20},{-120,0}})));
+    redeclare model Efficiency = Fundamentals.TurbineEfficiency.TableMassFlow (eta_mflow=[0.0,0.9; 1,0.98]))
+                            annotation (Placement(transformation(extent={{-130,-20},{-120,0}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi pressureSink(
     variable_h=false,
     p_const(displayUnit="Pa") = 32.9e5,
-    variable_p=true) annotation (Placement(transformation(extent={{48,-48},{28,-28}})));
+    variable_p=true,
+    massFlowIsLoss=false)
+                     annotation (Placement(transformation(extent={{48,-48},{28,-28}})));
   ClaRa.Visualisation.Quadruple quadruple(largeFonts=simCenter.largeFonts)
     annotation (Placement(transformation(extent={{-118,-67},{-62,-53}})));
   Modelica.Mechanics.Rotational.Sensors.PowerSensor powerSensor
@@ -93,9 +71,12 @@ end Regression;
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi pressureSink1(
     variable_h=false,
     h_const=3500e3,
-    variable_p=true) annotation (Placement(transformation(extent={{-168,34},{-148,54}})));
-  inner ClaRa.SimCenter simCenter(redeclare TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1)
-                                  annotation (Placement(transformation(extent={{-200,-80},{-160,-60}})));
+    variable_p=true,
+    massFlowIsLoss=false)
+                     annotation (Placement(transformation(extent={{-168,34},{-148,54}})));
+  inner ClaRa.SimCenter simCenter(redeclare TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1,
+    contributeToCycleSummary=true,
+    showExpertSummary=true)       annotation (Placement(transformation(extent={{-200,-80},{-160,-60}})));
   Modelica.Blocks.Sources.Ramp ramp(
     height=30e5,
     startTime=5000,
@@ -122,7 +103,10 @@ end Regression;
     p_nom(displayUnit="Pa") = 32.9e5,
     rho_nom=10,
     Pi=2e5/turbineIP.p_nom,
-    useMechanicalPort=true) annotation (Placement(transformation(extent={{-70,-20},{-60,0}})));
+    useMechanicalPort=true,
+    eta_mech=0.9,
+    redeclare model Efficiency = Fundamentals.TurbineEfficiency.TableVolumeFlow (eta_Vflow=[0.0,0.9; 1,0.98]))
+                            annotation (Placement(transformation(extent={{-70,-20},{-60,0}})));
   ClaRa.Components.TurboMachines.Turbines.SteamTurbineVLE_L1 turbineLP(
     showExpertSummary=true,
     showData=true,
@@ -132,8 +116,11 @@ end Regression;
     rho_nom=1,
     J=500,
     Pi=0.045e5/turbineLP.p_nom,
+    useMechanicalPort=true,
+    eta_mech=0.9,
     p_nom=200000,
-    useMechanicalPort=true) annotation (Placement(transformation(extent={{-10,-20},{0,0}})));
+    redeclare model Efficiency = Fundamentals.TurbineEfficiency.RayCorrelation)
+                            annotation (Placement(transformation(extent={{-10,-20},{0,0}})));
   ClaRa.Visualisation.Quadruple quadruple1(
                                           largeFonts=simCenter.largeFonts, decimalSpaces(p=3))
     annotation (Placement(transformation(extent={{8,-67},{64,-53}})));
@@ -144,15 +131,6 @@ end Regression;
         extent={{-4.25,4.25},{4.25,-4.25}},
         rotation=180,
         origin={-31.75,11.75})));
-
-  Regression regression(tau = powerSensor.flange_a.tau,
-    p_HP_out = turbineHP.outlet.p,
-    p_IP_out =  turbineIP.outlet.p,
-    h_IP_out = turbineIP.summary.outlet.h,
-    V_flow_HP_in = turbineControlValve.summary.outline.V_flow) annotation (Placement(transformation(
-        extent={{-10,-10},{10,10}},
-        rotation=0,
-        origin={-190,-30})));
 
 equation
   connect(turbineHP.eye, quadruple.eye) annotation (Line(
@@ -205,11 +183,6 @@ equation
   connect(speedBoundary.y, speed.w_ref) annotation (Line(points={{157,-16},{148,-16}}, color={0,0,127}));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-200,-100},{200,150}},
         initialScale=0.1),                                                                         graphics={
-                       Text(
-          extent={{-168,150},{20,132}},
-          lineColor={0,128,0},
-          fontSize=31,
-          textString="TESTED -- 2016-04-25 //TH"),
                                   Text(
           extent={{-150,146},{48,106}},
           lineColor={0,128,0},

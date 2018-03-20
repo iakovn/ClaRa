@@ -1,10 +1,10 @@
 within ClaRa.Components.VolumesValvesFittings.Fittings.Check;
 model Test_Junction
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -155,15 +155,15 @@ equation
       color={84,58,36},
       smooth=Smooth.None));
   connect(flueGasJunction3.portA, flueGasValve_L1_1.inlet) annotation (Line(
-      points={{-22,-56},{-18,-56},{-18,-55.8333},{-12,-55.8333}},
+      points={{-22,-56},{-18,-56},{-18,-55},{-12,-55}},
       color={84,58,36},
       smooth=Smooth.None));
   connect(flueGasValve_L1_1.outlet, flueGasJunction2.portA) annotation (Line(
-      points={{8,-55.8333},{14,-55.8333},{14,-56},{18,-56}},
+      points={{8,-55},{14,-55},{14,-56},{18,-56}},
       color={84,58,36},
       smooth=Smooth.None));
   connect(flueGasValve_L1_2.inlet, flueGasCell1.outlet) annotation (Line(
-      points={{-12,-85.8333},{-12,-86},{-22,-86}},
+      points={{-12,-85},{-12,-86},{-22,-86}},
       color={84,58,36},
       smooth=Smooth.None));
   connect(flueGasCell1.inlet, flueGasJunction3.portB) annotation (Line(
@@ -171,7 +171,7 @@ equation
       color={84,58,36},
       smooth=Smooth.None));
   connect(flueGasValve_L1_2.outlet, flueGasJunction2.portC) annotation (Line(
-      points={{8,-85.8333},{29,-85.8333},{29,-64}},
+      points={{8,-85},{29,-85},{29,-64}},
       color={84,58,36},
       smooth=Smooth.None));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
@@ -186,9 +186,5 @@ PURPOSE:
 >> Tester for gas junctions
 
 ______________________________________________________________________________________________
-"),                    Text(
-          extent={{-98,102},{16,82}},
-          lineColor={0,128,0},
-          fontSize=31,
-          textString="TESTED -- 2015-01-27 //LN")}));
+")}), experiment(StopTime=2));
 end Test_Junction;

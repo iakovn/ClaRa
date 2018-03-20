@@ -1,31 +1,7 @@
 within ClaRa.Components.HeatExchangers.Check;
 model Test_HEXvle2vle_L3_2ph_CH_simple_shutoff "Quickly reduce the steam mass flow from full load to near zero. Vary liquid pressure state location"
- extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb50;
  extends ClaRa.Basics.Icons.PackageIcons.ExecutableRegressiong100;
-model Regression
-  extends ClaRa.Basics.Icons.RegressionSummary;
-  Modelica.Blocks.Interfaces.RealInput V_liq "Liquid shell volume";
-  Modelica.Blocks.Interfaces.RealInput T_shell_out "Shell outlet temperature";
-  Modelica.Blocks.Interfaces.RealInput p_shell_out "IP turbine outlet enthalpy";
-  Modelica.Blocks.Interfaces.RealInput Q_flow_tot "Total heat flow";
 
-  Real y_Q_flow_tot_int = integrator1.y;
-  Real y_Q_flow_tot = Q_flow_tot;
-
-  Real y_V_liq_int = integrator2.y;
-  Real y_V_liq = V_liq;
-
-  Real y_T_shell_out_int = integrator3.y;
-  Real y_T_shell_out = T_shell_out;
-  Real y_p_shell_out_int = integrator4.y;
-  Real y_p_shell_out = p_shell_out;
-
-  protected
-  Components.Utilities.Blocks.Integrator integrator1(u = Q_flow_tot, startTime=1000);
-  Components.Utilities.Blocks.Integrator integrator2(u = V_liq, startTime=1000);
-  Components.Utilities.Blocks.Integrator integrator3(u = T_shell_out, startTime=1000);
-  Components.Utilities.Blocks.Integrator integrator4(u = p_shell_out, startTime=1000);
-end Regression;
   HEXvle2vle_L3_2ph_CH_simple hex(
     redeclare model WallMaterial = TILMedia.SolidTypes.TILMedia_Aluminum,
     redeclare model PressureLossTubes = ClaRa.Basics.ControlVolumes.Fundamentals.PressureLoss.VLE_PL.PressureLossCoeffcient_L2 (Delta_p_smooth=100, zeta_TOT=5),
@@ -125,16 +101,14 @@ end Regression;
   Visualisation.Quadruple quadruple3(
                                     largeFonts=false, decimalSpaces(p=3))
                                                       annotation (Placement(transformation(extent={{28,39},{58,49}})));
-  Visualisation.DynamicBar            level_abs1(
-    provideConnector=true,
+  Visualisation.DynamicBar level_abs1(
     u_set=0.8,
     u_high=1,
     u_low=0.6,
     u_max=4,
-    u=hex.shell.summary.outline.level_abs)
-                     annotation (Placement(transformation(extent={{4,-46},{-8,-26}})));
+    u=hex.shell.summary.outline.level_abs,
+    provideOutputConnector=true) annotation (Placement(transformation(extent={{4,-46},{-8,-26}})));
   Utilities.Blocks.LimPID PI(
-    initType=Modelica.Blocks.Types.InitPID.InitialOutput,
     controllerType=Modelica.Blocks.Types.SimpleController.PI,
     Tau_d=60,
     k=0.1,
@@ -144,13 +118,10 @@ end Regression;
     y_start=0.5,
     Tau_i=120,
     y_min=0.001,
-    sign=-1)   annotation (Placement(transformation(extent={{-72,-52},{-62,-62}})));
+    sign=-1,
+    initOption=796) annotation (Placement(transformation(extent={{-72,-52},{-62,-62}})));
   Modelica.Blocks.Sources.RealExpression realExpression(y=0.8) annotation (Placement(transformation(extent={{-96,-62},{-80,-52}})));
 
-     Regression regression(V_liq = hex.shell.summary.outline.volume[1],
-     T_shell_out = hex.shell.summary.outlet[1].T,
-     p_shell_out = hex.shell.summary.outlet[1].p,
-     Q_flow_tot = -hex.summary.outline.Q_flow) annotation (Placement(transformation(extent={{-100,100},{-80,120}})));
 equation
 
   connect(m_steam.y, massFlowSource_h.m_flow) annotation (Line(
@@ -228,15 +199,11 @@ If equalPressure = true then the liquid mass in the vessel will temporarily boil
 To avoid this behaviour set the parameter equalPressures to false.
 
 ______________________________________________________________________________________________"),
-                       Text(
-          extent={{-80,120},{78,102}},
-          lineColor={115,150,0},
-          fontSize=31,
-          textString="TESTED -- 2016-09-05 //TH"),
         Rectangle(
           extent={{-100,120},{140,-100}},
           lineColor={115,150,0},
-          lineThickness=0.5)}),                  Icon(coordinateSystem(initialScale=0.1)),
+          lineThickness=0.5)}),                  Icon(graphics,
+                                                      coordinateSystem(initialScale=0.1)),
     experiment(
       StopTime=20000,
       __Dymola_NumberOfIntervals=50000,

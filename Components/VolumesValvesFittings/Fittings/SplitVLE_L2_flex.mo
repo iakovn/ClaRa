@@ -1,10 +1,10 @@
 within ClaRa.Components.VolumesValvesFittings.Fittings;
 model SplitVLE_L2_flex "A voluminous split for an arbitrary number of inputs NOT CAPABLE FOR PHASE-CHANGE"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -51,6 +51,7 @@ end Summary;
   parameter Modelica.SIunits.SpecificEnthalpy h_start= 1e5 "Start value of sytsem specific enthalpy"
                                              annotation(Dialog(tab="Initialisation"));
   parameter Modelica.SIunits.Pressure p_start= 1e5 "Start value of sytsem pressure" annotation(Dialog(tab="Initialisation"));
+  parameter ClaRa.Basics.Units.MassFraction  xi_start[medium.nc-1] = medium.xi_default annotation(Dialog(tab="Initialisation"));
   parameter Integer initOption=0 "Type of initialisation"
     annotation (Dialog(tab="Initialisation"), choices(choice = 0 "Use guess values", choice = 208 "Steady pressure and enthalpy", choice=201 "Steady pressure", choice = 202 "Steady enthalpy"));
 
@@ -60,8 +61,9 @@ end Summary;
                                                                                 annotation(Dialog(tab="Summary and Visualisation"));
   parameter Boolean preciseTwoPhase = true "|Expert Stettings||True, if two-phase transients should be capured precisely";
 protected
-    parameter Modelica.SIunits.Density rho_nom= TILMedia.VLEFluidFunctions.density_phxi(medium, p_nom, h_nom) "Nominal density";
-    Modelica.SIunits.Power Hdrhodt =  if preciseTwoPhase then h*volume*drhodt else 0 "h*V*drhodt";
+  parameter Modelica.SIunits.Density rho_nom= TILMedia.VLEFluidFunctions.density_phxi(medium, p_nom, h_nom) "Nominal density";
+  Modelica.SIunits.Power Hdrhodt =  if preciseTwoPhase then h*volume*drhodt else 0 "h*V*drhodt";
+  Real Xidrhodt[medium.nc-1]= if preciseTwoPhase then xi*volume*drhodt else zeros(medium.nc-1) "h*volume*drhodt";
 public
   Modelica.SIunits.EnthalpyFlowRate H_flow_in;
   Modelica.SIunits.EnthalpyFlowRate H_flow_out[N_ports_out];
@@ -69,6 +71,9 @@ public
   Modelica.SIunits.Mass mass "Total system mass";
   Real drhodt;//(unit="kg/(m3s)");
   Modelica.SIunits.Pressure p(start=p_start, stateSelect=StateSelect.prefer) "System pressure";
+  ClaRa.Basics.Units.MassFlowRate Xi_flow_in[medium.nc-1] "Mass fraction flows at inlet";
+  ClaRa.Basics.Units.MassFlowRate Xi_flow_out[N_ports_out, medium.nc-1] "Mass fraction flows at outlet";
+  ClaRa.Basics.Units.MassFraction xi[medium.nc-1](start=xi_start) "Mass fraction";
 
    Summary summary(N_ports_out=N_ports_out,outline(volume_tot = volume),
                    inlet(showExpertSummary = showExpertSummary,m_flow=inlet.m_flow,  T=fluidIn.T, p=inlet.p, h=fluidIn.h,s=fluidIn.s, steamQuality=fluidIn.q, H_flow=fluidIn.h .* inlet.m_flow, rho=fluidIn.d),
@@ -93,23 +98,32 @@ equation
    mass= if useHomotopy then volume*homotopy(bulk.d,rho_nom) else volume*bulk.d;
 
    drhodt*volume=sum(inlet.m_flow) + sum(outlet.m_flow) "Mass balance";
-   drhodt=der(p)*bulk.drhodp_hxi
-                             + der(h)*bulk.drhodh_pxi;
+   drhodt = der(p)*bulk.drhodp_hxi
+          + der(h)*bulk.drhodh_pxi
+          + sum(der(xi).*bulk.drhodxi_ph);
                                                    //calculating drhodt from state variables
 
    der(h) = 1/mass*(H_flow_in + sum(H_flow_out)  + volume*der(p) -Hdrhodt) "Energy balance, decoupled from the mass balance to avoid heavy mass fluctuations during phase change or flow reversal. The term '-h*V*drhodt' is ommited";
+   der(xi) = {(sum(Xi_flow_out[:,i])+ Xi_flow_in[i]- Xidrhodt[i])/mass for i in 1:medium.nc-1}; //;
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~
 // Boundary conditions ~~~~
   for i in 1:N_ports_out loop
     outlet[i].h_outflow=h;
+    outlet[i].xi_outflow=xi;
     H_flow_out[i]=if useHomotopy then homotopy(actualStream(outlet[i].h_outflow)*outlet[i].m_flow, -h*m_flow_out_nom[i]) else actualStream(outlet[i].h_outflow)*outlet[i].m_flow;
+    Xi_flow_out[i]=if useHomotopy then homotopy(actualStream(outlet[i].xi_outflow)*outlet[i].m_flow, -xi*m_flow_out_nom[i]) else actualStream(outlet[i].xi_outflow)*outlet[i].m_flow;
+
     outlet[i].p=p;
   end for;
 
     H_flow_in= if useHomotopy then homotopy(actualStream(inlet.h_outflow)*inlet.m_flow, inStream(inlet.h_outflow)*sum(m_flow_out_nom)) else actualStream(inlet.h_outflow)*inlet.m_flow;
+    Xi_flow_in= if useHomotopy then homotopy(actualStream(inlet.xi_outflow)*inlet.m_flow, inStream(inlet.xi_outflow)*sum(m_flow_out_nom)) else actualStream(inlet.xi_outflow)*inlet.m_flow;
+
     inlet.p=p;
     inlet.h_outflow=h;
-  for i in 1:N_ports_out loop
+    inlet.xi_outflow=xi;
+    for i in 1:N_ports_out loop
     eye[i].m_flow=-outlet[i].m_flow;
     eye[i].T= bulk.T-273.15;
     eye[i].s=bulk.s/1e3;

@@ -1,10 +1,10 @@
 within ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes;
 model CrossFlow_L3 "Pure cross flow heatexchanger L3"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -45,17 +45,17 @@ equation
   T_in2out_i=iCom.T_123_i[{1,2,3,4,5,6}];
 
   if outerPhaseChange then
-    iCom.Delta_h_1ph = noEvent(if T_in2out_o[1] > T_in2out_i[1] then iCom.h_o_out[1]/1000 else -iCom.h_o_out[1]/1000)
-               - noEvent(if T_in2out_o[1] > T_in2out_i[1] then iCom.h_o_vap/1000 else -iCom.h_o_bub/1000);
-    iCom.Delta_h_2ph = noEvent(if T_in2out_o[1] > T_in2out_i[1] then iCom.h_o_out[2]/1000 else -iCom.h_o_out[2]/1000)
-                - noEvent(if T_in2out_o[1] > T_in2out_i[1] then iCom.h_o_bub/1000 else -iCom.h_o_vap/1000);
+    iCom.Delta_h_1ph = noEvent(if T_in2out_o[1] > T_in2out_i[1] then iCom.h_o_out[1] else -iCom.h_o_out[1])
+               - noEvent(if T_in2out_o[1] > T_in2out_i[1] then iCom.h_o_vap else -iCom.h_o_bub);
+    iCom.Delta_h_2ph = noEvent(if T_in2out_o[1] > T_in2out_i[1] then iCom.h_o_out[2] else -iCom.h_o_out[2])
+                - noEvent(if T_in2out_o[1] > T_in2out_i[1] then iCom.h_o_bub else -iCom.h_o_vap);
   ff_i = {yps[1], yps[2], yps[3]};
   ff_o = {1,1,1};
   else
-    iCom.Delta_h_1ph = noEvent(if T_in2out_o[1] > T_in2out_i[1] then -iCom.h_i_out[1]/1000 else iCom.h_i_out[1]/1000)
-              - noEvent(if T_in2out_o[1] > T_in2out_i[1] then -iCom.h_i_bub/1000 else iCom.h_i_vap/1000);
-    iCom.Delta_h_2ph = noEvent(if T_in2out_o[1] > T_in2out_i[1] then -iCom.h_i_out[2]/1000 else iCom.h_i_out[2]/1000)
-              - noEvent(if T_in2out_o[1] > T_in2out_i[1] then -iCom.h_i_vap/1000 else iCom.h_i_bub/1000);
+    iCom.Delta_h_1ph = noEvent(if T_in2out_o[1] > T_in2out_i[1] then -iCom.h_i_out[1] else iCom.h_i_out[1])
+              - noEvent(if T_in2out_o[1] > T_in2out_i[1] then -iCom.h_i_bub else iCom.h_i_vap);
+    iCom.Delta_h_2ph = noEvent(if T_in2out_o[1] > T_in2out_i[1] then -iCom.h_i_out[2] else iCom.h_i_out[2])
+              - noEvent(if T_in2out_o[1] > T_in2out_i[1] then -iCom.h_i_vap else iCom.h_i_bub);
     ff_o = {yps[1], yps[2], yps[3]};
     ff_i = {1,1,1};
   end if;

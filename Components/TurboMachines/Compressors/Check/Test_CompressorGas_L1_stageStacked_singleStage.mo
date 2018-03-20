@@ -131,12 +131,9 @@ PURPOSE:
 >> Tester for a single compressor stage
 
 
-"),                             Text(
-          extent={{-100,60},{-8,50}},
-          lineColor={0,128,0},
-          fontSize=34,
-          textString="TESTED -- 2014-10-08 //LN")}),
+")}),
     experiment(StopTime=20),
     __Dymola_experimentSetupOutput,
-    Icon(coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=false)));
+    Icon(graphics,
+         coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=false)));
 end Test_CompressorGas_L1_stageStacked_singleStage;

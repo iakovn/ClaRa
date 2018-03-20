@@ -1,10 +1,10 @@
 within ClaRa.Components.Utilities.Blocks;
 block Integrator "Output the integral of the input signal - variable Integrator time constant"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -22,7 +22,9 @@ block Integrator "Output the integral of the input signal - variable Integrator 
   parameter SI.Time Tau_i_const=1 "Constant integrator time"
      annotation (Dialog(enable= not variable_Tau_i));
 
-  parameter Modelica.Blocks.Types.Init initType=Modelica.Blocks.Types.Init.InitialState "Type of initialization"  annotation(Evaluate=true,Dialog(group="Initialization"));
+  parameter Integer initOption = 501 "Initialisation option" annotation(Dialog(choicesAllMatching, group="Initialisation"), choices(choice = 501 "No init (y_start and x_start as guess values)",
+                                                                                                    choice=502 "Steady state",
+                                                                                                    choice=504 "Force y_start at output"));
 
   parameter Boolean y_startInputIsActive=false "True, if integrator initial output shall be set by variable input"
                                                                                             annotation (Dialog(group="Initialization"));
@@ -46,17 +48,17 @@ public
         rotation=-90,
         origin={0,120})));
 initial equation
-//   if initType == Init.SteadyState then
-//      der(y) = 0;
-//   elseif initType == Init.InitialState or
-//          initType == Init.InitialOutput then
-//     y = y_start_in;
-//   end if;
+   if initOption == 502 then
+      der(y) = 0;
+   elseif initOption == 504 or initOption ==799 then // 799 refers to former buggy initial state initialisation which is still supported but not visible in the drop down any more
+     y = y_start_in;
+   elseif initOption ==501 then
+     //Do nothing, use y_start_const as guess value
+   else
+    assert(false, "Unknown init option in integrator instance " + getInstanceName());
+   end if;
 
-  if initType == Init.SteadyState or initType == Init.InitialState or
-         initType == Init.InitialOutput then
-    y = y_start_in;
-  end if;
+
 
 equation
   if not variable_Tau_i then

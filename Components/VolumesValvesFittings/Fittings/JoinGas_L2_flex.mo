@@ -1,10 +1,10 @@
 within ClaRa.Components.VolumesValvesFittings.Fittings;
 model JoinGas_L2_flex "Adiabatic junction volume"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -63,6 +63,7 @@ inner parameter TILMedia.GasTypes.BaseGas medium = simCenter.flueGasModel "Mediu
     annotation(Evaluate=true, Dialog(tab="General",group="Fundamental Definitions"));//connectorSizing=true,
 
 parameter ClaRa.Basics.Units.Volume volume=1 annotation(Dialog(tab="General",group="Geometry"));
+parameter Boolean showData=true "|Summary and Visualisation||True, if a data port containing p,T,h,s,m_flow shall be shown, else false";
 
 protected
   TILMedia.Gas_pT     gasInlet[N_ports_in](each gasType = medium, p=inlet.p, T=noEvent(actualStream(inlet.T_outflow)), xi=noEvent(actualStream(inlet.xi_outflow)))
@@ -132,6 +133,11 @@ public
                    gas(m=mass, T=bulk.T, p=p, h=h, H=h*mass, rho=bulk.d))
     annotation (Placement(transformation(extent={{-60,-102},{-40,-82}})));
 
+public
+  Basics.Interfaces.EyeOutGas    eye(each medium=medium) if showData      annotation(Placement(transformation(extent={{100,-90},{120,-70}})));
+protected
+  Basics.Interfaces.EyeInGas    eye_int[1](each medium=medium)
+    annotation (Placement(transformation(extent={{55,-81},{57,-79}})));
 initial equation
 
     if initOption == 1 then //steady state
@@ -174,7 +180,7 @@ equation
 
   for i in 1:medium.nc - 1 loop
    // der(xi[i]) = 1/mass.*(sum(inlet.m_flow.*(gasInlet.xi[i]-xi[i]*ones(N_ports_in))) + outlet.m_flow.*(gasOutlet.xi[i]-xi[i])) "Mass balance";
-   der(xi[i]) = if useHomotopy then homotopy(1/mass.*(sum(inlet.m_flow.*(gasInlet.xi[i]-xi[i]*ones(N_ports_in))) + outlet.m_flow.*(gasOutlet.xi[i]-xi[i])), 1/mass.*(sum(m_flow_in_nom.*(xi_nom[i]*ones(N_ports_in)-xi[i]*ones(N_ports_in))) +  m_flow_in_nom[1].*(xi_nom[i]-xi[i]))) else 1/mass.*(sum(inlet.m_flow.*(gasInlet.xi[i]-xi[i]*ones(N_ports_in))) + outlet.m_flow.*(gasOutlet.xi[i]-xi[i])) "Mass balance";
+   der(xi[i]) = if useHomotopy then homotopy(1/mass.*(sum(inlet.m_flow.*(gasInlet[:].xi[i]-xi[i]*ones(N_ports_in))) + outlet.m_flow.*(gasOutlet.xi[i]-xi[i])), 1/mass.*(sum(m_flow_in_nom.*(xi_nom[i]*ones(N_ports_in)-xi[i]*ones(N_ports_in))) +  m_flow_in_nom[1].*(xi_nom[i]-xi[i]))) else 1/mass.*(sum(inlet.m_flow.*(gasInlet[:].xi[i]-xi[i]*ones(N_ports_in))) + outlet.m_flow.*(gasOutlet.xi[i]-xi[i])) "Mass balance";
   end for;
 
       //______________ Balance euqations _______________________
@@ -187,7 +193,19 @@ equation
 
     outlet.p = p "Momentum balance";
 
-  annotation (Diagram(coordinateSystem(extent={{-100,-100},{100,100}},
+  eye_int[1].m_flow = -outlet.m_flow;
+  eye_int[1].T = gasOutlet.T-273.15;
+  eye_int[1].s = gasOutlet.s/1e3;
+  eye_int[1].p = gasOutlet.p/1e5;
+  eye_int[1].h = gasOutlet.h/1e3;
+  eye_int[1].xi=gasOutlet.xi;
+  connect(eye,eye_int[1])  annotation (Line(
+      points={{110,-80},{56,-80}},
+      color={255,204,51},
+      thickness=0.5,
+      smooth=Smooth.None));
+  annotation (Diagram(graphics,
+                      coordinateSystem(extent={{-100,-100},{100,100}},
           preserveAspectRatio=true)),
                                  Icon(coordinateSystem(extent={{-100,-100},{100,
             100}}, preserveAspectRatio=true),

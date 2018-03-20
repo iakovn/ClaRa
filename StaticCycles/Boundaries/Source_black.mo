@@ -4,7 +4,7 @@ model Source_black
 // Component of the ClaRa library, version: 1.1.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -16,13 +16,13 @@ model Source_black
 //___________________________________________________________________________//
 
   outer ClaRa.SimCenter simCenter;
-  parameter ClaRa.Basics.Media.Fuel.PartialFuel fuelType=simCenter.fuelModel1 "Coal elemental composition used for combustion" annotation(Dialog(group="Parameters"));
+  parameter ClaRa.Basics.Media.FuelTypes.BaseFuel fuelModel=simCenter.fuelModel1 "Coal elemental composition used for combustion" annotation (Dialog(group="Parameters"));
 
 // parameter ClaRa.Basics.Units.Temperature T_FG_nom;
 // parameter ClaRa.Basics.Units.MassFlowRate m_flow_FG_nom;
-parameter ClaRa.Basics.Units.MassFlowRate m_flow_fuel;
-parameter ClaRa.Basics.Units.MassFraction xi_fuel[fuelType.nc-1];
-parameter ClaRa.Basics.Units.EnthalpyMassSpecific LHV;
+parameter ClaRa.Basics.Units.MassFlowRate m_flow_fuel "Fuel mass flow from the source";
+parameter ClaRa.Basics.Units.MassFraction xi_fuel[fuelModel.N_c-1] = fuelModel.defaultComposition "Fuel composition at the source";
+//parameter ClaRa.Basics.Units.EnthalpyMassSpecific LHV;
 // final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_FG_out=TILMedia.GasFunctions.specificEnthalpy_pTxi(
 //       flueGas,
 //       1e5,
@@ -32,10 +32,9 @@ parameter ClaRa.Basics.Units.EnthalpyMassSpecific LHV;
 
   //  h=h_FG_out,
   ClaRa.StaticCycles.Fundamentals.FuelSignal_black_b fuelSignal_black(
-    fuelType=fuelType,
+    fuelModel=fuelModel,
     m_flow=m_flow_fuel,
-    xi=xi_fuel,
-    LHV=LHV) annotation (Placement(transformation(extent={{100,-10},{108,10}}), iconTransformation(extent={{100,-10},{108,10}})));
+    xi=xi_fuel) annotation (Placement(transformation(extent={{100,-10},{108,10}}), iconTransformation(extent={{100,-10},{108,10}})));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}), graphics={
        Text(
           extent={{-60,60},{60,20}},
@@ -49,12 +48,8 @@ parameter ClaRa.Basics.Units.EnthalpyMassSpecific LHV;
           fillColor={255,255,255},
           fillPattern=FillPattern.Solid,
           textString="%xi_fuel"),
-        Text(
-          extent={{-60,-20},{60,-60}},
-          lineColor={0,0,0},
-          fillColor={255,255,255},
-          fillPattern=FillPattern.Solid,
-          textString="%LHV"),
         Line(points={{60,100},{100,0},{60,-100}}, color={0,0,0})}),
-                                                                 Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
+                                                                 Diagram(graphics,
+                                                                         coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
+
 end Source_black;

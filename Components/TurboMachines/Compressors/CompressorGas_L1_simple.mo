@@ -1,10 +1,10 @@
 within ClaRa.Components.TurboMachines.Compressors;
 model CompressorGas_L1_simple "Simple compressor or fan for gas"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -156,10 +156,12 @@ protected
   Modelica.Blocks.Sources.Constant P_shaft_in_(k=0) if not use_P_shaftInput;
 
 public
-  Basics.Interfaces.EyeOut eyeOut annotation (Placement(transformation(extent={{72,-78},
+  Basics.Interfaces.EyeOutGas
+                           eyeOut(each medium=medium) annotation (Placement(transformation(extent={{72,-78},
             {112,-42}}),          iconTransformation(extent={{92,-70},{112,-50}})));
 protected
-  Basics.Interfaces.EyeIn eye_int[1] annotation (Placement(transformation(extent={{48,-68},
+  Basics.Interfaces.EyeInGas
+                          eye_int[1](each medium=medium) annotation (Placement(transformation(extent={{48,-68},
             {32,-52}}),           iconTransformation(extent={{90,-84},{84,-78}})));
 
 public
@@ -251,6 +253,7 @@ inlet.m_flow * (deltah+1e-40) = P_shaft;
   eye_int[1].s = flueGas_outlet.s/1e3;
   eye_int[1].p = flueGas_outlet.p/1e5;
   eye_int[1].h = flueGas_outlet.h/1e3;
+  eye_int[1].xi=flueGas_outlet.xi;
 
 connect(Delta_p_in_.y, getInputs.dp_in);
   connect(V_flow_in_.y, getInputs.V_flow_in);

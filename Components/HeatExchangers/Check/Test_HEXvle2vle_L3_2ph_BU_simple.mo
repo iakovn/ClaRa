@@ -108,14 +108,13 @@ model Test_HEXvle2vle_L3_2ph_BU_simple
   ClaRa.Visualisation.Quadruple quadruple1(largeFonts=false) annotation (Placement(transformation(extent={{-8,-83},{22,-73}})));
   ClaRa.Visualisation.Quadruple quadruple3(largeFonts=false, decimalSpaces(p=3)) annotation (Placement(transformation(extent={{36,3},{66,13}})));
   ClaRa.Visualisation.DynamicBar level_abs1(
-    provideConnector=true,
     u_set=0.8,
     u_high=1,
     u_low=0.6,
     u_max=4,
-    u=hex.shell.summary.outline.level_abs) annotation (Placement(transformation(extent={{14,-68},{4,-48}})));
+    u=hex.shell.summary.outline.level_abs,
+    provideOutputConnector=true) annotation (Placement(transformation(extent={{14,-68},{4,-48}})));
   ClaRa.Components.Utilities.Blocks.LimPID PI(
-    initType=Modelica.Blocks.Types.InitPID.InitialOutput,
     controllerType=Modelica.Blocks.Types.SimpleController.PI,
     Tau_d=60,
     k=0.1,
@@ -125,7 +124,8 @@ model Test_HEXvle2vle_L3_2ph_BU_simple
     y_min=0,
     sign=-1,
     y_start=0.5,
-    Tau_i=120) annotation (Placement(transformation(extent={{-20,-46},{-30,-36}})));
+    Tau_i=120,
+    initOption=796) annotation (Placement(transformation(extent={{-20,-46},{-30,-36}})));
   Modelica.Blocks.Sources.RealExpression realExpression(y=0.8) annotation (Placement(transformation(extent={{2,-46},{-14,-36}})));
 equation
 
@@ -199,15 +199,11 @@ PURPOSE:
 >>check HEXvle2vle_L3_2ph_BU_simple as a condenser in a load change. Test robustness and
 prove steady-state initialisation capabilities. Check controlled behaviour.
 ______________________________________________________________________________________________"),
-                       Text(
-          extent={{-100,120},{58,102}},
-          lineColor={115,150,0},
-          fontSize=31,
-          textString="TESTED -- 2017-02-17 //TH"),
         Rectangle(
           extent={{-100,120},{140,-100}},
           lineColor={115,150,0},
-          lineThickness=0.5)}),                  Icon(coordinateSystem(initialScale=0.1)),
+          lineThickness=0.5)}),                  Icon(graphics,
+                                                      coordinateSystem(initialScale=0.1)),
     experiment(
       StopTime=12000,
       __Dymola_NumberOfIntervals=50000,

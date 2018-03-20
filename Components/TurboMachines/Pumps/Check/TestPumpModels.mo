@@ -1,10 +1,11 @@
 within ClaRa.Components.TurboMachines.Pumps.Check;
 model TestPumpModels
+  import ClaRa;
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -17,7 +18,8 @@ model TestPumpModels
   extends ClaRa.Basics.Icons.PackageIcons.ExecutableExampleb60;
 
   ClaRa.Components.TurboMachines.Pumps.PumpVLE_L1_simple pump_1(showExpertSummary=true) annotation (Placement(transformation(extent={{-16,-82},{4,-62}})));
-  BoundaryConditions.BoundaryVLE_pTxi pressureSink_XRG(p_const=1300000, T_const=463.15) annotation (Placement(transformation(extent={{-76,-82},{-56,-62}})));
+  BoundaryConditions.BoundaryVLE_pTxi pressureSink_XRG(p_const=1300000, T_const=463.15,
+    variable_T=true)                                                                    annotation (Placement(transformation(extent={{-76,-82},{-56,-62}})));
   inner SimCenter simCenter(redeclare TILMedia.VLEFluidTypes.TILMedia_SplineWater fluid1) annotation (Placement(transformation(extent={{-160,-160},{-140,-140}})));
   Modelica.Blocks.Sources.TimeTable
                                ramp1(
@@ -42,14 +44,16 @@ model TestPumpModels
     steadyStateTorque=false,
     V_flow_max=2600/3600,
     Delta_p_max=876*9.81*3680,
-    eta_hyd_nom=0.82,
+    redeclare model Losses =  ClaRa.Components.TurboMachines.Fundamentals.PumpEfficiency.EfficiencyCurves_Q1 (
+      eta_hyd_nom=0.82,
+      exp_rpm=0.15,
+      exp_flow=2.8),
     rpm_nom=4600,
-    clearSection=0.01,
-    exp_rpm=0.15,
-    exp_flow=2.8,
+     redeclare model Hydraulics = ClaRa.Components.TurboMachines.Fundamentals.PumpHydraulics.MetaStable_Q124,
     showExpertSummary=true,
     J=1) annotation (Placement(transformation(extent={{-20,-156},{0,-136}})));
-  BoundaryConditions.BoundaryVLE_pTxi pressureSink_XRG4(p_const=1300000, T_const=463.15) annotation (Placement(transformation(extent={{-80,-156},{-60,-136}})));
+  BoundaryConditions.BoundaryVLE_pTxi pressureSink_XRG4(p_const=1300000, T_const=463.15,
+    variable_T=true)                                                                     annotation (Placement(transformation(extent={{-80,-156},{-60,-136}})));
   ClaRa.Components.BoundaryConditions.BoundaryVLE_phxi pressureSink_XRG5(variable_p=true, p_const=1000000) annotation (Placement(transformation(extent={{60,-156},{40,-136}})));
   Modelica.Mechanics.Rotational.Sensors.PowerSensor powerSensor1
     annotation (Placement(transformation(extent={{-8,-106},{12,-126}})));
@@ -85,6 +89,11 @@ model TestPumpModels
     annotation (Placement(transformation(extent={{160,-132},{140,-112}})));
   Visualisation.Quadruple quadruple
     annotation (Placement(transformation(extent={{10,-70},{30,-60}})));
+  Modelica.Blocks.Sources.Ramp ramp(
+    height=200,
+    duration=5,
+    offset=463.15,
+    startTime=150) annotation (Placement(transformation(extent={{-120,-156},{-100,-136}})));
 equation
   connect(pressureSink_XRG.steam_a, pump_1.inlet)        annotation (Line(
       points={{-56,-72},{-16,-72}},
@@ -164,10 +173,12 @@ equation
       color={0,0,127},
       smooth=Smooth.None));
   connect(pump_1.eye, quadruple.eye) annotation (Line(points={{5,-78},{7,-78},{7,-65},{10,-65}}, color={190,190,190}));
+  connect(ramp.y, pressureSink_XRG4.T) annotation (Line(points={{-99,-146},{-80,-146}}, color={0,0,127}));
+  connect(ramp.y, pressureSink_XRG.T) annotation (Line(points={{-99,-146},{-86,-146},{-86,-72},{-76,-72}}, color={0,0,127}));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-160,
             -160},{160,40}}),
                       graphics={Text(
-          extent={{-160,39},{132,-55}},
+          extent={{-160,39},{160,-26}},
           lineColor={0,128,0},
           fillColor={102,198,0},
           fillPattern=FillPattern.Solid,
@@ -189,12 +200,15 @@ LOOK AT:
     relationship.
 ________________________________________________________________________________________________________
     
-"),                    Text(
-          extent={{-140,60},{60,40}},
-          lineColor={0,128,0},
-          fontSize=31,
-          textString="TESTED -- 2016-03-08 //TH")}),
-    experiment(StopTime=150),
+"), Text( extent={{-154,-24},{142,-30}},
+          pattern=LinePattern.None,
+          lineThickness=0.5,
+          fillColor={167,25,48},
+          fillPattern=FillPattern.Solid,
+          lineColor={186,72,88},
+          horizontalAlignment=TextAlignment.Left,
+          textString="NEW: Pumps are encircled red when NPSHa < 0, i.e. when steam enters the pump. This is the case here for time > 150")}),
+    experiment(StopTime=200, __Dymola_NumberOfIntervals=5000),
     __Dymola_experimentSetupOutput,
     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
             100}}), graphics));

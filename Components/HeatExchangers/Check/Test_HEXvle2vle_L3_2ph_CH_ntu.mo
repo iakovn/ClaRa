@@ -23,7 +23,7 @@ model Test_HEXvle2vle_L3_2ph_CH_ntu
     m_flow_nom_tubes=416,
     z_out_shell=0.1,
     level_rel_start=0.2,
-    redeclare function HeatCapacityAveraging = Basics.ControlVolumes.SolidVolumes.Fundamentals.Functions.InputOnly,
+    redeclare model HeatCapacityAveraging = Basics.ControlVolumes.SolidVolumes.Fundamentals.Averaging_Cp.InputOnly,
     N_tubes=300,
     redeclare model HeatTransfer_Shell = Basics.ControlVolumes.Fundamentals.HeatTransport.VLE_HT.Constant_L3_ypsDependent (alpha_nom={1000,5000}),
     initOptionTubes=0,
@@ -95,15 +95,14 @@ model Test_HEXvle2vle_L3_2ph_CH_ntu
     height=-20e5,
     startTime=1800)
                   annotation (Placement(transformation(extent={{-120,-92},{-100,-72}})));
-  Visualisation.DynamicBar            level_abs1(
-    provideConnector=true,
+  Visualisation.DynamicBar level_abs1(
     u=hex.shell.summary.outline.level_abs,
     u_set=2,
     u_high=3,
     u_low=1,
-    u_max=10)        annotation (Placement(transformation(extent={{-20,-72},{-10,-52}})));
+    u_max=10,
+    provideOutputConnector=true) annotation (Placement(transformation(extent={{-20,-72},{-10,-52}})));
   Utilities.Blocks.LimPID PI(
-    initType=Modelica.Blocks.Types.InitPID.InitialOutput,
     controllerType=Modelica.Blocks.Types.SimpleController.PI,
     Tau_d=60,
     k=0.1,
@@ -113,7 +112,8 @@ model Test_HEXvle2vle_L3_2ph_CH_ntu
     y_min=0,
     y_start=0.5,
     Tau_i=120,
-    sign=1) annotation (Placement(transformation(extent={{-28,-77},{-38,-67}})));
+    sign=1,
+    initOption=796) annotation (Placement(transformation(extent={{-28,-77},{-38,-67}})));
   Modelica.Blocks.Sources.Ramp rampControllerSetpoint(
     duration=100,
     offset=2,
@@ -191,13 +191,9 @@ equation
 PURPOSE:
 >>check HEXvle2vle_L3_2ph_CH_ntu as a high pressure preheater in a load change. 
 Test robustness and prove steady-state initialisation capabilities. Check controlled and uncontrolled behaviour.
-______________________________________________________________________________________________"),
-                       Text(
-          extent={{-114,102},{44,84}},
-          lineColor={0,128,0},
-          fontSize=30,
-          textString="TESTED -- 2014-10-16 //TH")}),
-                                                 Icon(coordinateSystem(extent={{-100,-100},{100,100}})),
+______________________________________________________________________________________________")}),
+                                                 Icon(graphics,
+                                                      coordinateSystem(extent={{-100,-100},{100,100}})),
     experiment(StopTime=3600, Tolerance=1e-005),
     __Dymola_experimentSetupOutput);
 end Test_HEXvle2vle_L3_2ph_CH_ntu;

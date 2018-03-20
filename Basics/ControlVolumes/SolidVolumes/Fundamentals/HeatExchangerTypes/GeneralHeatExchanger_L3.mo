@@ -1,10 +1,10 @@
 within ClaRa.Basics.ControlVolumes.SolidVolumes.Fundamentals.HeatExchangerTypes;
 partial model GeneralHeatExchanger_L3
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.2                            //
+  // Component of the ClaRa library, version: 1.3.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -18,7 +18,7 @@ partial model GeneralHeatExchanger_L3
   import Modelica.Constants.eps;
   input Real NTU_1[3] "Number of Transfer Units at limiting side";
   input Real R_1[3] "Ratio of heat capacity flows at limiting side";
-  output Real CF_NTU[3] "Correction factor for heat flow based on the NTU method";
+  output Real CF_NTU[3](start={1,1,1}) "Correction factor for heat flow based on the NTU method";
 
   parameter Real a "Geometry fitting factor";
   parameter Real b "Geometry fitting exponent";

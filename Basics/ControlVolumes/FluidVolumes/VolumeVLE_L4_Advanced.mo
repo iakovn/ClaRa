@@ -1,10 +1,10 @@
 within ClaRa.Basics.ControlVolumes.FluidVolumes;
 model VolumeVLE_L4_Advanced "A 1D tube-shaped control volume considering one-phase and two-phase heat transfer in a straight pipe with detailed dynamic momentum and energy balance."
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -50,6 +50,9 @@ model VolumeVLE_L4_Advanced "A 1D tube-shaped control volume considering one-pha
                    I_flow[N_cv+2] if showExpertSummary "Momentum flow through cell borders"     annotation(Dialog(show));
     input Basics.Units.MassFlowRate
                           m_flow[N_cv+1] if  showExpertSummary "Mass flow through cell borders"
+                                                                          annotation(Dialog(show));
+    input Basics.Units.Velocity
+                          w[N_cv+1] if  showExpertSummary "Velocity of fluid through cell borders"
                                                                           annotation(Dialog(show));
   end Outline;
 
@@ -154,7 +157,8 @@ public
                    mass=mass,
                    I=geo.Delta_x_FM.*m_flow,
                    I_flow=cat(1,{w_inlet*abs(w_inlet)*fluidInlet.d*geo.A_cross[1]},{w[i]*abs(w[i])*fluid[i].d*geo.A_cross[i] for i in 1:geo.N_cv},{w_outlet*abs(w_outlet)*fluidOutlet.d*geo.A_cross[geo.N_cv]}),
-                   m_flow=m_flow),
+                   m_flow=m_flow,
+                   w=w_FM),
        inlet(       showExpertSummary=showExpertSummary,
                    m_flow=inlet.m_flow,
                    T=fluidInlet.T,
@@ -269,14 +273,14 @@ public
 //              {10,-8}},                                                                                                    rotation=0)));
   inner TILMedia.VLEFluid_ph fluidInlet(
     p=inlet.p,
-    h=actualStream(inlet.h_outflow),
+    h=noEvent(actualStream(inlet.h_outflow)),
     xi={noEvent(actualStream(inlet.xi_outflow[i])) for i in 1:medium.nc - 1},
     vleFluidType=medium) annotation (Placement(transformation(extent={{-90,
             -30},{-70,-10}}, rotation=0)));
 
   inner TILMedia.VLEFluid_ph fluidOutlet(
     p=outlet.p,
-    h=actualStream(outlet.h_outflow),
+    h=noEvent(actualStream(outlet.h_outflow)),
     xi={noEvent(actualStream(outlet.xi_outflow[i])) for i in 1:medium.nc - 1},
     vleFluidType=medium) annotation (Placement(transformation(extent={{70,
             -30},{90,-10}}, rotation=0)));
@@ -650,10 +654,5 @@ end if;
                    graphics),
         Diagram(coordinateSystem(preserveAspectRatio=false,
           extent={{-140,-50},{140,50}}),
-                                      graphics),
-    experiment(
-      StopTime=3000,
-      __Dymola_NumberOfIntervals=1000,
-      Tolerance=1e-008,
-      __Dymola_Algorithm="Dassl"));
+                                      graphics));
 end VolumeVLE_L4_Advanced;

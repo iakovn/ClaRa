@@ -1,10 +1,10 @@
 within ClaRa.Components.VolumesValvesFittings.Pipes.Check.OnePhaseFlow;
 model Test_Tube_FlueGas_L2_Simple
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.2                            //
+  // Component of the ClaRa library, version: 1.3.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -18,7 +18,7 @@ model Test_Tube_FlueGas_L2_Simple
   inner SimCenter simCenter(
     redeclare TILMedia.VLEFluidTypes.TILMedia_InterpolatedWater fluid1,
     redeclare ClaRa.Basics.Media.Fuel.Coal_Reference fuelModel1,
-    redeclare ClaRa.Basics.Media.Fuel.Slag_v2 slagModel,
+    redeclare ClaRa.Basics.Media.Slag.Slag_v2 slagModel,
     redeclare TILMedia.GasTypes.FlueGasTILMedia flueGasModel) annotation (Placement(transformation(extent={{70,76},{90,96}})));
 
   PipeFlowGas_L4_Simple tube(
@@ -48,7 +48,7 @@ model Test_Tube_FlueGas_L2_Simple
         extent={{-10,-10},{10,10}},
         rotation=180,
         origin={80,-80})));
-  Basics.ControlVolumes.SolidVolumes.ThinWall_L4 thinWall(
+  Basics.ControlVolumes.SolidVolumes.CylindricalThinWall_L4 thinWall(
     length=tube.length,
     Delta_x=tube.Delta_x,
     N_ax=tube.N_cv,
@@ -120,11 +120,8 @@ PURPOSE:
 >> Tester for the flue gas pipe component
 
 ______________________________________________________________________________________________
-"),                    Text(
-          extent={{-104,102},{26,84}},
-          lineColor={0,128,0},
-          fontSize=31,
-          textString="TESTED -- 2015-01-27 //LN")}),
-                                                 Icon(coordinateSystem(extent={
-            {-100,-100},{100,100}}, preserveAspectRatio=false)));
+")}),                                            Icon(graphics,
+                                                      coordinateSystem(extent={
+            {-100,-100},{100,100}}, preserveAspectRatio=false)),
+    experiment(StopTime=300));
 end Test_Tube_FlueGas_L2_Simple;

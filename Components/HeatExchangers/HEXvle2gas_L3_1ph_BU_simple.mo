@@ -1,10 +1,10 @@
 within ClaRa.Components.HeatExchangers;
 model HEXvle2gas_L3_1ph_BU_simple "VLE 2 gas | L3 | 1 phase on each side | Block shape | U-type |"
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.2                            //
+  // Component of the ClaRa library, version: 1.3.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -51,7 +51,7 @@ model HEXvle2gas_L3_1ph_BU_simple "VLE 2 gas | L3 | 1 phase on each side | Block
         group="Fundamental Definitions"), choicesAllMatching);
   parameter Boolean useHomotopy=simCenter.useHomotopy "True, if homotopy method is used during initialisation" annotation (Dialog(group="Fundamental Definitions"), choicesAllMatching);
 
-  parameter ClaRa.Basics.Units.Length length=10 "Length of the HEX" annotation (Dialog(tab="Shell Side", group="Geometry", groupImage="modelica://ClaRa/figures/ParameterDialog/HEX_ParameterDialog_BUshellgas.png"));
+  parameter ClaRa.Basics.Units.Length length=10 "Length of the HEX" annotation (Dialog(tab="Shell Side", group="Geometry", groupImage="modelica://ClaRa/Resources/Images/ParameterDialog/HEX_ParameterDialog_BUshellgas.png"));
   parameter ClaRa.Basics.Units.Length height=3 "Height of HEX" annotation (Dialog(tab="Shell Side", group="Geometry"));
   parameter ClaRa.Basics.Units.Length width=3 "Width of HEX" annotation (Dialog(tab="Shell Side", group="Geometry"));
   parameter ClaRa.Basics.Units.Length z_in_shell=height "Inlet position from bottom" annotation (Dialog(tab="Shell Side", group="Geometry"));
@@ -85,7 +85,7 @@ model HEXvle2gas_L3_1ph_BU_simple "VLE 2 gas | L3 | 1 phase on each side | Block
         group="Fundamental Definitions"), choicesAllMatching);
 
   parameter ClaRa.Basics.Units.Length diameter_i=0.048 "Inner diameter of horizontal tubes"
-                                                                                           annotation (Dialog(tab="Tubes", group="Geometry",groupImage="modelica://ClaRa/figures/ParameterDialog/HEX_ParameterDialogTubes.png"));
+                                                                                           annotation (Dialog(tab="Tubes", group="Geometry",groupImage="modelica://ClaRa/Resources/Images/ParameterDialog/HEX_ParameterDialogTubes.png"));
   parameter ClaRa.Basics.Units.Length diameter_o=0.05 "Outer diameter of horizontal tubes" annotation (Dialog(tab="Tubes", group="Geometry"));
   parameter Integer N_tubes=1000 "Number of horizontal tubes" annotation (Dialog(tab="Tubes", group="Geometry"));
   parameter Integer N_passes=1 "Number of passes of the internal tubes"  annotation (Dialog(tab="Tubes", group="Geometry"));
@@ -215,7 +215,7 @@ protected
     annotation (Placement(transformation(extent={{71,79},{73,81}})));
 
 public
-  Basics.ControlVolumes.SolidVolumes.ThickWall_L4 wall(
+  Basics.ControlVolumes.SolidVolumes.CylindricalThickWall_L4 wall(
     redeclare model Material = WallMaterial,
     N_rad=3,
     sizefunc=+1,
@@ -228,7 +228,8 @@ public
         T_w_i_start,
         T_w_a_start,
         wall.N_rad),
-    mass_struc=mass_struc)                                        annotation (Placement(transformation(extent={{-10,-7.5},{10,7.5}},
+    mass_struc=mass_struc) annotation (Placement(transformation(
+        extent={{-10,-7.5},{10,7.5}},
         rotation=90,
         origin={30.5,0})));
 
@@ -272,6 +273,7 @@ equation
       thickness=0.5));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
             -100},{100,100}}),
-                   graphics), Diagram(coordinateSystem(preserveAspectRatio=false,
+                   graphics), Diagram(graphics,
+                                      coordinateSystem(preserveAspectRatio=false,
                    extent={{-100,-100},{100,100}})));
 end HEXvle2gas_L3_1ph_BU_simple;

@@ -1,10 +1,10 @@
 within ClaRa.StaticCycles.Fittings;
 model Mixer2 "Mixer || green | blue | green"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -27,17 +27,17 @@ model Mixer2 "Mixer || green | blue | green"
 
   Summary summary(
   inlet1(
-     m_flow=inlet_1.m_flow,
-     h=inlet_1.h,
-     p=inlet_1.p),
+     m_flow=m_flow_1,
+     h=h1,
+     p=p),
   inlet2(
-     m_flow=inlet_2.m_flow,
-     h=inlet_2.h,
-     p=inlet_2.p),
+     m_flow=m_flow_2,
+     h=h2,
+     p=p),
   outlet(
-     m_flow=outlet.m_flow,
-     h=outlet.h,
-     p=outlet.p));
+     m_flow=m_flow_3,
+     h=h3,
+     p=p));
   //---------Summary Definition---------
   final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h1(fixed=false) "Specific enthalpy of flow 1";
   final parameter ClaRa.Basics.Units.EnthalpyMassSpecific h2(fixed=false) "Specific enthalpy of flow 2";

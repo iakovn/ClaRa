@@ -9,11 +9,11 @@ model SensT "ThermoPower's temperature sensor"
   replaceable package Medium = Modelica.Media.Water.WaterIF97_ph constrainedby Modelica.Media.Interfaces.PartialMedium "Medium model";
   Medium.BaseProperties fluid;
   FlangeA inlet(redeclare package Medium = Medium)
-                                  annotation (extent=[-80, -60; -40, -20]);
+                                  annotation (Placement(transformation(extent={{-80,-60},{-40,-20}}, rotation=0)));
   FlangeB outlet(redeclare package Medium = Medium)
-                                   annotation (extent=[40, -60; 80, -20]);
+                                   annotation (Placement(transformation(extent={{40,-60},{80,-20}}, rotation=0)));
   Modelica.Blocks.Interfaces.RealOutput T
-    annotation (extent=[60, 40; 100, 80]);
+    annotation (Placement(transformation(extent={{60,40},{100,80}}, rotation=0)));
 equation
   inlet.w + outlet.w = 0 "Mass balance";
   inlet.p = outlet.p "No pressure drop";
@@ -27,30 +27,20 @@ equation
   inlet.hBA = outlet.hBA;
 
   annotation (
-    Diagram,
-    Icon(Text(
-        extent=[-40, 84; 38, 34],
-        style(color=0, fillPattern=1),
-        string="T"), graphics={
-        Rectangle(
-          extent={{-40,-20},{40,-60}},
+    Diagram(graphics),
+    Icon(            graphics={
+        Ellipse(
+          extent={{-28,90},{30,32}},
           lineColor={0,0,255},
-          fillColor={0,0,255},
-          fillPattern=FillPattern.Solid),
-        Ellipse(extent={{-40,100},{40,20}}, lineColor={0,0,0}),
-        Line(
-          points={{0,20},{0,-20}},
-          color={0,0,0},
-          smooth=Smooth.None),
-        Line(
-          points={{60,60},{40,60}},
-          color={0,0,0},
-          smooth=Smooth.None),
-        Text(
-          extent={{-40,86},{40,32}},
-          lineColor={0,0,0},
           fillPattern=FillPattern.Solid,
-          textString="T")}),
+          fillColor={255,255,255}),
+        Text(
+          extent={{-40,84},{38,34}},
+          lineColor={0,0,0},
+          textString=
+               "T"),
+        Line(points={{-60,-40},{62,-40}}, color={0,0,255}),
+        Line(points={{0,-40},{0,32}}, color={0,0,255})}),
     Documentation(info="<HTML>
 <p>This component can be inserted in a hydraulic circuit to measure the temperature of the fluid flowing through it.
 <p>Flow reversal is supported.

@@ -38,44 +38,49 @@ inner parameter Real P_target_=1;
   ClaRa.StaticCycles.Triple
          triple5 annotation (Placement(transformation(extent={{52,40},{72,54}})));
   inner ClaRa.SimCenter simCenter annotation (Placement(transformation(extent={{-100,-100},{-60,-80}})));
+  Dispatcher dispatcher(P_el_nom=5e6, eta_el_nom=0.4) annotation (Placement(transformation(extent={{-84,-8},{-64,12}})));
 equation
   connect(source_grey.outlet, sink_grey.inlet) annotation (Line(points={{-36.4,56},{-9.6,56}},
                                                                                             color={118,124,127}));
   connect(boundary_green.inlet,fixedPressure. outlet) annotation (Line(
-      points={{55.6,-20},{38.5,-20}},
+      points={{55.5,-20},{38.5,-20}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(boundary_blue.outlet,fixedPressure. inlet) annotation (Line(
-      points={{16.4,-20},{27.5,-20}},
+      points={{16.5,-20},{27.5,-20}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(triple.steamSignal,boundary_blue. outlet) annotation (Line(
-      points={{15.5625,-9.28571},{15.5625,-14.6428},{16.4,-14.6428},{16.4,-20}},
+      points={{15.5625,-9.28571},{15.5625,-14.6428},{16.5,-14.6428},{16.5,-20}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(triple1.steamSignal,boundary_green. inlet) annotation (Line(
-      points={{53.625,0.714286},{53.625,-7.6428},{55.6,-7.6428},{55.6,-20}},
+      points={{53.625,0.714286},{53.625,-7.6428},{55.5,-7.6428},{55.5,-20}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(boundary_green1.outlet,turbine. inlet) annotation (Line(
-      points={{16.4,-80},{20,-80},{20,-76},{23.5,-76}},
+      points={{16.5,-80},{20,-80},{20,-76},{23.5,-76}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(boundary_blue1.inlet,turbine. outlet) annotation (Line(
-      points={{56,-80},{46,-80},{46,-88},{36.5,-88}},
+      points={{55.5,-80},{46,-80},{46,-88},{36.5,-88}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(triple2.steamSignal,boundary_blue1. inlet) annotation (Line(
-      points={{51.5625,-69.2857},{51.5625,-74.6428},{56,-74.6428},{56,-80}},
+      points={{51.5625,-69.2857},{51.5625,-74.6428},{55.5,-74.6428},{55.5,-80}},
       color={0,131,169},
       smooth=Smooth.None));
   connect(triple3.steamSignal,boundary_green1. outlet) annotation (Line(
-      points={{3.625,-55.2857},{3.625,-67.6428},{16.4,-67.6428},{16.4,-80}},
+      points={{3.625,-55.2857},{3.625,-67.6428},{16.5,-67.6428},{16.5,-80}},
       color={0,131,169},
       smooth=Smooth.None));
-  connect(valve_cutFlow.outlet,boundary_red. inlet) annotation (Line(points={{40.4,30},{46.2,30},{52,30}},  color={0,131,169}));
-  connect(triple5.steamSignal,boundary_red. inlet) annotation (Line(points={{51.375,45.5},{51.375,37.75},{52,37.75},{52,30}}, color={0,131,169}));
-  connect(boundary_yellow.outlet,triple4. steamSignal) annotation (Line(points={{18.4,30},{20,30},{20,44.7143},{23.375,44.7143}},   color={0,131,169}));
-  connect(boundary_yellow.outlet, valve_cutFlow.inlet) annotation (Line(points={{18.4,30},{24,30},{24,30},{29.6,30}}, color={0,131,169}));
-  annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(coordinateSystem(preserveAspectRatio=false)));
+  connect(valve_cutFlow.outlet,boundary_red. inlet) annotation (Line(points={{40.5,30},{40.5,30},{51.5,30}},color={0,131,169}));
+  connect(triple5.steamSignal,boundary_red. inlet) annotation (Line(points={{51.375,45.5},{51.375,37.75},{51.5,37.75},{51.5,30}},
+                                                                                                                              color={0,131,169}));
+  connect(boundary_yellow.outlet,triple4. steamSignal) annotation (Line(points={{18.5,30},{20,30},{20,44.7143},{23.375,44.7143}},   color={0,131,169}));
+  connect(boundary_yellow.outlet, valve_cutFlow.inlet) annotation (Line(points={{18.5,30},{24,30},{24,30},{29.5,30}}, color={0,131,169}));
+  annotation (Icon(graphics,
+                   coordinateSystem(preserveAspectRatio=false)), Diagram(graphics,
+                                                                         coordinateSystem(preserveAspectRatio=false)),
+    experiment(StopTime=1));
 end TestNewBoundaries;

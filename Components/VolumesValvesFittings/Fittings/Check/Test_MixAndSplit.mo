@@ -1,10 +1,10 @@
 within ClaRa.Components.VolumesValvesFittings.Fittings.Check;
 model Test_MixAndSplit
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -237,12 +237,12 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
   connect(split_Y.eye[1], quadruple1.eye) annotation (Line(
-      points={{-80,-83.5},{-80,-67},{-84,-67}},
+      points={{-80,-84},{-80,-67},{-84,-67}},
       color={255,204,51},
       thickness=0.5,
       smooth=Smooth.None));
   connect(quadruple2.eye, split_Y.eye[2]) annotation (Line(
-      points={{-84,-55},{-80,-55},{-80,-84.5}},
+      points={{-84,-55},{-80,-55},{-80,-84}},
       color={255,204,51},
       thickness=0.5,
       smooth=Smooth.None));
@@ -251,11 +251,7 @@ equation
       color={190,190,190},
       smooth=Smooth.None));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-200,-100},
-            {100,180}}), graphics={                Text(
-          extent={{-198,180},{-34,168}},
-          lineColor={0,128,0},
-          textString="Tested 01. Mar. 2013 //FG ",
-          horizontalAlignment=TextAlignment.Left),
+            {100,180}}), graphics={
                                 Text(
           extent={{-198,174},{22,52}},
           lineColor={0,128,0},
@@ -286,5 +282,6 @@ _______________________________________________________________________
           horizontalAlignment=TextAlignment.Left)}),
     experiment(StopTime=3000),
     __Dymola_experimentSetupOutput,
-    Icon(coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=true)));
+    Icon(graphics,
+         coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=true)));
 end Test_MixAndSplit;

@@ -1,6 +1,6 @@
 within ClaRa.Basics.Interfaces;
 connector Slag_inlet
- parameter ClaRa.Basics.Media.Fuel.PartialSlag slagType;
+  parameter ClaRa.Basics.Media.Slag.PartialSlag slagType;
     //"Medium model";
 
   //constant String mediumName= Medium.materialName annotation(Dialog(enable=false));

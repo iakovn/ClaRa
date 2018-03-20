@@ -1,10 +1,10 @@
 within ClaRa.Components.VolumesValvesFittings.Pipes;
 model PipeFlowVLE_L4_Simple "A 1D tube-shaped control volume considering one-phase and two-phase heat transfer in a straight pipe with static momentum balance and simple energy balance."
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -110,6 +110,7 @@ annotation (Icon(coordinateSystem(preserveAspectRatio=false,
           fillColor= {0,131,169},
           fillPattern=FillPattern.Solid,
           visible=frictionAtOutlet)}),
-        Diagram(coordinateSystem(preserveAspectRatio=false,
+        Diagram(graphics,
+                coordinateSystem(preserveAspectRatio=false,
           extent={{-140,-50},{140,50}})));
 end PipeFlowVLE_L4_Simple;

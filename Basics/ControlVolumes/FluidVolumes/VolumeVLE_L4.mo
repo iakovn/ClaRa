@@ -1,10 +1,10 @@
 within ClaRa.Basics.ControlVolumes.FluidVolumes;
 model VolumeVLE_L4 "A 1D tube-shaped control volume considering one-phase and two-phase heat transfer in a straight pipe with static momentum balance and simple energy balance."
   //___________________________________________________________________________//
-  // Component of the ClaRa library, version: 1.2.2                            //
+  // Component of the ClaRa library, version: 1.3.0                            //
   //                                                                           //
   // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-  // Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+  // Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
   //___________________________________________________________________________//
   // DYNCAP and DYNSTART are research projects supported by the German Federal //
   // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -42,6 +42,7 @@ model VolumeVLE_L4 "A 1D tube-shaped control volume considering one-phase and tw
     input Basics.Units.Momentum I[N_cv + 1] if showExpertSummary "Momentum of fluid flow volumes through cell borders" annotation (Dialog(show));
     input Basics.Units.Force I_flow[N_cv + 2] if showExpertSummary "Momentum flow through cell borders" annotation (Dialog(show));
     input Basics.Units.MassFlowRate m_flow[N_cv + 1] if showExpertSummary "Mass flow through cell borders" annotation (Dialog(show));
+    input Basics.Units.Velocity w[N_cv] if showExpertSummary "Velocity of flow in cells" annotation (Dialog(show));
   end Outline;
 
   model Wall_L4
@@ -82,7 +83,10 @@ public
   replaceable model Geometry =
       Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry_N_cv                          constrainedby Basics.ControlVolumes.Fundamentals.Geometry.GenericGeometry_N_cv "Pipe geometry"
                                                                                             annotation(choicesAllMatching,Dialog(group="Geometry"));
-
+  replaceable model MechanicalEquilibrium = ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.Homogeneous_L4
+                                                                                                  constrainedby ClaRa.Basics.ControlVolumes.Fundamentals.SpacialDistribution.MechanicalEquilibrium_L4
+                                                                                                                                                                                         "Mechanical equilibrium model"
+                                                                                             annotation(choicesAllMatching,Dialog(group="Fundamental Definitions"));
   //____Nominal Values_________________________________________________________________________________
 public
   parameter Basics.Units.Pressure p_nom[geo.N_cv]=ones(geo.N_cv)*1e5 "Nominal pressure"
@@ -135,7 +139,8 @@ public
           {w_inlet*abs(w_inlet)*fluidInlet.d*geo.A_cross[1]},
           {w[i]*abs(w[i])*fluid[i].d*geo.A_cross[i] for i in 1:geo.N_cv},
           {w_outlet*abs(w_outlet)*fluidOutlet.d*geo.A_cross[geo.N_cv]}),
-      m_flow=m_flow),
+      m_flow=m_flow,
+      w=w),
     inlet(
       showExpertSummary=showExpertSummary,
       m_flow=inlet.m_flow,
@@ -182,6 +187,7 @@ public
 protected
   Basics.Units.EnthalpyMassSpecific h[geo.N_cv](start=h_start,each stateSelect=StateSelect.prefer) "Cell enthalpy";
 
+
   //____Pressure__________________________________________________________________________________________________
   Basics.Units.Pressure p[geo.N_cv](start=p_start_internal) "Cell pressure";
   Basics.Units.PressureDifference Delta_p_fric[geo.N_cv + 1] "Pressure difference due to friction";
@@ -196,9 +202,11 @@ protected
       {mass[geo.N_cv]/2}) "Mass of fluid in flow cells";
   Real drhodt[geo.N_cv];
   //(unit="kg/(m3s)")
+
   Basics.Units.MassFraction steamQuality[geo.N_cv] "Steam fraction";
   Basics.Units.MassFraction steamQuality_inlet "Steam fraction";
   Basics.Units.MassFraction steamQuality_outlet "Steam fraction";
+
 
   //____Mass Fractions____________________________________________________________________________________________
   Modelica.SIunits.MassFraction xi[geo.N_cv, medium.nc - 1] "Mass fraction";
@@ -227,6 +235,7 @@ public
   PressureLoss pressureLoss "Pressure loss model" annotation (Placement(transformation(extent={{-40,0},{-20,20}})));
   HeatTransfer heatTransfer(A_heat=geo.A_heat_CF[:, 1]) "heat transfer model" annotation (Placement(transformation(extent={{-80,0},{-60,20}})));
   inner Geometry geo annotation (Placement(transformation(extent={{0,0},{20,20}})));
+  MechanicalEquilibrium mechanicalEquilibrium(final h_start=h_start) "Mechanical equilibrium model" annotation (Placement(transformation(extent={{40,0},{60,20}})));
 
 protected
   inner TILMedia.VLEFluid_ph fluid[geo.N_cv](
@@ -278,6 +287,7 @@ protected
 
   //### E Q U A T I O N P A R T #######################################################################################
   //-------------------------------------------
+
   //initialisation
 
 initial equation
@@ -311,9 +321,11 @@ equation
   steamQuality_inlet = fluidInlet.q;
   steamQuality_outlet = fluidOutlet.q;
 
-  //flow velocities in cells
+
   for i in 1:geo.N_cv loop
+     //flow velocities in cells
     w[i] = (m_flow[i] + m_flow[i + 1])/(2*fluid[i].d*geo.A_cross[i]);
+    //steam quality
     steamQuality[i] = fluid[i].q;
   end for;
 
@@ -324,10 +336,10 @@ equation
   m_flow[geo.N_cv + 1] = -outlet.m_flow;
 
   //-------------------------------------------
-  //data exchange with heat transfer model
+  //data exchange with replaceable models
   heatTransfer.m_flow = m_flow;
+  mechanicalEquilibrium.m_flow = m_flow;
 
-  //-------------------------------------------
   //pressure drop due to friction, gravity
 
 
@@ -342,11 +354,11 @@ equation
     elseif  frictionAtInlet and not frictionAtOutlet then
       Delta_p_grav[1] = fluid[1].d*g_n*(geo.z_out - geo.z_in);
       Delta_p_grav[2] = 0;
-    else
+      else
       // frictionAtOutlet and frictionAtnlet
       Delta_p_grav[1] = fluid[1].d*g_n*(geo.z[1] - geo.z_in);
       Delta_p_grav[2] = fluid[1].d*g_n*(geo.z_out - geo.z[1]);
-    end if;
+      end if;
   elseif geo.N_cv==2 then
     if not frictionAtInlet and not frictionAtOutlet then
       Delta_p_grav[1] = 0;
@@ -360,12 +372,12 @@ equation
       Delta_p_grav[1] = fluid[1].d*g_n*(geo.z[1] - geo.z_in);
       Delta_p_grav[2] = (fluid[2].d*geo.Delta_x[2] + fluid[1].d*geo.Delta_x[1]/2)/(geo.Delta_x[1]/2+geo.Delta_x[2])*g_n*(geo.z_out - geo.z[1]);
       Delta_p_grav[3] = 0;
-    else
+      else
       // frictionAtOutlet and frictionAtnlet
       Delta_p_grav[1] = fluid[1].d*g_n*(geo.z[1] - geo.z_in);
       Delta_p_grav[2] = (fluid[1].d*geo.Delta_x[1] + fluid[2].d*geo.Delta_x[2])/(geo.Delta_x[2]+geo.Delta_x[1])*g_n*(geo.z[2] - geo.z[1]);
       Delta_p_grav[3] = fluid[2].d*g_n*(geo.z_out - geo.z[2]);
-    end if;
+      end if;
   else
     for i in 3:geo.N_cv-1 loop
       Delta_p_grav[i] = (fluid[i].d*geo.Delta_x[i] + fluid[i - 1].d*geo.Delta_x[i - 1])/(geo.Delta_x[i - 1]+geo.Delta_x[i])*g_n*(geo.z[i] - geo.z[i-1]);
@@ -374,49 +386,50 @@ equation
     if frictionAtInlet then
       Delta_p_grav[1] = fluid[1].d*g_n*(geo.z[1] - geo.z_in);
       Delta_p_grav[2] = (fluid[1].d*geo.Delta_x[1] + fluid[2].d*geo.Delta_x[2])/(geo.Delta_x[2]+geo.Delta_x[1])*g_n*(geo.z[2] - geo.z[1]);
-    else
+      else
       Delta_p_grav[1] = 0;
       Delta_p_grav[2] = (fluid[1].d*geo.Delta_x[1] + fluid[2].d*geo.Delta_x[2]/2)/(geo.Delta_x[2]/2+geo.Delta_x[1])*g_n*(geo.z[2] - geo.z_in);
-    end if;
+      end if;
 
     if frictionAtOutlet then
       Delta_p_grav[geo.N_cv+1] = fluid[geo.N_cv].d*g_n*(geo.z_out - geo.z[geo.N_cv]);
       Delta_p_grav[geo.N_cv] = (fluid[geo.N_cv-1].d*geo.Delta_x[geo.N_cv-1] + fluid[geo.N_cv].d*geo.Delta_x[geo.N_cv])/(geo.Delta_x[geo.N_cv-1] + geo.Delta_x[geo.N_cv])*g_n*(geo.z[geo.N_cv] - geo.z[geo.N_cv-1]);
-    else
+      else
       Delta_p_grav[geo.N_cv+1] = 0;
       Delta_p_grav[geo.N_cv] = (fluid[geo.N_cv-1].d*geo.Delta_x[geo.N_cv-1]/2 + fluid[geo.N_cv].d*geo.Delta_x[geo.N_cv])/(geo.Delta_x[geo.N_cv-1]/2+geo.Delta_x[geo.N_cv])*g_n*(geo.z_out - geo.z[geo.N_cv-1]);
+      end if;
     end if;
-  end if;
 
   //-------------------------------------------
   //Enthalpy flows
   for i in 2:geo.N_cv loop
     H_flow[i] = if useHomotopy then homotopy(semiLinear(
       m_flow[i],
-      h[i - 1],
-      h[i]), h[i - 1]*m_flow_nom) else semiLinear(
+      mechanicalEquilibrium.h[i - 1],
+      mechanicalEquilibrium.h[i]), mechanicalEquilibrium.h[i - 1]*m_flow_nom) else semiLinear(
       m_flow[i],
-      h[i - 1],
-      h[i]);
+      mechanicalEquilibrium.h[i - 1],
+      mechanicalEquilibrium.h[i]);
   end for;
   H_flow[1] = if useHomotopy then homotopy(semiLinear(
     m_flow[1],
     inStream(inlet.h_outflow),
-    h[1]), inStream(inlet.h_outflow)*m_flow_nom) else semiLinear(
+    mechanicalEquilibrium.h[1]), inStream(inlet.h_outflow)*m_flow_nom) else semiLinear(
     m_flow[1],
     inStream(inlet.h_outflow),
-    h[1]);
+    mechanicalEquilibrium.h[1]);
   H_flow[geo.N_cv + 1] = if useHomotopy then homotopy(semiLinear(
     m_flow[geo.N_cv + 1],
-    h[geo.N_cv],
-    inStream(outlet.h_outflow)), h[geo.N_cv]*m_flow_nom) else semiLinear(
+    mechanicalEquilibrium.h[geo.N_cv],
+    inStream(outlet.h_outflow)), mechanicalEquilibrium.h[geo.N_cv]*m_flow_nom) else semiLinear(
     m_flow[geo.N_cv + 1],
-    h[geo.N_cv],
+    mechanicalEquilibrium.h[geo.N_cv],
     inStream(outlet.h_outflow));
+
 
   //-------------------------------------------
   //Fluid mass in cells
-  mass = if useHomotopy then homotopy(geo.volume .* fluid.d, geo.volume .* rho_nom) else geo.volume .* fluid.d;
+  mass = if useHomotopy then homotopy(geo.volume .* mechanicalEquilibrium.rho_mix, geo.volume .* rho_nom) else geo.volume .* mechanicalEquilibrium.rho_mix;
 
   //-------------------------------------------
   // definition of the cells' states:
@@ -426,7 +439,6 @@ equation
     der(xi[i, :]) = 1/mass[i]*((Xi_flow[i, :] -  m_flow[i]*xi[i, :]) - (Xi_flow[i + 1, :] - m_flow[i+1]*xi[i, :])) "Component mass balance";
     drhodt[i]*geo.volume[i] = m_flow[i] - m_flow[i + 1] "Mass balance";
     fluid[i].drhodp_hxi*der(p[i]) = (drhodt[i] - der(h[i])*fluid[i].drhodh_pxi- sum({fluid[i].drhodxi_ph[j]*der(xi[i, j]) for j in 1:medium.nc - 1})) "Calculate pressure from enthalpy and density derivative";
-
   end for;
 
   //-------------------------------------------
@@ -439,8 +451,8 @@ equation
   0 = if useHomotopy then homotopy(inlet.p - p[1] - Delta_p_fric[1] - Delta_p_grav[1], inlet.p - p[1] - Delta_p_fric[1] - Delta_p_grav[1]) else inlet.p - p[1] - Delta_p_fric[1] - Delta_p_grav[1];
   0 = if useHomotopy then homotopy(p[geo.N_cv] - outlet.p - Delta_p_fric[geo.N_cv + 1] - Delta_p_grav[geo.N_cv + 1], p[geo.N_cv] - outlet.p - Delta_p_fric[geo.N_cv + 1] - Delta_p_grav[geo.N_cv + 1]) else p[geo.N_cv] - outlet.p - Delta_p_fric[geo.N_cv + 1] - Delta_p_grav[geo.N_cv + 1];
 
-  inlet.h_outflow = h[1];
-  outlet.h_outflow = h[geo.N_cv];
+  inlet.h_outflow = mechanicalEquilibrium.h[1];
+  outlet.h_outflow = mechanicalEquilibrium.h[geo.N_cv];
 
 
   //-------------------------------------------

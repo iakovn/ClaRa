@@ -4,7 +4,7 @@ model Burner1
 // Component of the ClaRa library, version: 1.1.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -19,6 +19,8 @@ model Burner1
 
   import SM = ClaRa.Basics.Functions.Stepsmoother;
   import SZT = ClaRa.Basics.Functions.SmoothZeroTransition;
+  import ClaRa.Basics.Media.FuelFunctions.massFraction_i_xi;
+  import ClaRa.Basics.Media.FuelFunctions.LHV_pTxi;
   import Modelica.Constants.eps;
 
   outer ClaRa.SimCenter simCenter;
@@ -62,7 +64,7 @@ model Burner1
      p=p_fg_out,
      xi=xi_pa_in),
   inlet_fuel(
-     fuelModel=fuelType,
+     fuelModel=fuelModel,
      m_flow=m_flow_fuel,
      LHV=LHV,
      xi=xi_fuel));
@@ -71,7 +73,7 @@ model Burner1
 
   parameter TILMedia.VLEFluidTypes.BaseVLEFluid vleMedium = simCenter.fluid1 "Medium in the component" annotation(Dialog(group="Fundamental Definitions"));
   parameter TILMedia.GasTypes.BaseGas flueGas = simCenter.flueGasModel "Flue gas model used in component" annotation(Dialog(group="Fundamental Definitions"));
-  parameter ClaRa.Basics.Media.Fuel.PartialFuel fuelType=simCenter.fuelModel1 "Coal elemental composition used for combustion" annotation(Dialog(group="Fundamental Definitions"));
+  parameter ClaRa.Basics.Media.FuelTypes.BaseFuel fuelModel=simCenter.fuelModel1 "Coal elemental composition used for combustion" annotation (Dialog(group="Fundamental Definitions"));
 
   parameter ClaRa.Basics.Units.EnthalpyMassSpecific h_vle_wall_out_nom "Outlet specific enthalpy of fluid at nominal load"
                                                                                               annotation(Dialog(group="Nominal Operation Point"));
@@ -134,16 +136,17 @@ model Burner1
   final parameter ClaRa.Basics.Units.MassFraction xi_fg_in[flueGas.nc-1](fixed=false) "Inlet composition flue gas";
 
   final parameter ClaRa.Basics.Units.MassFlowRate m_flow_fuel(fixed=false) "Mass flow rate fuel";
-  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific LHV(fixed=false) "Lower heating value of fuel";
-  final parameter ClaRa.Basics.Units.MassFraction xi_fuel[fuelType.nc-1](fixed=false) "Elemental composition of fuel";
+  final parameter ClaRa.Basics.Units.MassFraction xi_fuel[fuelModel.N_c-1](fixed=false) "Elemental composition of fuel";
+  final parameter ClaRa.Basics.Units.MassFraction xi_fuel_e [fuelModel.N_e-1]= {massFraction_i_xi(xi_fuel, i, fuelModel) for i in 1:fuelModel.N_e-1} "Elemental composition fuel";
+  final parameter ClaRa.Basics.Units.EnthalpyMassSpecific LHV= LHV_pTxi(p, T, xi_fuel, fuelModel)  "Lower heating value fuel";
 
   final parameter ClaRa.Basics.Units.Temperature T_pa_in(fixed=false) "Temperature of primary air";
   final parameter ClaRa.Basics.Units.MassFraction xi_pa_in[flueGas.nc-1](fixed=false) "Inlet composition primary air";
 
-  final parameter Real n_flow_C_primary= xi_fuel[1]*m_flow_fuel/ClaRa.Basics.Constants.M_C "Inlet molar flow rate fuel C";
-  final parameter Real n_flow_H_primary= xi_fuel[2]*m_flow_fuel/ClaRa.Basics.Constants.M_H "Inlet molar flow rate fuel H";
-  final parameter Real n_flow_O_primary= xi_fuel[3]*m_flow_fuel/ClaRa.Basics.Constants.M_O "Inlet molar flow rate fuel O";
-  final parameter Real n_flow_S_primary= xi_fuel[5]*m_flow_fuel/ClaRa.Basics.Constants.M_S "Inlet molar flow rate fuel S";
+  final parameter Real n_flow_C_primary= xi_fuel_e[1]*m_flow_fuel/ClaRa.Basics.Constants.M_C "Inlet molar flow rate fuel C";
+  final parameter Real n_flow_H_primary= xi_fuel_e[2]*m_flow_fuel/ClaRa.Basics.Constants.M_H "Inlet molar flow rate fuel H";
+  final parameter Real n_flow_O_primary= xi_fuel_e[3]*m_flow_fuel/ClaRa.Basics.Constants.M_O "Inlet molar flow rate fuel O";
+  final parameter Real n_flow_S_primary= xi_fuel_e[5]*m_flow_fuel/ClaRa.Basics.Constants.M_S "Inlet molar flow rate fuel S";
 
   final parameter Real m_flow_oxygen_req_primary = (n_flow_C_primary + n_flow_H_primary/4.0 + n_flow_S_primary - n_flow_O_primary/2)*ClaRa.Basics.Constants.M_O *2.0 "Required oxygen for stoichiometric combustion";
   final parameter Real lambda = m_flow_pa_in/m_flow_oxygen_req_primary * max(1e-32,xi_pa_in[6]) "Stoichiometric air ratio";
@@ -187,7 +190,7 @@ model Burner1
 
   final parameter ClaRa.Basics.Units.MassFlowRate m_flow_pa_in=(m_flow_fg_out-m_flow_fuel-m_flow_fg_in) "Inlet mass flow primary air";
   final parameter ClaRa.Basics.Units.MassFraction xi_fg_out[flueGas.nc - 1]=ClaRa.Basics.Functions.InitialiseCombustionGas(
-      xi_fuel,
+      xi_fuel_e,
       m_flow_fuel,
       ((m_flow_fg_in*xi_fg_in) + (m_flow_pa_in*xi_pa_in))/(m_flow_pa_in + m_flow_fg_in),
       (m_flow_pa_in + m_flow_fg_in),
@@ -196,6 +199,8 @@ model Burner1
 protected
   Modelica.Blocks.Tables.CombiTable1D table1(table=CharLine_Delta_p_P_target_, u = {P_target_});
   Modelica.Blocks.Tables.CombiTable1D table2(table=CharLine_h_P_target_, u = {P_target_});
+  constant ClaRa.Basics.Units.Pressure p=1e5;
+  constant ClaRa.Basics.Units.Temperature T = 273.15;
 
 public
   ClaRa.StaticCycles.Fundamentals.FlueGasSignal_brown_b outletGas(flueGas=flueGas, xi=xi_fg_out) annotation (Placement(transformation(
@@ -232,7 +237,7 @@ public
     flueGas=flueGas,
     p=p_fg_out,
     m_flow=m_flow_pa_in) annotation (Placement(transformation(extent={{-108,-40},{-100,-20}}), iconTransformation(extent={{-108,-40},{-100,-20}})));
-  ClaRa.StaticCycles.Fundamentals.FuelSignal_black_a inletFuel(fuelType=fuelType) annotation (Placement(transformation(extent={{-108,-10},{-100,10}}), iconTransformation(extent={{-108,-10},{-100,10}})));
+  ClaRa.StaticCycles.Fundamentals.FuelSignal_black_a inletFuel(fuelModel=fuelModel) annotation (Placement(transformation(extent={{-108,-10},{-100,10}}), iconTransformation(extent={{-108,-10},{-100,10}})));
 initial equation
   Delta_p_vle =  Delta_p_vle_wall_nom*table1.y[1];
   h_vle_wall_out= h_vle_wall_out_nom*table2.y[1];
@@ -255,7 +260,6 @@ initial equation
   inletPrimAir.xi=xi_pa_in;
 
   inletFuel.m_flow=m_flow_fuel;
-  inletFuel.LHV=LHV;
   inletFuel.xi=xi_fuel;
 
   annotation(Dialog(group="Part Load Definition"),
@@ -285,5 +289,6 @@ initial equation
         Text(
           extent={{-80,80},{80,18}},
           lineColor={0,131,169},
-          textString="%name")}),   Diagram(coordinateSystem(preserveAspectRatio=false)));
+          textString="%name")}),   Diagram(graphics,
+                                           coordinateSystem(preserveAspectRatio=false)));
 end Burner1;

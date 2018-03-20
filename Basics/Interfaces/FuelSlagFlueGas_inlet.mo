@@ -2,12 +2,12 @@ within ClaRa.Basics.Interfaces;
 connector FuelSlagFlueGas_inlet "Port describing Coal,Slag and FlueGas flow"
 
   // Media properties of coal and slag
-  parameter ClaRa.Basics.Media.Fuel.PartialFuel fuelType;
-  parameter ClaRa.Basics.Media.Fuel.PartialSlag slagType;
+   parameter ClaRa.Basics.Media.FuelTypes.Fuel_refvalues_v1 fuelModel = ClaRa.Basics.Media.FuelTypes.Fuel_refvalues_v1()  "Fuel type";
+  parameter ClaRa.Basics.Media.Slag.PartialSlag slagType;
 
   ClaRa.Basics.Interfaces.GasPortIn flueGas
     annotation (Placement(transformation(extent={{40,-30},{100,30}})));
-  ClaRa.Basics.Interfaces.Fuel_inlet fuel(fuelType=fuelType)
+  ClaRa.Basics.Interfaces.Fuel_inlet  fuel(fuelModel = fuelModel)
     annotation (Placement(transformation(extent={{-100,-30},{-40,30}})));
   ClaRa.Basics.Interfaces.Slag_outlet slag(slagType=slagType)
     annotation (Placement(transformation(extent={{-30,-30},{30,30}})));

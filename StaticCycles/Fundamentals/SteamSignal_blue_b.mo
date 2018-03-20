@@ -9,5 +9,6 @@ connector SteamSignal_blue_b "Signal-based steam connector"
           extent={{-40,100},{40,-100}},
           lineColor={0,131,169},
           fillColor={153,205,221},
-          fillPattern=FillPattern.Solid)}), Diagram(coordinateSystem(extent={{-40,-100},{40,100}})));
+          fillPattern=FillPattern.Solid)}), Diagram(graphics,
+                                                    coordinateSystem(extent={{-40,-100},{40,100}})));
 end SteamSignal_blue_b;

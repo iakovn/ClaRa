@@ -1,10 +1,10 @@
 within ClaRa.Components.TurboMachines.Turbines.Check;
 model testStackedTurbineStages
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -101,10 +101,6 @@ equation
       points={{37,2},{26,2}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(inertia.flange_b, GasFanAdvanced.shaft)  annotation (Line(
-      points={{-28,2},{-38,2},{-38,-32},{-34,-32}},
-      color={0,0,0},
-      smooth=Smooth.None));
   connect(VIGVTimeTable.y, GasFanAdvanced.Delta_alpha_input)
                                                          annotation (Line(
       points={{-75,4},{-48,4},{-48,-24},{-34,-24}},
@@ -120,6 +116,7 @@ equation
       color={118,106,98},
       thickness=0.5,
       smooth=Smooth.None));
+  connect(inertia.flange_b, GasFanAdvanced.shaft_b) annotation (Line(points={{-28,2},{-40,2},{-40,-32},{-34,-32}}, color={0,0,0}));
   annotation (
     Diagram(coordinateSystem(extent={{-100,-60},{60,60}}, preserveAspectRatio=false),
             graphics={            Text(
@@ -132,12 +129,9 @@ PURPOSE:
 >> Tester for the gas turbine component
 
 ______________________________________________________________________________________________
-"),                    Text(
-          extent={{-140,64},{18,46}},
-          lineColor={0,128,0},
-          fontSize=31,
-          textString="TESTED -- 2015-01-01 //LN")}),
+")}),
     experiment(StopTime=20),
     __Dymola_experimentSetupOutput,
-    Icon(coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=false)));
+    Icon(graphics,
+         coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=false)));
 end testStackedTurbineStages;

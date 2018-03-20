@@ -1,10 +1,10 @@
 within ClaRa.Components.Furnace.Check;
 model Test_CombustionChamber
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -20,15 +20,15 @@ model Test_CombustionChamber
 
   SimpleCombustionChamber combustionChamber(
     xi_NOx=0000,
-    fuelType=simCenter.fuelModel1,
     medium=simCenter.flueGasModel,
-    slagType=simCenter.slagModel) annotation (Placement(transformation(extent={{18,-36},{38,-16}})));
-  inner ClaRa.SimCenter simCenter(       redeclare ClaRa.Basics.Media.Fuel.Coal_v1
-                                      fuelModel1,
-    redeclare ClaRa.Basics.Media.Fuel.Slag_v1 slagModel,
-    redeclare TILMedia.GasTypes.FlueGasTILMedia flueGasModel)
+    slagType=simCenter.slagModel,
+    fuelModel=simCenter.fuelModel1) annotation (Placement(transformation(extent={{18,-36},{38,-16}})));
+  inner ClaRa.SimCenter simCenter(
+    redeclare ClaRa.Basics.Media.Slag.Slag_v1 slagModel,
+    redeclare TILMedia.GasTypes.FlueGasTILMedia flueGasModel,
+    redeclare ClaRa.Basics.Media.FuelTypes.Fuel_refvalues_v1 fuelModel1)
     annotation (Placement(transformation(extent={{80,80},{100,100}})));
-  ClaRa.Components.BoundaryConditions.BoundarySlag_pT slagSink(slagType=ClaRa.Basics.Media.Fuel.Slag_v1()) annotation (Placement(transformation(
+  ClaRa.Components.BoundaryConditions.BoundarySlag_pT slagSink(slagType=ClaRa.Basics.Media.Slag.Slag_v1()) annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=90,
         origin={28,-66})));
@@ -83,9 +83,5 @@ PURPOSE:
 >> Tester for simple combustion chamber component
 
 ______________________________________________________________________________________________
-"),                    Text(
-          extent={{-98,104},{18,86}},
-          lineColor={0,128,0},
-          fontSize=31,
-          textString="TESTED -- 2015-01-27 //LN")}));
+")}), experiment(StopTime=10));
 end Test_CombustionChamber;

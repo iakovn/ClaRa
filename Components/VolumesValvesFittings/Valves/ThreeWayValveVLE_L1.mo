@@ -1,10 +1,10 @@
 within ClaRa.Components.VolumesValvesFittings.Valves;
 model ThreeWayValveVLE_L1 "Three way valve for vle media, not suitable for back flows!"
 //___________________________________________________________________________//
-// Component of the ClaRa library, version: 1.2.2                            //
+// Component of the ClaRa library, version: 1.3.0                            //
 //                                                                           //
 // Licensed by the DYNCAP/DYNSTART research team under Modelica License 2.   //
-// Copyright  2013-2017, DYNCAP/DYNSTART research team.                     //
+// Copyright  2013-2018, DYNCAP/DYNSTART research team.                      //
 //___________________________________________________________________________//
 // DYNCAP and DYNSTART are research projects supported by the German Federal //
 // Ministry of Economic Affairs and Energy (FKZ 03ET2009/FKZ 03ET7060).      //
@@ -72,7 +72,7 @@ equation
   inlet.m_flow + outlet1.m_flow + outlet2.m_flow =0;
 
   // Isenthalpic state transformation (no storage and no loss of energy)
-  inlet.h_outflow = (inStream(outlet1.h_outflow)*outlet1.m_flow + inStream(outlet2.h_outflow)*outlet2.m_flow)/(-inlet.m_flow);
+  (-inlet.m_flow)*inlet.h_outflow = (inStream(outlet1.h_outflow)*outlet1.m_flow + inStream(outlet2.h_outflow)*outlet2.m_flow);
   outlet1.h_outflow = inStream(inlet.h_outflow);
   outlet2.h_outflow = inStream(inlet.h_outflow);
 
