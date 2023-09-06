@@ -1,0 +1,58 @@
+{
+  "name": "ClaRa",
+  "format": "1.0.0",
+  "version": "1.8.0",
+  "dependencies": [
+    {
+      "name": "Modelica",
+      "versionSpecifier": "4.0.0"
+    }
+  ],
+  "content": [
+    {
+      "relpath": "ClaRa",
+      "contentType": "MODELICA",
+      "name": "ClaRa",
+      "defaultDisabled": false,
+      "id": "8d1a57031f0548c3b4a981a14cde5b38"
+    },
+    {
+      "relpath": "Resources/Views",
+      "contentType": "VIEWS",
+      "defaultDisabled": false,
+      "id": "b4fda4886f1540b3aa19c5b0ab6fdbd0"
+    },
+    {
+      "relpath": "Resources/Favorites",
+      "contentType": "FAVORITES",
+      "defaultDisabled": false,
+      "id": "f5dc285546ac47708658679e574c6556"
+    },
+    {
+      "relpath": "Resources/CustomFunctions",
+      "contentType": "CUSTOM_FUNCTIONS",
+      "defaultDisabled": false,
+      "id": "7c4bcffd09e24b7884e651a84be2c7f9"
+    },
+    {
+      "relpath": "Resources/Custom",
+      "contentType": "GENERIC",
+      "defaultDisabled": false,
+      "id": "1710902cfb0e465c8058088eb740419a"
+    },
+    {
+      "relpath": "ReferenceResults",
+      "contentType": "REFERENCE_RESULTS",
+      "defaultDisabled": false,
+      "id": "4b0706025376472482646b6805e3f902"
+    },
+    {
+      "relpath": "Resources/ExperimentDefinitions",
+      "contentType": "EXPERIMENT_DEFINITIONS",
+      "defaultDisabled": false,
+      "id": "676ceacc05a142b8a75043d9b4cc0fff"
+    }
+  ],
+  "executionOptions": [],
+  "icon": "ClaRa/Resources/Images/ClaRa-Logo.png"
+}
